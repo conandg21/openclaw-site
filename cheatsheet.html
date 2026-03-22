@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Command Cheat Sheet — Every Command You Need</title>
+  <meta name="description" content="Complete OpenClaw command reference. Install, configure, connect messaging platforms, manage skills, schedule automations, handle agents, memory, and more." />
+  <meta name="keywords" content="OpenClaw commands, OpenClaw cheat sheet, OpenClaw CLI, openclaw start, openclaw skills, openclaw config" />
+  <link rel="canonical" href="https://learnopenclaw.org/cheatsheet.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="OpenClaw Command Cheat Sheet" />
+  <meta property="og:description" content="Every OpenClaw CLI command in one place. Free reference for beginners and power users." />
+  <meta property="og:url" content="https://learnopenclaw.org/cheatsheet.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Command Cheat Sheet" />
+  <meta name="twitter:description" content="Every OpenClaw CLI command in one place." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "OpenClaw Command Cheat Sheet",
+    "description": "Complete OpenClaw command reference covering install, config, skills, agents, scheduling, memory, and integrations.",
+    "url": "https://learnopenclaw.org/cheatsheet.html"
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #2563eb;
+      --blue-dk:   #1e3a5f;
+      --blue-lt:   #eff6ff;
+      --blue-md:   #bfdbfe;
+      --green-dk:  #14532d;
+      --green-lt:  #dcfce7;
+      --purple-dk: #4c1d95;
+      --purple-lt: #ede9fe;
+      --pink-dk:   #831843;
+      --pink-lt:   #fce7f3;
+      --orange-dk: #7c2d12;
+      --orange-lt: #ffedd5;
+      --teal-dk:   #134e4a;
+      --teal-lt:   #ccfbf1;
+      --gray-1:    #f9fafb;
+      --gray-2:    #f3f4f6;
+      --gray-3:    #e5e7eb;
+      --gray-5:    #6b7280;
+      --gray-7:    #374151;
+      --gray-9:    #111827;
+      --white:     #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-9); background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-9); display: flex; align-items: center; gap: 8px; }
+    .nav-logo .claw { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+
+    /* hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-9); border-radius: 2px; transition: .2s; }
+
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; flex-direction: column; align-items: flex-start;
+        position: absolute; top: 60px; left: 0; right: 0;
+        background: var(--white); border-bottom: 1px solid var(--gray-3);
+        padding: 16px 24px; gap: 4px; z-index: 999;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 6px 0; font-size: 1rem; width: 100%; }
+      .nav-section { display: contents; }
+      .nav-section-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--gray-5); margin-top: 8px; padding: 4px 0; }
+    }
+    .nav-section { display: contents; }
+    .nav-section-label { display: none; }
+    @media (max-width: 768px) { .nav-section-label { display: block; } }
+
+    /* ── Disclaimer ── */
+    .disclaimer-bar {
+      background: #fefce8; border-bottom: 1px solid #fde047;
+      padding: 8px 24px; font-size: .82rem; color: #713f12; text-align: center;
+    }
+
+    /* ── Page hero ── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--blue-dk) 0%, #1d4ed8 100%);
+      color: var(--white); padding: 56px 24px 48px; text-align: center;
+    }
+    .page-hero .pill {
+      display: inline-block; background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 100px; padding: 4px 14px;
+      font-size: .78rem; font-weight: 700; letter-spacing: .05em;
+      margin-bottom: 18px;
+    }
+    .page-hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 14px; }
+    .page-hero p { font-size: 1.05rem; opacity: .85; max-width: 580px; margin: 0 auto 28px; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-dl {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--white); color: var(--blue-dk);
+      font-weight: 700; font-size: .95rem;
+      padding: 11px 22px; border-radius: 8px; text-decoration: none;
+      transition: opacity .2s;
+    }
+    .btn-dl:hover { opacity: .88; text-decoration: none; }
+
+    /* ── Search bar ── */
+    .search-bar {
+      background: var(--gray-1); border-bottom: 1px solid var(--gray-3);
+      padding: 14px 24px;
+      position: sticky; top: 60px; z-index: 900;
+    }
+    .search-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .search-input-wrap { position: relative; flex: 1; min-width: 200px; }
+    .search-input-wrap input {
+      width: 100%; padding: 9px 14px 9px 36px;
+      border: 1px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; background: var(--white);
+      outline: none; transition: border-color .2s;
+    }
+    .search-input-wrap input:focus { border-color: var(--blue); }
+    .search-input-wrap .search-icon {
+      position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+      font-size: .9rem; pointer-events: none;
+    }
+    .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 6px 14px; border-radius: 100px; font-size: .8rem; font-weight: 600;
+      border: 1.5px solid var(--gray-3); background: var(--white);
+      cursor: pointer; transition: .15s; color: var(--gray-7);
+    }
+    .filter-btn:hover, .filter-btn.active { background: var(--blue-dk); color: var(--white); border-color: var(--blue-dk); }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+      padding: 32px 24px 64px;
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    /* ── Section card ── */
+    .sec-card {
+      border: 1px solid var(--gray-3); border-radius: 14px;
+      overflow: hidden; background: var(--white);
+    }
+    .sec-card[hidden] { display: none; }
+    .sec-head {
+      display: flex; align-items: center; gap: 10px;
+      padding: 13px 16px;
+      font-size: .82rem; font-weight: 800; letter-spacing: .05em;
+      text-transform: uppercase; color: var(--white);
+    }
+    .sec-head .icon { font-size: 1.1rem; }
+
+    /* section colors */
+    .c-blue   { background: var(--blue-dk); }
+    .c-green  { background: var(--green-dk); }
+    .c-purple { background: var(--purple-dk); }
+    .c-pink   { background: var(--pink-dk); }
+    .c-orange { background: var(--orange-dk); }
+    .c-teal   { background: var(--teal-dk); }
+
+    /* ── Command rows ── */
+    .cmd-list { list-style: none; }
+    .cmd-row {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      gap: 0; border-bottom: 1px solid var(--gray-3);
+    }
+    .cmd-row:last-child { border-bottom: none; }
+    .cmd-row:nth-child(even) { background: var(--gray-1); }
+    .cmd-cell {
+      padding: 9px 12px;
+      font-size: .85rem; line-height: 1.4;
+    }
+    .cmd-cell.code {
+      font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
+      color: var(--gray-9); font-weight: 600; word-break: break-all;
+      border-right: 1px solid var(--gray-3);
+    }
+    .cmd-cell.desc { color: var(--gray-7); }
+
+    /* highlight on search match */
+    mark { background: #fef08a; border-radius: 2px; padding: 0 2px; }
+
+    /* no-results */
+    #no-results {
+      display: none; text-align: center; padding: 60px 24px;
+      color: var(--gray-5); font-size: 1rem; grid-column: 1/-1;
+    }
+
+    /* ── Download strip ── */
+    .dl-strip {
+      background: var(--blue-lt); border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 18px 24px; text-align: center;
+      font-size: .9rem; color: var(--blue-dk);
+    }
+    .dl-strip a { font-weight: 700; color: var(--blue-dk); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-9); color: #9ca3af;
+      padding: 32px 24px; text-align: center; font-size: .85rem;
+    }
+    footer .footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+    footer a { color: #d1d5db; }
+    footer a:hover { color: var(--white); }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+    .footer-nl-form input { padding: 8px 14px; border-radius: 6px; border: none; font-size: .9rem; min-width: 220px; }
+    .footer-nl-form button { padding: 8px 18px; border-radius: 6px; border: none; background: var(--blue); color: var(--white); font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <!-- Nav -->
+  <nav aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw">&#x1F99E;</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <div class="nav-section" role="group" aria-label="Learn">
+          <span class="nav-section-label">Learn</span>
+          <a href="gettingstarted.html">Get Started</a>
+          <a href="usecases.html">Use Cases</a>
+          <a href="automation.html">Automation</a>
+          <a href="marketplace.html">Marketplace</a>
+          <a href="architecture.html">Architecture</a>
+          <a href="multiagent.html">Multi-Agent</a>
+          <a href="nemoclaw.html">🟢 NemoClaw</a>
+          <a href="compare.html">Compare</a>
+          <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+          <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+        </div>
+        <a href="faq.html">FAQ</a>
+        <a href="cheatsheet.html" aria-current="page" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+    <strong>learnopenclaw.org</strong> is an independent community learning resource — not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+  </div>
+
+  <main id="main-content">
+
+    <!-- Hero -->
+    <div class="page-hero">
+      <div class="pill">FREE REFERENCE</div>
+      <h1>OpenClaw Command Cheat Sheet</h1>
+      <p>Every CLI command in one place — install, configure, connect platforms, manage skills, schedule automations, and more.</p>
+      <div class="hero-actions">
+        <a href="openclaw-cheatsheet.pdf" download class="btn-dl">📥 Download PDF version</a>
+        <a href="gettingstarted.html" class="btn-dl" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.35);">Get Started Guide →</a>
+      </div>
+    </div>
+
+    <!-- Search & Filter bar -->
+    <div class="search-bar" role="search" aria-label="Search commands">
+      <div class="search-inner">
+        <div class="search-input-wrap">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input type="search" id="cmd-search" placeholder="Search commands… e.g. skills, schedule, config" aria-label="Search commands" autocomplete="off" />
+        </div>
+        <div class="filter-btns" role="group" aria-label="Filter by category">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="setup">Setup</button>
+          <button class="filter-btn" data-filter="config">Config</button>
+          <button class="filter-btn" data-filter="platforms">Platforms</button>
+          <button class="filter-btn" data-filter="skills">Skills</button>
+          <button class="filter-btn" data-filter="agents">Agents</button>
+          <button class="filter-btn" data-filter="schedule">Schedule</button>
+          <button class="filter-btn" data-filter="memory">Memory</button>
+          <button class="filter-btn" data-filter="shopify">Shopify</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Command Grid -->
+    <div class="grid" id="cmd-grid" role="main">
+
+      <!-- INSTALL & SETUP -->
+      <div class="sec-card" data-cat="setup">
+        <div class="sec-head c-blue"><span class="icon" aria-hidden="true">⚙️</span> Install &amp; Setup</div>
+        <ul class="cmd-list" aria-label="Install and setup commands">
+          <li class="cmd-row"><span class="cmd-cell code">npm install -g openclaw</span><span class="cmd-cell desc">Install OpenClaw globally via npm</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">npm update -g openclaw</span><span class="cmd-cell desc">Update to the latest version</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">npm uninstall -g openclaw</span><span class="cmd-cell desc">Remove OpenClaw from your system</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw --version</span><span class="cmd-cell desc">Print the installed version number</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw --help</span><span class="cmd-cell desc">Show all commands and flags</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw doctor</span><span class="cmd-cell desc">Check system requirements &amp; config health</span></li>
+        </ul>
+      </div>
+
+      <!-- START & STOP -->
+      <div class="sec-card" data-cat="setup">
+        <div class="sec-head c-green"><span class="icon" aria-hidden="true">▶️</span> Start &amp; Stop</div>
+        <ul class="cmd-list" aria-label="Start and stop commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw start</span><span class="cmd-cell desc">Start the OpenClaw agent daemon</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw start --port 3000</span><span class="cmd-cell desc">Start on a custom port (default: 4000)</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw start --headless</span><span class="cmd-cell desc">Run in background with no terminal output</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw start --debug</span><span class="cmd-cell desc">Start with verbose debug logging</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw stop</span><span class="cmd-cell desc">Gracefully stop the running agent</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw restart</span><span class="cmd-cell desc">Stop then restart the agent</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw status</span><span class="cmd-cell desc">Show running status and uptime</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw logs</span><span class="cmd-cell desc">Tail live agent logs in terminal</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw logs --lines 100</span><span class="cmd-cell desc">Show last N lines of logs</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw logs --level error</span><span class="cmd-cell desc">Show only error-level entries</span></li>
+        </ul>
+      </div>
+
+      <!-- CONFIGURATION -->
+      <div class="sec-card" data-cat="config">
+        <div class="sec-head c-purple"><span class="icon" aria-hidden="true">🔧</span> Configuration</div>
+        <ul class="cmd-list" aria-label="Configuration commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config</span><span class="cmd-cell desc">Open config file in default editor</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config --show</span><span class="cmd-cell desc">Print current config to terminal</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config set model gpt-4o</span><span class="cmd-cell desc">Switch to OpenAI GPT-4o</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config set model claude-3-5-sonnet-20241022</span><span class="cmd-cell desc">Use Anthropic Claude Sonnet</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config set model llama3</span><span class="cmd-cell desc">Use a local LLaMA 3 model</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config set api_key &lt;key&gt;</span><span class="cmd-cell desc">Set your AI provider API key</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config set language en</span><span class="cmd-cell desc">Set response language (ISO 639-1)</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config set timezone America/New_York</span><span class="cmd-cell desc">Set local timezone for scheduling</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw config reset</span><span class="cmd-cell desc">Reset all settings to defaults</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw export-config</span><span class="cmd-cell desc">Export full config to a JSON backup</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw import-config &lt;file&gt;</span><span class="cmd-cell desc">Restore config from a JSON backup</span></li>
+        </ul>
+      </div>
+
+      <!-- MESSAGING PLATFORMS -->
+      <div class="sec-card" data-cat="platforms">
+        <div class="sec-head c-pink"><span class="icon" aria-hidden="true">💬</span> Messaging Platforms</div>
+        <ul class="cmd-list" aria-label="Messaging platform commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw connect whatsapp</span><span class="cmd-cell desc">Link WhatsApp — scan the QR code shown</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw connect telegram</span><span class="cmd-cell desc">Link Telegram via bot token prompt</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw connect slack</span><span class="cmd-cell desc">Link Slack workspace via OAuth</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw connect discord</span><span class="cmd-cell desc">Link Discord bot to your server</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw connect imessage</span><span class="cmd-cell desc">Link iMessage (macOS only)</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw disconnect &lt;platform&gt;</span><span class="cmd-cell desc">Remove a connected platform</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw platforms</span><span class="cmd-cell desc">List all connected platforms</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw platforms --status</span><span class="cmd-cell desc">Show connection health for each platform</span></li>
+        </ul>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="sec-card" data-cat="skills">
+        <div class="sec-head c-blue"><span class="icon" aria-hidden="true">🧩</span> Skills (ClawHub)</div>
+        <ul class="cmd-list" aria-label="Skills commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills list</span><span class="cmd-cell desc">Show all installed skills</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills list --available</span><span class="cmd-cell desc">Browse all skills on ClawHub</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills search &lt;query&gt;</span><span class="cmd-cell desc">Search the ClawHub marketplace</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install &lt;name&gt;</span><span class="cmd-cell desc">Download and install a skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install shopify</span><span class="cmd-cell desc">Install the Shopify skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install github</span><span class="cmd-cell desc">Install the GitHub skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install notion</span><span class="cmd-cell desc">Install the Notion skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install gmail</span><span class="cmd-cell desc">Install the Gmail skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install gdrive</span><span class="cmd-cell desc">Install Google Drive skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install slack</span><span class="cmd-cell desc">Install the Slack skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install zapier</span><span class="cmd-cell desc">Install the Zapier bridge skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills update &lt;name&gt;</span><span class="cmd-cell desc">Update a specific skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills update --all</span><span class="cmd-cell desc">Update every installed skill at once</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills remove &lt;name&gt;</span><span class="cmd-cell desc">Uninstall a skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills enable &lt;name&gt;</span><span class="cmd-cell desc">Re-enable a disabled skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills disable &lt;name&gt;</span><span class="cmd-cell desc">Disable a skill without removing it</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills info &lt;name&gt;</span><span class="cmd-cell desc">View skill details and permissions</span></li>
+        </ul>
+      </div>
+
+      <!-- AGENTS -->
+      <div class="sec-card" data-cat="agents">
+        <div class="sec-head c-green"><span class="icon" aria-hidden="true">🤖</span> Agents</div>
+        <ul class="cmd-list" aria-label="Agent commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent list</span><span class="cmd-cell desc">List all configured agents</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent create</span><span class="cmd-cell desc">Interactively create a new agent</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent create --name "Ops Bot"</span><span class="cmd-cell desc">Create a named agent directly</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent edit &lt;name&gt;</span><span class="cmd-cell desc">Edit an agent's system prompt &amp; settings</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent clone &lt;name&gt;</span><span class="cmd-cell desc">Duplicate an existing agent</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent delete &lt;name&gt;</span><span class="cmd-cell desc">Permanently delete an agent</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent test &lt;name&gt;</span><span class="cmd-cell desc">Send a test message to an agent</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent export &lt;name&gt;</span><span class="cmd-cell desc">Export agent config to a JSON file</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw agent import &lt;file&gt;</span><span class="cmd-cell desc">Import an agent from a JSON file</span></li>
+        </ul>
+      </div>
+
+      <!-- SCHEDULES -->
+      <div class="sec-card" data-cat="schedule">
+        <div class="sec-head c-purple"><span class="icon" aria-hidden="true">⏰</span> Schedules &amp; Automations</div>
+        <ul class="cmd-list" aria-label="Schedule commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule list</span><span class="cmd-cell desc">Show all scheduled tasks</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule add</span><span class="cmd-cell desc">Create a new scheduled task interactively</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule add --cron "0 9 * * 1-5" --task "summarise inbox"</span><span class="cmd-cell desc">Run a task Mon–Fri at 9am</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule add --every 30m --task "check orders"</span><span class="cmd-cell desc">Run a task every 30 minutes</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule add --every 1h --task "check stock"</span><span class="cmd-cell desc">Run a task every hour</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule pause &lt;id&gt;</span><span class="cmd-cell desc">Pause a scheduled task</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule resume &lt;id&gt;</span><span class="cmd-cell desc">Resume a paused task</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule delete &lt;id&gt;</span><span class="cmd-cell desc">Permanently remove a scheduled task</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule run &lt;id&gt;</span><span class="cmd-cell desc">Trigger a task to run right now</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw schedule history &lt;id&gt;</span><span class="cmd-cell desc">View run history for a task</span></li>
+        </ul>
+      </div>
+
+      <!-- MEMORY -->
+      <div class="sec-card" data-cat="memory">
+        <div class="sec-head c-pink"><span class="icon" aria-hidden="true">🧠</span> Memory &amp; Context</div>
+        <ul class="cmd-list" aria-label="Memory commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw memory list</span><span class="cmd-cell desc">Show all stored memory entries</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw memory add "I prefer bullet points"</span><span class="cmd-cell desc">Add a persistent preference or fact</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw memory delete &lt;id&gt;</span><span class="cmd-cell desc">Remove a specific memory entry</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw memory clear</span><span class="cmd-cell desc">Wipe all stored memory entries</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw memory search &lt;query&gt;</span><span class="cmd-cell desc">Search memory for a specific entry</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw history</span><span class="cmd-cell desc">View recent conversation history</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw history --limit 50</span><span class="cmd-cell desc">Show last 50 history entries</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw history clear</span><span class="cmd-cell desc">Clear all conversation history</span></li>
+        </ul>
+      </div>
+
+      <!-- SHOPIFY -->
+      <div class="sec-card" data-cat="shopify">
+        <div class="sec-head c-teal"><span class="icon" aria-hidden="true">🛍️</span> Shopify Integration</div>
+        <ul class="cmd-list" aria-label="Shopify integration commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw skills install shopify</span><span class="cmd-cell desc">Install the Shopify skill first</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw connect shopify</span><span class="cmd-cell desc">Authenticate via Composio MCP</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw run "list my open orders"</span><span class="cmd-cell desc">Natural language Shopify command</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw run "add 50 units to SKU X"</span><span class="cmd-cell desc">Update inventory via chat</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw run "create 20% discount code SUMMER"</span><span class="cmd-cell desc">Create a discount code</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw run "draft order for customer X"</span><span class="cmd-cell desc">Create a draft order</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw run "show out of stock items"</span><span class="cmd-cell desc">Check inventory levels</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw run "email all customers from last week"</span><span class="cmd-cell desc">Bulk customer outreach</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw disconnect shopify</span><span class="cmd-cell desc">Remove Shopify connection</span></li>
+        </ul>
+      </div>
+
+      <!-- DIAGNOSTICS -->
+      <div class="sec-card" data-cat="setup">
+        <div class="sec-head c-orange"><span class="icon" aria-hidden="true">🔍</span> Diagnostics &amp; Utilities</div>
+        <ul class="cmd-list" aria-label="Diagnostics commands">
+          <li class="cmd-row"><span class="cmd-cell code">openclaw doctor</span><span class="cmd-cell desc">Run a full system health check</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw ping</span><span class="cmd-cell desc">Test connectivity to the AI provider</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw test-skill &lt;name&gt;</span><span class="cmd-cell desc">Run a smoke test for a skill</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw clear-cache</span><span class="cmd-cell desc">Clear temporary files &amp; API cache</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw update</span><span class="cmd-cell desc">Update OpenClaw and all skills</span></li>
+          <li class="cmd-row"><span class="cmd-cell code">openclaw feedback</span><span class="cmd-cell desc">Open the feedback form in browser</span></li>
+        </ul>
+      </div>
+
+      <div id="no-results" role="status" aria-live="polite">No commands match your search.</div>
+    </div>
+
+    <!-- Download strip -->
+    <div class="dl-strip">
+      Want this offline? <a href="openclaw-cheatsheet.pdf" download>Download the PDF version</a> — free, no sign-up required.
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <div class="footer-nl">
+      <p>Get the latest OpenClaw tips straight to your inbox</p>
+      <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+        <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+      <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://en.wikipedia.org/wiki/OpenClaw" target="_blank" rel="noopener">Wikipedia</a>
+    </div>
+    <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+  </footer>
+
+  <script>
+    // ── Hamburger ──────────────────────────────────────────────────────────
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // ── Search + Filter ───────────────────────────────────────────────────
+    const searchInput = document.getElementById('cmd-search');
+    const filterBtns  = document.querySelectorAll('.filter-btn');
+    const cards       = document.querySelectorAll('.sec-card');
+    const noResults   = document.getElementById('no-results');
+
+    let activeFilter = 'all';
+
+    function normalize(s) { return s.toLowerCase().replace(/[<>&;]/g, ''); }
+
+    function highlight(text, query) {
+      if (!query) return text;
+      const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return text.replace(re, '<mark>$1</mark>');
+    }
+
+    function applySearch() {
+      const q = normalize(searchInput.value.trim());
+      let anyVisible = false;
+
+      cards.forEach(card => {
+        const cat = card.dataset.cat;
+        if (activeFilter !== 'all' && cat !== activeFilter) {
+          card.hidden = true;
+          return;
+        }
+
+        const rows = card.querySelectorAll('.cmd-row');
+        let cardVisible = false;
+
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('.cmd-cell');
+          const codeOrig = cells[0].dataset.orig || cells[0].textContent;
+          const descOrig = cells[1].dataset.orig || cells[1].textContent;
+
+          // Cache originals
+          if (!cells[0].dataset.orig) cells[0].dataset.orig = codeOrig;
+          if (!cells[1].dataset.orig) cells[1].dataset.orig = descOrig;
+
+          const matches = !q || normalize(codeOrig).includes(q) || normalize(descOrig).includes(q);
+          row.style.display = matches ? '' : 'none';
+          if (matches) {
+            cardVisible = true;
+            cells[0].innerHTML = highlight(codeOrig, q);
+            cells[1].innerHTML = highlight(descOrig, q);
+          } else {
+            cells[0].innerHTML = codeOrig;
+            cells[1].innerHTML = descOrig;
+          }
+        });
+
+        card.hidden = !cardVisible;
+        if (cardVisible) anyVisible = true;
+      });
+
+      noResults.style.display = anyVisible ? 'none' : 'block';
+    }
+
+    searchInput.addEventListener('input', applySearch);
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.filter;
+        applySearch();
+      });
+    });
+  </script>
+</body>
+</html>
