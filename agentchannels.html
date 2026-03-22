@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Agent Channels — Real-Time Communication Between AI Agents</title>
+  <meta name="description" content="Master OpenClaw Agent Channels — the pub/sub messaging system that lets AI agents broadcast events, subscribe to topics, coordinate workflows, and react to real-world triggers in real time." />
+  <meta name="keywords" content="OpenClaw agent channels, AI agent communication, pub sub agents, agent events, OpenClaw channels, agent messaging, OpenClaw workflow automation, agent broadcasting" />
+  <link rel="canonical" href="https://learnopenclaw.org/agentchannels.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Agent Channels — Real-Time Communication Between AI Agents" />
+  <meta property="og:description" content="Learn how OpenClaw Agent Channels enable agents to publish events, subscribe to topics, and react to real-world triggers without polling." />
+  <meta property="og:url" content="https://learnopenclaw.org/agentchannels.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Agent Channels" />
+  <meta name="twitter:description" content="Master the pub/sub messaging layer that lets OpenClaw agents talk to each other and react to the world in real time." />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw Agent Channels — Real-Time Communication Between AI Agents",
+    "description": "Complete guide to OpenClaw Agent Channels: architecture, channel types, commands, patterns, and advanced usage.",
+    "url": "https://learnopenclaw.org/agentchannels.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Learn","item":"https://learnopenclaw.org/gettingstarted.html"},
+        {"@type":"ListItem","position":3,"name":"Agent Channels","item":"https://learnopenclaw.org/agentchannels.html"}
+      ]
+    },
+    "mainEntity": {
+      "@type": "HowTo",
+      "name": "How to Use OpenClaw Agent Channels",
+      "step": [
+        {"@type":"HowToStep","name":"Create a channel","text":"Use /channel create <name> to define a named channel."},
+        {"@type":"HowToStep","name":"Subscribe an agent","text":"Use /channel subscribe <channel> to attach a listener."},
+        {"@type":"HowToStep","name":"Publish an event","text":"Use /channel publish <channel> <payload> to broadcast a message."},
+        {"@type":"HowToStep","name":"Trigger workflows","text":"Define on-event handlers that fire automatically when a message arrives."}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:     #2563eb;
+      --blue-lt:  #eff6ff;
+      --blue-md:  #bfdbfe;
+      --teal:     #0d9488;
+      --teal-lt:  #f0fdfa;
+      --teal-md:  #99f6e4;
+      --purple:   #7c3aed;
+      --purple-lt:#f5f3ff;
+      --purple-md:#ddd6fe;
+      --amber:    #d97706;
+      --amber-lt: #fffbeb;
+      --amber-md: #fde68a;
+      --green:    #16a34a;
+      --green-lt: #f0fdf4;
+      --green-md: #bbf7d0;
+      --gray-1:   #f9fafb;
+      --gray-2:   #f3f4f6;
+      --gray-3:   #e5e7eb;
+      --gray-5:   #6b7280;
+      --gray-8:   #1f2937;
+      --white:    #ffffff;
+      --radius:   12px;
+      --shadow:   0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── Skip nav (ADA) ── */
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--teal); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    /* ── Focus styles (ADA) ── */
+    a:focus, button:focus {
+      outline: 3px solid var(--teal);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+      position: relative;
+    }
+    .nav-logo {
+      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+
+    /* ── Universal hamburger ── */
+    .hamburger {
+      display: flex; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+
+    /* ── Nav section grouping (Learn) ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--teal-lt) 0%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--teal-md);
+      color: var(--teal);
+      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: normal; color: var(--teal); }
+    .hero p {
+      font-size: 1.1rem; color: var(--gray-5);
+      max-width: 580px; margin: 0 auto 28px;
+    }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 11px 22px; border-radius: 8px;
+      font-size: .95rem; font-weight: 700; cursor: pointer;
+      text-decoration: none; transition: all .18s;
+    }
+    .btn--teal  { background: var(--teal);  color: var(--white); }
+    .btn--teal:hover  { background: #0f766e; text-decoration: none; color: var(--white); }
+    .btn--ghost { background: transparent; color: var(--teal); border: 2px solid var(--teal); }
+    .btn--ghost:hover { background: var(--teal-lt); text-decoration: none; }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 800; line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 640px; margin-bottom: 40px;
+    }
+
+    /* ── Alert banners ── */
+    .alert {
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 32px;
+    }
+    .alert--teal   { background: var(--teal-lt);   border: 1px solid var(--teal-md); }
+    .alert--amber  { background: var(--amber-lt);  border: 1px solid var(--amber-md); }
+    .alert--purple { background: var(--purple-lt); border: 1px solid var(--purple-md); }
+    .alert--green  { background: var(--green-lt);  border: 1px solid var(--green-md); }
+    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+    .alert--teal   p { color: #134e4a; font-size: .95rem; }
+    .alert--amber  p { color: #92400e; font-size: .95rem; }
+    .alert--purple p { color: #4c1d95; font-size: .95rem; }
+    .alert--green  p { color: #14532d; font-size: .95rem; }
+    .alert strong { font-weight: 700; }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card-icon  { font-size: 1.8rem; margin-bottom: 12px; }
+    .card h3    { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .card p     { font-size: .875rem; color: var(--gray-5); }
+    .card .card-tag {
+      display: inline-block; margin-top: 12px;
+      font-size: .72rem; font-weight: 700; padding: 2px 8px;
+      border-radius: 100px; text-transform: uppercase;
+    }
+    .tag-teal   { background: var(--teal-lt);   color: var(--teal); }
+    .tag-purple { background: var(--purple-lt);  color: var(--purple); }
+    .tag-amber  { background: var(--amber-lt);   color: var(--amber); }
+    .tag-green  { background: var(--green-lt);   color: var(--green); }
+    .tag-blue   { background: var(--blue-lt);    color: var(--blue); }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: #0f172a;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: .85rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+      white-space: pre;
+    }
+    .code-block .cm   { color: #94a3b8; }  /* comment */
+    .code-block .kw   { color: #7dd3fc; }  /* keyword */
+    .code-block .str  { color: #86efac; }  /* string */
+    .code-block .cmd  { color: #f9a8d4; }  /* command */
+    .code-block .val  { color: #fde68a; }  /* value */
+    .code-label {
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--gray-5);
+      margin-bottom: 8px;
+    }
+
+    /* ── Command reference table ── */
+    .cmd-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .cmd-table th {
+      text-align: left; padding: 11px 16px;
+      background: var(--gray-2);
+      border-bottom: 2px solid var(--gray-3);
+      font-weight: 700; font-size: .78rem;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .cmd-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+    .cmd-table tr:last-child td { border-bottom: none; }
+    .cmd-table tr:hover td { background: var(--gray-1); }
+    .cmd-table code {
+      font-family: "SF Mono", "Fira Code", monospace;
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      padding: 2px 7px; border-radius: 5px;
+      font-size: .82rem; white-space: nowrap;
+    }
+    .cmd-table td:first-child { min-width: 240px; }
+
+    /* ── Steps timeline ── */
+    .steps { display: flex; flex-direction: column; position: relative; }
+    .steps::before {
+      content: '';
+      position: absolute; left: 23px; top: 28px;
+      width: 2px; height: calc(100% - 56px);
+      background: var(--gray-3);
+    }
+    .step {
+      display: flex; gap: 20px; align-items: flex-start;
+      position: relative; padding-bottom: 32px;
+    }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      flex-shrink: 0;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: var(--white);
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px var(--teal-lt);
+      position: relative; z-index: 1;
+    }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
+    .step-body p  { font-size: .95rem; color: var(--gray-5); }
+    .step-body code {
+      display: inline-block;
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 6px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      padding: 4px 10px; margin-top: 6px;
+    }
+
+    /* ── Two-column comparison ── */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+      margin-bottom: 40px;
+    }
+    @media (max-width: 620px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-col {
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-3);
+      padding: 24px;
+    }
+    .compare-col h3 { font-size: .95rem; font-weight: 700; margin-bottom: 12px; }
+    .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .compare-col li { font-size: .875rem; color: var(--gray-5); padding-left: 20px; position: relative; }
+    .compare-col li::before { content: attr(data-icon); position: absolute; left: 0; }
+
+    /* ── Pattern cards (use-case examples) ── */
+    .pattern-card {
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    .pattern-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px;
+      background: var(--gray-1);
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .pattern-header .p-icon { font-size: 1.4rem; }
+    .pattern-header h3 { font-size: 1rem; font-weight: 700; }
+    .pattern-header .p-tag {
+      margin-left: auto;
+      font-size: .72rem; font-weight: 700; padding: 2px 8px;
+      border-radius: 100px; text-transform: uppercase;
+    }
+    .pattern-body { padding: 20px; }
+    .pattern-body p { font-size: .9rem; color: var(--gray-5); margin-bottom: 12px; }
+
+    /* ── Arch diagram (text/ascii) ── */
+    .arch-box {
+      background: #0f172a;
+      border-radius: var(--radius);
+      padding: 28px;
+      overflow-x: auto;
+      margin: 24px 0;
+    }
+    .arch-box pre {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .78rem;
+      line-height: 1.6;
+      color: #94a3b8;
+      white-space: pre;
+    }
+    .arch-box .hi { color: #7dd3fc; }
+    .arch-box .gr { color: #86efac; }
+    .arch-box .ye { color: #fde68a; }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 16px; }
+    .faq-item {
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%; text-align: left;
+      background: var(--white);
+      border: none; cursor: pointer;
+      padding: 18px 20px;
+      font-size: .95rem; font-weight: 700;
+      color: var(--gray-8);
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: inherit;
+      transition: background .15s;
+    }
+    .faq-q:hover { background: var(--gray-1); }
+    .faq-q[aria-expanded="true"] { background: var(--teal-lt); color: var(--teal); }
+    .faq-chevron { font-size: .75rem; transition: transform .2s; }
+    .faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); }
+    .faq-a { display: none; padding: 0 20px 18px; font-size: .9rem; color: var(--gray-5); }
+    .faq-a.open { display: block; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Newsletter ── */
+    .nl-section {
+      background: linear-gradient(135deg, var(--teal-lt) 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--teal-md);
+      border-bottom: 1px solid var(--teal-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--teal); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--teal); }
+    .nl-form button {
+      background: var(--teal); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .nl-form button:hover { background: #0f766e; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="agentchannels.html" aria-current="page" style="color:#0d9488;font-weight:700;"><span aria-hidden="true">📡</span> Agent Channels</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+        <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+      <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+      <a href="glossary.html" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">&#x1F4E1; Agent Channels</div>
+  <h1>Real-Time Communication<br>Between <em>AI Agents</em></h1>
+  <p>Agent Channels are OpenClaw's built-in pub/sub messaging layer — letting agents broadcast events, subscribe to topics, and trigger workflows the moment something happens in the world.</p>
+  <div class="hero-cta">
+    <a href="#quickstart" class="btn btn--teal">Quick Start ↓</a>
+    <a href="#commands" class="btn btn--ghost">Command Reference</a>
+  </div>
+</header>
+
+<!-- What Are Agent Channels -->
+<section class="section" id="what">
+  <div class="container">
+    <div class="section-label">Foundations</div>
+    <h2 class="section-title">What Are Agent Channels?</h2>
+    <p class="section-subtitle">Think of a channel as a named broadcast pipe. Any agent can publish a message to it; every subscriber receives that message instantly. No polling, no waiting — just real-time coordination.</p>
+
+    <div class="alert alert--teal">
+      <div class="alert-icon">&#x1F4E1;</div>
+      <p><strong>Key idea:</strong> Agent Channels decouple the agent that produces an event from the agents that react to it. A <code>orders.new</code> channel can simultaneously notify your inventory agent, your Slack notification agent, and your accounting agent — without any of them knowing about each other.</p>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">&#x1F4E4;</div>
+        <h3>Publish</h3>
+        <p>Any agent can push a payload onto a channel at any time. The payload is a JSON object — pass whatever context downstream agents will need.</p>
+        <span class="card-tag tag-teal">Producer</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F4E5;</div>
+        <h3>Subscribe</h3>
+        <p>An agent or skill registers interest in a channel. Every message that arrives on that channel is automatically forwarded to all subscribers.</p>
+        <span class="card-tag tag-purple">Consumer</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x26A1;</div>
+        <h3>Event-Driven</h3>
+        <p>Wire an <code>on-event</code> handler to a channel and your workflow fires automatically — no cron jobs, no polling loops needed.</p>
+        <span class="card-tag tag-amber">Trigger</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F517;</div>
+        <h3>Persistent</h3>
+        <p>Channels retain the last N messages by default. Agents that come online after a publish can still replay recent history.</p>
+        <span class="card-tag tag-green">Durable</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F510;</div>
+        <h3>Scoped</h3>
+        <p>Channels are workspace-local unless you explicitly bridge them to an external webhook. Your data never leaves your machine unless you say so.</p>
+        <span class="card-tag tag-blue">Secure</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F500;</div>
+        <h3>Chainable</h3>
+        <p>The output of one channel handler can publish to another channel, creating cascading multi-step pipelines without a central orchestrator.</p>
+        <span class="card-tag tag-teal">Pipeline</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture diagram -->
+<section class="section section--alt" id="architecture">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Channel Architecture</h2>
+    <p class="section-subtitle">Under the hood, OpenClaw routes messages through an in-process event bus backed by an optional SQLite ring buffer for persistence.</p>
+
+    <div class="arch-box" role="img" aria-label="Architecture diagram showing agents publishing to channels, channels routing to subscribers and on-event handlers">
+<pre>
+  ┌─────────────────────────────────────────────────────────────────┐
+  │                    <span class="hi">OpenClaw Agent Runtime</span>                       │
+  │                                                                 │
+  │   ┌───────────┐    publish()    ┌───────────────────────────┐  │
+  │   │  <span class="gr">Shopify</span>   │ ─────────────► │  <span class="ye">orders.new</span>  channel       │  │
+  │   │  Watcher  │                │  ring buffer (last 100)   │  │
+  │   └───────────┘                └─────────────┬─────────────┘  │
+  │                                              │ broadcast        │
+  │                              ┌───────────────┼───────────────┐ │
+  │                              ▼               ▼               ▼ │
+  │                     ┌──────────────┐  ┌──────────────┐  ┌────────────┐ │
+  │                     │  <span class="gr">Inventory</span>   │  │  <span class="gr">Slack</span>       │  │ <span class="gr">Accounting</span> │ │
+  │                     │  Agent       │  │  Notifier    │  │ Agent      │ │
+  │                     └──────────────┘  └──────────────┘  └────────────┘ │
+  │                                                                 │
+  │   ┌───────────┐    publish()    ┌───────────────────────────┐  │
+  │   │  <span class="gr">GitHub</span>    │ ─────────────► │  <span class="ye">ci.pass</span>     channel       │  │
+  │   │  Monitor  │                └─────────────┬─────────────┘  │
+  │   └───────────┘                              │                 │
+  │                                              ▼                 │
+  │                                    ┌──────────────────┐        │
+  │                                    │  <span class="gr">Deploy</span> Handler  │        │
+  │                                    │  (on-event)      │        │
+  │                                    └──────────────────┘        │
+  └─────────────────────────────────────────────────────────────────┘
+</pre>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-col" style="background:var(--teal-lt); border-color:var(--teal-md);">
+        <h3 style="color:var(--teal);">&#x2705; Agent Channels</h3>
+        <ul>
+          <li data-icon="⚡">Event-driven — reacts instantly</li>
+          <li data-icon="🔗">Loosely coupled — agents don't know about each other</li>
+          <li data-icon="📦">Persistent ring buffer — replay recent history</li>
+          <li data-icon="🔀">Fan-out to N subscribers simultaneously</li>
+          <li data-icon="🌐">Optional webhook bridge to external services</li>
+        </ul>
+      </div>
+      <div class="compare-col" style="background:var(--gray-1);">
+        <h3 style="color:var(--gray-5);">&#x23F3; Without Channels (polling)</h3>
+        <ul>
+          <li data-icon="⏳">Delayed — checks on a timer</li>
+          <li data-icon="🔒">Tightly coupled — each agent calls each other directly</li>
+          <li data-icon="💨">No history — misses events if agent is offline</li>
+          <li data-icon="🔁">Sequential — one agent waits for another</li>
+          <li data-icon="🛠️">Requires custom integration code per service</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Channel Types -->
+<section class="section" id="types">
+  <div class="container">
+    <div class="section-label">Channel Types</div>
+    <h2 class="section-title">Four Kinds of Channels</h2>
+    <p class="section-subtitle">Choose the right channel type for your use case. All four use the same publish/subscribe API — they differ only in delivery semantics.</p>
+
+    <div class="cards-grid">
+      <div class="card" style="border-top: 3px solid var(--teal);">
+        <div class="card-icon">&#x1F4E2;</div>
+        <h3>Broadcast Channel</h3>
+        <p>Every subscriber receives every message. Use for notifications, status updates, and dashboards. No acknowledgement required.</p>
+        <div class="code-label" style="margin-top:16px;">Example topics</div>
+        <code style="display:block; background:var(--gray-2); border:1px solid var(--gray-3); border-radius:6px; padding:8px 12px; font-size:.8rem; font-family:monospace; margin-top:4px;">system.ready · alerts.info · logs.debug</code>
+        <span class="card-tag tag-teal" style="margin-top:12px;">default type</span>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--purple);">
+        <div class="card-icon">&#x1F4EC;</div>
+        <h3>Queue Channel</h3>
+        <p>Messages are delivered to exactly one subscriber (round-robin). Perfect for distributing work across a pool of worker agents so no item is processed twice.</p>
+        <div class="code-label" style="margin-top:16px;">Example topics</div>
+        <code style="display:block; background:var(--gray-2); border:1px solid var(--gray-3); border-radius:6px; padding:8px 12px; font-size:.8rem; font-family:monospace; margin-top:4px;">jobs.process · emails.send · tasks.queue</code>
+        <span class="card-tag tag-purple" style="margin-top:12px;">work distribution</span>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--amber);">
+        <div class="card-icon">&#x1F4CB;</div>
+        <h3>Request/Reply Channel</h3>
+        <p>Publisher sends a query and blocks (or awaits) for a single reply from exactly one subscriber. Enables synchronous-style RPC between agents.</p>
+        <div class="code-label" style="margin-top:16px;">Example topics</div>
+        <code style="display:block; background:var(--gray-2); border:1px solid var(--gray-3); border-radius:6px; padding:8px 12px; font-size:.8rem; font-family:monospace; margin-top:4px;">lookup.customer · price.check · auth.verify</code>
+        <span class="card-tag tag-amber" style="margin-top:12px;">request/response</span>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--green);">
+        <div class="card-icon">&#x1F4C5;</div>
+        <h3>Scheduled Channel</h3>
+        <p>OpenClaw publishes a heartbeat message on a cron schedule. Any subscriber wakes up and acts — no external cron daemon or scheduler required.</p>
+        <div class="code-label" style="margin-top:16px;">Example topics</div>
+        <code style="display:block; background:var(--gray-2); border:1px solid var(--gray-3); border-radius:6px; padding:8px 12px; font-size:.8rem; font-family:monospace; margin-top:4px;">cron.daily · cron.hourly · heartbeat.ping</code>
+        <span class="card-tag tag-green" style="margin-top:12px;">time-driven</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Start -->
+<section class="section section--alt" id="quickstart">
+  <div class="container">
+    <div class="section-label">Quick Start</div>
+    <h2 class="section-title">Up and Running in 4 Steps</h2>
+    <p class="section-subtitle">From zero to a working event-driven pipeline in under five minutes.</p>
+
+    <div class="steps" aria-label="Quick start steps">
+      <div class="step">
+        <div class="step-num" aria-hidden="true">1</div>
+        <div class="step-body">
+          <h3>Create a channel</h3>
+          <p>Give your channel a namespaced name. Use dot notation to keep topics organised — e.g. <em>domain.event</em>.</p>
+          <div class="code-block">
+            <div class="code-label">Terminal</div>
+            <pre><span class="cmd">/channel create</span> <span class="val">orders.new</span>
+<span class="cm"># Output: ✅ Channel "orders.new" created (broadcast, buffer: 100)</span></pre>
+          </div>
+          <code>/channel create &lt;name&gt; [--type broadcast|queue|rr|scheduled] [--buffer N]</code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" aria-hidden="true">2</div>
+        <div class="step-body">
+          <h3>Subscribe an agent</h3>
+          <p>Tell an agent to listen on the channel. The agent will be woken up every time a new message arrives.</p>
+          <div class="code-block">
+            <div class="code-label">Terminal</div>
+            <pre><span class="cmd">/channel subscribe</span> <span class="val">orders.new</span> <span class="kw">--agent</span> inventory-agent
+<span class="cm"># Output: ✅ inventory-agent is now subscribed to "orders.new"</span></pre>
+          </div>
+          <code>/channel subscribe &lt;channel&gt; --agent &lt;agent-name&gt;</code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" aria-hidden="true">3</div>
+        <div class="step-body">
+          <h3>Publish a message</h3>
+          <p>Push a JSON payload to the channel. All subscribers receive it immediately. You can also publish from within any agent's code or skill.</p>
+          <div class="code-block">
+            <div class="code-label">Terminal</div>
+            <pre><span class="cmd">/channel publish</span> <span class="val">orders.new</span> <span class="str">'{"id":"ORD-4821","sku":"SHOE-42","qty":2}'</span>
+<span class="cm"># Output: ✅ Message delivered to 1 subscriber</span></pre>
+          </div>
+          <code>/channel publish &lt;channel&gt; &lt;JSON payload&gt;</code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" aria-hidden="true">4</div>
+        <div class="step-body">
+          <h3>Add an on-event handler</h3>
+          <p>Wire a skill or prompt to fire automatically whenever a message arrives. The payload is injected into the skill as <code>$event</code>.</p>
+          <div class="code-block">
+            <div class="code-label">Terminal</div>
+            <pre><span class="cmd">/channel on-event</span> <span class="val">orders.new</span> <span class="kw">--run</span> <span class="str">"Update inventory for order $event.id, SKU $event.sku, qty $event.qty"</span>
+<span class="cm"># From now on, every new order automatically updates inventory</span></pre>
+          </div>
+          <code>/channel on-event &lt;channel&gt; --run "&lt;prompt with $event placeholders&gt;"</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Command Reference -->
+<section class="section" id="commands">
+  <div class="container">
+    <div class="section-label">Reference</div>
+    <h2 class="section-title">Full Command Reference</h2>
+    <p class="section-subtitle">Every <code>/channel</code> command, flag, and expected output — your complete cheat sheet for Agent Channels.</p>
+
+    <div style="overflow-x:auto; margin-bottom:40px;">
+    <table class="cmd-table" aria-label="Agent Channels command reference">
+      <thead>
+        <tr>
+          <th scope="col">Command</th>
+          <th scope="col">Description</th>
+          <th scope="col">Key Flags</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/channel create &lt;name&gt;</code></td>
+          <td>Create a new named channel</td>
+          <td><code>--type</code> broadcast | queue | rr | scheduled<br><code>--buffer</code> N (messages to retain)<br><code>--cron</code> "0 9 * * *" (for scheduled type)</td>
+        </tr>
+        <tr>
+          <td><code>/channel list</code></td>
+          <td>List all channels in the current workspace with subscriber count and message stats</td>
+          <td><code>--verbose</code> show full details</td>
+        </tr>
+        <tr>
+          <td><code>/channel subscribe &lt;channel&gt;</code></td>
+          <td>Subscribe the current agent (or a named agent) to a channel</td>
+          <td><code>--agent</code> &lt;name&gt;<br><code>--filter</code> JSONPath expression to only receive matching messages</td>
+        </tr>
+        <tr>
+          <td><code>/channel unsubscribe &lt;channel&gt;</code></td>
+          <td>Remove a subscription from a channel</td>
+          <td><code>--agent</code> &lt;name&gt;</td>
+        </tr>
+        <tr>
+          <td><code>/channel publish &lt;channel&gt; &lt;payload&gt;</code></td>
+          <td>Broadcast a JSON message to all channel subscribers</td>
+          <td><code>--priority</code> low | normal | high<br><code>--ttl</code> seconds before message expires</td>
+        </tr>
+        <tr>
+          <td><code>/channel on-event &lt;channel&gt;</code></td>
+          <td>Register an event handler that fires on every new message</td>
+          <td><code>--run</code> prompt string with $event placeholders<br><code>--skill</code> skill name to invoke<br><code>--agent</code> which agent executes the handler</td>
+        </tr>
+        <tr>
+          <td><code>/channel off-event &lt;channel&gt;</code></td>
+          <td>Remove a registered event handler</td>
+          <td><code>--id</code> handler ID (from on-event output)</td>
+        </tr>
+        <tr>
+          <td><code>/channel history &lt;channel&gt;</code></td>
+          <td>Replay buffered messages from a channel</td>
+          <td><code>--last</code> N messages<br><code>--since</code> ISO timestamp<br><code>--json</code> output as JSON array</td>
+        </tr>
+        <tr>
+          <td><code>/channel inspect &lt;channel&gt;</code></td>
+          <td>Show channel configuration, subscriber list, handler list, and buffer stats</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><code>/channel bridge &lt;channel&gt;</code></td>
+          <td>Forward all messages to an external webhook URL</td>
+          <td><code>--url</code> webhook endpoint<br><code>--secret</code> HMAC signing secret<br><code>--inbound</code> also accept POSTs from the webhook as publishes</td>
+        </tr>
+        <tr>
+          <td><code>/channel delete &lt;channel&gt;</code></td>
+          <td>Delete a channel and all its history</td>
+          <td><code>--force</code> skip confirmation</td>
+        </tr>
+        <tr>
+          <td><code>/channel pause &lt;channel&gt;</code></td>
+          <td>Temporarily stop delivering messages to subscribers (buffer still fills)</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><code>/channel resume &lt;channel&gt;</code></td>
+          <td>Resume a paused channel and flush buffered messages to subscribers</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><code>/channel stats</code></td>
+          <td>Show global message throughput, delivery latency, and error rates across all channels</td>
+          <td><code>--since</code> time window</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="alert alert--teal">
+      <div class="alert-icon">&#x1F4A1;</div>
+      <p><strong>Pro tip:</strong> You can use the <code>$event</code> variable anywhere in your <code>--run</code> prompt string. Access nested fields with dot notation: <code>$event.order.customer.email</code>, <code>$event.metadata.source</code>. The full payload is also available as <code>$event._raw</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Real-World Patterns -->
+<section class="section section--alt" id="patterns">
+  <div class="container">
+    <div class="section-label">Real-World Patterns</div>
+    <h2 class="section-title">6 Patterns You Can Build Today</h2>
+    <p class="section-subtitle">Copy any of these patterns into your own OpenClaw workspace — they're production-tested recipes, not toy demos.</p>
+
+    <!-- Pattern 1 -->
+    <div class="pattern-card">
+      <div class="pattern-header">
+        <div class="p-icon">&#x1F6D2;</div>
+        <h3>E-Commerce Order Pipeline</h3>
+        <span class="p-tag tag-teal">Broadcast</span>
+      </div>
+      <div class="pattern-body">
+        <p>When a new Shopify order arrives, fan out simultaneously to three agents: inventory deduction, Slack customer notification, and QuickBooks invoice creation.</p>
+        <div class="code-block">
+          <pre><span class="cm"># 1. Create the channel</span>
+<span class="cmd">/channel create</span> <span class="val">shopify.orders.new</span> <span class="kw">--buffer</span> <span class="val">500</span>
+
+<span class="cm"># 2. Wire up three independent handlers</span>
+<span class="cmd">/channel on-event</span> <span class="val">shopify.orders.new</span> <span class="kw">--run</span> <span class="str">"Deduct stock: SKU $event.sku × $event.qty"</span>
+<span class="cmd">/channel on-event</span> <span class="val">shopify.orders.new</span> <span class="kw">--run</span> <span class="str">"Post to Slack #orders: New order $event.id from $event.customer"</span>
+<span class="cmd">/channel on-event</span> <span class="val">shopify.orders.new</span> <span class="kw">--run</span> <span class="str">"Create QuickBooks invoice for $event.total to $event.customer.email"</span>
+
+<span class="cm"># 3. Shopify webhook publishes via bridge</span>
+<span class="cmd">/channel bridge</span> <span class="val">shopify.orders.new</span> <span class="kw">--inbound</span> <span class="kw">--url</span> <span class="str">https://hooks.learnopenclaw.org/shopify</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pattern 2 -->
+    <div class="pattern-card">
+      <div class="pattern-header">
+        <div class="p-icon">&#x1F4E7;</div>
+        <h3>Email Triage Queue</h3>
+        <span class="p-tag tag-purple">Queue</span>
+      </div>
+      <div class="pattern-body">
+        <p>New emails publish to a queue channel. Three identical triage agents each pick up one email at a time, classify it, draft a reply, and archive it — in parallel, with no duplicate processing.</p>
+        <div class="code-block">
+          <pre><span class="cm"># Queue type: each message goes to exactly one subscriber</span>
+<span class="cmd">/channel create</span> <span class="val">inbox.unread</span> <span class="kw">--type</span> <span class="val">queue</span>
+
+<span class="cmd">/channel subscribe</span> <span class="val">inbox.unread</span> <span class="kw">--agent</span> <span class="val">triage-agent-1</span>
+<span class="cmd">/channel subscribe</span> <span class="val">inbox.unread</span> <span class="kw">--agent</span> <span class="val">triage-agent-2</span>
+<span class="cmd">/channel subscribe</span> <span class="val">inbox.unread</span> <span class="kw">--agent</span> <span class="val">triage-agent-3</span>
+
+<span class="cm"># Gmail monitor publishes each unread email</span>
+<span class="cmd">/channel on-event</span> <span class="val">gmail.new</span> <span class="kw">--run</span> <span class="str">"Publish to inbox.unread: $event"</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pattern 3 -->
+    <div class="pattern-card">
+      <div class="pattern-header">
+        <div class="p-icon">&#x1F916;</div>
+        <h3>Multi-Agent Research Pipeline</h3>
+        <span class="p-tag tag-amber">Cascading</span>
+      </div>
+      <div class="pattern-body">
+        <p>A research task spawns sub-agents via the <a href="multiagent.html">multi-agent system</a>. Each sub-agent publishes findings to a <code>research.findings</code> channel. A synthesis agent subscribes and assembles the final report once all findings arrive.</p>
+        <div class="code-block">
+          <pre><span class="cm"># Sub-agents publish as they complete</span>
+<span class="cmd">/channel create</span> <span class="val">research.findings</span> <span class="kw">--buffer</span> <span class="val">50</span>
+<span class="cmd">/channel create</span> <span class="val">research.complete</span>
+
+<span class="cm"># Each sub-agent ends its task by publishing</span>
+<span class="cm"># /channel publish research.findings {"topic":"market-size","data":"..."}</span>
+
+<span class="cm"># Synthesis agent waits for N findings then triggers</span>
+<span class="cmd">/channel on-event</span> <span class="val">research.findings</span> <span class="kw">--run</span> <span class="str">"If research.findings has 5+ messages, synthesise all findings into a report and publish to research.complete"</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pattern 4 -->
+    <div class="pattern-card">
+      <div class="pattern-header">
+        <div class="p-icon">&#x23F0;</div>
+        <h3>Daily Briefing on Schedule</h3>
+        <span class="p-tag tag-green">Scheduled</span>
+      </div>
+      <div class="pattern-body">
+        <p>A scheduled channel fires every morning at 8 AM. A handler fetches your calendar, emails, Slack DMs, and GitHub PRs — and delivers a single daily briefing to your desktop.</p>
+        <div class="code-block">
+          <pre><span class="cm"># Scheduled type publishes automatically on cron</span>
+<span class="cmd">/channel create</span> <span class="val">cron.morning</span> <span class="kw">--type</span> <span class="val">scheduled</span> <span class="kw">--cron</span> <span class="str">"0 8 * * 1-5"</span>
+
+<span class="cmd">/channel on-event</span> <span class="val">cron.morning</span> <span class="kw">--run</span> <span class="str">"Fetch today's calendar events, top 5 unread emails, open GitHub PRs assigned to me, and any Slack DMs since yesterday. Write a concise morning briefing."</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pattern 5 -->
+    <div class="pattern-card">
+      <div class="pattern-header">
+        <div class="p-icon">&#x1F6A8;</div>
+        <h3>CI/CD Deploy Gate</h3>
+        <span class="p-tag tag-blue">Filtered</span>
+      </div>
+      <div class="pattern-body">
+        <p>Your CI system publishes all build events to <code>ci.events</code>. A filter on the subscriber ensures your deploy agent only wakes up for <code>status: "passed"</code> events on the <code>main</code> branch.</p>
+        <div class="code-block">
+          <pre><span class="cmd">/channel create</span> <span class="val">ci.events</span>
+
+<span class="cm"># Deploy agent only receives passing main-branch builds</span>
+<span class="cmd">/channel subscribe</span> <span class="val">ci.events</span> <span class="kw">--agent</span> <span class="val">deploy-agent</span> <span class="kw">--filter</span> <span class="str">"$.status=='passed' && $.branch=='main'"</span>
+
+<span class="cm"># Alerting agent gets ALL failures regardless of branch</span>
+<span class="cmd">/channel subscribe</span> <span class="val">ci.events</span> <span class="kw">--agent</span> <span class="val">alert-agent</span> <span class="kw">--filter</span> <span class="str">"$.status=='failed'"</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pattern 6 -->
+    <div class="pattern-card">
+      <div class="pattern-header">
+        <div class="p-icon">&#x1F4CA;</div>
+        <h3>Live Dashboard Feed</h3>
+        <span class="p-tag tag-teal">Bridged</span>
+      </div>
+      <div class="pattern-body">
+        <p>Bridge a channel to an outbound webhook so your external dashboard or Notion database receives a live feed of agent activity without any custom integration code.</p>
+        <div class="code-block">
+          <pre><span class="cm"># Bridge: outbound only — all messages forwarded to webhook</span>
+<span class="cmd">/channel bridge</span> <span class="val">agent.activity</span> <span class="kw">--url</span> <span class="str">https://your-dashboard.com/ingest</span> <span class="kw">--secret</span> <span class="str">$WEBHOOK_SECRET</span>
+
+<span class="cm"># Now every agent can publish to agent.activity and your dashboard updates</span>
+<span class="cmd">/channel publish</span> <span class="val">agent.activity</span> <span class="str">'{"event":"task_complete","agent":"research","duration_s":42}'</span></pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Naming Conventions -->
+<section class="section" id="naming">
+  <div class="container">
+    <div class="section-label">Best Practices</div>
+    <h2 class="section-title">Channel Naming Conventions</h2>
+    <p class="section-subtitle">A consistent naming scheme makes large multi-channel workspaces much easier to manage and debug.</p>
+
+    <div class="alert alert--purple">
+      <div class="alert-icon">&#x1F4CF;</div>
+      <p><strong>Convention:</strong> Use lowercase dot-separated namespaces — <code>domain.noun.verb</code> or <code>domain.event</code>. Avoid underscores and spaces. Keep names short but descriptive.</p>
+    </div>
+
+    <div style="overflow-x:auto; margin-bottom:32px;">
+    <table class="cmd-table" aria-label="Channel naming convention examples">
+      <thead>
+        <tr>
+          <th scope="col">Pattern</th>
+          <th scope="col">Good Examples</th>
+          <th scope="col">Avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>domain.event</strong></td>
+          <td><code>orders.new</code> · <code>user.signup</code> · <code>payment.failed</code></td>
+          <td><code>newOrder</code> · <code>NEW_ORDER</code></td>
+        </tr>
+        <tr>
+          <td><strong>domain.noun.verb</strong></td>
+          <td><code>github.pr.merged</code> · <code>shopify.inventory.low</code></td>
+          <td><code>github-pr-merged</code> · <code>github/pr</code></td>
+        </tr>
+        <tr>
+          <td><strong>system.scope</strong></td>
+          <td><code>cron.daily</code> · <code>cron.hourly</code> · <code>alerts.critical</code></td>
+          <td><code>daily_cron</code> · <code>ALERT</code></td>
+        </tr>
+        <tr>
+          <td><strong>agent.status</strong></td>
+          <td><code>agent.research.complete</code> · <code>agent.deploy.started</code></td>
+          <td><code>researchDone</code> · <code>deploy</code></td>
+        </tr>
+        <tr>
+          <td><strong>app.entity.action</strong></td>
+          <td><code>notion.page.created</code> · <code>slack.dm.received</code></td>
+          <td><code>notionCreated</code> · <code>slackDM</code></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">&#x1F9F9;</div>
+        <h3>Use --filter to stay focused</h3>
+        <p>Rather than creating many narrow channels, create one broad channel per domain and use <code>--filter</code> on subscribers. This keeps your channel list manageable.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F4BE;</div>
+        <h3>Set appropriate --buffer sizes</h3>
+        <p>High-volume channels (logs, metrics) should use a small buffer (10–50). Low-volume critical channels (orders, alerts) should use larger buffers (500–1000) so you never miss a message.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F6A7;</div>
+        <h3>Pause before deployments</h3>
+        <p>Use <code>/channel pause</code> before updating a handler, then <code>/channel resume</code> afterward. Buffered messages will flush in order — no events lost during updates.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section--alt" id="faq">
+  <div class="container">
+    <div class="section-label">Common Questions</div>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+
+    <div class="faq-list" role="list">
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq1">
+          What happens to messages if no agent is subscribed?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq1" role="region">
+          Messages are stored in the ring buffer up to the <code>--buffer</code> limit (default 100). When an agent subscribes later, it can replay buffered messages using <code>/channel history</code>. On-event handlers will not fire retroactively — they only fire for messages that arrive after they're registered.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq2">
+          Can I publish from inside a skill or SKILL.md prompt?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq2" role="region">
+          Yes. Inside any skill or prompt, use the built-in <code>publish(channel, payload)</code> function or simply run the <code>/channel publish</code> command as a shell step. Most automation skills (Shopify, GitHub, Notion) have built-in channel publish hooks — check their SKILL.md for the <code>outputs:</code> section.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq3">
+          How do channels interact with Multi-Agent orchestration?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq3" role="region">
+          Channels and <a href="multiagent.html">multi-agent orchestration</a> complement each other. The orchestrator spawns sub-agents and can also listen on a channel for their results. Sub-agents publish to channels when they complete — making the results available for replay, auditing, or triggering further workflows independently of the orchestrator lifecycle.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq4">
+          Are messages encrypted or logged?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq4" role="region">
+          Channel message buffers are stored in a local SQLite database inside your OpenClaw data directory. They are not encrypted at rest by default, but they never leave your machine unless you use <code>/channel bridge</code>. For sensitive payloads, avoid storing PII directly — publish a reference ID and let the subscriber fetch the full data from a secure source.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq5">
+          What's the difference between channels and ClawHub skills?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq5" role="region">
+          <a href="marketplace.html">ClawHub skills</a> are pre-packaged integrations (e.g. Gmail, Shopify, GitHub) that handle authentication and data extraction. Channels are the internal message bus those skills publish to. Think of it as: skills bring data in → channels route it → handlers act on it. They work together, not in competition.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq6">
+          Can I have more than one on-event handler per channel?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq6" role="region">
+          Yes, unlimited. Each <code>/channel on-event</code> call adds a new handler and returns a handler ID. All handlers fire concurrently when a message arrives. Use <code>/channel inspect &lt;channel&gt;</code> to list active handlers, and <code>/channel off-event &lt;channel&gt; --id &lt;id&gt;</code> to remove one.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq7">
+          How do I debug a channel that doesn't seem to be firing?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq7" role="region">
+          Start with <code>/channel inspect &lt;name&gt;</code> to confirm subscribers and handlers exist. Check <code>/channel stats</code> to see if messages are arriving (publish count vs. delivery count). Use <code>/channel history &lt;name&gt; --last 10</code> to see recent payloads and verify the JSON structure matches what your handler expects. Finally, test with a manual <code>/channel publish</code> and watch for output.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Related Pages -->
+<section class="section" id="related">
+  <div class="container">
+    <div class="section-label">Keep Learning</div>
+    <h2 class="section-title">Related Topics</h2>
+    <div class="cards-grid">
+      <a href="multiagent.html" class="card" style="text-decoration:none; color:inherit;" aria-label="Multi-Agent Orchestration guide">
+        <div class="card-icon">&#x1F916;</div>
+        <h3>Multi-Agent Orchestration</h3>
+        <p>Spawn sub-agents, delegate tasks, and scale parallel workloads. Channels are the communication backbone for multi-agent systems.</p>
+        <span class="card-tag tag-purple">Learn →</span>
+      </a>
+      <a href="automation.html" class="card" style="text-decoration:none; color:inherit;" aria-label="Automation guide">
+        <div class="card-icon">&#x2699;&#xFE0F;</div>
+        <h3>Automation &amp; Skills</h3>
+        <p>Connect ClawHub skills to channels so external apps (Shopify, GitHub, Notion) can publish and subscribe automatically.</p>
+        <span class="card-tag tag-teal">Learn →</span>
+      </a>
+      <a href="architecture.html" class="card" style="text-decoration:none; color:inherit;" aria-label="Architecture guide">
+        <div class="card-icon">&#x1F3D7;&#xFE0F;</div>
+        <h3>Architecture Deep Dive</h3>
+        <p>Understand the full OpenClaw runtime — Agentic Loop, tool calls, memory, and how channels fit into the big picture.</p>
+        <span class="card-tag tag-blue">Learn →</span>
+      </a>
+      <a href="cheatsheet.html" class="card" style="text-decoration:none; color:inherit;" aria-label="Command Cheat Sheet">
+        <div class="card-icon">&#x1F4CB;</div>
+        <h3>Command Cheat Sheet</h3>
+        <p>All 90+ OpenClaw commands in one place — including the complete <code>/channel</code> family with syntax and examples.</p>
+        <span class="card-tag tag-amber">Reference →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Newsletter -->
+<section class="nl-section" aria-label="Newsletter signup">
+  <div class="container">
+    <h2>Get Advanced <em>Channel Patterns</em> by Email</h2>
+    <p>New event-driven workflows, real user automations, and deep-dives — delivered to your inbox every week.</p>
+    <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank" aria-label="Newsletter signup form">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="nl-fine" style="margin-top:12px; font-size:.78rem; color:var(--gray-5);">No spam. Unsubscribe any time.</p>
+  </div>
+</section>
+
+<script>
+  // Hamburger nav
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      // Close all
+      document.querySelectorAll('.faq-q').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
+      });
+      // Open clicked (if was closed)
+      if (!expanded) {
+        btn.setAttribute('aria-expanded', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('open');
+      }
+    });
+  });
+
+  // Keyboard: Escape closes nav
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>
