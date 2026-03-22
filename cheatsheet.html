@@ -84,34 +84,58 @@
     .nav-inner {
       max-width: 1100px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      height: 60px;
+      height: 60px; position: relative;
     }
-    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-9); display: flex; align-items: center; gap: 8px; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-9); display: flex; align-items: center; gap: 8px; text-decoration: none; }
     .nav-logo .claw { font-size: 1.4rem; }
-    .nav-links { display: flex; gap: 28px; align-items: center; }
     .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
     .nav-links a:hover { color: var(--blue); text-decoration: none; }
 
-    /* hamburger */
-    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
-    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-9); border-radius: 2px; transition: .2s; }
-
-    @media (max-width: 768px) {
-      .hamburger { display: flex; }
-      .nav-links {
-        display: none; flex-direction: column; align-items: flex-start;
-        position: absolute; top: 60px; left: 0; right: 0;
-        background: var(--white); border-bottom: 1px solid var(--gray-3);
-        padding: 16px 24px; gap: 4px; z-index: 999;
-      }
-      .nav-links.open { display: flex; }
-      .nav-links a { padding: 6px 0; font-size: 1rem; width: 100%; }
-      .nav-section { display: contents; }
-      .nav-section-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--gray-5); margin-top: 8px; padding: 4px 0; }
+    /* ── Hamburger ── */
+    .hamburger {
+      display: flex; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
     }
-    .nav-section { display: contents; }
-    .nav-section-label { display: none; }
-    @media (max-width: 768px) { .nav-section-label { display: block; } }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-9); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── Nav dropdown (all screen sizes) ── */
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
 
     /* ── Disclaimer ── */
     .disclaimer-bar {
@@ -260,9 +284,9 @@
   <a class="skip-nav" href="#main-content">Skip to main content</a>
 
   <!-- Nav -->
-  <nav aria-label="Main navigation">
+  <nav role="navigation" aria-label="Main navigation">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo"><span class="claw">&#x1F99E;</span> learnopenclaw.org</a>
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
       <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
         <span></span><span></span><span></span>
       </button>
