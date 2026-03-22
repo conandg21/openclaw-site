@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw MCP Guide — Model Context Protocol for AI Agents</title>
+  <meta name="description" content="Connect OpenClaw to 500+ apps using MCP (Model Context Protocol). Full setup guide for GitHub, Notion, Stripe, Slack, filesystem, and more — with real config examples." />
+  <meta name="keywords" content="OpenClaw MCP, Model Context Protocol OpenClaw, OpenClaw GitHub integration, OpenClaw Notion MCP, OpenClaw MCP setup, MCP servers OpenClaw, openclaw.json mcpServers" />
+  <link rel="canonical" href="https://learnopenclaw.org/mcp.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw MCP Guide — Connect Your Agent to 500+ Apps" />
+  <meta property="og:description" content="Step-by-step guide to connecting OpenClaw to GitHub, Notion, Stripe, Slack and more using the Model Context Protocol (MCP)." />
+  <meta property="og:url" content="https://learnopenclaw.org/mcp.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw MCP — Connect to 500+ Tools" />
+  <meta name="twitter:description" content="Model Context Protocol gives OpenClaw native access to GitHub, Notion, Stripe, and 500+ more. Full setup guide inside." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw MCP Guide — Model Context Protocol for AI Agents",
+    "description": "How to connect OpenClaw to GitHub, Notion, Stripe, Slack, and 500+ apps using the Model Context Protocol (MCP).",
+    "url": "https://learnopenclaw.org/mcp.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Learn","item":"https://learnopenclaw.org/gettingstarted.html"},
+        {"@type":"ListItem","position":3,"name":"MCP","item":"https://learnopenclaw.org/mcp.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:     #2563eb;
+      --blue-lt:  #eff6ff;
+      --blue-md:  #bfdbfe;
+      --blue-dk:  #1d4ed8;
+      --indigo:   #4f46e5;
+      --indigo-lt:#eef2ff;
+      --indigo-md:#c7d2fe;
+      --teal:     #0d9488;
+      --teal-lt:  #f0fdfa;
+      --teal-md:  #99f6e4;
+      --green:    #16a34a;
+      --green-lt: #f0fdf4;
+      --green-md: #bbf7d0;
+      --purple:   #7c3aed;
+      --purple-lt:#f5f3ff;
+      --purple-md:#ddd6fe;
+      --amber:    #d97706;
+      --amber-lt: #fffbeb;
+      --amber-md: #fde68a;
+      --red:      #dc2626;
+      --red-lt:   #fef2f2;
+      --red-md:   #fecaca;
+      --gray-1:   #f9fafb;
+      --gray-2:   #f3f4f6;
+      --gray-3:   #e5e7eb;
+      --gray-5:   #6b7280;
+      --gray-8:   #1f2937;
+      --white:    #ffffff;
+      --radius:   12px;
+      --shadow:   0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--indigo); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--indigo);
+      outline-offset: 3px; border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo {
+      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .hamburger {
+      display: flex; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5);
+    }
+    .nav-section a { padding-left: 10px; border-left: 2px solid var(--blue-md); font-size: .88rem; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 52px; text-align: center;
+      background: linear-gradient(160deg, var(--indigo-lt) 0%, var(--blue-lt) 60%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block; background: var(--indigo-md); color: var(--indigo);
+      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+      padding: 4px 14px; border-radius: 100px; margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+    .hero h1 em { font-style: normal; color: var(--indigo); }
+    .hero p { font-size: 1.1rem; color: var(--gray-5); max-width: 580px; margin: 0 auto 32px; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 11px 22px; border-radius: 8px;
+      font-size: .95rem; font-weight: 700;
+      text-decoration: none; transition: all .18s;
+    }
+    .btn--indigo { background: var(--indigo); color: var(--white); }
+    .btn--indigo:hover { background: #4338ca; text-decoration: none; color: var(--white); }
+    .btn--ghost { background: transparent; color: var(--indigo); border: 2px solid var(--indigo); }
+    .btn--ghost:hover { background: var(--indigo-lt); text-decoration: none; }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--indigo); margin-bottom: 10px;
+    }
+    .section-title { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; line-height: 1.25; margin-bottom: 16px; }
+    .section-subtitle { font-size: 1.05rem; color: var(--gray-5); max-width: 660px; margin-bottom: 40px; }
+
+    /* ── Alerts ── */
+    .alert {
+      border-radius: var(--radius); padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start; margin-bottom: 32px;
+    }
+    .alert--indigo { background: var(--indigo-lt); border: 1px solid var(--indigo-md); }
+    .alert--green  { background: var(--green-lt);  border: 1px solid var(--green-md); }
+    .alert--amber  { background: var(--amber-lt);  border: 1px solid var(--amber-md); }
+    .alert--blue   { background: var(--blue-lt);   border: 1px solid var(--blue-md); }
+    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+    .alert--indigo p { color: #312e81; font-size: .95rem; }
+    .alert--green  p { color: #14532d; font-size: .95rem; }
+    .alert--amber  p { color: #92400e; font-size: .95rem; }
+    .alert--blue   p { color: #1e3a8a; font-size: .95rem; }
+    .alert strong { font-weight: 700; }
+
+    /* ── How it works 3-step visual ── */
+    .flow-row {
+      display: flex; align-items: flex-start; gap: 0;
+      margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .flow-node {
+      flex: 1; min-width: 160px;
+      background: var(--white); border: 1.5px solid var(--gray-3);
+      border-radius: var(--radius); padding: 22px 18px; text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .flow-node .fn-icon { font-size: 2rem; margin-bottom: 10px; }
+    .flow-node h3 { font-size: .9rem; font-weight: 700; margin-bottom: 6px; }
+    .flow-node p  { font-size: .8rem; color: var(--gray-5); }
+    .flow-arrow {
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 12px; font-size: 1.4rem; color: var(--indigo-md);
+      flex-shrink: 0; margin-top: 30px;
+    }
+    @media (max-width: 600px) {
+      .flow-arrow { transform: rotate(90deg); width: 100%; margin: 4px 0; }
+    }
+
+    /* ── Cards grid ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .card {
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .card h3   { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .card p    { font-size: .875rem; color: var(--gray-5); }
+
+    /* ── Server catalogue ── */
+    .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .server-card {
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .server-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .sc-head {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px; border-bottom: 1px solid var(--gray-3);
+    }
+    .sc-logo {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .sc-head h3 { font-size: .95rem; font-weight: 700; }
+    .sc-badge {
+      margin-left: auto; font-size: .68rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 100px; text-transform: uppercase;
+    }
+    .badge-official { background: var(--indigo-lt); color: var(--indigo); }
+    .badge-popular  { background: var(--green-lt);  color: var(--green); }
+    .badge-free     { background: var(--blue-lt);   color: var(--blue); }
+    .sc-body { padding: 16px 20px; }
+    .sc-body p { font-size: .85rem; color: var(--gray-5); margin-bottom: 12px; }
+    .sc-tools { display: flex; gap: 6px; flex-wrap: wrap; }
+    .sc-tools span {
+      background: var(--gray-2); color: var(--gray-8);
+      font-size: .72rem; font-weight: 600; font-family: "SF Mono", monospace;
+      padding: 2px 8px; border-radius: 4px; border: 1px solid var(--gray-3);
+    }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: #0f172a; border-radius: var(--radius); padding: 22px 24px;
+      margin: 14px 0; overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: .83rem; line-height: 1.8; color: #e2e8f0; white-space: pre;
+    }
+    .code-label {
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--gray-5); margin-bottom: 6px;
+    }
+    .ck  { color: #94a3b8; }
+    .kw  { color: #7dd3fc; }
+    .sv  { color: #86efac; }
+    .pn  { color: #f9a8d4; }
+    .nm  { color: #fde68a; }
+    .br  { color: #c4b5fd; }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; position: relative; }
+    .steps::before {
+      content: ''; position: absolute; left: 23px; top: 28px;
+      width: 2px; height: calc(100% - 56px); background: var(--gray-3);
+    }
+    .step { display: flex; gap: 20px; align-items: flex-start; position: relative; padding-bottom: 32px; }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%;
+      background: var(--indigo); color: var(--white);
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px var(--indigo-lt); position: relative; z-index: 1;
+    }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
+    .step-body p  { font-size: .9rem; color: var(--gray-5); margin-bottom: 8px; }
+    .step-body code {
+      display: inline-block; background: var(--gray-2); border: 1px solid var(--gray-3);
+      border-radius: 6px; font-family: "SF Mono", monospace;
+      font-size: .84rem; padding: 4px 10px; margin-top: 4px;
+    }
+
+    /* ── Use-case patterns ── */
+    .pattern {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow);
+    }
+    .pattern-head {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px; background: var(--gray-1); border-bottom: 1px solid var(--gray-3);
+    }
+    .pattern-head .ph-icon { font-size: 1.4rem; }
+    .pattern-head h3 { font-size: 1rem; font-weight: 700; }
+    .pattern-head .ph-tag {
+      margin-left: auto; font-size: .72rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 100px; text-transform: uppercase;
+    }
+    .tag-indigo { background: var(--indigo-lt); color: var(--indigo); }
+    .tag-green  { background: var(--green-lt);  color: var(--green); }
+    .tag-blue   { background: var(--blue-lt);   color: var(--blue); }
+    .tag-amber  { background: var(--amber-lt);  color: var(--amber); }
+    .pattern-body { padding: 20px; }
+    .pattern-body p { font-size: .9rem; color: var(--gray-5); margin-bottom: 12px; }
+
+    /* ── Command row ── */
+    .cmd-row {
+      display: flex; gap: 12px; align-items: baseline;
+      padding: 10px 0; border-bottom: 1px solid var(--gray-2);
+    }
+    .cmd-row:last-child { border-bottom: none; }
+    .cmd-row code {
+      font-family: "SF Mono", monospace; font-size: .83rem;
+      background: var(--gray-2); border: 1px solid var(--gray-3);
+      padding: 3px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0;
+    }
+    .cmd-row span { font-size: .875rem; color: var(--gray-5); }
+
+    /* ── Security checklist ── */
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .checklist li {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: 10px; padding: 16px 20px;
+      box-shadow: var(--shadow); font-size: .9rem;
+    }
+    .checklist li .ch-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .checklist li strong { display: block; font-weight: 700; margin-bottom: 3px; }
+    .checklist li span   { color: var(--gray-5); font-size: .875rem; }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 16px; }
+    .faq-item { border: 1px solid var(--gray-3); border-radius: var(--radius); overflow: hidden; }
+    .faq-q {
+      width: 100%; text-align: left; background: var(--white); border: none; cursor: pointer;
+      padding: 18px 20px; font-size: .95rem; font-weight: 700; color: var(--gray-8);
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: inherit; transition: background .15s;
+    }
+    .faq-q:hover { background: var(--gray-1); }
+    .faq-q[aria-expanded="true"] { background: var(--indigo-lt); color: var(--indigo); }
+    .faq-chevron { font-size: .75rem; transition: transform .2s; }
+    .faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); }
+    .faq-a { display: none; padding: 0 20px 18px; font-size: .9rem; color: var(--gray-5); line-height: 1.65; }
+    .faq-a.open { display: block; }
+
+    /* ── Related ── */
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .rel-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 22px;
+      box-shadow: var(--shadow); text-decoration: none; color: inherit; display: block;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .rel-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); text-decoration: none; }
+    .rel-card .r-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .rel-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+    .rel-card p  { font-size: .83rem; color: var(--gray-5); }
+
+    /* ── Newsletter / Footer ── */
+    .nl-section {
+      background: linear-gradient(135deg, var(--indigo-lt) 0%, var(--blue-lt) 100%);
+      border-top: 1px solid var(--indigo-md); border-bottom: 1px solid var(--indigo-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--indigo); }
+    .nl-section > p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--indigo); }
+    .nl-form button {
+      background: var(--indigo); color: var(--white); border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .nl-form button:hover { background: #4338ca; }
+    footer {
+      background: var(--gray-8); color: #9ca3af; text-align: center;
+      padding: 36px 24px; font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px; border: 1px solid #374151;
+      background: #374151; color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white); border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="agentchannels.html" style="color:#0d9488;font-weight:700;"><span aria-hidden="true">📡</span> Agent Channels</a>
+        <a href="mcp.html" aria-current="page" style="color:#4f46e5;font-weight:700;"><span aria-hidden="true">🔌</span> MCP</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+        <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+      <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+      <a href="glossary.html" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">&#x1F50C; Model Context Protocol</div>
+  <h1>Connect OpenClaw to<br><em>500+ Tools with MCP</em></h1>
+  <p>The Model Context Protocol is the universal plug socket for AI agents. Add one entry to your config file and OpenClaw gets native access to GitHub, Notion, Stripe, Slack, your filesystem, and hundreds more — no custom code required.</p>
+  <div class="hero-cta">
+    <a href="#setup" class="btn btn--indigo">Quick Setup ↓</a>
+    <a href="#servers" class="btn btn--ghost">Browse Servers</a>
+  </div>
+</header>
+
+<!-- What is MCP -->
+<section class="section" id="what">
+  <div class="container">
+    <div class="section-label">Foundations</div>
+    <h2 class="section-title">What Is MCP?</h2>
+    <p class="section-subtitle">Model Context Protocol (MCP) is an open standard — created by Anthropic and donated to the Linux Foundation in late 2025 — that defines a single, universal way for AI agents to connect to external tools and data sources.</p>
+
+    <div class="alert alert--indigo">
+      <div class="alert-icon">&#x1F4A1;</div>
+      <p><strong>Think of MCP like USB-C for AI.</strong> Before MCP, every integration required custom code — a different API client for GitHub, another for Notion, another for Stripe. MCP gives every tool the same connector. OpenClaw speaks MCP natively, so any MCP server you add instantly becomes a tool your agent can use.</p>
+    </div>
+
+    <div class="flow-row" role="img" aria-label="How MCP works: OpenClaw sends requests to MCP server which connects to external service">
+      <div class="flow-node">
+        <div class="fn-icon">🦞</div>
+        <h3>OpenClaw Agent</h3>
+        <p>Decides to use a tool, sends an MCP request</p>
+      </div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-node" style="border-color:var(--indigo-md); background:var(--indigo-lt);">
+        <div class="fn-icon">🔌</div>
+        <h3>MCP Server</h3>
+        <p>Translates the request into the external API's format</p>
+      </div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-node">
+        <div class="fn-icon">🌐</div>
+        <h3>External Service</h3>
+        <p>GitHub, Notion, Stripe, your filesystem — anything</p>
+      </div>
+      <div class="flow-arrow" aria-hidden="true">→</div>
+      <div class="flow-node" style="border-color:var(--green-md); background:var(--green-lt);">
+        <div class="fn-icon">✅</div>
+        <h3>Result Back</h3>
+        <p>Response returned to OpenClaw in a standard format</p>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">&#x1F4E6;</div>
+        <h3>One config, every tool</h3>
+        <p>All MCP servers are added the same way — a few lines in <code>openclaw.json</code>. No custom integrations, no SDKs, no boilerplate code to write.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F30D;</div>
+        <h3>500+ servers available</h3>
+        <p>GitHub, Notion, Stripe, Slack, Linear, Jira, Confluence, PostgreSQL, Brave Search, and hundreds more — most are free and open-source.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F512;</div>
+        <h3>Runs locally</h3>
+        <p>Most MCP servers run as a local process on your machine. Your credentials never leave your computer — the server handles auth directly.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">&#x1F6E0;&#xFE0F;</div>
+        <h3>Build your own</h3>
+        <p>Any developer can publish an MCP server. If a tool you need doesn't have one yet, you can build it in TypeScript or Python in under an hour.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Setup -->
+<section class="section section--alt" id="setup">
+  <div class="container">
+    <div class="section-label">Getting Started</div>
+    <h2 class="section-title">Add Your First MCP Server</h2>
+    <p class="section-subtitle">All MCP servers are configured in one file. Here's how to add the filesystem server — the most useful one to start with — in under 2 minutes.</p>
+
+    <div class="steps" aria-label="MCP setup steps">
+      <div class="step">
+        <div class="step-num" aria-hidden="true">1</div>
+        <div class="step-body">
+          <h3>Open your OpenClaw config file</h3>
+          <p>All MCP servers live under the <code>mcpServers</code> key in your config file. Open it in any text editor.</p>
+          <code>~/.openclaw/openclaw.json</code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" aria-hidden="true">2</div>
+        <div class="step-body">
+          <h3>Add an <code>mcpServers</code> block</h3>
+          <p>Each entry needs a name, a <code>command</code> to start the server, and any <code>args</code> it needs. Here's the filesystem server, which gives OpenClaw read/write access to a folder you choose:</p>
+          <div class="code-block">
+            <div class="code-label">~/.openclaw/openclaw.json</div>
+            <pre><span class="br">{</span>
+  <span class="kw">"mcpServers"</span>: <span class="br">{</span>
+
+    <span class="ck">// Filesystem — read/write a local folder</span>
+    <span class="kw">"filesystem"</span>: <span class="br">{</span>
+      <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+      <span class="kw">"args"</span>: [
+        <span class="sv">"-y"</span>,
+        <span class="sv">"@modelcontextprotocol/server-filesystem"</span>,
+        <span class="sv">"/Users/you/Documents"</span>  <span class="ck">// folder to expose</span>
+      ]
+    <span class="br">}</span>
+
+  <span class="br">}</span>
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" aria-hidden="true">3</div>
+        <div class="step-body">
+          <h3>Restart OpenClaw</h3>
+          <p>Stop and start OpenClaw. It will launch the MCP server process automatically and load its tools. You'll see them listed on startup:</p>
+          <div class="code-block">
+            <div class="code-label">Terminal output</div>
+            <pre><span class="ck">🔌 MCP: filesystem — 5 tools loaded</span>
+<span class="ck">   read_file · write_file · list_directory · create_directory · delete_file</span>
+<span class="ck">🦞 OpenClaw is ready</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" aria-hidden="true">4</div>
+        <div class="step-body">
+          <h3>Your agent can now use those tools</h3>
+          <p>No extra commands needed. Just ask your agent to do something and it will call the MCP tools automatically:</p>
+          <div class="code-block">
+            <div class="code-label">WhatsApp / Telegram / Web UI</div>
+            <pre><span class="sv">"List all PDF files in my Documents folder and summarise the newest one"</span>
+<span class="sv">"Move all files older than 6 months into an Archive subfolder"</span>
+<span class="sv">"Create a file called meeting-notes.md with today's date as the title"</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert--green" style="margin-top:40px;">
+      <div class="alert-icon">&#x1F916;</div>
+      <p><strong>Use mcporter for easier management.</strong> Install the <code>mcporter</code> skill from ClawHub and you can add, remove, and inspect MCP servers through natural language — no config file editing needed. Just tell your agent "add the GitHub MCP server" and it handles the rest.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Server catalogue -->
+<section class="section" id="servers">
+  <div class="container">
+    <div class="section-label">Server Catalogue</div>
+    <h2 class="section-title">The Most Useful MCP Servers</h2>
+    <p class="section-subtitle">These are the servers that power users install first. All are free and open-source unless noted.</p>
+
+    <div class="server-grid">
+
+      <!-- Filesystem -->
+      <div class="server-card">
+        <div class="sc-head">
+          <div class="sc-logo" style="background:#f0fdf4;">📁</div>
+          <h3>Filesystem</h3>
+          <span class="sc-badge badge-official">Official</span>
+        </div>
+        <div class="sc-body">
+          <p>Read, write, move, and search files in any folder you allow. The most commonly used MCP server — start here.</p>
+          <div class="sc-tools">
+            <span>read_file</span><span>write_file</span><span>list_directory</span><span>move_file</span><span>search_files</span>
+          </div>
+          <div class="code-block" style="margin-top:12px;">
+            <pre><span class="kw">"filesystem"</span>: <span class="br">{</span>
+  <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+  <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-filesystem"</span>, <span class="sv">"/your/folder"</span>]
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- GitHub -->
+      <div class="server-card">
+        <div class="sc-head">
+          <div class="sc-logo" style="background:#f9fafb;">🐙</div>
+          <h3>GitHub</h3>
+          <span class="sc-badge badge-official">Official</span>
+        </div>
+        <div class="sc-body">
+          <p>Read repos, create issues, open and review PRs, push commits, and manage branches — all from a chat message.</p>
+          <div class="sc-tools">
+            <span>create_issue</span><span>create_pr</span><span>list_commits</span><span>push_file</span><span>search_code</span>
+          </div>
+          <div class="code-block" style="margin-top:12px;">
+            <pre><span class="kw">"github"</span>: <span class="br">{</span>
+  <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+  <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-github"</span>],
+  <span class="kw">"env"</span>: <span class="br">{</span> <span class="kw">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span class="sv">"ghp_xxxx"</span> <span class="br">}</span>
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notion -->
+      <div class="server-card">
+        <div class="sc-head">
+          <div class="sc-logo" style="background:#fafafa; border:1px solid #e5e7eb;">📝</div>
+          <h3>Notion</h3>
+          <span class="sc-badge badge-popular">Popular</span>
+        </div>
+        <div class="sc-body">
+          <p>Read pages and databases, create and update entries, search your Notion workspace — full two-way sync.</p>
+          <div class="sc-tools">
+            <span>search</span><span>get_page</span><span>create_page</span><span>update_page</span><span>query_database</span>
+          </div>
+          <div class="code-block" style="margin-top:12px;">
+            <pre><span class="kw">"notion"</span>: <span class="br">{</span>
+  <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+  <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@notionhq/notion-mcp-server"</span>],
+  <span class="kw">"env"</span>: <span class="br">{</span> <span class="kw">"NOTION_API_KEY"</span>: <span class="sv">"secret_xxxx"</span> <span class="br">}</span>
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Brave Search -->
+      <div class="server-card">
+        <div class="sc-head">
+          <div class="sc-logo" style="background:#fff7ed;">🔍</div>
+          <h3>Brave Search</h3>
+          <span class="sc-badge badge-free">Free tier</span>
+        </div>
+        <div class="sc-body">
+          <p>Real-time web search without a Google API key. Free up to 2,000 queries/month. The easiest way to give your agent live internet access.</p>
+          <div class="sc-tools">
+            <span>brave_web_search</span><span>brave_local_search</span>
+          </div>
+          <div class="code-block" style="margin-top:12px;">
+            <pre><span class="kw">"brave-search"</span>: <span class="br">{</span>
+  <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+  <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-brave-search"</span>],
+  <span class="kw">"env"</span>: <span class="br">{</span> <span class="kw">"BRAVE_API_KEY"</span>: <span class="sv">"BSA_xxxx"</span> <span class="br">}</span>
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slack -->
+      <div class="server-card">
+        <div class="sc-head">
+          <div class="sc-logo" style="background:#fef3c7;">💬</div>
+          <h3>Slack</h3>
+          <span class="sc-badge badge-popular">Popular</span>
+        </div>
+        <div class="sc-body">
+          <p>Read channel history, post messages, create channels, and search across your entire Slack workspace.</p>
+          <div class="sc-tools">
+            <span>post_message</span><span>list_channels</span><span>get_history</span><span>search_messages</span>
+          </div>
+          <div class="code-block" style="margin-top:12px;">
+            <pre><span class="kw">"slack"</span>: <span class="br">{</span>
+  <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+  <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-slack"</span>],
+  <span class="kw">"env"</span>: <span class="br">{</span>
+    <span class="kw">"SLACK_BOT_TOKEN"</span>: <span class="sv">"xoxb-xxxx"</span>,
+    <span class="kw">"SLACK_TEAM_ID"</span>: <span class="sv">"T0XXXXXXX"</span>
+  <span class="br">}</span>
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stripe -->
+      <div class="server-card">
+        <div class="sc-head">
+          <div class="sc-logo" style="background:#f5f3ff;">💳</div>
+          <h3>Stripe</h3>
+          <span class="sc-badge badge-official">Official</span>
+        </div>
+        <div class="sc-body">
+          <p>Query customers, invoices, and payment data. Create payment links and products. Your agent becomes your finance assistant.</p>
+          <div class="sc-tools">
+            <span>list_customers</span><span>get_invoice</span><span>create_payment_link</span><span>list_charges</span>
+          </div>
+          <div class="code-block" style="margin-top:12px;">
+            <pre><span class="kw">"stripe"</span>: <span class="br">{</span>
+  <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+  <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@stripe/agent-toolkit"</span>, <span class="sv">"--mcp"</span>],
+  <span class="kw">"env"</span>: <span class="br">{</span> <span class="kw">"STRIPE_SECRET_KEY"</span>: <span class="sv">"sk_xxxx"</span> <span class="br">}</span>
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- PostgreSQL -->
+      <div class="server-card">
+        <div class="sc-head">
+          <div class="sc-logo" style="background:#eff6ff;">🗄️</div>
+          <h3>PostgreSQL</h3>
+          <span class="sc-badge badge-popular">Popular</span>
+        </div>
+        <div class="sc-body">
+          <p>Run read-only SQL queries against your database and get results back as structured data. Safe, schema-aware, no accidental writes.</p>
+          <div class="sc-tools">
+            <span>query</span><span>describe_table</span><span>list_tables</span>
+          </div>
+          <div class="code-block" style="margin-top:12px;">
+            <pre><span class="kw">"postgres"</span>: <span class="br">{</span>
+  <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+  <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-postgres"</span>,
+    <span class="sv">"postgresql://user:pass@localhost/mydb"</span>]
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Memory -->
+      <div class="server-card">
+        <div class="sc-head">
+          <div class="sc-logo" style="background:#f0fdf4;">🧠</div>
+          <h3>Memory</h3>
+          <span class="sc-badge badge-official">Official</span>
+        </div>
+        <div class="sc-body">
+          <p>A persistent knowledge graph your agent can write to and query. Facts survive across sessions — great for remembering preferences, people, and projects.</p>
+          <div class="sc-tools">
+            <span>create_entities</span><span>create_relations</span><span>search_nodes</span><span>add_observations</span>
+          </div>
+          <div class="code-block" style="margin-top:12px;">
+            <pre><span class="kw">"memory"</span>: <span class="br">{</span>
+  <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
+  <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-memory"</span>]
+<span class="br">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="alert alert--blue">
+      <div class="alert-icon">&#x1F4CB;</div>
+      <p><strong>Find more servers:</strong> The community-maintained <a href="https://github.com/VoltAgent/awesome-openclaw-skills" target="_blank" rel="noopener">awesome-openclaw-skills</a> repo catalogues 5,400+ skills and MCP servers, filtered by category. Anthropic's own <a href="https://github.com/punkpeye/awesome-mcp-servers" target="_blank" rel="noopener">awesome-mcp-servers</a> list is the most comprehensive index of all available servers.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Real-world patterns -->
+<section class="section section--alt" id="patterns">
+  <div class="container">
+    <div class="section-label">Real-World Examples</div>
+    <h2 class="section-title">What You Can Build with MCP</h2>
+    <p class="section-subtitle">These are real workflows people run today by combining two or three MCP servers together.</p>
+
+    <div class="pattern">
+      <div class="pattern-head">
+        <div class="ph-icon">🐙</div>
+        <h3>Automated GitHub Project Manager</h3>
+        <span class="ph-tag tag-indigo">GitHub + Slack</span>
+      </div>
+      <div class="pattern-body">
+        <p>Every morning your agent checks open PRs, flags anything waiting more than 24 hours for a review, and posts a summary to your <code>#dev</code> Slack channel. When a PR gets merged, it automatically closes the linked issue and updates the project board.</p>
+        <div class="code-block">
+          <div class="code-label">What you tell your agent (once)</div>
+          <pre><span class="sv">"Every weekday at 9am, check all open PRs in my repos. For any PR waiting more than 24h without a review, post a reminder to #dev on Slack. When PRs are merged, close the linked issue automatically."</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="pattern">
+      <div class="pattern-head">
+        <div class="ph-icon">📝</div>
+        <h3>Meeting Notes → Notion Automatically</h3>
+        <span class="ph-tag tag-blue">Filesystem + Notion</span>
+      </div>
+      <div class="pattern-body">
+        <p>Drop a raw text file from your meeting recorder into a watched folder. OpenClaw picks it up via the filesystem server, formats it into a structured Notion page — with attendees, action items, and decisions — and files it in the right database.</p>
+        <div class="code-block">
+          <div class="code-label">What you tell your agent (once)</div>
+          <pre><span class="sv">"Watch ~/Downloads/meeting-notes/. Whenever a new .txt file appears, format it as a Notion page with sections for Summary, Attendees, Action Items, and Decisions. Add it to my Meetings database."</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="pattern">
+      <div class="pattern-head">
+        <div class="ph-icon">💳</div>
+        <h3>Daily Revenue Briefing via WhatsApp</h3>
+        <span class="ph-tag tag-green">Stripe + Agent Channels</span>
+      </div>
+      <div class="pattern-body">
+        <p>Every evening your agent queries Stripe for the day's charges, calculates MRR delta, and sends you a clean one-message summary on WhatsApp — without you having to open a dashboard.</p>
+        <div class="code-block">
+          <div class="code-label">What you tell your agent (once)</div>
+          <pre><span class="sv">"Every day at 6pm, pull today's revenue from Stripe — total charges, new subscribers, and any failed payments. Send me a 3-line summary on WhatsApp."</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="pattern">
+      <div class="pattern-head">
+        <div class="ph-icon">🔍</div>
+        <h3>Competitor Intelligence Report</h3>
+        <span class="ph-tag tag-amber">Brave Search + Filesystem</span>
+      </div>
+      <div class="pattern-body">
+        <p>Every Monday your agent searches for news about your competitors using Brave Search, compiles the findings into a markdown report, and saves it to a folder for you to read.</p>
+        <div class="code-block">
+          <div class="code-label">What you tell your agent (once)</div>
+          <pre><span class="sv">"Every Monday morning, search for recent news about [Competitor A] and [Competitor B]. Summarise any product updates, funding news, or pricing changes. Save to ~/Reports/competitor-intel-[date].md."</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLI commands -->
+<section class="section" id="commands">
+  <div class="container">
+    <div class="section-label">Reference</div>
+    <h2 class="section-title">MCP Commands</h2>
+    <p class="section-subtitle">Useful commands for managing your MCP servers from the terminal.</p>
+
+    <div style="background:var(--white); border:1px solid var(--gray-3); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); margin-bottom:32px;">
+      <div class="cmd-row" style="padding:12px 20px; background:var(--gray-2); border-bottom:2px solid var(--gray-3);">
+        <strong style="font-size:.78rem; text-transform:uppercase; letter-spacing:.05em;">Command</strong>
+        <strong style="font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; margin-left:auto; padding-right: 0;">What it does</strong>
+      </div>
+      <div style="padding:0 8px;">
+        <div class="cmd-row"><code>openclaw mcp list</code><span>Show all configured MCP servers and their loaded tools</span></div>
+        <div class="cmd-row"><code>openclaw mcp status</code><span>Show which servers are running, stopped, or erroring</span></div>
+        <div class="cmd-row"><code>openclaw mcp restart &lt;name&gt;</code><span>Restart a specific MCP server without restarting OpenClaw</span></div>
+        <div class="cmd-row"><code>openclaw mcp logs &lt;name&gt;</code><span>View stdout/stderr output from an MCP server process</span></div>
+        <div class="cmd-row"><code>openclaw mcp test &lt;name&gt;</code><span>Ping the MCP server and verify its tools/list response</span></div>
+        <div class="cmd-row"><code>openclaw mcp disable &lt;name&gt;</code><span>Temporarily disable a server without removing its config</span></div>
+        <div class="cmd-row"><code>openclaw mcp tools &lt;name&gt;</code><span>List every tool a server exposes with its parameters</span></div>
+      </div>
+    </div>
+
+    <div class="alert alert--indigo">
+      <div class="alert-icon">&#x1F9EA;</div>
+      <p><strong>Test before you trust.</strong> After adding a new server, always run <code>openclaw mcp test &lt;name&gt;</code> to confirm it's live and returning the expected tools. Then ask your agent to use a simple read-only tool first before giving it write access.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Security -->
+<section class="section section--alt" id="security">
+  <div class="container">
+    <div class="section-label">Stay Safe</div>
+    <h2 class="section-title">MCP Security Best Practices</h2>
+    <p class="section-subtitle">MCP servers run with the permissions of your user account. A misconfigured or malicious server has real access to your files, APIs, and data. Follow these rules.</p>
+
+    <ul class="checklist" aria-label="MCP security checklist">
+      <li>
+        <span class="ch-icon">🔑</span>
+        <div>
+          <strong>Use scoped API tokens, not admin keys</strong>
+          <span>When creating tokens for GitHub, Notion, or Stripe, grant only the permissions that server actually needs. A read-only Stripe key can't accidentally charge customers; a repo-scoped GitHub token can't delete your whole organisation.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon">📁</span>
+        <div>
+          <strong>Limit filesystem server to specific folders</strong>
+          <span>Never point the filesystem server at <code>/</code> or your home directory root. Create a dedicated <code>~/openclaw-workspace/</code> folder and restrict access to that. Your agent doesn't need access to your SSH keys or browser passwords.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon">📦</span>
+        <div>
+          <strong>Only install well-maintained servers</strong>
+          <span>Check the GitHub repo: is it actively maintained? Are there open issues about security? Avoid servers with no source code visible or with fewer than 50 stars unless you've reviewed the code yourself.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon">🔄</span>
+        <div>
+          <strong>Rotate tokens every 90 days</strong>
+          <span>Set a reminder to regenerate your API keys quarterly. Most platforms (GitHub, Notion, Stripe) support token expiry — use it. If a token is ever leaked, an expired one is worthless to an attacker.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon">🔍</span>
+        <div>
+          <strong>Audit what tools are loaded</strong>
+          <span>Run <code>openclaw mcp list</code> regularly and confirm you recognise every server and understand every tool it exposes. Remove any servers you're no longer using — fewer open connections means a smaller attack surface.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon">🗄️</span>
+        <div>
+          <strong>Keep database servers read-only</strong>
+          <span>When connecting PostgreSQL or any database, use a read-only user account. Your agent can answer data questions perfectly well without ever having INSERT or DELETE privileges.</span>
+        </div>
+      </li>
+    </ul>
+
+    <p style="margin-top:24px; font-size:.9rem; color:var(--gray-5);">For a full security guide covering all of OpenClaw, see the <a href="security.html">Security &amp; Safety page →</a></p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-label">Common Questions</div>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+
+    <div class="faq-list" role="list">
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq1">
+          What's the difference between MCP servers and ClawHub skills?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq1" role="region">
+          <a href="marketplace.html">ClawHub skills</a> are OpenClaw-specific packages — they include a SKILL.md with instructions, pre-configured prompts, and sometimes bundled MCP servers. An MCP server is lower-level: it exposes raw tools that any MCP-compatible AI agent can use. Many skills install and configure an MCP server behind the scenes. If there's a ClawHub skill for what you need, start there — it's easier. If not, install the MCP server directly.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq2">
+          Do I need Node.js installed to use MCP servers?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq2" role="region">
+          Most MCP servers are distributed as npm packages, so yes — Node.js is required for those. The <code>npx -y</code> command in the config examples downloads and runs the server without a permanent install. Install Node.js from <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> if you don't have it. Python-based servers exist too and only need Python 3.x, which most systems already have.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq3">
+          Can I run multiple MCP servers at the same time?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq3" role="region">
+          Yes — OpenClaw launches all configured servers simultaneously and makes all their tools available to the agent at once. Users commonly run 5–10 servers at the same time (filesystem, GitHub, Notion, Brave Search, Slack, memory) with no issues. Each server runs as a separate background process, so they're isolated from each other.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq4">
+          How does OpenClaw know which MCP tool to use?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq4" role="region">
+          The AI model decides. When you send a task, OpenClaw includes a list of all available tools (from all loaded MCP servers) in the context. The model reads the tool descriptions and picks the right one, or chains several together. You never need to specify which tool to use — just describe what you want in plain English.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq5">
+          Can I build my own MCP server?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq5" role="region">
+          Yes, and it's well within reach for any developer. Anthropic provides official SDKs for TypeScript (<code>@modelcontextprotocol/sdk</code>) and Python (<code>mcp</code>). A minimal server that exposes two or three tools can be built in under 100 lines of code. The MCP protocol itself is JSON-RPC 2.0 over stdio or HTTP, so you can technically implement it in any language.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq6">
+          Are MCP servers free?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq6" role="region">
+          The MCP servers themselves are always free and open-source. You may need API keys for the underlying services — Brave Search has a free tier (2,000 queries/month), GitHub tokens are free, Notion API is free, Stripe's API is free to query (you pay per transaction, not per API call). Check the specific service's pricing for anything beyond basic usage.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Related -->
+<section class="section section--alt" id="related">
+  <div class="container">
+    <div class="section-label">Keep Learning</div>
+    <h2 class="section-title">Related Topics</h2>
+    <div class="rel-grid">
+      <a href="automation.html" class="rel-card" aria-label="Automation and Skills">
+        <div class="r-icon">⚙️</div>
+        <h3>Automation &amp; Skills</h3>
+        <p>ClawHub skills often wrap MCP servers. Learn how they work together.</p>
+      </a>
+      <a href="marketplace.html" class="rel-card" aria-label="ClawHub Marketplace">
+        <div class="r-icon">🏪</div>
+        <h3>Marketplace</h3>
+        <p>Browse pre-built skills that configure MCP servers for you automatically.</p>
+      </a>
+      <a href="architecture.html" class="rel-card" aria-label="Architecture">
+        <div class="r-icon">🏗️</div>
+        <h3>Architecture</h3>
+        <p>Understand how MCP tools fit into OpenClaw's agentic loop and tool call system.</p>
+      </a>
+      <a href="security.html" class="rel-card" aria-label="Security Guide">
+        <div class="r-icon">🛡️</div>
+        <h3>Security Guide</h3>
+        <p>Best practices for keeping your MCP servers, API keys, and agent safe.</p>
+      </a>
+      <a href="cheatsheet.html" class="rel-card" aria-label="Command Cheat Sheet">
+        <div class="r-icon">📋</div>
+        <h3>Cheat Sheet</h3>
+        <p>Full reference for all OpenClaw commands including the <code>mcp</code> family.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Newsletter -->
+<section class="nl-section" aria-label="Newsletter signup">
+  <div class="container">
+    <h2>Get New <em>MCP Server Picks</em> by Email</h2>
+    <p>The best new MCP servers, real config examples, and OpenClaw automation ideas — weekly.</p>
+    <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank" aria-label="Newsletter signup form">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+    <p style="margin-top:12px; font-size:.78rem; color:var(--gray-5);">No spam. Unsubscribe any time.</p>
+  </div>
+</section>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.faq-q').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
+      });
+      if (!expanded) {
+        btn.setAttribute('aria-expanded', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('open');
+      }
+    });
+  });
+</script>
+
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>
