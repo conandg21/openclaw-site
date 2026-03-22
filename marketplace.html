@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClawHub Marketplace — Top OpenClaw Skills &amp; Integrations</title>
+  <meta name="description" content="Explore ClawHub, the official OpenClaw skill marketplace. Discover the most downloaded skills, featured integrations, and how to safely extend your AI agent's capabilities." />
+  <meta name="keywords" content="ClawHub, OpenClaw marketplace, OpenClaw skills, AI agent skills, top OpenClaw integrations, ClawHub download" />
+  <link rel="canonical" href="https://learnopenclaw.org/marketplace.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ClawHub Marketplace — Top OpenClaw Skills &amp; Integrations" />
+  <meta property="og:description" content="Explore ClawHub, the official OpenClaw skill marketplace. Most downloaded skills, featured integrations, and safety tips." />
+  <meta property="og:url" content="https://learnopenclaw.org/marketplace.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ClawHub Marketplace — Top OpenClaw Skills" />
+  <meta name="twitter:description" content="The most downloaded OpenClaw skills and how ClawHub works." />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "ClawHub Marketplace — Top OpenClaw Skills & Integrations",
+    "description": "Explore ClawHub, the official OpenClaw skill marketplace.",
+    "url": "https://learnopenclaw.org/marketplace.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Marketplace","item":"https://learnopenclaw.org/marketplace.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #2563eb;
+      --blue-lt:   #eff6ff;
+      --teal:      #0d9488;
+      --teal-lt:   #f0fdfa;
+      --teal-md:   #99f6e4;
+      --teal-dk:   #0f766e;
+      --green:     #16a34a;
+      --green-lt:  #f0fdf4;
+      --green-md:  #bbf7d0;
+      --yellow:    #d97706;
+      --yellow-lt: #fffbeb;
+      --red:       #dc2626;
+      --red-lt:    #fef2f2;
+      --gray-1:    #f9fafb;
+      --gray-2:    #f3f4f6;
+      --gray-3:    #e5e7eb;
+      --gray-5:    #6b7280;
+      --gray-8:    #1f2937;
+      --white:     #ffffff;
+      --radius:    12px;
+      --shadow:    0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--teal); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--teal);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+    .nav-links a { color: var(--gray-5); font-size: .9rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--teal); text-decoration: none; }
+    .nav-links a.active { color: var(--teal); font-weight: 700; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--teal-lt) 0%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--teal-md);
+      color: var(--teal-dk);
+      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: normal; color: var(--teal); }
+    .hero p {
+      font-size: 1.1rem; color: var(--gray-5);
+      max-width: 580px; margin: 0 auto 32px;
+    }
+    .hero-stats {
+      display: flex; justify-content: center; gap: 36px; flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat strong { display: block; font-size: 1.5rem; font-weight: 800; color: var(--teal); }
+    .stat span   { font-size: .82rem; color: var(--gray-5); }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 800; line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 640px; margin-bottom: 40px;
+    }
+
+    /* ── Marketplace explainer ── */
+    .explain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 0;
+    }
+    @media (max-width: 640px) { .explain-grid { grid-template-columns: 1fr; } }
+
+    .explain-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .explain-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .explain-card p  { font-size: .9rem; color: var(--gray-5); }
+
+    /* ── Top skills ── */
+    .skills-list {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    .skill-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 18px;
+      align-items: start;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .skill-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.09); }
+
+    .skill-rank {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: var(--teal-lt);
+      border: 2px solid var(--teal-md);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .skill-rank .rank-num {
+      font-size: 1.1rem; font-weight: 800; color: var(--teal);
+      line-height: 1;
+    }
+    .skill-rank .rank-label {
+      font-size: .6rem; color: var(--gray-5); text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .skill-rank--gold   { background: #fffbeb; border-color: #fde68a; }
+    .skill-rank--gold   .rank-num { color: #d97706; }
+    .skill-rank--silver { background: #f8fafc; border-color: #cbd5e1; }
+    .skill-rank--silver .rank-num { color: #64748b; }
+    .skill-rank--bronze { background: #fff7ed; border-color: #fed7aa; }
+    .skill-rank--bronze .rank-num { color: #c2410c; }
+
+    .skill-body { min-width: 0; }
+    .skill-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;
+    }
+    .skill-icon { font-size: 1.3rem; }
+    .skill-name { font-size: 1rem; font-weight: 700; }
+    .skill-author { font-size: .78rem; color: var(--gray-5); }
+    .skill-desc { font-size: .88rem; color: var(--gray-5); margin-bottom: 10px; }
+    .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px; border-radius: 100px;
+      font-size: .72rem; font-weight: 600;
+    }
+    .tag--teal   { background: var(--teal-lt);  color: var(--teal-dk); }
+    .tag--blue   { background: var(--blue-lt);  color: var(--blue); }
+    .tag--green  { background: var(--green-lt); color: var(--green); }
+    .tag--yellow { background: var(--yellow-lt); color: var(--yellow); }
+    .tag--red    { background: var(--red-lt);   color: var(--red); }
+
+    .skill-meta {
+      text-align: right; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+    }
+    .downloads {
+      font-size: .85rem; font-weight: 700; color: var(--teal);
+    }
+    .downloads span { font-weight: 400; color: var(--gray-5); font-size: .75rem; display: block; }
+    .rating { font-size: .82rem; color: var(--gray-5); }
+
+    .verified-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--green-lt); color: var(--green);
+      border-radius: 100px; padding: 2px 8px;
+      font-size: .72rem; font-weight: 700;
+    }
+    .caution-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--yellow-lt); color: var(--yellow);
+      border-radius: 100px; padding: 2px 8px;
+      font-size: .72rem; font-weight: 700;
+    }
+
+    @media (max-width: 580px) {
+      .skill-card { grid-template-columns: 48px 1fr; }
+      .skill-meta { display: none; }
+    }
+
+    /* ── Category pills ── */
+    .category-row {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px;
+    }
+    .cat-pill {
+      padding: 6px 16px; border-radius: 100px;
+      background: var(--gray-2); border: 1px solid var(--gray-3);
+      font-size: .85rem; font-weight: 600; color: var(--gray-5);
+      cursor: default;
+    }
+    .cat-pill--active {
+      background: var(--teal); color: var(--white); border-color: var(--teal);
+    }
+
+    /* ── How it works steps ── */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .how-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .how-step-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: var(--white);
+      font-weight: 800; font-size: .9rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .how-card h3 { font-size: .9rem; font-weight: 700; margin-bottom: 6px; }
+    .how-card p  { font-size: .82rem; color: var(--gray-5); }
+
+    /* ── Safety alert ── */
+    .safety-alert {
+      background: var(--yellow-lt);
+      border: 1px solid #fcd34d;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-top: 40px;
+    }
+    .safety-alert p { font-size: .9rem; color: #92400e; }
+    .safety-alert strong { color: #78350f; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    /* ── Mobile nav ── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; position: absolute;
+        top: 60px; left: 0; right: 0;
+        background: var(--white); border-bottom: 1px solid var(--gray-3);
+        flex-direction: column; padding: 16px 24px; gap: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      nav { position: sticky; top: 0; }
+    }
+  
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge"><span aria-hidden="true">&#x1F3EA;</span> ClawHub Marketplace</div>
+  <h1>Extend OpenClaw with <em>ClawHub</em></h1>
+  <p>ClawHub is the official skill marketplace for OpenClaw. Browse, install, and manage hundreds of community-built skills that supercharge what your AI agent can do.</p>
+  <div class="hero-stats">
+    <div class="stat"><strong>100+</strong><span>Published Skills</span></div>
+    <div class="stat"><strong>2M+</strong><span>Total Installs</span></div>
+    <div class="stat"><strong>1,200+</strong><span>Contributors</span></div>
+    <div class="stat"><strong>Free</strong><span>Most skills are free</span></div>
+  </div>
+</header>
+
+<!-- What is ClawHub -->
+<section class="section section--alt" id="about">
+  <div class="container">
+    <div class="section-label">What is ClawHub?</div>
+    <h2 class="section-title">The App Store for Your AI Agent</h2>
+    <p class="section-subtitle">Think of ClawHub the way you think of the App Store or Chrome Extensions — except every "app" adds a new capability to your OpenClaw AI agent.</p>
+
+    <div class="explain-grid">
+      <div class="explain-card">
+        <h3>&#x1F9E9; What is a skill?</h3>
+        <p>A skill is a small package of instructions and tools that teaches OpenClaw how to do something new — like control Spotify, create Notion pages, or post to GitHub. Skills are installed in seconds and activated immediately.</p>
+      </div>
+      <div class="explain-card">
+        <h3>&#x1F465; Who builds them?</h3>
+        <p>Skills are built by the OpenClaw open-source community — developers, power users, and companies. Anyone can publish a skill to ClawHub. Quality varies, so always check the publisher and review count before installing.</p>
+      </div>
+      <div class="explain-card">
+        <h3>&#x1F4B0; How much do they cost?</h3>
+        <p>The vast majority of ClawHub skills are completely free and open-source. A small number of premium skills from verified publishers carry a one-time or subscription fee.</p>
+      </div>
+      <div class="explain-card">
+        <h3>&#x26A1; How do I install one?</h3>
+        <p>Browse ClawHub from the OpenClaw dashboard or CLI, find a skill, review its permissions, and install with one command. OpenClaw will start using it immediately in your next conversation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How ClawHub Works -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">From Browse to Install in 4 Steps</h2>
+    <p class="section-subtitle">Getting a new skill up and running takes under a minute.</p>
+
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-step-num" aria-hidden="true">1</div>
+        <h3>Browse ClawHub</h3>
+        <p>Search or filter skills by category in the OpenClaw dashboard or at clawhub.openclaw.ai.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-step-num" aria-hidden="true">2</div>
+        <h3>Review Permissions</h3>
+        <p>Every skill lists exactly what it can access — files, internet, messaging, shell. Read this carefully before proceeding.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-step-num" aria-hidden="true">3</div>
+        <h3>Install the Skill</h3>
+        <p>Click install or run the CLI command. OpenClaw downloads and verifies the skill package automatically.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-step-num" aria-hidden="true">4</div>
+        <h3>Use It in Chat</h3>
+        <p>The skill is live immediately. Just tell OpenClaw what you want — it knows the new skill is available.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Top Skills -->
+<section class="section section--alt" id="top-skills">
+  <div class="container">
+    <div class="section-label">Most downloaded</div>
+    <h2 class="section-title">Top Skills on ClawHub</h2>
+    <p class="section-subtitle">These are the most installed and highest-rated skills in the marketplace right now. Download counts are approximate.</p>
+
+    <div class="category-row" role="list" aria-label="Skill categories">
+      <span class="cat-pill cat-pill--active" role="listitem">All</span>
+      <span class="cat-pill" role="listitem">Productivity</span>
+      <span class="cat-pill" role="listitem">Developer</span>
+      <span class="cat-pill" role="listitem">Communication</span>
+      <span class="cat-pill" role="listitem">Media</span>
+      <span class="cat-pill" role="listitem">Smart Home</span>
+    </div>
+
+    <div class="skills-list" role="list" aria-label="Top skills">
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank skill-rank--gold" aria-label="Rank 1">
+          <span class="rank-num">1</span>
+          <span class="rank-label">&#x1F947;</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F419;</span>
+            <span class="skill-name">GitHub Copilot Bridge</span>
+            <span class="skill-author">by openclaw-official</span>
+          </div>
+          <p class="skill-desc">Connect OpenClaw directly to your GitHub repos. Create issues, open and review pull requests, check CI/CD status, and push commits — all from a chat message. The most complete GitHub skill available.</p>
+          <div class="skill-tags">
+            <span class="tag tag--teal">Developer</span>
+            <span class="tag tag--blue">Git</span>
+            <span class="tag tag--blue">CI/CD</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">342K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.9 out of 5">&#x2B50; 4.9</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank skill-rank--silver" aria-label="Rank 2">
+          <span class="rank-num">2</span>
+          <span class="rank-label">&#x1F948;</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F4CB;</span>
+            <span class="skill-name">Notion Power Tools</span>
+            <span class="skill-author">by notion-community</span>
+          </div>
+          <p class="skill-desc">Full Notion integration — create pages, update databases, search your workspace, append journal entries, and sync tasks between Notion and your calendar. One of the most versatile productivity skills available.</p>
+          <div class="skill-tags">
+            <span class="tag tag--green">Productivity</span>
+            <span class="tag tag--blue">Notes</span>
+            <span class="tag tag--teal">Database</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">298K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.8 out of 5">&#x2B50; 4.8</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank skill-rank--bronze" aria-label="Rank 3">
+          <span class="rank-num">3</span>
+          <span class="rank-label">&#x1F949;</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F3B5;</span>
+            <span class="skill-name">Spotify DJ</span>
+            <span class="skill-author">by tunes-dev</span>
+          </div>
+          <p class="skill-desc">Control Spotify entirely through chat. Play music by mood, genre, or artist. Create and manage playlists automatically. Ask OpenClaw to "play something focused" and it picks the right music for your task.</p>
+          <div class="skill-tags">
+            <span class="tag tag--yellow">Media</span>
+            <span class="tag tag--blue">Music</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">241K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.7 out of 5">&#x2B50; 4.7</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank" aria-label="Rank 4">
+          <span class="rank-num">4</span>
+          <span class="rank-label">rank</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F3E0;</span>
+            <span class="skill-name">Home Assistant Connect</span>
+            <span class="skill-author">by ha-community</span>
+          </div>
+          <p class="skill-desc">Bridge OpenClaw and Home Assistant to control your smart home via chat. Adjust lights, thermostats, and locks. Set automations like "dim the lights and lower the thermostat when I say goodnight."</p>
+          <div class="skill-tags">
+            <span class="tag tag--teal">Smart Home</span>
+            <span class="tag tag--blue">IoT</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">187K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.7 out of 5">&#x2B50; 4.7</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank" aria-label="Rank 5">
+          <span class="rank-num">5</span>
+          <span class="rank-label">rank</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F4C8;</span>
+            <span class="skill-name">Jira Sprint Manager</span>
+            <span class="skill-author">by devtools-hub</span>
+          </div>
+          <p class="skill-desc">Manage your Jira sprint from chat. Create tickets, update statuses, add comments, get sprint burndown summaries, and assign issues to teammates — without ever opening the Jira UI.</p>
+          <div class="skill-tags">
+            <span class="tag tag--teal">Developer</span>
+            <span class="tag tag--green">Project Mgmt</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">154K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.6 out of 5">&#x2B50; 4.6</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank" aria-label="Rank 6">
+          <span class="rank-num">6</span>
+          <span class="rank-label">rank</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x2601;&#xFE0F;</span>
+            <span class="skill-name">Google Drive Sync</span>
+            <span class="skill-author">by gworkspace-tools</span>
+          </div>
+          <p class="skill-desc">Upload, find, share, and organise files in Google Drive via OpenClaw. Also supports creating Google Docs and Sheets from templates, and searching Drive content by natural language query.</p>
+          <div class="skill-tags">
+            <span class="tag tag--blue">Files</span>
+            <span class="tag tag--teal">Google</span>
+            <span class="tag tag--green">Productivity</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">143K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.5 out of 5">&#x2B50; 4.5</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank" aria-label="Rank 7">
+          <span class="rank-num">7</span>
+          <span class="rank-label">rank</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F4F0;</span>
+            <span class="skill-name">Daily Briefing Pro</span>
+            <span class="skill-author">by productivity-labs</span>
+          </div>
+          <p class="skill-desc">Delivers a personalised daily digest to your messaging app each morning — combining calendar events, email summaries, top news by topic, and weather. Fully customisable delivery time and content.</p>
+          <div class="skill-tags">
+            <span class="tag tag--green">Productivity</span>
+            <span class="tag tag--blue">News</span>
+            <span class="tag tag--yellow">Scheduled</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">128K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.8 out of 5">&#x2B50; 4.8</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank" aria-label="Rank 8">
+          <span class="rank-num">8</span>
+          <span class="rank-label">rank</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F4B9;</span>
+            <span class="skill-name">Price Tracker</span>
+            <span class="skill-author">by shop-automations</span>
+          </div>
+          <p class="skill-desc">Monitor product prices on major retail sites. Set price drop alerts that notify you via WhatsApp or Telegram the moment a product hits your target price. Supports Amazon, eBay, and more.</p>
+          <div class="skill-tags">
+            <span class="tag tag--yellow">Shopping</span>
+            <span class="tag tag--green">Automation</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">112K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.4 out of 5">&#x2B50; 4.4</div>
+          <span class="caution-badge" aria-label="Community publisher">&#x26A0; Community</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank" aria-label="Rank 9">
+          <span class="rank-num">9</span>
+          <span class="rank-label">rank</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F9EA;</span>
+            <span class="skill-name">Code Reviewer</span>
+            <span class="skill-author">by devtools-hub</span>
+          </div>
+          <p class="skill-desc">Point OpenClaw at a file or repo directory and get an instant code review — highlighting bugs, security issues, performance problems, and style inconsistencies with suggested fixes.</p>
+          <div class="skill-tags">
+            <span class="tag tag--teal">Developer</span>
+            <span class="tag tag--blue">Code Quality</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">98K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.6 out of 5">&#x2B50; 4.6</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+      <article class="skill-card" role="listitem">
+        <div class="skill-rank" aria-label="Rank 10">
+          <span class="rank-num">10</span>
+          <span class="rank-label">rank</span>
+        </div>
+        <div class="skill-body">
+          <div class="skill-header">
+            <span class="skill-icon" aria-hidden="true">&#x1F50C;</span>
+            <span class="skill-name">Zapier Bridge</span>
+            <span class="skill-author">by zapier-official</span>
+          </div>
+          <p class="skill-desc">Connect OpenClaw to 6,000+ apps through Zapier. Trigger Zaps from chat, receive webhooks into OpenClaw, and chain multi-step automations across any tools in your workflow.</p>
+          <div class="skill-tags">
+            <span class="tag tag--green">Integration</span>
+            <span class="tag tag--blue">Webhooks</span>
+            <span class="tag tag--teal">Automation</span>
+          </div>
+        </div>
+        <div class="skill-meta">
+          <div class="downloads">91K<span>installs</span></div>
+          <div class="rating" aria-label="Rating 4.5 out of 5">&#x2B50; 4.5</div>
+          <span class="verified-badge" aria-label="Verified publisher">&#x2714; Verified</span>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="safety-alert" role="alert">
+      <span style="font-size:1.4rem; flex-shrink:0;" aria-hidden="true">&#x26A0;&#xFE0F;</span>
+      <p><strong>Always check before you install.</strong> Look for the green <strong>Verified</strong> badge — it means the publisher has been reviewed by the OpenClaw team. <strong>Community</strong> skills are unreviewed and carry higher risk. Never install a skill that requests more permissions than it needs. Read the <a href="security.html">Security Guide</a> for full advice.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="automation.html">Automation</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="security.html">Security</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>

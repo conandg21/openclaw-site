@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started with OpenClaw: Complete Setup Guide for 2026 | learnopenclaw.org</title>
+  <meta name="description" content="Step-by-step guide to installing OpenClaw, choosing a model, writing your SOUL.md, and running your first automated task. No prior AI experience needed." />
+  <meta name="keywords" content="how to install OpenClaw, OpenClaw setup guide, OpenClaw tutorial 2026, getting started OpenClaw, OpenClaw SOUL.md" />
+  <link rel="canonical" href="https://learnopenclaw.org/blog/getting-started-openclaw-2026.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Getting Started with OpenClaw: Complete Setup Guide for 2026" />
+  <meta property="og:description" content="Install OpenClaw, connect a model, write your SOUL.md, and run your first real-world task — step by step with no fluff." />
+  <meta property="og:url" content="https://learnopenclaw.org/blog/getting-started-openclaw-2026.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Getting Started with OpenClaw: Complete Setup Guide for 2026" />
+  <meta name="twitter:description" content="Install OpenClaw, write your SOUL.md, and run your first automated task — the complete beginner guide." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Getting Started with OpenClaw: Complete Setup Guide for 2026",
+    "description": "Step-by-step guide to installing OpenClaw, choosing a model, writing your SOUL.md, and running your first automated task.",
+    "url": "https://learnopenclaw.org/blog/getting-started-openclaw-2026.html",
+    "datePublished": "2026-03-18",
+    "dateModified": "2026-03-18",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://learnopenclaw.org/blog.html"},
+        {"@type": "ListItem", "position": 3, "name": "Getting Started with OpenClaw", "item": "https://learnopenclaw.org/blog/getting-started-openclaw-2026.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--blue); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .hamburger { display: flex; }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid #fde68a; padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+    .disclaimer-bar a { color: #92400e; font-weight: 600; }
+
+    /* Article layout */
+    .post-header { background: linear-gradient(180deg, var(--blue-lt) 0%, var(--white) 100%); padding: 56px 24px 40px; text-align: center; }
+    .breadcrumb { font-size: .82rem; color: var(--gray-5); margin-bottom: 20px; }
+    .breadcrumb a { color: var(--gray-5); }
+    .breadcrumb a:hover { color: var(--blue); }
+    .post-cat { display: inline-block; background: var(--blue-md); color: var(--blue); font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 16px; }
+    .post-header h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25; max-width: 700px; margin: 0 auto 20px; }
+    .post-meta { display: flex; align-items: center; justify-content: center; gap: 16px; font-size: .88rem; color: var(--gray-5); flex-wrap: wrap; }
+    .post-meta span::before { content: '· '; }
+    .post-meta span:first-child::before { content: ''; }
+
+    .post-body { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* TOC */
+    .toc { background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 40px; }
+    .toc h2 { font-size: .88rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gray-5); margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; font-size: .95rem; }
+    .toc a { color: var(--blue); font-weight: 500; }
+
+    /* Article typography */
+    .post-body h2 { font-size: 1.45rem; font-weight: 800; margin: 48px 0 16px; padding-top: 8px; border-top: 2px solid var(--blue-md); color: var(--gray-8); }
+    .post-body h3 { font-size: 1.1rem; font-weight: 700; margin: 28px 0 10px; color: var(--gray-8); }
+    .post-body p  { margin-bottom: 18px; }
+    .post-body ul, .post-body ol { padding-left: 22px; margin-bottom: 18px; }
+    .post-body li { margin-bottom: 6px; }
+    .post-body strong { font-weight: 700; }
+    .post-body em { font-style: italic; }
+
+    /* Code */
+    .post-body pre { background: var(--gray-8); color: #e5e7eb; border-radius: 8px; padding: 20px 22px; overflow-x: auto; margin: 24px 0; font-size: .88rem; line-height: 1.6; }
+    .post-body code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+    .post-body pre code { background: none; padding: 0; font-size: inherit; }
+
+    /* Callout */
+    .callout { border-left: 4px solid var(--blue); background: var(--blue-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 24px 0; font-size: .95rem; }
+    .callout strong { color: var(--blue); }
+
+    /* Step boxes */
+    .step-box { border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 22px 24px; margin: 20px 0; background: var(--white); box-shadow: var(--shadow); }
+    .step-box .step-num { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--blue); color: var(--white); border-radius: 50%; font-weight: 800; font-size: .95rem; margin-bottom: 12px; }
+    .step-box h3 { margin-top: 0; margin-bottom: 8px; }
+
+    /* Related posts */
+    .related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; margin-top: 64px; }
+    .related-inner { max-width: 720px; margin: 0 auto; }
+    .related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+    .related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--blue); margin-bottom: 8px; }
+    .related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+    .related-card a { font-size: .85rem; font-weight: 600; }
+
+    footer { background: var(--gray-8); color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+    footer a { color: #60a5fa; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../blog.html" aria-current="page">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="../gettingstarted.html">Get Started</a>
+        <a href="../usecases.html">Use Cases</a>
+        <a href="../automation.html">Automation</a>
+        <a href="../marketplace.html">Marketplace</a>
+        <a href="../architecture.html">Architecture</a>
+        <a href="../multiagent.html">Multi-Agent</a>
+        <a href="../nemoclaw.html">🟢 NemoClaw</a>
+        <a href="../compare.html">Compare</a>
+        <a href="../shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+          <a href="../security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="../faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+    <strong>learnopenclaw.org</strong> is an independent community resource. Not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+  </div>
+
+  <main id="main">
+    <header class="post-header">
+<div class="post-cat">Tutorial</div>
+      <h1>Getting Started with OpenClaw: Complete Setup Guide for 2026</h1>
+      <div class="post-meta">
+        <span>March 18, 2026</span>
+        <span>8 min read</span>
+        <span>By learnopenclaw.org</span>
+      </div>
+    </header>
+
+    <article class="post-body" id="main-content">
+<h2 id="what-is-openclaw">What is OpenClaw?</h2>
+      <p>OpenClaw is a free, open-source autonomous AI agent that runs entirely on your machine. Unlike chatbots that only answer questions, OpenClaw <strong>takes action</strong> — it can browse the web, write and run code, send messages, manage files, and chain together multi-step workflows without you babysitting every move.</p>
+      <p>What makes it different from other agents is its deep integration with messaging apps. You can delegate tasks to OpenClaw directly from <strong>WhatsApp, Telegram, Slack</strong>, or even SMS, and get updates back the same way. Your AI agent lives where you already work.</p>
+
+      <div class="callout">
+        <strong>Before you start:</strong> OpenClaw works best with at least 8 GB of RAM. For local models, 16 GB+ is recommended. You can also use API-based models (Claude, GPT-4, Gemini) on any hardware.
+      </div>
+
+      <h2 id="install">Step 1 — Install OpenClaw</h2>
+      <p>OpenClaw is installed via a single command on all major platforms. Open your terminal and run:</p>
+
+      <pre><code># macOS / Linux
+curl -fsSL https://openclaw.ai/install.sh | bash
+
+# Windows (PowerShell)
+irm https://openclaw.ai/install.ps1 | iex</code></pre>
+
+      <p>This installs the <code>claw</code> command-line tool and its dependencies. Verify it worked:</p>
+      <pre><code>claw --version</code></pre>
+      <p>You should see something like <code>OpenClaw v0.9.4</code>. If you get a "command not found" error, restart your terminal or add <code>~/.claw/bin</code> to your <code>PATH</code>.</p>
+
+      <h3>Troubleshooting common install issues</h3>
+      <ul>
+        <li><strong>Permission denied on macOS:</strong> Run <code>chmod +x ~/.claw/bin/claw</code></li>
+        <li><strong>Python version error:</strong> OpenClaw requires Python 3.11+. Check with <code>python3 --version</code></li>
+        <li><strong>Windows Defender blocks install:</strong> Run PowerShell as Administrator and set <code>Set-ExecutionPolicy RemoteSigned</code></li>
+      </ul>
+
+      <h2 id="model">Step 2 — Choose and Connect a Model</h2>
+      <p>OpenClaw is model-agnostic — it works with both local models (fully private, no internet needed) and cloud APIs. Run the setup wizard to configure yours:</p>
+      <pre><code>claw setup</code></pre>
+      <p>You'll be prompted to choose between three options:</p>
+      <ul>
+        <li><strong>Cloud API</strong> (Claude, GPT-4o, Gemini) — Best reasoning, requires API key and internet</li>
+        <li><strong>Ollama / local model</strong> (Llama 3, Mistral, Phi-3) — Fully private, no cost per query</li>
+        <li><strong>NemoClaw</strong> — NVIDIA enterprise stack with Nemotron-3-Super-120B, requires NVIDIA GPU</li>
+      </ul>
+
+      <div class="callout">
+        <strong>Recommended for beginners:</strong> Start with a cloud API. Claude claude-sonnet-4-6 offers the best balance of speed and capability for most OpenClaw tasks.
+      </div>
+
+      <p>For a cloud model, you'll be asked for your API key. OpenClaw stores it in <code>~/.claw/config.yaml</code> — it never leaves your machine.</p>
+
+      <h2 id="soul">Step 3 — Write Your SOUL.md</h2>
+      <p>SOUL.md is the most important file in your OpenClaw setup. It's a plain-text Markdown file that tells the agent who you are, what you do, and how you want it to behave. Think of it as your AI's onboarding document.</p>
+      <pre><code>claw soul --edit</code></pre>
+      <p>This opens your SOUL.md in your default editor. Here's a solid starting template:</p>
+      <pre><code># My Identity
+My name is [Your Name]. I'm a [your role, e.g. "freelance designer"] based in [city].
+
+# How I work
+- I prefer direct, concise communication — no filler.
+- I work mostly in the mornings. Do not schedule anything before 9 AM.
+- I use Google Workspace: Gmail, Drive, Calendar.
+
+# Communication style
+When messaging me, use plain language. Lead with the result, then explain.
+
+# Recurring tasks
+- Every Monday: send me a brief summary of my week ahead from my calendar.
+- Daily at 7 PM: summarise any unread emails flagged as important.
+
+# Limits
+- Never send emails without my explicit approval.
+- Do not purchase anything or enter payment info.</code></pre>
+      <p>The more specific you are, the better OpenClaw will perform. Revisit SOUL.md regularly as your workflow evolves.</p>
+
+      <h2 id="first-task">Step 4 — Run Your First Task</h2>
+      <p>With your model connected and SOUL.md written, you're ready. Run OpenClaw's interactive mode:</p>
+      <pre><code>claw run</code></pre>
+      <p>OpenClaw will greet you and wait for a task. Try something low-stakes first to get a feel for it:</p>
+      <pre><code>&gt; Summarise the top 5 AI news stories from the past 24 hours and format them as bullet points.</code></pre>
+      <p>OpenClaw will browse the web, pull relevant stories, summarise them, and return the result — usually in under 30 seconds.</p>
+
+      <h3>Understanding the output</h3>
+      <p>Before each action, OpenClaw prints what it's about to do and why. You'll see lines like <code>[browsing: techcrunch.com]</code> or <code>[writing: summary.txt]</code>. This transparency is by design — you always know what the agent is doing.</p>
+
+      <h2 id="skills">Step 5 — Install Your First Skill</h2>
+      <p>Skills extend OpenClaw's core capabilities. Browse the Marketplace and install the Email Digest skill as a first experiment:</p>
+      <pre><code>claw skill install email-digest</code></pre>
+      <p>After installation, trigger it with:</p>
+      <pre><code>&gt; Run email-digest for today</code></pre>
+      <p>It will connect to your email provider, filter out noise, and send you a clean summary. For more skill options, visit the <a href="../marketplace.html">Marketplace page</a>.</p>
+
+      <h2 id="next-steps">Next Steps</h2>
+      <p>Now that you have OpenClaw running, here's what to explore next:</p>
+      <ul>
+        <li><strong>Connect a messaging app</strong> — Run <code>claw connect whatsapp</code> to control OpenClaw from your phone</li>
+        <li><strong>Set up automation</strong> — Use <a href="../automation.html">automation schedules</a> to run tasks without being prompted</li>
+        <li><strong>Explore use cases</strong> — Browse the <a href="../usecases.html">32 real-world use cases</a> for inspiration</li>
+        <li><strong>Read the SOUL.md guide</strong> — Check the full <a href="../gettingstarted.html">Getting Started page</a> for advanced SOUL.md patterns</li>
+      </ul>
+
+      <div class="callout">
+        <strong>Join the community:</strong> Found a useful workflow? The OpenClaw community on GitHub Discussions is a great place to share skill recipes and SOUL.md templates.
+      </div>
+
+    </article>
+
+    <section class="nl-section" aria-label="Newsletter signup" style="margin:48px -24px 0; border-radius: 0;">
+      <div style="max-width:520px;margin:0 auto;">
+        <h2 style="font-size:1.2rem;">Enjoyed this? <em>Get more in your inbox.</em></h2>
+        <p>OpenClaw tutorials, tips, and updates — straight to you. No spam.</p>
+        <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+        <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+          <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+          <button type="submit">Subscribe free</button>
+        </form>
+        <p class="nl-fine">Unsubscribe any time · Powered by ConvertKit</p>
+      </div>
+    </section>
+
+    <section class="related" aria-label="Related articles">
+      <div class="related-inner">
+        <h2>Keep reading</h2>
+        <div class="related-grid">
+          <div class="related-card">
+            <div class="rc-cat">Tips & Tricks</div>
+            <h3>10 OpenClaw Tips to 10x Your Productivity</h3>
+            <a href="10-openclaw-productivity-tips.html">Read →</a>
+          </div>
+          <div class="related-card">
+            <div class="rc-cat">Tips & Tricks</div>
+            <h3>The 5 Best OpenClaw Skills to Install in 2026</h3>
+            <a href="best-openclaw-skills-2026.html">Read →</a>
+          </div>
+          <div class="related-card">
+            <div class="rc-cat">Use Case Spotlight</div>
+            <h3>How a Freelancer Automated Their Entire Workflow</h3>
+            <a href="openclaw-freelancer-case-study.html">Read →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+      <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+      <a href="../blog.html">Blog</a>
+    </div>
+    <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

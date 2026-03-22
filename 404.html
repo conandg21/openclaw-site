@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found — OpenClaw</title>
+  <meta name="description" content="The page you're looking for doesn't exist. Return to the OpenClaw documentation hub.">
+  <meta name="robots" content="noindex">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-6: #2563eb;
+      --blue-7: #1d4ed8;
+      --gray-1: #f8fafc;
+      --gray-3: #e2e8f0;
+      --gray-6: #64748b;
+      --gray-8: #1e293b;
+      --white: #ffffff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-1);
+      color: var(--gray-8);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--gray-8); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .nav-brand span { font-size: 1.3rem; }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { color: var(--gray-6); text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--blue-6); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 780px) {
+      a:focus, button:focus { outline: 3px solid var(--blue-6); outline-offset: 3px; border-radius: 4px; }
+    .hamburger { display: flex; }
+      .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--gray-3); flex-direction: column; padding: 16px 24px; gap: 14px; box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99; }
+      .nav-links.open { display: flex; }
+    }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+    }
+
+    .error-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: 16px;
+      padding: 56px 48px;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    }
+
+    .claw-icon {
+      font-size: 4rem;
+      line-height: 1;
+      margin-bottom: 16px;
+      display: block;
+      animation: shake 2s ease-in-out infinite;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      20%  { transform: rotate(-8deg); }
+      40%  { transform: rotate(8deg); }
+      60%  { transform: rotate(-4deg); }
+      80%  { transform: rotate(4deg); }
+    }
+
+    .error-code {
+      font-size: 5rem;
+      font-weight: 800;
+      color: var(--blue-6);
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 8px;
+    }
+
+    .error-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gray-8);
+      margin-bottom: 12px;
+    }
+
+    .error-message {
+      color: var(--gray-6);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--blue-6);
+      color: var(--white);
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .95rem;
+      transition: background .2s, transform .1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary:hover { background: var(--blue-7); transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--gray-8);
+      border: 1px solid var(--gray-3);
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .95rem;
+      transition: border-color .2s, transform .1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-secondary:hover { border-color: var(--blue-6); color: var(--blue-6); transform: translateY(-1px); }
+
+    /* ── Quick links ── */
+    .quick-links {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid var(--gray-3);
+      text-align: left;
+    }
+    .quick-links h2 {
+      font-size: .8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--gray-6);
+      margin-bottom: 16px;
+    }
+    .link-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .link-grid a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-3);
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--gray-8);
+      font-size: .875rem;
+      font-weight: 500;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .link-grid a:hover { border-color: var(--blue-6); color: var(--blue-6); background: #eff6ff; }
+    .link-icon { font-size: 1rem; flex-shrink: 0; }
+
+    @media (max-width: 480px) {
+      .error-card { padding: 40px 24px; }
+      .error-code { font-size: 4rem; }
+      .link-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: var(--gray-6);
+      text-align: center;
+      padding: 20px 24px;
+      font-size: .85rem;
+    }
+    footer a { color: #94a3b8; text-decoration: none; }
+    footer a:hover { color: var(--white); }
+  
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; left: 0; right: 0;
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      flex-direction: column !important; padding: 16px 24px; gap: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1); z-index: 999;
+    }
+    .nav-links.open { display: flex; }
+  
+    /* ── Learn submenu ── */
+    .nav-learn { display: flex; flex-direction: column; }
+    .learn-toggle {
+      background: none; border: none; cursor: pointer;
+      color: var(--gray-5); font-size: .95rem; font-weight: 600;
+      display: flex; align-items: center; gap: 6px; padding: 0;
+      font-family: inherit; text-align: left;
+    }
+    .learn-toggle:hover { color: var(--blue); }
+    .learn-arrow { font-size: .7rem; transition: transform .2s; display: inline-block; }
+    .learn-toggle[aria-expanded="true"] .learn-arrow { transform: rotate(180deg); }
+    .learn-submenu {
+      display: none; flex-direction: column;
+      padding: 8px 0 4px 16px; gap: 10px;
+      border-left: 2px solid var(--gray-3); margin-top: 6px;
+    }
+    .learn-submenu.open { display: flex; }
+    .learn-submenu a { color: var(--gray-5); font-size: .88rem; font-weight: 500; }
+    .learn-submenu a:hover { color: var(--blue); text-decoration: none; }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link" style="position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden;z-index:999;background:var(--blue-6);color:#fff;padding:8px 16px;border-radius:0 0 8px 0;font-weight:600;">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="nav-brand"><span aria-hidden="true">🦞</span> learnopenclaw.org</a>
+    <button class="hamburger" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="automation.html">Automation</a></li>
+      <li><a href="security.html">Security</a></li>
+      <li><a href="marketplace.html">Marketplace</a></li>
+      <li><a href="architecture.html">Architecture</a></li>
+      <li><a href="nemoclaw.html">🟢 NemoClaw</a></li>
+      <li><a href="compare.html">Compare</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content" role="main">
+    <div class="error-card" role="alert" aria-live="polite">
+      <span class="claw-icon" aria-hidden="true">🦞</span>
+      <div class="error-code" aria-label="Error 404">404</div>
+      <h1 class="error-title">Page Not Found</h1>
+      <p class="error-message">
+        Looks like OpenClaw's Heartbeat couldn't locate this page.<br>
+        It may have been moved, deleted, or the URL was mistyped.
+      </p>
+      <div class="btn-group">
+        <a href="index.html" class="btn-primary"><span aria-hidden="true">🏠</span> Go Home</a>
+        <a href="faq.html" class="btn-secondary"><span aria-hidden="true">❓</span> Visit FAQ</a>
+      </div>
+
+      <div class="quick-links">
+        <h2>Popular pages</h2>
+        <div class="link-grid">
+          <a href="automation.html"><span class="link-icon" aria-hidden="true">⚡</span> Automation Guide</a>
+          <a href="security.html"><span class="link-icon" aria-hidden="true">🔒</span> Security Guide</a>
+          <a href="marketplace.html"><span class="link-icon" aria-hidden="true">🛒</span> ClawHub Marketplace</a>
+          <a href="architecture.html"><span class="link-icon" aria-hidden="true">🏗️</span> Architecture</a>
+          <a href="compare.html"><span class="link-icon" aria-hidden="true">⚖️</span> Compare Agents</a>
+          <a href="faq.html"><span class="link-icon" aria-hidden="true">💬</span> FAQ</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 OpenClaw Docs · <a href="index.html">Home</a> · <a href="faq.html">FAQ</a></p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+</script>
+</body>
+</html>

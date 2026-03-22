@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Security Guide — Stay Safe with AI Agents</title>
+  <meta name="description" content="Learn how to secure your OpenClaw AI agent installation. Covers the ClawHub malware incident, threat levels, step-by-step hardening, and an ADA-friendly security checklist." />
+  <meta name="keywords" content="OpenClaw security, AI agent security, ClawHub malware, secure AI agent, OpenClaw guide" />
+  <link rel="canonical" href="https://learnopenclaw.org/security.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Security Guide — Stay Safe with AI Agents" />
+  <meta property="og:description" content="How to protect yourself when using OpenClaw. Covers real incidents, threat levels, step-by-step hardening, and a full security checklist." />
+  <meta property="og:url" content="https://learnopenclaw.org/security.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Security Guide" />
+  <meta name="twitter:description" content="Protect yourself when using OpenClaw. Real incidents, threat levels, and a full security checklist." />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OpenClaw Security Guide — Stay Safe with AI Agents",
+    "description": "How to protect yourself when using OpenClaw AI agent.",
+    "url": "https://learnopenclaw.org/security.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Security","item":"https://learnopenclaw.org/security.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:    #2563eb;
+      --blue-lt: #eff6ff;
+      --blue-md: #bfdbfe;
+      --red:     #dc2626;
+      --red-lt:  #fef2f2;
+      --red-md:  #fecaca;
+      --green:   #16a34a;
+      --green-lt:#f0fdf4;
+      --yellow:  #d97706;
+      --yellow-lt:#fffbeb;
+      --gray-1:  #f9fafb;
+      --gray-2:  #f3f4f6;
+      --gray-3:  #e5e7eb;
+      --gray-5:  #6b7280;
+      --gray-8:  #1f2937;
+      --white:   #ffffff;
+      --radius:  12px;
+      --shadow:  0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── Skip nav (ADA) ── */
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--red); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    /* ── Focus styles (ADA) ── */
+    a:focus, button:focus {
+      outline: 3px solid var(--red);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    .nav-links a.active { color: var(--red); font-weight: 700; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--red-lt) 0%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--red-md);
+      color: var(--red);
+      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: normal; color: var(--red); }
+    .hero p {
+      font-size: 1.1rem; color: var(--gray-5);
+      max-width: 560px; margin: 0 auto;
+    }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--red);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 800; line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 620px; margin-bottom: 40px;
+    }
+
+    /* ── Alert banner ── */
+    .alert {
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 40px;
+    }
+    .alert--red    { background: var(--red-lt);    border: 1px solid var(--red-md); }
+    .alert--yellow { background: var(--yellow-lt); border: 1px solid #fcd34d; }
+    .alert--green  { background: var(--green-lt);  border: 1px solid #bbf7d0; }
+    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+    .alert--red    p { color: #991b1b; font-size: .95rem; }
+    .alert--yellow p { color: #92400e; font-size: .95rem; }
+    .alert--green  p { color: #14532d; font-size: .95rem; }
+    .alert strong { font-weight: 700; }
+
+    /* ── Tip cards grid ── */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .tip-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .tip-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .tip-card .tip-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .tip-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .tip-card p  { font-size: .875rem; color: var(--gray-5); }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .checklist li {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+      font-size: .95rem;
+    }
+    .checklist li .check { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .checklist li strong { display: block; font-weight: 700; margin-bottom: 2px; }
+    .checklist li span { color: var(--gray-5); font-size: .875rem; }
+
+    /* ── Threat table ── */
+    .threat-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .threat-table th {
+      text-align: left; padding: 12px 16px;
+      background: var(--gray-2);
+      border-bottom: 2px solid var(--gray-3);
+      font-weight: 700; font-size: .8rem;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .threat-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+    .threat-table tr:last-child td { border-bottom: none; }
+    .threat-table tr:hover td { background: var(--gray-1); }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px; border-radius: 100px;
+      font-size: .75rem; font-weight: 700;
+    }
+    .badge--high   { background: #fee2e2; color: #991b1b; }
+    .badge--medium { background: #fef3c7; color: #92400e; }
+    .badge--low    { background: #dcfce7; color: #14532d; }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; position: relative; }
+    .steps::before {
+      content: '';
+      position: absolute; left: 23px; top: 28px;
+      width: 2px; height: calc(100% - 56px);
+      background: var(--gray-3);
+    }
+    .step {
+      display: flex; gap: 20px; align-items: flex-start;
+      position: relative; padding-bottom: 32px;
+    }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      flex-shrink: 0;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--red);
+      color: var(--white);
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px var(--red-lt);
+      position: relative; z-index: 1;
+    }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
+    .step-body p  { font-size: .95rem; color: var(--gray-5); }
+    .step-body code {
+      display: inline-block;
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 6px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      padding: 4px 10px; margin-top: 6px;
+    }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    /* ── Mobile nav ── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; position: absolute;
+        top: 60px; left: 0; right: 0;
+        background: var(--white); border-bottom: 1px solid var(--gray-3);
+        flex-direction: column; padding: 16px 24px; gap: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      nav { position: sticky; top: 0; }
+    }
+  
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+<main id="main-content">
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">&#x26A0;&#xFE0F; Security Guide</div>
+  <h1>Stay Safe with <em>OpenClaw</em></h1>
+  <p>OpenClaw is powerful — but with great power comes real risk. Here's everything you need to know to protect yourself.</p>
+</header>
+
+<!-- The Incident -->
+<section class="section" id="incident">
+  <div class="container">
+    <div class="section-label">What happened</div>
+    <h2 class="section-title">The ClawHub Malware Incident</h2>
+    <p class="section-subtitle">In early 2026, OpenClaw faced its first major security crisis — and it's a cautionary tale every user should know.</p>
+
+    <div class="alert alert--red">
+      <div class="alert-icon">&#x1F6A8;</div>
+      <p><strong>Real incident:</strong> Malicious skills were published to ClawHub, OpenClaw's official skill marketplace. Users who installed them unknowingly gave attackers full access to their machines — including file systems, shell execution, and messaging apps.</p>
+    </div>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F578;&#xFE0F;</div>
+        <h3>How it happened</h3>
+        <p>Attackers uploaded skills that appeared legitimate — with good descriptions and fake reviews. Once installed, they used OpenClaw's own shell execution capabilities to run malicious code.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4A5;</div>
+        <h3>Why it was dangerous</h3>
+        <p>OpenClaw runs with local machine access by design. A malicious skill has the same privileges as you — it can read files, send emails, and execute commands without asking.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F6E0;&#xFE0F;</div>
+        <h3>What was fixed</h3>
+        <p>The OpenClaw team added skill signature verification and permission sandboxing. But user vigilance remains the most important line of defence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Threat Overview -->
+<section class="section section--alt" id="threats">
+  <div class="container">
+    <div class="section-label">Know the risks</div>
+    <h2 class="section-title">Common Threats &amp; Their Risk Level</h2>
+    <p class="section-subtitle">Understanding what can go wrong is the first step to staying safe.</p>
+
+    <table class="threat-table">
+      <thead>
+        <tr>
+          <th scope="col">Threat</th>
+          <th scope="col">Risk</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Malicious Skills</strong></td>
+          <td><span class="badge badge--high">High</span></td>
+          <td>Third-party skills with hidden malware that exploit OpenClaw's local access to compromise your machine.</td>
+        </tr>
+        <tr>
+          <td><strong>API Key Theft</strong></td>
+          <td><span class="badge badge--high">High</span></td>
+          <td>Your AI model API key stored in the <code>.env</code> file can be stolen and used to rack up huge bills on your account.</td>
+        </tr>
+        <tr>
+          <td><strong>Message Injection</strong></td>
+          <td><span class="badge badge--medium">Medium</span></td>
+          <td>Malicious content in emails or web pages tricks OpenClaw into executing unintended commands.</td>
+        </tr>
+        <tr>
+          <td><strong>Overprivileged Skills</strong></td>
+          <td><span class="badge badge--medium">Medium</span></td>
+          <td>Skills requesting more permissions than they need — a red flag that can lead to unintended data access.</td>
+        </tr>
+        <tr>
+          <td><strong>Exposed Messaging Tokens</strong></td>
+          <td><span class="badge badge--medium">Medium</span></td>
+          <td>WhatsApp, Telegram, or Slack tokens stored insecurely can give attackers access to your messaging accounts.</td>
+        </tr>
+        <tr>
+          <td><strong>Unencrypted Config Files</strong></td>
+          <td><span class="badge badge--low">Low</span></td>
+          <td>Storing your <code>.env</code> file in a shared or synced folder (e.g. iCloud, Dropbox) can expose your credentials.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- How to Secure -->
+<section class="section" id="howto">
+  <div class="container">
+    <div class="section-label">How to protect yourself</div>
+    <h2 class="section-title">Step-by-Step Security Setup</h2>
+    <p class="section-subtitle">Follow these steps when setting up or reviewing your OpenClaw installation.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Run OpenClaw in a Virtual Machine</h3>
+          <p>The single most effective protection. Install OpenClaw inside a VM (like VirtualBox or UTM on Mac). Even if a malicious skill runs, it's isolated from your real files and system.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Only Install Skills You Trust</h3>
+          <p>Treat skills like apps from an unknown developer. Before installing any skill from ClawHub, check: Who published it? How many verified installs does it have? What permissions does it request? If anything looks off, skip it.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Protect Your .env File</h3>
+          <p>Your API keys and tokens live here. Make sure it's never committed to Git, never stored in a synced cloud folder, and has restricted file permissions.</p>
+          <code>chmod 600 .env</code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Use Scoped API Keys</h3>
+          <p>When generating API keys for OpenClaw, give them the minimum permissions needed. If possible, set usage limits and expiry dates so a stolen key can't do much damage.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Review Skill Permissions Before Installing</h3>
+          <p>Every OpenClaw skill declares what it can access. A recipe skill asking for shell access is a major red flag. Only approve permissions that make sense for what the skill does.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h3>Keep OpenClaw Updated</h3>
+          <p>Security patches are released regularly. Stay on the latest version to benefit from signature verification, sandboxing improvements, and other fixes.</p>
+          <code>git pull origin main</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Quick Checklist -->
+<section class="section section--alt" id="checklist">
+  <div class="container">
+    <div class="section-label">Quick reference</div>
+    <h2 class="section-title">Security Checklist</h2>
+    <p class="section-subtitle">Run through this list before and after setting up OpenClaw.</p>
+
+    <ul class="checklist">
+      <li>
+        <span class="check">&#x2705;</span>
+        <div>
+          <strong>Running in a VM or container</strong>
+          <span>OpenClaw is isolated from your main system files and OS.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">&#x2705;</span>
+        <div>
+          <strong>.env file has restricted permissions</strong>
+          <span>Only your user account can read the file (<code>chmod 600 .env</code>).</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">&#x2705;</span>
+        <div>
+          <strong>.env is in .gitignore</strong>
+          <span>Your secrets will never be accidentally committed to a public repo.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">&#x2705;</span>
+        <div>
+          <strong>Only trusted skills installed</strong>
+          <span>Each skill has been reviewed for permissions and source credibility.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">&#x2705;</span>
+        <div>
+          <strong>API keys are scoped and have expiry dates</strong>
+          <span>No master keys — each key only does what it needs to.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">&#x2705;</span>
+        <div>
+          <strong>OpenClaw is on the latest version</strong>
+          <span>All known security patches have been applied.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">&#x2705;</span>
+        <div>
+          <strong>Messaging tokens stored securely</strong>
+          <span>WhatsApp, Telegram, Slack tokens are not shared or stored in plain text outside .env.</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="alert alert--green" style="margin-top: 32px;">
+      <div class="alert-icon">&#x1F7E2;</div>
+      <p><strong>You're in good shape</strong> if you can check every box above. Security isn't a one-time task — revisit this list whenever you add new skills or update your setup.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>

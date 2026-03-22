@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NemoClaw Explained: NVIDIA's Enterprise Security Layer for OpenClaw | learnopenclaw.org</title>
+  <meta name="description" content="A deep-dive into NemoClaw — NVIDIA's enterprise AI agent stack built on OpenClaw. Covers OpenShell, Nemotron-3-Super-120B, Dynamo, and the Privacy Router announced at GTC 2026." />
+  <meta name="keywords" content="NemoClaw, NVIDIA OpenClaw, NemoClaw explained, OpenShell runtime, Nemotron-3 OpenClaw, GTC 2026 AI agent" />
+  <link rel="canonical" href="https://learnopenclaw.org/blog/nemoclaw-explained.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="NemoClaw Explained: NVIDIA's Enterprise Security Layer for OpenClaw" />
+  <meta property="og:description" content="Everything you need to know about NemoClaw — the NVIDIA enterprise stack announced at GTC 2026 that brings Nemotron, Dynamo, and a Privacy Router to OpenClaw." />
+  <meta property="og:url" content="https://learnopenclaw.org/blog/nemoclaw-explained.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NemoClaw Explained: NVIDIA's Enterprise Security Layer for OpenClaw" />
+  <meta name="twitter:description" content="NemoClaw unpacked — OpenShell runtime, Nemotron-3-Super-120B, Dynamo inference, Privacy Router, and YAML policies." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "NemoClaw Explained: NVIDIA's Enterprise Security Layer for OpenClaw",
+    "description": "A deep-dive into NemoClaw — NVIDIA's enterprise AI agent stack built on OpenClaw, covering OpenShell, Nemotron-3-Super-120B, Dynamo, and the Privacy Router.",
+    "url": "https://learnopenclaw.org/blog/nemoclaw-explained.html",
+    "datePublished": "2026-03-15",
+    "dateModified": "2026-03-18",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://learnopenclaw.org/blog.html"},
+        {"@type": "ListItem", "position": 3, "name": "NemoClaw Explained", "item": "https://learnopenclaw.org/blog/nemoclaw-explained.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --nv: #76b900; --nv-lt: #f0fdf0; --nv-md: #bbf7d0;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--blue); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .hamburger { display: flex; }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid #fde68a; padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+    .disclaimer-bar a { color: #92400e; font-weight: 600; }
+
+    .post-header { background: linear-gradient(180deg, var(--nv-lt) 0%, var(--white) 100%); padding: 56px 24px 40px; text-align: center; border-bottom: 3px solid var(--nv); }
+    .breadcrumb { font-size: .82rem; color: var(--gray-5); margin-bottom: 20px; }
+    .breadcrumb a { color: var(--gray-5); }
+    .post-cat { display: inline-block; background: var(--nv-md); color: #15803d; font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 16px; }
+    .post-header h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25; max-width: 700px; margin: 0 auto 20px; }
+    .post-meta { display: flex; align-items: center; justify-content: center; gap: 16px; font-size: .88rem; color: var(--gray-5); flex-wrap: wrap; }
+    .post-meta span::before { content: '· '; }
+    .post-meta span:first-child::before { content: ''; }
+
+    .post-body { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+    .toc { background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 40px; }
+    .toc h2 { font-size: .88rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gray-5); margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; font-size: .95rem; }
+    .toc a { color: var(--blue); font-weight: 500; }
+
+    .post-body h2 { font-size: 1.45rem; font-weight: 800; margin: 48px 0 16px; padding-top: 8px; border-top: 2px solid var(--nv-md); }
+    .post-body h3 { font-size: 1.1rem; font-weight: 700; margin: 28px 0 10px; }
+    .post-body p  { margin-bottom: 18px; }
+    .post-body ul, .post-body ol { padding-left: 22px; margin-bottom: 18px; }
+    .post-body li { margin-bottom: 6px; }
+    .post-body pre { background: var(--gray-8); color: #e5e7eb; border-radius: 8px; padding: 20px 22px; overflow-x: auto; margin: 24px 0; font-size: .88rem; line-height: 1.6; }
+    .post-body code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+    .post-body pre code { background: none; padding: 0; }
+
+    .callout { border-left: 4px solid var(--nv); background: var(--nv-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 24px 0; font-size: .95rem; }
+    .callout strong { color: #15803d; }
+
+    .component-card { border: 1px solid var(--gray-3); border-left: 4px solid var(--nv); border-radius: var(--radius); padding: 22px 24px; margin: 20px 0; background: var(--white); box-shadow: var(--shadow); }
+    .component-card h3 { margin-top: 0; color: #166534; }
+
+    .related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; }
+    .related-inner { max-width: 720px; margin: 0 auto; }
+    .related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+    .related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--blue); margin-bottom: 8px; }
+    .related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+
+    footer { background: var(--gray-8); color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+    footer a { color: #60a5fa; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../blog.html" aria-current="page">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="../gettingstarted.html">Get Started</a>
+        <a href="../usecases.html">Use Cases</a>
+        <a href="../automation.html">Automation</a>
+        <a href="../marketplace.html">Marketplace</a>
+        <a href="../architecture.html">Architecture</a>
+        <a href="../multiagent.html">Multi-Agent</a>
+        <a href="../nemoclaw.html">🟢 NemoClaw</a>
+        <a href="../compare.html">Compare</a>
+        <a href="../shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+          <a href="../security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="../faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+    <strong>learnopenclaw.org</strong> is an independent community resource. Not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+  </div>
+
+  <main id="main">
+    <header class="post-header">
+<div class="post-cat">News & Updates</div>
+      <h1>NemoClaw Explained: NVIDIA's Enterprise Security Layer for OpenClaw</h1>
+      <div class="post-meta">
+        <span>March 15, 2026</span>
+        <span>6 min read</span>
+        <span>By learnopenclaw.org</span>
+      </div>
+    </header>
+
+    <article class="post-body" id="main-content">
+<h2 id="what-is-nemoclaw">What is NemoClaw?</h2>
+      <p>At GTC 2026, NVIDIA announced <strong>NemoClaw</strong> — an enterprise-grade security and performance stack built on top of OpenClaw. Think of it as OpenClaw with a full NVIDIA powerhouse underneath: a hardened runtime environment, a purpose-built 120-billion-parameter reasoning model, a distributed inference engine, and a privacy layer that keeps sensitive data off the wire.</p>
+      <p>While base OpenClaw is designed for individual users and developers, NemoClaw targets <strong>enterprises, regulated industries, and anyone who needs auditable, policy-enforced AI agents</strong>. Healthcare, finance, legal, and government deployments are the primary use cases.</p>
+
+      <div class="callout">
+        <strong>Alpha status:</strong> NemoClaw was announced as an alpha release at GTC 2026. Feature availability may vary. Always check the <a href="https://github.com/NVIDIA/NemoClaw" target="_blank" rel="noopener">official NemoClaw GitHub</a> for the current state.
+      </div>
+
+      <h2 id="openShell">OpenShell Runtime</h2>
+      <div class="component-card">
+        <h3>🐚 OpenShell — Hardened Execution Environment</h3>
+        <p>OpenShell replaces OpenClaw's default Python subprocess execution with a fully sandboxed runtime. Every agent action runs inside an isolated container with explicit capability grants. No action can touch files, network resources, or processes outside its declared scope.</p>
+      </div>
+      <p>Key OpenShell features include filesystem namespacing (each task gets a scoped view of the filesystem), network egress policies (outbound connections must be whitelisted in the policy file), and a full audit trail — every tool call, file read, and network request is cryptographically logged.</p>
+      <p>For developers familiar with Docker, OpenShell feels similar but is lighter-weight, with sub-100ms container spin-up. It's not a full VM — it uses Linux namespaces and seccomp profiles for isolation while keeping latency low.</p>
+
+      <h2 id="nemotron">Nemotron-3-Super-120B</h2>
+      <div class="component-card">
+        <h3>🧠 Nemotron-3-Super-120B — The Purpose-Built Reasoning Model</h3>
+        <p>NemoClaw ships with Nemotron-3-Super-120B, NVIDIA's 120-billion-parameter model fine-tuned specifically for agentic tasks: multi-step planning, tool use, policy compliance, and enterprise document processing.</p>
+      </div>
+      <p>What makes it well-suited for OpenClaw workloads? Standard LLMs are trained primarily on conversation. Nemotron-3-Super is fine-tuned on <strong>long-horizon task graphs</strong> — sequences of actions that span dozens of steps, require backtracking, and must satisfy explicit constraints throughout.</p>
+      <p>Benchmark highlights from the GTC 2026 announcement include a 94.2% task completion rate on the AgentBench enterprise suite, 40% fewer tool-call errors vs GPT-4o on multi-step document workflows, and native support for the OpenClaw tool-call format without an adapter layer.</p>
+      <p>The model requires a minimum of one NVIDIA H100 or two A100 80GB GPUs for inference. For organisations without on-prem hardware, NVIDIA Cloud serving is available.</p>
+
+      <h2 id="dynamo">Dynamo Inference Engine</h2>
+      <div class="component-card">
+        <h3>⚡ Dynamo — Distributed Inference for High-Throughput Agents</h3>
+        <p>Dynamo is NVIDIA's inference serving layer that sits between NemoClaw's orchestrator and the model. It handles request routing, KV-cache sharing across agent instances, and dynamic batching to maximise GPU utilisation.</p>
+      </div>
+      <p>In a multi-agent deployment where dozens of sub-agents are running in parallel, Dynamo intelligently routes requests to avoid redundant computation. If two agents need the same context prefix (a common occurrence in fan-out orchestration patterns), Dynamo serves the cached KV state rather than recomputing it — reducing latency by up to 60% in high-concurrency scenarios.</p>
+      <p>Dynamo also handles graceful degradation: if a GPU node goes offline mid-task, in-flight requests are checkpointed and rerouted automatically. For enterprise deployments where uptime is critical, this makes a significant difference.</p>
+
+      <h2 id="privacy-router">Privacy Router</h2>
+      <div class="component-card">
+        <h3>🔒 Privacy Router — PII Filtering and Data Residency</h3>
+        <p>The Privacy Router sits at the ingress and egress points of the NemoClaw pipeline. It scans all inputs and outputs for personally identifiable information (PII), applies redaction or tokenisation based on your policy configuration, and enforces data residency rules.</p>
+      </div>
+      <p>Configuration lives in a YAML policy file. Here's an example that redacts email addresses and enforces EU data residency:</p>
+      <pre><code>privacy:
+  pii_detection:
+    enabled: true
+    redact: [email, phone, ssn, credit_card]
+    action: tokenise   # or: redact, block
+  data_residency:
+    allowed_regions: [eu-west-1, eu-central-1]
+    block_egress_outside_region: true
+  audit:
+    log_level: full
+    retention_days: 90</code></pre>
+      <p>The Privacy Router uses NVIDIA's NeMo Guardrails under the hood for PII detection, with custom model fine-tuning available for domain-specific sensitive data (e.g. medical record numbers, proprietary product codes).</p>
+
+      <h2 id="who-is-it-for">Who is NemoClaw For?</h2>
+      <p>NemoClaw is overkill for personal use. If you're an individual user or a small team, standard OpenClaw with careful SOUL.md limits is more than sufficient. NemoClaw makes sense when:</p>
+      <ul>
+        <li>You need <strong>regulatory compliance</strong> — HIPAA, GDPR, SOC 2, or similar frameworks that require audit trails and data controls</li>
+        <li>Your agents handle <strong>sensitive data</strong> — patient records, financial data, legal documents</li>
+        <li>You're running <strong>high-throughput deployments</strong> — dozens to hundreds of concurrent agent sessions</li>
+        <li>You need <strong>air-gapped operation</strong> — Nemotron-3-Super-120B can run fully on-prem with no cloud dependency</li>
+      </ul>
+
+      <p>For a detailed technical breakdown with stack diagrams, component comparison tables, and the full installation guide, see the dedicated <a href="../nemoclaw.html">NemoClaw page</a> on this site.</p>
+
+    </article>
+
+    <section class="nl-section" aria-label="Newsletter signup" style="margin:48px -24px 0; border-radius: 0;">
+      <div style="max-width:520px;margin:0 auto;">
+        <h2 style="font-size:1.2rem;">Enjoyed this? <em>Get more in your inbox.</em></h2>
+        <p>OpenClaw tutorials, tips, and updates — straight to you. No spam.</p>
+        <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+        <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+          <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+          <button type="submit">Subscribe free</button>
+        </form>
+        <p class="nl-fine">Unsubscribe any time · Powered by ConvertKit</p>
+      </div>
+    </section>
+
+    <section class="related" aria-label="Related articles">
+      <div class="related-inner">
+        <h2>Keep reading</h2>
+        <div class="related-grid">
+          <div class="related-card">
+            <div class="rc-cat">Tutorial</div>
+            <h3>Getting Started with OpenClaw: Complete Setup Guide</h3>
+            <a href="getting-started-openclaw-2026.html">Read →</a>
+          </div>
+          <div class="related-card">
+            <div class="rc-cat">Deep Dive</div>
+            <h3>NemoClaw Full Reference Page</h3>
+            <a href="../nemoclaw.html">Read →</a>
+          </div>
+          <div class="related-card">
+            <div class="rc-cat">Reference</div>
+            <h3>OpenClaw Security Guide</h3>
+            <a href="../security.html">Read →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+      <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+      <a href="../blog.html">Blog</a>
+    </div>
+    <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

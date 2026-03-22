@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Agent Orchestration — OpenClaw</title>
+  <meta name="description" content="Learn how OpenClaw coordinates multiple AI agents simultaneously — spawning sub-agents, delegating tasks, resolving conflicts, and scaling parallel workloads." />
+  <meta name="keywords" content="OpenClaw multi-agent, AI agent orchestration, parallel AI agents, sub-agents, agent swarm, OpenClaw workflows" />
+  <link rel="canonical" href="https://learnopenclaw.org/multiagent.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Multi-Agent Orchestration — OpenClaw" />
+  <meta property="og:description" content="How OpenClaw coordinates fleets of AI agents to tackle complex, parallel tasks at scale." />
+  <meta property="og:url" content="https://learnopenclaw.org/multiagent.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Multi-Agent Orchestration — OpenClaw" />
+  <meta name="twitter:description" content="Spawn sub-agents, delegate tasks, and scale parallel AI workloads with OpenClaw." />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Multi-Agent Orchestration in OpenClaw",
+    "description": "How OpenClaw coordinates multiple AI agents simultaneously for complex parallel workloads.",
+    "url": "https://learnopenclaw.org/multiagent.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Multi-Agent Orchestration","item":"https://learnopenclaw.org/multiagent.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+      --accent:    #7c3aed;
+      --accent-lt: #f5f3ff;
+      --accent-md: #ddd6fe;
+      --accent-dk: #5b21b6;
+      --green:     #059669;
+      --green-lt:  #d1fae5;
+      --orange:    #d97706;
+      --orange-lt: #fef3c7;
+      --red:       #dc2626;
+      --red-lt:    #fee2e2;
+      --blue:      #2563eb;
+      --blue-lt:   #eff6ff;
+      --gray-1:    #f8fafc;
+      --gray-2:    #f1f5f9;
+      --gray-3:    #e2e8f0;
+      --gray-5:    #64748b;
+      --gray-7:    #334155;
+      --gray-8:    #1e293b;
+      --white:     #ffffff;
+    }
+
+    /* Skip nav */
+    .skip-nav { position: absolute; left: -999px; top: auto; width: 1px; height: 1px; overflow: hidden; z-index: 9999; background: var(--accent); color: #fff; padding: 8px 16px; border-radius: 0 0 8px 0; font-weight: 600; transition: top .2s; }
+    .skip-nav:focus { position: fixed; left: 0; top: 0; width: auto; height: auto; }
+
+    a:focus, button:focus { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 16px; line-height: 1.65; color: var(--gray-8); background: var(--white); }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 72px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+    .nav-logo { font-weight: 700; font-size: 1.1rem; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .claw { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a[aria-current="page"] { color: var(--accent); font-weight: 700; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--gray-3); flex-direction: column; padding: 16px 24px; gap: 14px; box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99; }
+      .nav-links.open { display: flex; }
+    }
+
+    /* ── Page hero ── */
+    .page-hero { background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a78bfa 100%); color: var(--white); padding: 72px 0 80px; }
+    .page-hero .eyebrow { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; opacity: .75; margin-bottom: 12px; }
+    .page-hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
+    .page-hero p { font-size: 1.15rem; opacity: .88; max-width: 640px; line-height: 1.7; }
+
+    /* ── Section titles ── */
+    .section-title { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; color: var(--gray-8); margin-bottom: 12px; }
+    .section-sub { color: var(--gray-5); font-size: 1.05rem; max-width: 660px; margin-bottom: 40px; line-height: 1.6; }
+
+    /* ── Concept band ── */
+    .concept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .concept-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: 12px; padding: 28px 24px; transition: box-shadow .2s, transform .2s; }
+    .concept-card:hover { box-shadow: 0 8px 24px rgba(124,58,237,.12); transform: translateY(-2px); }
+    .concept-card .icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .concept-card h3 { font-size: 1rem; font-weight: 700; color: var(--gray-8); margin-bottom: 8px; }
+    .concept-card p { font-size: .9rem; color: var(--gray-5); line-height: 1.55; }
+
+    /* ── Architecture diagram ── */
+    .arch-wrap { background: var(--gray-8); border-radius: 16px; padding: 36px 32px; overflow-x: auto; }
+    .arch-wrap pre { color: #a78bfa; font-family: 'Courier New', Courier, monospace; font-size: .85rem; line-height: 1.6; white-space: pre; }
+
+    /* ── Role table ── */
+    .role-table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    .role-table th { background: var(--accent); color: var(--white); padding: 12px 16px; text-align: left; font-weight: 700; }
+    .role-table th:first-child { border-radius: 8px 0 0 0; }
+    .role-table th:last-child  { border-radius: 0 8px 0 0; }
+    .role-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+    .role-table tr:nth-child(even) td { background: var(--gray-1); }
+    .role-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+    .role-table tr:last-child td:last-child  { border-radius: 0 0 8px 0; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: .78rem; font-weight: 700; }
+    .badge--orchestrator { background: var(--accent-md); color: var(--accent-dk); }
+    .badge--sub          { background: var(--green-lt); color: var(--green); }
+    .badge--critic       { background: var(--orange-lt); color: var(--orange); }
+    .badge--memory       { background: var(--blue-lt); color: var(--blue); }
+
+    /* ── Pattern cards ── */
+    .pattern-list { display: flex; flex-direction: column; gap: 28px; }
+    .pattern { background: var(--white); border: 1px solid var(--gray-3); border-radius: 14px; overflow: hidden; }
+    .pattern-header { display: flex; align-items: flex-start; gap: 16px; padding: 24px 28px 20px; border-bottom: 1px solid var(--gray-3); }
+    .pattern-num { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--white); font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+    .pattern-header h3 { font-size: 1.05rem; font-weight: 700; color: var(--gray-8); margin-bottom: 4px; }
+    .pattern-header p  { font-size: .9rem; color: var(--gray-5); line-height: 1.5; }
+    .pattern-body { padding: 20px 28px; }
+    .pattern-body pre { background: var(--gray-8); color: #c4b5fd; font-size: .8rem; border-radius: 10px; padding: 20px; overflow-x: auto; white-space: pre; font-family: 'Courier New', Courier, monospace; line-height: 1.55; }
+
+    /* ── Real-world scenarios ── */
+    .scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .scenario { background: var(--white); border: 1px solid var(--gray-3); border-radius: 12px; padding: 24px; }
+    .scenario .s-tag { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); margin-bottom: 8px; }
+    .scenario h3 { font-size: 1rem; font-weight: 700; color: var(--gray-8); margin-bottom: 10px; }
+    .scenario ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+    .scenario ul li { font-size: .88rem; color: var(--gray-5); padding-left: 20px; position: relative; line-height: 1.5; }
+    .scenario ul li::before { content: "→"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+    /* ── Safety & guardrails ── */
+    .guardrail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .guardrail { background: var(--accent-lt); border: 1px solid var(--accent-md); border-radius: 10px; padding: 20px; }
+    .guardrail .g-icon { font-size: 1.5rem; margin-bottom: 8px; display: block; }
+    .guardrail h4 { font-size: .95rem; font-weight: 700; color: var(--accent-dk); margin-bottom: 6px; }
+    .guardrail p  { font-size: .85rem; color: var(--gray-7); line-height: 1.5; }
+
+    /* ── Limits table ── */
+    .limits-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .limits-table th { background: var(--gray-2); color: var(--gray-7); padding: 10px 16px; text-align: left; font-weight: 700; border-bottom: 2px solid var(--gray-3); }
+    .limits-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); }
+    .limits-table tr:last-child td { border-bottom: none; }
+    .check { color: var(--green); font-weight: 700; }
+    .warn  { color: var(--orange); font-weight: 700; }
+    .cross { color: var(--red); font-weight: 700; }
+
+    /* ── Prompt tips ── */
+    .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 640px) { .tips-grid { grid-template-columns: 1fr; } }
+    .tip-card { border-radius: 12px; padding: 22px; }
+    .tip-card.good { background: var(--green-lt); border: 1px solid #a7f3d0; }
+    .tip-card.bad  { background: var(--red-lt); border: 1px solid #fca5a5; }
+    .tip-card .tip-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; }
+    .tip-card.good .tip-label { color: var(--green); }
+    .tip-card.bad  .tip-label { color: var(--red); }
+    .tip-card p { font-size: .88rem; color: var(--gray-8); line-height: 1.55; font-style: italic; }
+
+    /* ── CTA ── */
+    .cta-band { background: linear-gradient(135deg, #4c1d95, #7c3aed); color: var(--white); border-radius: 16px; padding: 48px 40px; text-align: center; }
+    .cta-band h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; }
+    .cta-band p  { opacity: .85; font-size: 1rem; margin-bottom: 28px; }
+    .cta-links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .cta-btn { padding: 12px 26px; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; transition: transform .15s, opacity .15s; }
+    .cta-btn:hover { transform: translateY(-2px); opacity: .9; text-decoration: none; }
+    .cta-btn--white { background: var(--white); color: var(--accent-dk); }
+    .cta-btn--outline { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,.5); }
+
+    /* ── Footer ── */
+    footer { background: var(--gray-8); color: var(--gray-5); padding: 36px 24px; text-align: center; font-size: .875rem; }
+    footer a { color: #94a3b8; }
+    footer a:hover { color: var(--white); }
+    .footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+
+    @media (max-width: 640px) {
+      .page-hero { padding: 48px 0 56px; }
+      .section { padding: 48px 0; }
+      .arch-wrap { padding: 20px 16px; }
+      .cta-band { padding: 36px 24px; }
+      .pattern-header, .pattern-body { padding: 18px 20px; }
+    }
+  
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <!-- Hero -->
+    <header class="page-hero" role="banner">
+      <div class="container">
+        <p class="eyebrow">OpenClaw Deep Dive</p>
+        <h1>Multi-Agent Orchestration</h1>
+        <p>One task. Many agents. OpenClaw can spawn an entire fleet of AI sub-agents, coordinate their work in parallel, merge their results, and resolve conflicts — all automatically, while you watch the progress tick by.</p>
+      </div>
+    </header>
+
+    <!-- What is multi-agent -->
+    <section class="section" aria-labelledby="what-heading">
+      <div class="container">
+        <h2 class="section-title" id="what-heading">What Is Multi-Agent Orchestration?</h2>
+        <p class="section-sub">A single OpenClaw instance (the <strong>Orchestrator</strong>) breaks a complex goal into sub-tasks and delegates each one to a freshly-spawned child agent. Sub-agents run concurrently, report back, and the orchestrator assembles the final result. Think of it like a project manager assigning tasks across a team — except every team member is also an AI.</p>
+        <div class="concept-grid">
+          <div class="concept-card">
+            <span class="icon" aria-hidden="true">🧠</span>
+            <h3>Orchestrator Agent</h3>
+            <p>The top-level agent that receives the user goal, decomposes it into sub-tasks, assigns them to child agents, and synthesizes results into a final output.</p>
+          </div>
+          <div class="concept-card">
+            <span class="icon" aria-hidden="true">⚙️</span>
+            <h3>Sub-Agents</h3>
+            <p>Specialised child instances spawned for individual tasks — research, writing, coding, validation. Each runs its own Agentic Loop independently.</p>
+          </div>
+          <div class="concept-card">
+            <span class="icon" aria-hidden="true">🔄</span>
+            <h3>Parallel Execution</h3>
+            <p>Sub-agents work simultaneously rather than sequentially, cutting wall-clock time dramatically on multi-part tasks.</p>
+          </div>
+          <div class="concept-card">
+            <span class="icon" aria-hidden="true">🗂️</span>
+            <h3>Shared Memory</h3>
+            <p>Agents can read from and write to a shared SQLite memory layer, letting them pass findings to each other without passing the whole context window.</p>
+          </div>
+          <div class="concept-card">
+            <span class="icon" aria-hidden="true">⚖️</span>
+            <h3>Critic Agent</h3>
+            <p>An optional reviewer agent checks each sub-agent's output for accuracy, completeness, and consistency before the orchestrator merges it.</p>
+          </div>
+          <div class="concept-card">
+            <span class="icon" aria-hidden="true">🛡️</span>
+            <h3>Permission Bubbling</h3>
+            <p>If a sub-agent needs a permission not granted in its original scope, it pauses and escalates the request to the orchestrator rather than acting unilaterally.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture diagram -->
+    <section class="section section--alt" aria-labelledby="arch-heading">
+      <div class="container">
+        <h2 class="section-title" id="arch-heading">System Architecture</h2>
+        <p class="section-sub">How an orchestrator and its fleet are wired together inside OpenClaw:</p>
+        <div class="arch-wrap" role="img" aria-label="Multi-agent architecture diagram showing orchestrator connected to sub-agents via message bus">
+<pre>
+ USER GOAL
+     │
+     ▼
+┌────────────────────────────────────────────────────────────┐
+│                    ORCHESTRATOR AGENT                      │
+│  ┌────────────┐  ┌──────────────┐  ┌────────────────────┐ │
+│  │ Task       │  │  Dependency  │  │  Result Assembler  │ │
+│  │ Planner    │→ │  Graph       │→ │  + Conflict Solver │ │
+│  └────────────┘  └──────────────┘  └────────────────────┘ │
+│            │                                    ▲          │
+│            │ spawn                               │ results  │
+└────────────┼────────────────────────────────────┼──────────┘
+             │           MESSAGE BUS               │
+    ┌────────┼──────────────────────────────────┐  │
+    │        │                                  │  │
+    ▼        ▼        ▼          ▼              │  │
+┌───────┐ ┌───────┐ ┌───────┐ ┌──────────┐     │  │
+│ Sub-  │ │ Sub-  │ │ Sub-  │ │  CRITIC  │─────┘  │
+│ Agent │ │ Agent │ │ Agent │ │  AGENT   │        │
+│  #1   │ │  #2   │ │  #3   │ └──────────┘        │
+│Research│ │ Code  │ │ Write │        ▲            │
+└───┬───┘ └───┬───┘ └───┬───┘        │ review     │
+    │         │         │             │            │
+    └─────────┴────────┬┘─────────────┘            │
+                       │                           │
+                       ▼                           │
+            ┌──────────────────┐                   │
+            │  SHARED MEMORY   │                   │
+            │  (SQLite store)  │───────────────────┘
+            │  findings, facts │
+            │  intermediate    │
+            │  results         │
+            └──────────────────┘
+</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Agent roles table -->
+    <section class="section" aria-labelledby="roles-heading">
+      <div class="container">
+        <h2 class="section-title" id="roles-heading">Agent Roles at a Glance</h2>
+        <p class="section-sub">Every agent in a multi-agent fleet has a well-defined role that determines what it can do, what memory it can access, and what tools it can call.</p>
+        <div style="overflow-x:auto;">
+          <table class="role-table" aria-label="Agent role descriptions">
+            <thead>
+              <tr>
+                <th scope="col">Role</th>
+                <th scope="col">Responsibility</th>
+                <th scope="col">Memory Access</th>
+                <th scope="col">Can Spawn Sub-Agents?</th>
+                <th scope="col">Typical Tools</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge--orchestrator">Orchestrator</span></td>
+                <td>Decomposes goals, delegates, assembles results</td>
+                <td>Full read/write</td>
+                <td>✅ Yes</td>
+                <td>spawn_agent, memory_write, merge_results</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge--sub">Research Sub-Agent</span></td>
+                <td>Web search, document retrieval, fact extraction</td>
+                <td>Write only (own namespace)</td>
+                <td>❌ No</td>
+                <td>web_search, read_file, memory_write</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge--sub">Code Sub-Agent</span></td>
+                <td>Write, run, and debug code</td>
+                <td>Read shared + write own</td>
+                <td>❌ No</td>
+                <td>run_code, read_file, write_file</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge--sub">Writer Sub-Agent</span></td>
+                <td>Draft prose, reports, emails, summaries</td>
+                <td>Read shared</td>
+                <td>❌ No</td>
+                <td>write_file, memory_read</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge--critic">Critic Agent</span></td>
+                <td>Review quality, flag inconsistencies, score outputs</td>
+                <td>Read all namespaces</td>
+                <td>❌ No</td>
+                <td>memory_read, flag_issue</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge--memory">Memory Agent</span></td>
+                <td>Maintain long-term facts, de-duplicate, compress</td>
+                <td>Full read/write</td>
+                <td>❌ No</td>
+                <td>memory_read, memory_write, memory_compact</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Orchestration patterns -->
+    <section class="section section--alt" aria-labelledby="patterns-heading">
+      <div class="container">
+        <h2 class="section-title" id="patterns-heading">Orchestration Patterns</h2>
+        <p class="section-sub">OpenClaw supports four core patterns for coordinating agents. Mix and match them for complex workflows.</p>
+        <div class="pattern-list">
+
+          <article class="pattern">
+            <div class="pattern-header">
+              <div class="pattern-num" aria-hidden="true">1</div>
+              <div>
+                <h3>Fan-Out / Fan-In (Parallel Map-Reduce)</h3>
+                <p>The orchestrator fans out the same task across N agents in parallel, then fans the results back in and merges them. Best for research, analysis, or processing large batches.</p>
+              </div>
+            </div>
+            <div class="pattern-body">
+<pre>
+ORCHESTRATOR
+  ├── spawn(research_agent, topic="climate")
+  ├── spawn(research_agent, topic="economy")
+  └── spawn(research_agent, topic="policy")
+        ↓  (all run concurrently)
+MERGE: combine_findings(results_1, results_2, results_3)
+OUTPUT → comprehensive_report.md
+</pre>
+            </div>
+          </article>
+
+          <article class="pattern">
+            <div class="pattern-header">
+              <div class="pattern-num" aria-hidden="true">2</div>
+              <div>
+                <h3>Pipeline (Sequential Handoff)</h3>
+                <p>Output from one agent becomes the input for the next. Ideal when each step requires the completed result of the previous one — e.g., research → write → review → publish.</p>
+              </div>
+            </div>
+            <div class="pattern-body">
+<pre>
+research_agent → [findings.json]
+                        ↓
+              writer_agent → [draft.md]
+                                  ↓
+                       critic_agent → [reviewed_draft.md]
+                                              ↓
+                              publisher_agent → POST /api/publish
+</pre>
+            </div>
+          </article>
+
+          <article class="pattern">
+            <div class="pattern-header">
+              <div class="pattern-num" aria-hidden="true">3</div>
+              <div>
+                <h3>Hierarchical Delegation (Sub-Orchestrators)</h3>
+                <p>A top-level orchestrator spawns mid-level orchestrators, each of which manages their own team of sub-agents. Handles very large tasks that can't fit in a single planning horizon.</p>
+              </div>
+            </div>
+            <div class="pattern-body">
+<pre>
+MASTER ORCHESTRATOR
+  ├── spawn(orchestrator_A, goal="product research")
+  │       ├── spawn(web_agent, "competitor pricing")
+  │       └── spawn(web_agent, "customer reviews")
+  │
+  └── spawn(orchestrator_B, goal="write report")
+          ├── spawn(writer_agent, "executive summary")
+          └── spawn(writer_agent, "detailed findings")
+</pre>
+            </div>
+          </article>
+
+          <article class="pattern">
+            <div class="pattern-header">
+              <div class="pattern-num" aria-hidden="true">4</div>
+              <div>
+                <h3>Competitive Selection (Best-of-N)</h3>
+                <p>Multiple agents attempt the same task independently, a critic scores each result, and the best output wins. Sacrifices speed for higher quality on high-stakes tasks.</p>
+              </div>
+            </div>
+            <div class="pattern-body">
+<pre>
+ORCHESTRATOR
+  ├── spawn(writer_agent_A, prompt=TASK)  → draft_A.md  (score: 8.2)
+  ├── spawn(writer_agent_B, prompt=TASK)  → draft_B.md  (score: 9.1) ✓
+  └── spawn(writer_agent_C, prompt=TASK)  → draft_C.md  (score: 7.6)
+
+critic_agent scores each → orchestrator selects draft_B.md
+</pre>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-world scenarios -->
+    <section class="section" aria-labelledby="scenarios-heading">
+      <div class="container">
+        <h2 class="section-title" id="scenarios-heading">Real-World Scenarios</h2>
+        <p class="section-sub">Here are six practical goals where multi-agent orchestration shines over a single-agent approach.</p>
+        <div class="scenario-grid">
+
+          <div class="scenario">
+            <p class="s-tag">Research & Writing</p>
+            <h3>Market Intelligence Report</h3>
+            <ul>
+              <li>3 research agents scrape competitors in parallel</li>
+              <li>Memory agent de-duplicates findings</li>
+              <li>Writer agent drafts the report from shared memory</li>
+              <li>Critic scores and highlights gaps</li>
+              <li>Total time: ~4 min vs ~18 min single-agent</li>
+            </ul>
+          </div>
+
+          <div class="scenario">
+            <p class="s-tag">Software Development</p>
+            <h3>Full-Stack Feature Build</h3>
+            <ul>
+              <li>Frontend agent writes the React component</li>
+              <li>Backend agent writes the API endpoint</li>
+              <li>Test agent writes unit tests in parallel</li>
+              <li>Critic agent runs the tests and flags failures</li>
+              <li>Orchestrator opens the pull request</li>
+            </ul>
+          </div>
+
+          <div class="scenario">
+            <p class="s-tag">Data Processing</p>
+            <h3>Batch Document Analysis</h3>
+            <ul>
+              <li>Orchestrator shards 500 PDFs into 10 batches</li>
+              <li>10 reader agents process one batch each</li>
+              <li>Findings written to shared memory table</li>
+              <li>Aggregator agent generates summary stats</li>
+              <li>10× faster than sequential single-agent loop</li>
+            </ul>
+          </div>
+
+          <div class="scenario">
+            <p class="s-tag">Customer Support</p>
+            <h3>Automated Ticket Triage</h3>
+            <ul>
+              <li>Classifier agent categorises each new ticket</li>
+              <li>Lookup agent checks knowledge base for answer</li>
+              <li>Writer agent drafts the reply</li>
+              <li>Critic agent checks tone and accuracy</li>
+              <li>Human approval agent queues for final send</li>
+            </ul>
+          </div>
+
+          <div class="scenario">
+            <p class="s-tag">Content Creation</p>
+            <h3>Social Media Campaign</h3>
+            <ul>
+              <li>Strategy agent defines topics and angles</li>
+              <li>Writer agents draft posts for each platform in parallel</li>
+              <li>Image-prompt agent generates visuals</li>
+              <li>Critic reviews brand-voice compliance</li>
+              <li>Scheduler agent queues posts via Buffer API</li>
+            </ul>
+          </div>
+
+          <div class="scenario">
+            <p class="s-tag">Finance & Analytics</p>
+            <h3>Weekly Business Digest</h3>
+            <ul>
+              <li>Sales agent queries CRM for weekly numbers</li>
+              <li>Finance agent pulls spend from accounting API</li>
+              <li>Traffic agent checks analytics dashboard</li>
+              <li>Writer agent assembles the digest</li>
+              <li>Delivered to Slack every Monday at 8 AM</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Guardrails -->
+    <section class="section section--alt" aria-labelledby="guardrails-heading">
+      <div class="container">
+        <h2 class="section-title" id="guardrails-heading">Safety &amp; Guardrails</h2>
+        <p class="section-sub">More agents means more potential for runaway actions. OpenClaw has several built-in safeguards specifically designed for multi-agent operation.</p>
+        <div class="guardrail-grid">
+          <div class="guardrail">
+            <span class="g-icon" aria-hidden="true">⏱️</span>
+            <h4>Agent Timeouts</h4>
+            <p>Every sub-agent has a configurable TTL. If it hasn't responded by the deadline, the orchestrator marks it failed and either retries or falls back gracefully.</p>
+          </div>
+          <div class="guardrail">
+            <span class="g-icon" aria-hidden="true">💰</span>
+            <h4>Token Budget Caps</h4>
+            <p>Each sub-agent is allocated a maximum token budget. Once reached, it must summarise and return — preventing runaway inference costs in large fleets.</p>
+          </div>
+          <div class="guardrail">
+            <span class="g-icon" aria-hidden="true">🔒</span>
+            <h4>Permission Scoping</h4>
+            <p>Sub-agents inherit only the permissions explicitly delegated by the orchestrator. A research sub-agent can't write files unless the orchestrator grants that scope.</p>
+          </div>
+          <div class="guardrail">
+            <span class="g-icon" aria-hidden="true">📋</span>
+            <h4>Audit Logs</h4>
+            <p>Every agent action — spawn, tool call, memory write, result return — is logged with a timestamp and agent ID, giving you a full traceable audit trail.</p>
+          </div>
+          <div class="guardrail">
+            <span class="g-icon" aria-hidden="true">🚨</span>
+            <h4>Conflict Detection</h4>
+            <p>If two sub-agents write contradictory facts to shared memory, the conflict resolver flags it and surfaces the discrepancy to the orchestrator before merging.</p>
+          </div>
+          <div class="guardrail">
+            <span class="g-icon" aria-hidden="true">🛑</span>
+            <h4>Human Checkpoints</h4>
+            <p>You can define HITL (human-in-the-loop) checkpoints at any stage. The fleet pauses and waits for your approval before continuing past that milestone.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Concurrency limits table -->
+    <section class="section" aria-labelledby="limits-heading">
+      <div class="container">
+        <h2 class="section-title" id="limits-heading">Concurrency &amp; Limits</h2>
+        <p class="section-sub">OpenClaw's limits depend on your underlying LLM provider tier. Here's what to expect across common configurations.</p>
+        <div style="overflow-x:auto;">
+          <table class="limits-table" aria-label="Concurrency limits by model tier">
+            <thead>
+              <tr>
+                <th scope="col">Tier / Model</th>
+                <th scope="col">Max Concurrent Agents</th>
+                <th scope="col">Max Depth (Nested)</th>
+                <th scope="col">Shared Memory</th>
+                <th scope="col">Critic Agent</th>
+                <th scope="col">Token Budget per Sub-Agent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Free (local model)</strong></td>
+                <td>2</td>
+                <td>1</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td>8k tokens</td>
+              </tr>
+              <tr>
+                <td><strong>Pro (Claude Haiku)</strong></td>
+                <td>5</td>
+                <td>2</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="warn">Limited</span></td>
+                <td>32k tokens</td>
+              </tr>
+              <tr>
+                <td><strong>Team (Claude Sonnet)</strong></td>
+                <td>10</td>
+                <td>3</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>100k tokens</td>
+              </tr>
+              <tr>
+                <td><strong>Enterprise (Claude Opus)</strong></td>
+                <td>Unlimited*</td>
+                <td>5</td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>200k tokens</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:.82rem;color:var(--gray-5);margin-top:10px;">* Unlimited concurrency subject to API rate limits of your LLM provider.</p>
+      </div>
+    </section>
+
+    <!-- Prompt tips -->
+    <section class="section section--alt" aria-labelledby="tips-heading">
+      <div class="container">
+        <h2 class="section-title" id="tips-heading">Prompting for Multi-Agent Tasks</h2>
+        <p class="section-sub">How you frame your goal to OpenClaw determines whether it runs single-agent or kicks off a full orchestration. These tips help you get the best results.</p>
+        <div class="tips-grid">
+          <div class="tip-card good">
+            <p class="tip-label">✅ Do this</p>
+            <p>"Research the top 5 competitors to my SaaS product, write a 1-page comparison for each, then produce a final summary report. Do the research in parallel and review the drafts before combining them."</p>
+          </div>
+          <div class="tip-card bad">
+            <p class="tip-label">❌ Avoid this</p>
+            <p>"Tell me about competitors."</p>
+          </div>
+          <div class="tip-card good">
+            <p class="tip-label">✅ Do this</p>
+            <p>"Process the 200 CSV rows in this file. Work in parallel batches of 20. For each row, look up the company on LinkedIn and save the employee count to memory. Once done, export a summary XLSX."</p>
+          </div>
+          <div class="tip-card bad">
+            <p class="tip-label">❌ Avoid this</p>
+            <p>"Go through this CSV and look up each company."</p>
+          </div>
+          <div class="tip-card good">
+            <p class="tip-label">✅ Do this</p>
+            <p>"Use a critic agent to review the draft before finalising. Flag anything factually uncertain and highlight it with [VERIFY] tags."</p>
+          </div>
+          <div class="tip-card bad">
+            <p class="tip-label">❌ Avoid this</p>
+            <p>"Write a draft and make sure it's accurate."</p>
+          </div>
+          <div class="tip-card good">
+            <p class="tip-label">✅ Do this</p>
+            <p>"Set a human checkpoint after the research phase. Wait for my approval before starting the writing phase."</p>
+          </div>
+          <div class="tip-card bad">
+            <p class="tip-label">❌ Avoid this</p>
+            <p>"Do everything automatically without stopping."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="cta-band">
+          <h2 id="cta-heading">Ready to Build Your First Fleet?</h2>
+          <p>Explore the architecture behind multi-agent systems or browse pre-built multi-agent skill packs on ClawHub.</p>
+          <div class="cta-links">
+            <a href="architecture.html" class="cta-btn cta-btn--white">Explore Architecture</a>
+            <a href="marketplace.html" class="cta-btn cta-btn--outline">Browse ClawHub</a>
+            <a href="automation.html" class="cta-btn cta-btn--outline">Automation Guide</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>OpenClaw Guide — Community Documentation</p>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="automation.html">Automation</a>
+      <a href="marketplace.html">Marketplace</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+      <a href="compare.html">Compare</a>
+      <a href="faq.html">FAQ</a>
+      <a href="security.html">Security</a>
+    </nav>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

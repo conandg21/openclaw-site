@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Barista to AI Agent User: How Maya Installed OpenClaw on Her 15-Minute Breaks | learnopenclaw.org</title>
+  <meta name="description" content="Maya Torres had zero technical background and a dream of running a fashion blog. Here's how she used her 15-minute coffee breaks to learn OpenClaw — and installed it successfully in two weeks." />
+  <meta name="keywords" content="OpenClaw beginner, OpenClaw no coding, OpenClaw fashion blog, learn OpenClaw, OpenClaw non-technical, OpenClaw success story, AI agent for beginners" />
+  <link rel="canonical" href="https://learnopenclaw.org/blog/maya-barista-openclaw-beginner.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="From Barista to AI Agent User: How Maya Installed OpenClaw on Her 15-Minute Breaks" />
+  <meta property="og:description" content="Zero technical background. A dream. And 15 minutes a day. Maya Torres's OpenClaw story is for anyone who thinks AI agents are 'not for them.'" />
+  <meta property="og:url" content="https://learnopenclaw.org/blog/maya-barista-openclaw-beginner.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="From Barista to AI Agent User: How Maya Installed OpenClaw on Her 15-Minute Breaks" />
+  <meta name="twitter:description" content="Zero technical background. A dream. And 15 minutes a day. Maya Torres proved OpenClaw is for everyone." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "From Barista to AI Agent User: How Maya Installed OpenClaw on Her 15-Minute Breaks",
+    "description": "Maya Torres had no technical background and a dream of running a fashion blog. Here's how she used her 15-minute work breaks to learn and successfully install OpenClaw in two weeks.",
+    "url": "https://learnopenclaw.org/blog/maya-barista-openclaw-beginner.html",
+    "datePublished": "2026-03-19",
+    "dateModified": "2026-03-19",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://learnopenclaw.org/blog.html"},
+        {"@type": "ListItem", "position": 3, "name": "Maya's OpenClaw Story", "item": "https://learnopenclaw.org/blog/maya-barista-openclaw-beginner.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+    --blue:    #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+    --rose:    #e11d48; --rose-lt: #fff1f2; --rose-md: #fecdd3;
+    --gray-1:  #f9fafb; --gray-2:  #f3f4f6; --gray-3:  #e5e7eb;
+    --gray-5:  #6b7280; --gray-8:  #1f2937; --white:   #ffffff;
+    --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+  html { scroll-behavior: smooth; }
+  .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--blue); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; }
+  .skip-nav:focus { top: 8px; }
+  a:focus, button:focus { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+  .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+  .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+  .nav-links a:hover { color: var(--blue); text-decoration: none; }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+  .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+  .nav-links.open { display: flex; }
+  @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+  .nav-section { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2); padding: 10px 0; margin: 2px 0; }
+  .nav-section-label { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5); }
+  .nav-section a { padding-left: 10px; border-left: 2px solid var(--blue-md); font-size: .88rem; }
+
+  .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid #fde68a; padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+  .disclaimer-bar a { color: #92400e; font-weight: 600; }
+
+  /* ── Post header with warm rose gradient ── */
+  .post-header { background: linear-gradient(180deg, var(--rose-lt) 0%, var(--white) 100%); padding: 56px 24px 40px; text-align: center; border-bottom: 3px solid var(--rose-md); }
+  .breadcrumb { font-size: .82rem; color: var(--gray-5); margin-bottom: 20px; }
+  .breadcrumb a { color: var(--gray-5); }
+  .post-cat { display: inline-block; background: var(--rose-md); color: var(--rose); font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 16px; }
+  .post-header h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25; max-width: 720px; margin: 0 auto 20px; }
+  .post-meta { display: flex; align-items: center; justify-content: center; gap: 16px; font-size: .88rem; color: var(--gray-5); flex-wrap: wrap; }
+  .post-meta span::before { content: '· '; }
+  .post-meta span:first-child::before { content: ''; }
+
+  /* ── Post body ── */
+  .post-body { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+  .post-body h2 { font-size: 1.4rem; font-weight: 800; margin: 48px 0 16px; padding-top: 8px; border-top: 2px solid var(--rose-md); }
+  .post-body h3 { font-size: 1.05rem; font-weight: 700; margin: 24px 0 10px; color: var(--rose); }
+  .post-body p  { margin-bottom: 18px; }
+  .post-body ul { padding-left: 22px; margin-bottom: 18px; }
+  .post-body li { margin-bottom: 6px; }
+
+  /* ── Stat row ── */
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 16px; margin: 32px 0; }
+  .stat-box { background: var(--rose-lt); border: 1px solid var(--rose-md); border-radius: var(--radius); padding: 20px 16px; text-align: center; }
+  .stat-box strong { display: block; font-size: 2rem; font-weight: 800; color: var(--rose); line-height: 1.1; margin-bottom: 4px; }
+  .stat-box span { font-size: .82rem; color: var(--gray-5); }
+
+  /* ── Day/break timeline ── */
+  .day-block { display: flex; gap: 16px; margin-bottom: 28px; align-items: flex-start; }
+  .day-num { flex-shrink: 0; min-width: 52px; height: 52px; border-radius: 50%; background: var(--rose-md); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .9rem; color: var(--rose); text-align: center; line-height: 1.2; }
+  .day-body h3 { font-size: 1rem; font-weight: 700; margin: 0 0 4px; color: var(--gray-8); }
+  .day-body p  { font-size: .93rem; color: var(--gray-5); margin: 0; }
+
+  /* ── Callout ── */
+  .callout { border-left: 4px solid var(--rose); background: var(--rose-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 24px 0; font-size: .95rem; }
+  .callout strong { color: var(--rose); }
+
+  /* ── Dream box ── */
+  .dream-box { background: linear-gradient(135deg, var(--rose-lt) 0%, #fff5f0 100%); border: 1.5px solid var(--rose-md); border-radius: var(--radius); padding: 28px 28px; margin: 32px 0; }
+  .dream-box h3 { font-size: 1.1rem; font-weight: 800; color: var(--rose); margin: 0 0 12px; }
+  .dream-box p { margin: 0 0 10px; font-size: .97rem; }
+  .dream-box p:last-child { margin: 0; }
+
+  /* ── TOC ── */
+  .toc { background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 40px; }
+  .toc h2 { font-size: .88rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--gray-5); margin: 0 0 12px; border: none; padding: 0; }
+  .toc ol { padding-left: 20px; margin: 0; }
+  .toc li { margin-bottom: 6px; font-size: .95rem; }
+  .toc a { color: var(--blue); font-weight: 500; }
+
+  /* ── Newsletter ── */
+  .nl-section { background: linear-gradient(135deg, var(--rose-lt) 0%, #fff5f0 100%); border-top: 1px solid var(--rose-md); border-bottom: 1px solid var(--rose-md); padding: 48px 24px; text-align: center; }
+  .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+  .nl-section h2 em { font-style: normal; color: var(--rose); }
+  .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+  .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+  .nl-form input[type="email"] { flex: 1; min-width: 200px; padding: 12px 16px; border: 1.5px solid var(--gray-3); border-radius: 8px; font-size: .95rem; font-family: inherit; background: var(--white); color: var(--gray-8); transition: border-color .18s; }
+  .nl-form input[type="email"]:focus { outline: none; border-color: var(--rose); }
+  .nl-form button { background: var(--rose); color: var(--white); border: none; border-radius: 8px; padding: 12px 22px; font-size: .95rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .18s; white-space: nowrap; }
+  .nl-form button:hover { background: #be123c; }
+  .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+  /* ── Related ── */
+  .related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; }
+  .related-inner { max-width: 720px; margin: 0 auto; }
+  .related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+  .related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--blue); margin-bottom: 8px; }
+  .related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+
+  /* ── Footer ── */
+  footer { background: var(--gray-8); color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+  footer a { color: #60a5fa; }
+  .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+  .footer-nl { margin-bottom: 20px; }
+  .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+  .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .footer-nl-form input[type="email"] { padding: 9px 14px; border-radius: 7px; border: 1px solid #374151; background: #374151; color: #f9fafb; font-size: .88rem; font-family: inherit; min-width: 200px; flex: 1; max-width: 280px; }
+  .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+  .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+  .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .18s; }
+  .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><span aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../blog.html" aria-current="page">Blog</a>
+        <div class="nav-section" role="group" aria-label="Learn">
+          <span class="nav-section-label">Learn</span>
+          <a href="../gettingstarted.html">Get Started</a>
+          <a href="../usecases.html">Use Cases</a>
+          <a href="../automation.html">Automation</a>
+          <a href="../marketplace.html">Marketplace</a>
+          <a href="../architecture.html">Architecture</a>
+          <a href="../multiagent.html">Multi-Agent</a>
+          <a href="../nemoclaw.html">🟢 NemoClaw</a>
+          <a href="../compare.html">Compare</a>
+          <a href="../shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+          <a href="../security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+        </div>
+        <a href="../faq.html">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+    <strong>learnopenclaw.org</strong> is an independent community resource. Not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+  </div>
+
+  <main id="main">
+    <header class="post-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a> &rsaquo; <a href="../blog.html">Blog</a> &rsaquo; Maya's Story
+      </nav>
+      <div class="post-cat">Beginner Story</div>
+      <h1>From Barista to AI Agent User: How Maya Installed OpenClaw on Her 15-Minute Breaks</h1>
+      <div class="post-meta">
+        <span>March 19, 2026</span>
+        <span>8 min read</span>
+        <span>By learnopenclaw.org</span>
+      </div>
+    </header>
+
+    <article class="post-body" id="main-content">
+
+      <p>Maya Torres is 27 years old. She works the morning shift at a coffee shop in Austin, Texas. She loves fashion — not just wearing it, but the whole world around it: the designers, the sustainability conversations, the way a well-put-together outfit can completely change how someone feels walking into a room.</p>
+
+      <p>For three years, she has had a note on her phone called "The Blog." It has post ideas, a color palette she likes, a name she's been sitting on: <em>Dressed With Intent</em>. And for three years, she has not published a single word of it.</p>
+
+      <p>"Every time I tried to look into what I'd actually need," she told us, "I'd end up down some rabbit hole about hosting and domains and SEO, and I'd close the tab and go back to folding laundry. It felt like it was for people who already knew how computers worked."</p>
+
+      <div class="stat-row">
+        <div class="stat-box"><strong>15</strong><span>min per break</span></div>
+        <div class="stat-box"><strong>2</strong><span>weeks to install</span></div>
+        <div class="stat-box"><strong>0</strong><span>lines of code written</span></div>
+        <div class="stat-box"><strong>1</strong><span>dream activated</span></div>
+      </div>
+
+      <h2 id="the-dream">The dream she kept putting off</h2>
+
+      <p>Maya is not someone who struggles with ambition. She managed the shop's entire social media account for two years without being asked to — just because she cared. She redesigned their menu board layout because the old one felt cluttered. She researched sustainable coffee suppliers and put together a two-page summary for her manager just because she was curious.</p>
+
+      <p>The gap was never motivation. It was the feeling that the technology side of building something online was a separate world — one that required a background she didn't have.</p>
+
+      <p>"I always assumed I'd need to take a course. Like a real one, weeks long, learning to code. And I don't have time for that. I barely have time to eat lunch."</p>
+
+      <h2 id="the-discovery">How she found OpenClaw</h2>
+
+      <p>She heard about OpenClaw on a podcast she listens to during her commute — a small show about independent creators. The host wasn't talking about it in a technical way. She was talking about using it to run her newsletter research, and she said something that stuck with Maya: <em>"I just talk to it like I'd talk to a very competent friend. It does the rest."</em></p>
+
+      <p>Maya looked it up that evening and spent about twenty minutes reading. Her first reaction was skepticism — most "easy AI tools" she'd tried before still required some setup that eventually hit a wall she couldn't get past. But one thing kept pulling her back: the part about it running locally on your computer, no subscription required to get started, and a community of people sharing exactly what they'd built with it.</p>
+
+      <p>She decided to try it — but on her own terms. She wasn't going to set aside a whole weekend for it. She was going to use her 15-minute breaks at work, one step at a time, and see how far she could get.</p>
+
+      <div class="callout">
+        <strong>Maya's rule:</strong> "One thing per break. Not one chapter. Not one tutorial video. One single thing. If I finished early, I stopped anyway and picked it up the next day. That kept it from feeling overwhelming."
+      </div>
+
+      <h2 id="week-one">Week one: the 15-minute method</h2>
+
+      <p>Maya works six days a week. She gets two 15-minute breaks per shift. That gave her roughly 12 break slots across the first week — about three hours of total learning time, split into tiny pieces. Here is how she used them.</p>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>1</div>
+        <div class="day-body">
+          <h3>Just reading — what is OpenClaw actually?</h3>
+          <p>She spent the whole break reading the learnopenclaw.org homepage and the Getting Started overview. No downloading anything yet. She wanted to understand what she was getting into before touching her computer. "I needed to know it wasn't going to break anything."</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>2</div>
+        <div class="day-body">
+          <h3>Installing Node.js</h3>
+          <p>The setup guide said the first step was installing Node.js from nodejs.org. She pulled up the site, clicked the big green download button, and ran the installer. Done in under five minutes. She spent the rest of the break reading what Node.js actually was — not because she needed to know, but because she was curious.</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>3</div>
+        <div class="day-body">
+          <h3>The npm command — her first terminal moment</h3>
+          <p>This was the one she'd been nervous about. She had never typed a command into a terminal before. She opened the Terminal app, stared at it for about two minutes, then typed <code>npm install -g openclaw</code> exactly as the guide showed her. It worked. "I actually said 'oh' out loud. Just to myself in the break room. I was shocked it was that simple."</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>4</div>
+        <div class="day-body">
+          <h3>Creating her account</h3>
+          <p>She went to openclaw.ai and created an account. Standard sign-up: email, password, verify. During onboarding it asked her a few questions about herself and what she wanted to use OpenClaw for. She answered honestly — fashion content, blog posts, eventually running a small online shop. The onboarding configured her initial settings based on her answers.</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>5</div>
+        <div class="day-body">
+          <h3>Running OpenClaw for the first time</h3>
+          <p>She typed <code>openclaw start</code> in the terminal. Her browser opened and showed the dashboard. She spent the entire break just clicking around, not doing anything — learning where things were. The task panel, the settings, the memory section. "It looked like something I could actually use. Not like a developer tool."</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>6–8</div>
+        <div class="day-body">
+          <h3>Reading about SOUL.md — and writing a rough draft</h3>
+          <p>She read the explanation of what a SOUL.md file is across a couple of breaks, then spent one break writing a rough version of her own. She wrote it like a note to a new assistant: who she was, what she cared about, what her tone was like, and what she was trying to build. It was about 200 words. She'd refine it later.</p>
+        </div>
+      </div>
+
+      <p>By the end of week one, OpenClaw was installed, running, and configured with a basic Soul. She hadn't built anything yet. But she had crossed the finish line that had stopped her every previous time — she was inside the tool, not stuck trying to get in.</p>
+
+      <h2 id="week-two">Week two: things start to click</h2>
+
+      <p>Week two felt different. The setup anxiety was gone. She started actually using OpenClaw — small things, but real ones.</p>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>9</div>
+        <div class="day-body">
+          <h3>Her first real task</h3>
+          <p>She typed: <em>"I want to write a blog post about why sustainable fashion matters to everyday people, not just people who can afford it. Write me an outline."</em> OpenClaw produced a structured outline with five sections, each with suggested talking points. She read it three times. "It understood exactly what I meant. Not a corporate version of it. The actual thing I was thinking."</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>10</div>
+        <div class="day-body">
+          <h3>Refining the output</h3>
+          <p>She used the same session to refine — she pushed back on two of the sections, asking for a more personal tone and for one section to focus specifically on thrift shopping. OpenClaw revised. This was the moment she understood what iteration meant in practice: it wasn't starting over, it was a conversation.</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>11</div>
+        <div class="day-body">
+          <h3>Exploring the Skill Marketplace</h3>
+          <p>She browsed the Skill Marketplace and found a content-scheduling skill and a blog-drafting skill designed for creators. She read their descriptions carefully but didn't install anything yet — she wanted to understand what each one did before committing. "I'm a researcher by nature, I guess. I need to know what I'm adding."</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>12</div>
+        <div class="day-body">
+          <h3>Installing her first skill</h3>
+          <p>She installed the blog-drafting skill. Two clicks. It appeared in her Skill Sidebar. She asked OpenClaw to use it to expand the outline from break 9 into a full draft post. The result was rough — first drafts always are — but it was <em>her</em> voice, because she'd been specific in her SOUL.md about tone. She had a real draft to work with.</p>
+        </div>
+      </div>
+
+      <div class="day-block">
+        <div class="day-num">Break<br>13–14</div>
+        <div class="day-body">
+          <h3>Planning her full workflow</h3>
+          <p>She spent the last two breaks of week two not doing anything in OpenClaw — just writing in her notes app. She mapped out the three things she wanted OpenClaw to help her with once her blog was live: drafting posts from her rough ideas, helping her research fashion topics she didn't know enough about, and eventually scheduling content when she had enough posts built up. A plan, on paper, that actually felt achievable.</p>
+        </div>
+      </div>
+
+      <h2 id="the-moment">The moment she knew she could do this</h2>
+
+      <p>We asked Maya if there was a single moment when it shifted — when it stopped feeling like an experiment and started feeling real.</p>
+
+      <p>She didn't hesitate.</p>
+
+      <p>"Break ten. When I pushed back on the outline and it actually changed it the way I wanted. Because that's when I understood it wasn't just generating stuff and hoping for the best. I was directing it. I was the creative one. It was just doing the heavy lifting I didn't have time or energy for."</p>
+
+      <p>She paused, then added: "That's what I'd been scared I'd lose if I used AI. My own voice. But my SOUL.md was basically just me describing myself. So the output sounded like me, because I told it to."</p>
+
+      <div class="dream-box">
+        <h3>What Maya is building: Dressed With Intent</h3>
+        <p>The blog she's been sitting on for three years is finally moving. Her plan for the next 60 days is to write and schedule six posts — one every ten days — covering sustainable fashion on a budget, thrifting in different cities, and the stories behind the pieces in her own wardrobe.</p>
+        <p>Longer term, she wants to add an OpenClaw workflow that monitors fashion news and flags stories relevant to her niche, so she always has something to respond to. She's also looking at eventually pairing the blog with a small curated shop of secondhand finds.</p>
+        <p>"I'm not trying to build a business right now. I'm trying to build a habit. OpenClaw gets me to first draft faster than I ever could alone. From there it's just editing, which I actually enjoy."</p>
+      </div>
+
+      <h2 id="whats-next">What Maya is building next</h2>
+
+      <p>When we spoke to her, she had already published her first post on a simple blog she set up over a weekend. The sustainable fashion piece she outlined on break 9. It had 47 readers in its first week — friends, mostly, but also three people who found it through a search.</p>
+
+      <p>"Three strangers read something I wrote," she said. "And they found it because they were looking for it. That's never happened before."</p>
+
+      <p>She has a list of workflows she wants to build as her comfort with OpenClaw grows. A weekly research digest for fashion news. An automatic draft she can react to instead of starting from scratch. Eventually, when she has ten or fifteen posts live, she wants to set up a social scheduling workflow so the blog can run in the background while she's working her shift.</p>
+
+      <p>None of it requires code. None of it requires a course. It requires what Maya has always had: a clear point of view, something to say, and now a tool that helps her say it without the setup getting in the way.</p>
+
+      <h2 id="for-you">If this sounds like you</h2>
+
+      <p>Maya's story isn't remarkable because she did something technically impressive. It's remarkable because she didn't — and got the same result anyway.</p>
+
+      <p>The 15-minute method works because it removes the pressure of a big learning session. You're not committing to an afternoon. You're committing to one thing, one step, and then stopping. The momentum builds without ever feeling like a project.</p>
+
+      <p>If you have something you've been sitting on — a blog, a small business idea, a creative project that keeps getting delayed because the "tech side" feels like a wall — OpenClaw is worth fifteen minutes of your next break.</p>
+
+      <div class="callout">
+        <strong>How to start exactly like Maya did:</strong> Read the <a href="getting-started-openclaw-2026.html">full setup guide</a>, install Node.js, run <code>npm install -g openclaw</code>, create your account, and type <code>openclaw start</code>. That's the whole first week, one step per break. The rest follows.
+      </div>
+
+    </article>
+
+    <section class="nl-section" aria-label="Newsletter signup" style="margin-top:0;">
+      <div style="max-width:520px;margin:0 auto;">
+        <h2>Stories like Maya's, <em>in your inbox.</em></h2>
+        <p>Real OpenClaw use cases, beginner guides, and weekly tips. No spam, ever.</p>
+        <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+          <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+          <button type="submit">Subscribe free</button>
+        </form>
+        <p class="nl-fine">Unsubscribe any time · Powered by ConvertKit</p>
+      </div>
+    </section>
+
+    <section class="related" aria-label="Related articles">
+      <div class="related-inner">
+        <h2>Keep reading</h2>
+        <div class="related-grid">
+          <div class="related-card">
+            <div class="rc-cat">Tutorial</div>
+            <h3>Getting Started with OpenClaw: Complete Setup Guide</h3>
+            <a href="getting-started-openclaw-2026.html">Read →</a>
+          </div>
+          <div class="related-card">
+            <div class="rc-cat">Use Case Spotlight</div>
+            <h3>How a Freelance Designer Automated Their Entire Workflow</h3>
+            <a href="openclaw-freelancer-case-study.html">Read →</a>
+          </div>
+          <div class="related-card">
+            <div class="rc-cat">Tips & Tricks</div>
+            <h3>10 OpenClaw Tips to 10x Your Productivity</h3>
+            <a href="10-openclaw-productivity-tips.html">Read →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-nl">
+      <p>Get the latest OpenClaw tips straight to your inbox</p>
+      <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+        <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+      <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+      <a href="../blog.html">Blog</a>
+    </div>
+    <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

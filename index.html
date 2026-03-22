@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw — The AI Agent Explained</title>
+  <meta name="description" content="OpenClaw is a free, open-source autonomous AI agent that runs on your machine, takes real action, and works through your favourite messaging apps like WhatsApp and Telegram." />
+  <meta name="keywords" content="OpenClaw, AI agent, autonomous AI, open source AI, local AI agent, ChatGPT alternative, Claude agent" />
+  <link rel="canonical" href="https://learnopenclaw.org/index.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="OpenClaw — The AI Agent Explained" />
+  <meta property="og:description" content="OpenClaw is a free, open-source autonomous AI agent that runs on your machine and takes real action across your digital life." />
+  <meta property="og:url" content="https://learnopenclaw.org/" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw — The AI Agent Explained" />
+  <meta name="twitter:description" content="Free, open-source autonomous AI agent. Runs locally. Works in WhatsApp, Telegram, Slack & more." />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "OpenClaw — The AI Agent Explained",
+    "description": "OpenClaw is a free open-source autonomous AI agent that runs locally and takes real action across your digital life.",
+    "url": "https://learnopenclaw.org/",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [{"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"}]
+    }
+  }
+  </script>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:    #2563eb;
+      --blue-lt: #eff6ff;
+      --blue-md: #bfdbfe;
+      --gray-1:  #f9fafb;
+      --gray-2:  #f3f4f6;
+      --gray-3:  #e5e7eb;
+      --gray-5:  #6b7280;
+      --gray-8:  #1f2937;
+      --white:   #ffffff;
+      --radius:  12px;
+      --shadow:  0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── Skip nav (ADA) ── */
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    /* ── Focus styles (ADA) ── */
+    a:focus, button:focus {
+      outline: 3px solid var(--blue);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Layout ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 72px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo .claw { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 80px 24px 60px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--blue-lt) 0%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--blue-md);
+      color: var(--blue);
+      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: var(--blue); }
+    .hero p {
+      font-size: 1.15rem; color: var(--gray-5);
+      max-width: 580px; margin: 0 auto 36px;
+    }
+    .hero-stats {
+      display: flex; justify-content: center; gap: 40px;
+      flex-wrap: wrap; margin-top: 12px;
+    }
+    .stat { text-align: center; }
+    .stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: var(--blue); }
+    .stat span   { font-size: .85rem; color: var(--gray-5); }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--blue);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800; line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 620px; margin-bottom: 48px;
+    }
+
+    /* ── What is grid ── */
+    .what-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 640px) { .what-grid { grid-template-columns: 1fr; } }
+
+    .what-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .what-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .what-card p  { font-size: .95rem; color: var(--gray-5); }
+
+    /* ── Steps / How-to ── */
+    .steps { display: flex; flex-direction: column; position: relative; }
+    .steps::before {
+      content: '';
+      position: absolute; left: 23px; top: 28px;
+      width: 2px; height: calc(100% - 56px);
+      background: var(--gray-3);
+    }
+    .step {
+      display: flex; gap: 20px; align-items: flex-start;
+      position: relative; padding-bottom: 36px;
+    }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      flex-shrink: 0;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: var(--white);
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px var(--blue-lt);
+      position: relative; z-index: 1;
+    }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
+    .step-body p  { font-size: .95rem; color: var(--gray-5); margin-bottom: 8px; }
+    .step-body code {
+      display: inline-block;
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 6px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      padding: 4px 10px;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    /* ── Features grid ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .feature-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .feature-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .feature-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+    .feature-card p  { font-size: .875rem; color: var(--gray-5); }
+
+    /* ── Warning banner ── */
+    .warning-banner {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-top: 48px;
+    }
+    .warning-banner .warn-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .warning-banner p { font-size: .9rem; color: #92400e; }
+    .warning-banner strong { color: #78350f; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Mobile nav ── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; position: absolute;
+        top: 60px; left: 0; right: 0;
+        background: var(--white); border-bottom: 1px solid var(--gray-3);
+        flex-direction: column; padding: 16px 24px; gap: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      nav { position: sticky; top: 0; }
+    }
+  
+
+    /* ── Disclaimer banner ── */
+    .disclaimer-bar {
+      background: #fefce8; border-bottom: 1px solid #fde68a;
+      padding: 9px 24px; text-align: center; font-size: .82rem;
+      color: #78350f; line-height: 1.5;
+    }
+    .disclaimer-bar a { color: #b45309; font-weight: 700; text-decoration: underline; }
+    .disclaimer-bar strong { color: #92400e; }
+
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Navigation -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <span class="claw">&#x1F99E;</span> learnopenclaw.org
+    </div>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+
+<!-- Disclaimer banner -->
+<div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+  <strong>learnopenclaw.org</strong> is an independent community learning resource. This is <strong>not</strong> the official OpenClaw site. For the official project, visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a>.
+</div>
+
+<!-- Hero -->
+<main id="main-content">
+<header class="hero">
+  <div class="hero-badge">Community Learning Resource &middot; Not the Official Site</div>
+  <h1>Learn <em>OpenClaw</em><br>Your Guide to the AI Agent That Actually Does Things</h1>
+  <p>learnopenclaw.org is an independent community resource covering everything about OpenClaw &mdash; the autonomous, open-source AI agent that runs locally, remembers context, and takes real action across your digital life.</p>
+  <div class="hero-stats">
+    <div class="stat"><strong>145K+</strong><span>GitHub Stars</span></div>
+    <div class="stat"><strong>20K+</strong><span>Forks</span></div>
+    <div class="stat"><strong>100+</strong><span>Agent Skills</span></div>
+    <div class="stat"><strong>Free &amp; Open Source</strong><span>No subscription needed</span></div>
+  </div>
+</header>
+
+
+  <section class="nl-section" aria-label="Newsletter signup">
+    <div style="max-width:560px;margin:0 auto;">
+      <h2>Get OpenClaw tips <em>in your inbox</em></h2>
+      <p>Tutorials, tips, and news — delivered when it matters. No spam, ever.</p>
+      <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+      <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+        <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+        <button type="submit">Subscribe free</button>
+      </form>
+      <p class="nl-fine">Unsubscribe any time · Powered by ConvertKit</p>
+    </div>
+  </section>
+
+<!-- What is OpenClaw -->
+<section class="section section--alt" id="what">
+  <div class="container">
+    <div class="section-label">What is it?</div>
+    <h2 class="section-title">OpenClaw: From Chatbot to Agent</h2>
+    <p class="section-subtitle">
+      OpenClaw is a free, open-source autonomous AI agent developed by Peter Steinberger. Unlike a chatbot that just answers questions, OpenClaw can <em>execute</em> tasks &mdash; on your behalf, on your machine.
+    </p>
+
+    <div class="what-grid">
+      <div class="what-card">
+        <h3>&#x1F9E0; What it is</h3>
+        <p>An autonomous AI agent that lives on your computer. It uses large language models (like Claude or GPT) as its brain, and acts as a personal assistant that can actually <em>do</em> things &mdash; not just talk about them.</p>
+      </div>
+      <div class="what-card">
+        <h3>&#x1F4F1; How you talk to it</h3>
+        <p>You interact with OpenClaw through everyday messaging apps you already use &mdash; WhatsApp, Telegram, Slack, Discord, or iMessage. Just send a message; the agent handles the rest.</p>
+      </div>
+      <div class="what-card">
+        <h3>&#x1F513; Why it's different</h3>
+        <p>It's fully open-source, runs locally on your device, and is completely free. No subscription needed &mdash; just bring your own API key for your preferred AI model, or run a local model entirely offline.</p>
+      </div>
+      <div class="what-card">
+        <h3>&#x1F4D6; A little history</h3>
+        <p>Launched in November 2025 as <em>Clawdbot</em> by Austrian developer Peter Steinberger. After trademark issues it became <em>Moltbot</em>, then <em>OpenClaw</em> in early 2026 &mdash; and promptly hit 60,000 GitHub stars in 72 hours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How to Use -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-label">How to use it</div>
+    <h2 class="section-title">Get Up and Running</h2>
+    <p class="section-subtitle">
+      OpenClaw is designed to be set up once and then used entirely through your favourite chat app. Here's how to get started.
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Install OpenClaw</h3>
+          <p>Clone or download the project from GitHub. Make sure you have Node.js installed on your machine.</p>
+          <code>git clone https://github.com/OpenClaw/openclaw</code>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Add your API key</h3>
+          <p>OpenClaw is model-agnostic &mdash; use Claude, GPT-4, or a local model. Add your API key to the <code>.env</code> config file. No recurring subscription needed.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Connect your messaging app</h3>
+          <p>Link OpenClaw to your preferred messaging platform &mdash; WhatsApp, Telegram, Slack, Discord, or iMessage. Follow the setup guide in the official docs to authenticate the connection.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Install Agent Skills (optional)</h3>
+          <p>Browse <strong>ClawHub</strong>, OpenClaw's skill marketplace, to add capabilities &mdash; from calendar management to web automation. Over 100 skills are available. Always review skill permissions carefully before installing.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Start giving commands</h3>
+          <p>Open your messaging app and tell OpenClaw what you need. It will reason through the task and take action. Try:</p>
+          <code>"Summarise my emails from today"</code><br>
+          <code>"Schedule a meeting with John for Thursday at 2pm"</code><br>
+          <code>"Search the web for the latest AI news and send me a summary"</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning-banner">
+      <div class="warn-icon">&#x26A0;&#xFE0F;</div>
+      <p><strong>Security note:</strong> OpenClaw has experienced security incidents &mdash; malicious skills distributed via ClawHub installed malware on users' machines. Only install skills from trusted sources, review all permissions carefully, and consider running OpenClaw inside an isolated environment (e.g. a virtual machine) for extra safety.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Features -->
+<section class="section section--alt" id="features">
+  <div class="container">
+    <div class="section-label">Features &amp; Benefits</div>
+    <h2 class="section-title">What OpenClaw Can Do For You</h2>
+    <p class="section-subtitle">
+      OpenClaw isn't just a text generator. It's a true task executor &mdash; bridging the gap between AI intelligence and real-world action.
+    </p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4BB;</div>
+        <h3>Execute Shell Commands</h3>
+        <p>Runs commands on your machine on your behalf &mdash; automate system tasks, scripts, and processes with plain-language instructions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4C1;</div>
+        <h3>Read &amp; Write Files</h3>
+        <p>Create, edit, move, and organise files on your computer. Ask it to draft a document, summarise a PDF, or reorganise a folder.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F310;</div>
+        <h3>Browse the Web</h3>
+        <p>Search the internet, extract information from websites, and compile research &mdash; all triggered by a simple chat message.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4E7;</div>
+        <h3>Send Emails</h3>
+        <p>Draft and send emails on your behalf. Summarise your inbox, reply to threads, or set up automated email workflows.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4C5;</div>
+        <h3>Manage Your Calendar</h3>
+        <p>Schedule meetings, set reminders, check availability, and manage your calendar through natural conversation.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F512;</div>
+        <h3>Local &amp; Private</h3>
+        <p>Runs entirely on your own machine. Your data stays with you &mdash; no cloud processing of personal files unless you choose it.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F916;</div>
+        <h3>Model Agnostic</h3>
+        <p>Works with Claude, GPT-4, Gemini, or fully local models like LLaMA. Switch models anytime with a single config change.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F9E9;</div>
+        <h3>100+ Agent Skills</h3>
+        <p>Extend capabilities with skills from ClawHub &mdash; web automation, Slack integration, coding helpers, and much more.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4AC;</div>
+        <h3>Works in Your Chat App</h3>
+        <p>No new interface to learn. Use WhatsApp, Telegram, Slack, Discord, or iMessage &mdash; wherever you already are.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F193;</div>
+        <h3>Completely Free</h3>
+        <p>Open-source and free forever. Bring your own API key &mdash; no recurring subscription, no vendor lock-in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://en.wikipedia.org/wiki/OpenClaw" target="_blank" rel="noopener">Wikipedia</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>

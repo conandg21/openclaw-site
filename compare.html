@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw vs AutoGPT vs CrewAI — 2026 AI Agent Comparison</title>
+  <meta name="description" content="A detailed 2026 comparison of OpenClaw, AutoGPT, and CrewAI. Compare architecture, memory systems, setup complexity, cost, and which AI agent framework is right for you." />
+  <meta name="keywords" content="OpenClaw vs AutoGPT, OpenClaw vs CrewAI, best AI agent 2026, AI agent comparison, AutoGPT alternative, CrewAI alternative, open source AI agent" />
+  <link rel="canonical" href="https://learnopenclaw.org/compare.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw vs AutoGPT vs CrewAI — 2026 AI Agent Comparison" />
+  <meta property="og:description" content="Which AI agent framework should you use in 2026? Detailed comparison of OpenClaw, AutoGPT, and CrewAI across setup, memory, cost, and use cases." />
+  <meta property="og:url" content="https://learnopenclaw.org/compare.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw vs AutoGPT vs CrewAI — 2026 Comparison" />
+  <meta name="twitter:description" content="Which AI agent wins in 2026? Full comparison of OpenClaw, AutoGPT, and CrewAI." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OpenClaw vs AutoGPT vs CrewAI — 2026 AI Agent Comparison",
+    "description": "A detailed 2026 comparison of OpenClaw, AutoGPT, and CrewAI.",
+    "url": "https://learnopenclaw.org/compare.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Compare","item":"https://learnopenclaw.org/compare.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --oc:        #0d9488; /* OpenClaw teal */
+      --oc-lt:     #f0fdfa;
+      --oc-md:     #99f6e4;
+      --ag:        #7c3aed; /* AutoGPT purple */
+      --ag-lt:     #f5f3ff;
+      --ag-md:     #ddd6fe;
+      --cr:        #ea580c; /* CrewAI orange */
+      --cr-lt:     #fff7ed;
+      --cr-md:     #fed7aa;
+      --blue:      #2563eb;
+      --green:     #16a34a;
+      --green-lt:  #f0fdf4;
+      --green-md:  #bbf7d0;
+      --red:       #dc2626;
+      --red-lt:    #fef2f2;
+      --gray-1:    #f9fafb;
+      --gray-2:    #f3f4f6;
+      --gray-3:    #e5e7eb;
+      --gray-5:    #6b7280;
+      --gray-8:    #1f2937;
+      --white:     #ffffff;
+      --radius:    12px;
+      --shadow:    0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--oc); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--oc);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 980px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+    .nav-links a { color: var(--gray-5); font-size: .88rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--oc); text-decoration: none; }
+    .nav-links a.active { color: var(--oc); font-weight: 700; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(160deg, #f0fdfa 0%, #f5f3ff 50%, #fff7ed 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--gray-2);
+      color: var(--gray-8);
+      font-size: .75rem; font-weight: 700; letter-spacing: .07em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      font-weight: 800; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 600px; margin: 0 auto 32px;
+    }
+
+    /* ── Agent identity cards ── */
+    .agent-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 680px) { .agent-cards { grid-template-columns: 1fr; } }
+
+    .agent-card {
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      border: 2px solid transparent;
+    }
+    .agent-card--oc { background: var(--oc-lt); border-color: var(--oc-md); }
+    .agent-card--ag { background: var(--ag-lt); border-color: var(--ag-md); }
+    .agent-card--cr { background: var(--cr-lt); border-color: var(--cr-md); }
+
+    .agent-card .agent-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .agent-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; }
+    .agent-card .agent-tagline { font-size: .82rem; color: var(--gray-5); margin-bottom: 12px; }
+    .agent-badge {
+      display: inline-block;
+      padding: 3px 10px; border-radius: 100px;
+      font-size: .72rem; font-weight: 700;
+    }
+    .badge--oc { background: var(--oc); color: var(--white); }
+    .badge--ag { background: var(--ag); color: var(--white); }
+    .badge--cr { background: var(--cr); color: var(--white); }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--oc);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .section-subtitle {
+      font-size: 1rem; color: var(--gray-5);
+      max-width: 640px; margin-bottom: 36px;
+    }
+
+    /* ── Comparison table ── */
+    .comp-table-wrap { overflow-x: auto; }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      min-width: 600px;
+    }
+    .comp-table th {
+      padding: 14px 16px;
+      font-size: .82rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 2px solid var(--gray-3);
+    }
+    .comp-table th:first-child { text-align: left; background: var(--gray-1); }
+    .comp-table th.th-oc { background: var(--oc-lt); color: var(--oc); text-align: center; }
+    .comp-table th.th-ag { background: var(--ag-lt); color: var(--ag); text-align: center; }
+    .comp-table th.th-cr { background: var(--cr-lt); color: var(--cr); text-align: center; }
+
+    .comp-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--gray-3);
+      vertical-align: top;
+    }
+    .comp-table tr:last-child td { border-bottom: none; }
+    .comp-table tr:hover td { background: var(--gray-1); }
+    .comp-table td:first-child {
+      font-weight: 600; font-size: .85rem;
+      background: var(--gray-1); white-space: nowrap;
+    }
+    .comp-table td:not(:first-child) { text-align: center; font-size: .875rem; }
+
+    .check  { color: var(--green); font-weight: 700; font-size: 1rem; }
+    .cross  { color: var(--red);   font-weight: 700; font-size: 1rem; }
+    .partial { color: var(--gray-5); font-size: .85rem; }
+
+    /* ── Score cards ── */
+    .score-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px; margin: 36px 0;
+    }
+    @media (max-width: 640px) { .score-row { grid-template-columns: 1fr; } }
+
+    .score-card {
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border-top: 4px solid transparent;
+    }
+    .score-card--oc { border-top-color: var(--oc); background: var(--white); }
+    .score-card--ag { border-top-color: var(--ag); background: var(--white); }
+    .score-card--cr { border-top-color: var(--cr); background: var(--white); }
+
+    .score-card h3 { font-size: .95rem; font-weight: 800; margin-bottom: 14px; }
+    .score-row-item {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 10px; font-size: .85rem;
+    }
+    .score-row-item .label { color: var(--gray-5); }
+    .score-bar-wrap { width: 90px; height: 7px; background: var(--gray-2); border-radius: 4px; }
+    .score-bar { height: 7px; border-radius: 4px; }
+    .bar--oc { background: var(--oc); }
+    .bar--ag { background: var(--ag); }
+    .bar--cr { background: var(--cr); }
+
+    /* ── Deep dive sections ── */
+    .deep-dive {
+      display: flex; flex-direction: column; gap: 32px;
+    }
+    .deep-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .deep-card-header {
+      padding: 18px 24px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .deep-card-header--oc { background: var(--oc-lt); }
+    .deep-card-header--ag { background: var(--ag-lt); }
+    .deep-card-header--cr { background: var(--cr-lt); }
+    .deep-card-header h3 { font-size: 1rem; font-weight: 800; }
+    .deep-card-body {
+      padding: 20px 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media (max-width: 600px) { .deep-card-body { grid-template-columns: 1fr; } }
+    .deep-col h4 { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--gray-5); margin-bottom: 8px; }
+    .deep-col ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .deep-col li {
+      font-size: .875rem; color: var(--gray-8);
+      padding-left: 16px; position: relative;
+    }
+    .deep-col li::before { content: '•'; position: absolute; left: 0; }
+    .pro li::before  { color: var(--green); }
+    .con li::before  { color: var(--red); }
+
+    /* ── Winner callout ── */
+    .winner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .winner-card {
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid var(--gray-3);
+      box-shadow: var(--shadow);
+    }
+    .winner-card h3 { font-size: .9rem; font-weight: 700; margin-bottom: 6px; }
+    .winner-card .winner-name {
+      font-size: 1.05rem; font-weight: 800; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .winner-card p { font-size: .85rem; color: var(--gray-5); }
+    .winner-card--oc { background: var(--oc-lt); border-color: var(--oc-md); }
+    .winner-card--ag { background: var(--ag-lt); border-color: var(--ag-md); }
+    .winner-card--cr { background: var(--cr-lt); border-color: var(--cr-md); }
+
+    /* ── Verdict box ── */
+    .verdict {
+      background: linear-gradient(135deg, var(--oc-lt), var(--ag-lt));
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-top: 40px;
+    }
+    .verdict h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; }
+    .verdict p { font-size: .95rem; color: var(--gray-8); margin-bottom: 10px; }
+    .verdict p:last-child { margin-bottom: 0; }
+    .verdict strong { color: var(--gray-8); }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    /* ── Mobile nav ── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; position: absolute;
+        top: 60px; left: 0; right: 0;
+        background: var(--white); border-bottom: 1px solid var(--gray-3);
+        flex-direction: column; padding: 16px 24px; gap: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      nav { position: sticky; top: 0; }
+    }
+  
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">2026 AI Agent Showdown</div>
+  <h1>OpenClaw vs AutoGPT vs CrewAI</h1>
+  <p>Three of the most popular AI agent frameworks — one detailed comparison. Which one is right for you?</p>
+</header>
+
+<!-- Agent Identity Cards -->
+<section class="section section--alt" id="overview">
+  <div class="container">
+    <div class="section-label">The contenders</div>
+    <h2 class="section-title">Meet the Three Agents</h2>
+    <p class="section-subtitle">Each framework takes a different philosophy to what an "AI agent" should be and who it's built for.</p>
+
+    <div class="agent-cards">
+      <div class="agent-card agent-card--oc">
+        <div class="agent-icon" aria-hidden="true">&#x1F99E;</div>
+        <h3>OpenClaw</h3>
+        <p class="agent-tagline">The personal automation agent. Config-driven, local-first, and built for everyday people and power users alike.</p>
+        <span class="agent-badge badge--oc">Best for: Personal Automation</span>
+      </div>
+      <div class="agent-card agent-card--ag">
+        <div class="agent-icon" aria-hidden="true">&#x1F916;</div>
+        <h3>AutoGPT</h3>
+        <p class="agent-tagline">The original autonomous agent. Give it a goal and let it loose — built for researchers and experimenters.</p>
+        <span class="agent-badge badge--ag">Best for: Research &amp; Exploration</span>
+      </div>
+      <div class="agent-card agent-card--cr">
+        <div class="agent-icon" aria-hidden="true">&#x1F465;</div>
+        <h3>CrewAI</h3>
+        <p class="agent-tagline">The multi-agent orchestrator. Multiple specialised agents collaborating on complex tasks — built for developers.</p>
+        <span class="agent-badge badge--cr">Best for: Multi-Agent Pipelines</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Score Cards -->
+<section class="section" id="scores">
+  <div class="container">
+    <div class="section-label">At a glance</div>
+    <h2 class="section-title">How They Score</h2>
+    <p class="section-subtitle">Rated across six key dimensions for a typical 2026 use case.</p>
+
+    <div class="score-row" role="list" aria-label="Agent scores comparison">
+      <div class="score-card score-card--oc" role="listitem">
+        <h3>&#x1F99E; OpenClaw</h3>
+        <div class="score-row-item"><span class="label">Ease of setup</span><div class="score-bar-wrap"><div class="score-bar bar--oc" style="width:95%" role="img" aria-label="95%"></div></div></div>
+        <div class="score-row-item"><span class="label">Privacy</span><div class="score-bar-wrap"><div class="score-bar bar--oc" style="width:100%" role="img" aria-label="100%"></div></div></div>
+        <div class="score-row-item"><span class="label">Automation power</span><div class="score-bar-wrap"><div class="score-bar bar--oc" style="width:88%" role="img" aria-label="88%"></div></div></div>
+        <div class="score-row-item"><span class="label">Token efficiency</span><div class="score-bar-wrap"><div class="score-bar bar--oc" style="width:92%" role="img" aria-label="92%"></div></div></div>
+        <div class="score-row-item"><span class="label">Multi-agent</span><div class="score-bar-wrap"><div class="score-bar bar--oc" style="width:55%" role="img" aria-label="55%"></div></div></div>
+        <div class="score-row-item"><span class="label">Community size</span><div class="score-bar-wrap"><div class="score-bar bar--oc" style="width:85%" role="img" aria-label="85%"></div></div></div>
+      </div>
+
+      <div class="score-card score-card--ag" role="listitem">
+        <h3>&#x1F916; AutoGPT</h3>
+        <div class="score-row-item"><span class="label">Ease of setup</span><div class="score-bar-wrap"><div class="score-bar bar--ag" style="width:55%" role="img" aria-label="55%"></div></div></div>
+        <div class="score-row-item"><span class="label">Privacy</span><div class="score-bar-wrap"><div class="score-bar bar--ag" style="width:50%" role="img" aria-label="50%"></div></div></div>
+        <div class="score-row-item"><span class="label">Automation power</span><div class="score-bar-wrap"><div class="score-bar bar--ag" style="width:80%" role="img" aria-label="80%"></div></div></div>
+        <div class="score-row-item"><span class="label">Token efficiency</span><div class="score-bar-wrap"><div class="score-bar bar--ag" style="width:45%" role="img" aria-label="45%"></div></div></div>
+        <div class="score-row-item"><span class="label">Multi-agent</span><div class="score-bar-wrap"><div class="score-bar bar--ag" style="width:60%" role="img" aria-label="60%"></div></div></div>
+        <div class="score-row-item"><span class="label">Community size</span><div class="score-bar-wrap"><div class="score-bar bar--ag" style="width:90%" role="img" aria-label="90%"></div></div></div>
+      </div>
+
+      <div class="score-card score-card--cr" role="listitem">
+        <h3>&#x1F465; CrewAI</h3>
+        <div class="score-row-item"><span class="label">Ease of setup</span><div class="score-bar-wrap"><div class="score-bar bar--cr" style="width:50%" role="img" aria-label="50%"></div></div></div>
+        <div class="score-row-item"><span class="label">Privacy</span><div class="score-bar-wrap"><div class="score-bar bar--cr" style="width:70%" role="img" aria-label="70%"></div></div></div>
+        <div class="score-row-item"><span class="label">Automation power</span><div class="score-bar-wrap"><div class="score-bar bar--cr" style="width:92%" role="img" aria-label="92%"></div></div></div>
+        <div class="score-row-item"><span class="label">Token efficiency</span><div class="score-bar-wrap"><div class="score-bar bar--cr" style="width:65%" role="img" aria-label="65%"></div></div></div>
+        <div class="score-row-item"><span class="label">Multi-agent</span><div class="score-bar-wrap"><div class="score-bar bar--cr" style="width:100%" role="img" aria-label="100%"></div></div></div>
+        <div class="score-row-item"><span class="label">Community size</span><div class="score-bar-wrap"><div class="score-bar bar--cr" style="width:75%" role="img" aria-label="75%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Full Comparison Table -->
+<section class="section section--alt" id="table">
+  <div class="container">
+    <div class="section-label">Feature by feature</div>
+    <h2 class="section-title">Full Comparison Table</h2>
+    <p class="section-subtitle">Every major dimension compared side by side.</p>
+
+    <div class="comp-table-wrap">
+      <table class="comp-table" aria-label="Feature comparison table">
+        <thead>
+          <tr>
+            <th scope="col">Feature</th>
+            <th class="th-oc" scope="col">&#x1F99E; OpenClaw</th>
+            <th class="th-ag" scope="col">&#x1F916; AutoGPT</th>
+            <th class="th-cr" scope="col">&#x1F465; CrewAI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Runs locally</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> 100% local</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Partial</span></td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Yes</td>
+          </tr>
+          <tr>
+            <td>No coding required</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Config only</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Some setup</span></td>
+            <td><span class="cross" aria-label="No">&#x2718;</span> Python required</td>
+          </tr>
+          <tr>
+            <td>Messaging app integration</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> 50+ platforms</td>
+            <td><span class="cross" aria-label="No">&#x2718;</span> Web UI only</td>
+            <td><span class="cross" aria-label="No">&#x2718;</span> Not built-in</td>
+          </tr>
+          <tr>
+            <td>Proactive / scheduled tasks</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Heartbeat loop</td>
+            <td><span class="cross" aria-label="No">&#x2718;</span> Manual trigger</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Via code</span></td>
+          </tr>
+          <tr>
+            <td>Persistent memory</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> SQLite local</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Vector DB</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Per-agent</span></td>
+          </tr>
+          <tr>
+            <td>Personality / identity config</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> SOUL.md</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Role prompt</span></td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Agent roles</td>
+          </tr>
+          <tr>
+            <td>Model agnostic</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Any LLM</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; GPT-optimised</span></td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Any LLM</td>
+          </tr>
+          <tr>
+            <td>Multi-agent collaboration</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Limited</span></td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Basic</span></td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Core feature</td>
+          </tr>
+          <tr>
+            <td>Skill / plugin marketplace</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> ClawHub</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Large ecosystem</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; LangChain tools</span></td>
+          </tr>
+          <tr>
+            <td>Docker required</td>
+            <td><span class="check" aria-label="No docker required">&#x2714;</span> Not needed</td>
+            <td><span class="cross" aria-label="Yes">&#x2718;</span> Required</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Optional</span></td>
+          </tr>
+          <tr>
+            <td>Token cost</td>
+            <td><span class="check" aria-label="Low">&#x2714;</span> Very low</td>
+            <td><span class="cross" aria-label="High">&#x2718;</span> High</td>
+            <td><span class="partial" aria-label="Medium">&#x26AA; Medium</span></td>
+          </tr>
+          <tr>
+            <td>Context compaction</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Automatic</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Manual</span></td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Per-agent</span></td>
+          </tr>
+          <tr>
+            <td>Completely free</td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Yes</td>
+            <td><span class="partial" aria-label="Partial">&#x26AA; Free tier + paid</span></td>
+            <td><span class="check" aria-label="Yes">&#x2714;</span> Open source</td>
+          </tr>
+          <tr>
+            <td>GitHub Stars (2026)</td>
+            <td>145K+</td>
+            <td>170K+</td>
+            <td>30K+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Deep Dive Pros & Cons -->
+<section class="section" id="deep">
+  <div class="container">
+    <div class="section-label">Pros &amp; Cons</div>
+    <h2 class="section-title">The Honest Breakdown</h2>
+    <p class="section-subtitle">No framework is perfect. Here's where each one shines and where it falls short.</p>
+
+    <div class="deep-dive">
+
+      <div class="deep-card">
+        <div class="deep-card-header deep-card-header--oc">
+          <span style="font-size:1.4rem" aria-hidden="true">&#x1F99E;</span>
+          <h3>OpenClaw</h3>
+          <span style="margin-left:auto;font-size:.8rem;color:var(--gray-5)">Best all-rounder for personal use</span>
+        </div>
+        <div class="deep-card-body">
+          <div class="deep-col pro">
+            <h4>&#x2714; Pros</h4>
+            <ul>
+              <li>No coding needed — works from Markdown config files</li>
+              <li>Native messaging app support (WhatsApp, Telegram, Slack, etc.)</li>
+              <li>Proactive Heartbeat loop — acts without being asked</li>
+              <li>Lowest token cost of the three</li>
+              <li>100% local — your data never leaves your machine</li>
+              <li>SOUL.md gives the agent a consistent, persistent identity</li>
+              <li>ClawHub marketplace with 100+ skills</li>
+              <li>No Docker required</li>
+            </ul>
+          </div>
+          <div class="deep-col con">
+            <h4>&#x2718; Cons</h4>
+            <ul>
+              <li>Multi-agent support is limited compared to CrewAI</li>
+              <li>ClawHub has had security incidents with malicious skills</li>
+              <li>Less autonomous "free-roaming" than AutoGPT by design</li>
+              <li>Newer — smaller community than AutoGPT</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="deep-card">
+        <div class="deep-card-header deep-card-header--ag">
+          <span style="font-size:1.4rem" aria-hidden="true">&#x1F916;</span>
+          <h3>AutoGPT</h3>
+          <span style="margin-left:auto;font-size:.8rem;color:var(--gray-5)">Best for research &amp; experimentation</span>
+        </div>
+        <div class="deep-card-body">
+          <div class="deep-col pro">
+            <h4>&#x2714; Pros</h4>
+            <ul>
+              <li>Largest community and plugin ecosystem</li>
+              <li>Highly autonomous — just give it a goal</li>
+              <li>Massive GitHub star count and years of development</li>
+              <li>Strong for open-ended research tasks</li>
+              <li>Great documentation and tutorials</li>
+            </ul>
+          </div>
+          <div class="deep-col con">
+            <h4>&#x2718; Cons</h4>
+            <ul>
+              <li>Requires Docker to run — higher setup barrier</li>
+              <li>Very high token usage — can get expensive fast</li>
+              <li>No native messaging app integration</li>
+              <li>No built-in proactive scheduling</li>
+              <li>Optimised for GPT models — other LLMs work less well</li>
+              <li>Lost developer mindshare to OpenClaw for personal tasks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="deep-card">
+        <div class="deep-card-header deep-card-header--cr">
+          <span style="font-size:1.4rem" aria-hidden="true">&#x1F465;</span>
+          <h3>CrewAI</h3>
+          <span style="margin-left:auto;font-size:.8rem;color:var(--gray-5)">Best for complex multi-agent pipelines</span>
+        </div>
+        <div class="deep-card-body">
+          <div class="deep-col pro">
+            <h4>&#x2714; Pros</h4>
+            <ul>
+              <li>Best-in-class multi-agent orchestration</li>
+              <li>Defined agent roles make complex pipelines manageable</li>
+              <li>Model agnostic and highly customisable</li>
+              <li>Integrates with LangChain's huge tool ecosystem</li>
+              <li>Strong for enterprise and developer use cases</li>
+            </ul>
+          </div>
+          <div class="deep-col con">
+            <h4>&#x2718; Cons</h4>
+            <ul>
+              <li>Requires Python — not beginner friendly</li>
+              <li>No messaging app integration out of the box</li>
+              <li>No Heartbeat / proactive scheduling</li>
+              <li>Smaller community than AutoGPT</li>
+              <li>More complex to set up for simple tasks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Who Should Use What -->
+<section class="section section--alt" id="verdict">
+  <div class="container">
+    <div class="section-label">The verdict</div>
+    <h2 class="section-title">Which One Should You Use?</h2>
+    <p class="section-subtitle">There's no single winner — the right choice depends entirely on what you're trying to do.</p>
+
+    <div class="winner-grid">
+      <div class="winner-card winner-card--oc">
+        <h3>Choose OpenClaw if...</h3>
+        <div class="winner-name"><span aria-hidden="true">&#x1F99E;</span> OpenClaw</div>
+        <p>You want a personal AI assistant that works through WhatsApp or Telegram, acts proactively, and doesn't require any coding. Best for individuals automating daily tasks, managing email, and building smart home workflows.</p>
+      </div>
+      <div class="winner-card winner-card--ag">
+        <h3>Choose AutoGPT if...</h3>
+        <div class="winner-name"><span aria-hidden="true">&#x1F916;</span> AutoGPT</div>
+        <p>You're a researcher, experimenter, or developer who wants to give an AI a goal and watch it figure things out autonomously. Best for exploring what AI agents can do and building experimental pipelines.</p>
+      </div>
+      <div class="winner-card winner-card--cr">
+        <h3>Choose CrewAI if...</h3>
+        <div class="winner-name"><span aria-hidden="true">&#x1F465;</span> CrewAI</div>
+        <p>You're a developer building a system where multiple specialised agents need to collaborate — like a researcher, a writer, and a fact-checker working together on a single output. Best for complex enterprise pipelines.</p>
+      </div>
+    </div>
+
+    <div class="verdict">
+      <h3>&#x1F3C6; The Bottom Line for 2026</h3>
+      <p>For most people — especially non-developers who want an AI agent that actually fits into their daily life — <strong>OpenClaw is the clear winner</strong>. Its messaging integration, zero-code setup, Heartbeat loop, and privacy-first local architecture make it the most practical choice for everyday automation.</p>
+      <p><strong>AutoGPT</strong> still dominates in research and experimentation circles, but its high token costs and Docker requirement have cost it ground for personal use. <strong>CrewAI</strong> is the go-to for developers building serious multi-agent systems, but it's simply not designed for individuals automating their inbox.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="automation.html">Automation</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+    <a href="security.html">Security</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>

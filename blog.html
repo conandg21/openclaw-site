@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Blog — Tutorials, Tips & News | learnopenclaw.org</title>
+  <meta name="description" content="The learnopenclaw.org blog. Tutorials, tips, use case spotlights, and the latest OpenClaw news — all in one place." />
+  <meta name="keywords" content="OpenClaw blog, OpenClaw tutorials, OpenClaw tips, OpenClaw news, AI agent guide, OpenClaw how-to" />
+  <link rel="canonical" href="https://learnopenclaw.org/blog.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="OpenClaw Blog — Tutorials, Tips & News" />
+  <meta property="og:description" content="Tutorials, tips, use case spotlights, and the latest OpenClaw news from the learnopenclaw.org community." />
+  <meta property="og:url" content="https://learnopenclaw.org/blog.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Blog — Tutorials, Tips & News" />
+  <meta name="twitter:description" content="Tutorials, tips, use case spotlights, and the latest OpenClaw news from learnopenclaw.org." />
+  <!-- Structured Data: Blog + ItemList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "learnopenclaw.org Blog",
+    "description": "Tutorials, tips, use case spotlights, and news about OpenClaw — the autonomous AI agent.",
+    "url": "https://learnopenclaw.org/blog.html",
+    "publisher": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org",
+      "url": "https://learnopenclaw.org"
+    },
+    "blogPost": [
+      {
+        "@type": "BlogPosting",
+        "headline": "From Barista to AI Agent User: How Maya Installed OpenClaw on Her 15-Minute Breaks",
+        "url": "https://learnopenclaw.org/blog/maya-barista-openclaw-beginner.html",
+        "datePublished": "2026-03-19",
+        "author": {"@type": "Organization", "name": "learnopenclaw.org"}
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "Getting Started with OpenClaw: Complete Setup Guide for 2026",
+        "url": "https://learnopenclaw.org/blog/getting-started-openclaw-2026.html",
+        "datePublished": "2026-03-18",
+        "author": {"@type": "Organization", "name": "learnopenclaw.org"}
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "NemoClaw Explained: NVIDIA's Enterprise Security Layer for OpenClaw",
+        "url": "https://learnopenclaw.org/blog/nemoclaw-explained.html",
+        "datePublished": "2026-03-15",
+        "author": {"@type": "Organization", "name": "learnopenclaw.org"}
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "10 OpenClaw Tips to 10x Your Productivity",
+        "url": "https://learnopenclaw.org/blog/10-openclaw-productivity-tips.html",
+        "datePublished": "2026-03-10",
+        "author": {"@type": "Organization", "name": "learnopenclaw.org"}
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "How a Freelance Designer Automated Their Entire Workflow with OpenClaw",
+        "url": "https://learnopenclaw.org/blog/openclaw-freelancer-case-study.html",
+        "datePublished": "2026-03-05",
+        "author": {"@type": "Organization", "name": "learnopenclaw.org"}
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "The 5 Best OpenClaw Skills to Install in 2026",
+        "url": "https://learnopenclaw.org/blog/best-openclaw-skills-2026.html",
+        "datePublished": "2026-02-28",
+        "author": {"@type": "Organization", "name": "learnopenclaw.org"}
+      }
+    ]
+  }
+  </script>
+  <style>
+  :root {
+      --blue:    #2563eb;
+      --blue-lt: #eff6ff;
+      --blue-md: #bfdbfe;
+      --gray-1:  #f9fafb;
+      --gray-2:  #f3f4f6;
+      --gray-3:  #e5e7eb;
+      --gray-5:  #6b7280;
+      --gray-8:  #1f2937;
+      --white:   #ffffff;
+      --radius:  12px;
+      --shadow:  0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65; color: var(--gray-8); background: var(--white);
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; }
+    .nav-logo .claw { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    .nav-links a[aria-current="page"] { color: var(--blue); font-weight: 700; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    /* Universal hamburger */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* Disclaimer */
+    .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid #fde68a; padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+    .disclaimer-bar a { color: #92400e; font-weight: 600; }
+
+    /* Hero */
+    .hero { padding: 64px 24px 48px; text-align: center; background: linear-gradient(180deg, var(--blue-lt) 0%, var(--white) 100%); }
+    .hero-badge { display: inline-block; background: var(--blue-md); color: var(--blue); font-size: .78rem; font-weight: 700; letter-spacing: .06em; padding: 4px 12px; border-radius: 100px; margin-bottom: 16px; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+    .hero h1 em { font-style: normal; color: var(--blue); }
+    .hero p { font-size: 1.1rem; color: var(--gray-5); max-width: 560px; margin: 0 auto; }
+
+    /* Filter bar */
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 32px 24px 8px; }
+    .filter-btn {
+      background: var(--white); border: 1.5px solid var(--gray-3);
+      border-radius: 100px; padding: 7px 18px; font-size: .88rem; font-weight: 600;
+      color: var(--gray-5); cursor: pointer; transition: all .18s;
+    }
+    .filter-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .filter-btn.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+
+    /* Blog grid */
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 28px; padding: 40px 24px 80px; max-width: 960px; margin: 0 auto; }
+
+    /* Post card */
+    .post-card {
+      background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column;
+      transition: transform .18s, box-shadow .18s;
+    }
+    .post-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,.1); }
+
+    /* Card thumb — CSS gradient art by category */
+    .card-thumb {
+      height: 140px; display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; position: relative; overflow: hidden;
+    }
+    .card-thumb.tutorial  { background: linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%); }
+    .card-thumb.news      { background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%); }
+    .card-thumb.tips      { background: linear-gradient(135deg, #fffbeb 0%, #fde68a 100%); }
+    .card-thumb.spotlight { background: linear-gradient(135deg, #fdf4ff 0%, #e9d5ff 100%); }
+
+    .card-body { padding: 20px 22px 24px; flex: 1; display: flex; flex-direction: column; }
+    .card-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .cat-badge {
+      font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 100px;
+    }
+    .cat-badge.tutorial  { background: var(--blue-md); color: var(--blue); }
+    .cat-badge.news      { background: #bbf7d0; color: #15803d; }
+    .cat-badge.tips      { background: #fde68a; color: #92400e; }
+    .cat-badge.spotlight { background: #e9d5ff; color: #7e22ce; }
+    .card-date { font-size: .8rem; color: var(--gray-5); }
+    .card-read { font-size: .8rem; color: var(--gray-5); }
+    .card-body h2 { font-size: 1.05rem; font-weight: 700; line-height: 1.35; margin-bottom: 10px; color: var(--gray-8); }
+    .card-body p  { font-size: .92rem; color: var(--gray-5); flex: 1; margin-bottom: 18px; line-height: 1.6; }
+    .read-more { font-size: .88rem; font-weight: 700; color: var(--blue); display: inline-flex; align-items: center; gap: 4px; }
+    .read-more::after { content: '→'; transition: transform .18s; }
+    .post-card:hover .read-more::after { transform: translateX(4px); }
+
+    /* No results */
+    .no-results { text-align: center; padding: 60px 24px; color: var(--gray-5); display: none; }
+    .no-results.visible { display: block; }
+
+    /* Footer */
+    footer { background: var(--gray-8); color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+    footer a { color: #60a5fa; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+    <strong>learnopenclaw.org</strong> is an independent community learning resource. Not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+  </div>
+
+  <main id="main">
+    <header class="hero">
+      <div class="hero-badge">Blog</div>
+      <h1>Tutorials, Tips & <em>OpenClaw</em> News</h1>
+      <p>Deep dives, how-to guides, real-world use cases, and the latest updates — written for everyone from first-timers to power users.</p>
+    </header>
+
+    <!-- Filter bar -->
+    <div class="filter-bar" role="group" aria-label="Filter posts by category">
+      <button class="filter-btn active" data-filter="all">All Posts</button>
+      <button class="filter-btn" data-filter="tutorial">Tutorials</button>
+      <button class="filter-btn" data-filter="news">News & Updates</button>
+      <button class="filter-btn" data-filter="tips">Tips & Tricks</button>
+      <button class="filter-btn" data-filter="spotlight">Use Case Spotlights</button>
+    </div>
+
+    <!-- Blog grid -->
+    
+  <section class="nl-section" aria-label="Newsletter signup">
+    <div style="max-width:560px;margin:0 auto;">
+      <h2>Get OpenClaw tips <em>in your inbox</em></h2>
+      <p>Tutorials, tips, and news — delivered when it matters. No spam, ever.</p>
+      <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+      <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+        <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+        <button type="submit">Subscribe free</button>
+      </form>
+      <p class="nl-fine">Unsubscribe any time · Powered by ConvertKit</p>
+    </div>
+  </section>
+
+  <section class="blog-grid" aria-label="Blog posts">
+
+      <article class="post-card" data-category="spotlight">
+        <div class="card-thumb spotlight" aria-hidden="true">☕</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="cat-badge spotlight">Beginner Story</span>
+            <span class="card-date">Mar 19, 2026</span>
+            <span class="card-read">· 8 min read</span>
+          </div>
+          <h2>From Barista to AI Agent User: How Maya Installed OpenClaw on Her 15-Minute Breaks</h2>
+          <p>Zero technical background, a dream of running a fashion blog, and 15 minutes per break. Maya Torres's two-week journey from total beginner to fully set up — one small step at a time.</p>
+          <a href="blog/maya-barista-openclaw-beginner.html" class="read-more">Read article</a>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="tutorial">
+        <div class="card-thumb tutorial" aria-hidden="true">🚀</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="cat-badge tutorial">Tutorial</span>
+            <span class="card-date">Mar 18, 2026</span>
+            <span class="card-read">· 8 min read</span>
+          </div>
+          <h2>Getting Started with OpenClaw: Complete Setup Guide for 2026</h2>
+          <p>Install OpenClaw, connect your first model, write your SOUL.md, and run your first real-world task — step by step with no fluff.</p>
+          <a href="blog/getting-started-openclaw-2026.html" class="read-more">Read article</a>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="news">
+        <div class="card-thumb news" aria-hidden="true">🟢</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="cat-badge news">News & Updates</span>
+            <span class="card-date">Mar 15, 2026</span>
+            <span class="card-read">· 6 min read</span>
+          </div>
+          <h2>NemoClaw Explained: NVIDIA's Enterprise Security Layer for OpenClaw</h2>
+          <p>Everything you need to know about NemoClaw — the NVIDIA-built enterprise stack announced at GTC 2026 that brings Nemotron, Dynamo, and a Privacy Router to OpenClaw.</p>
+          <a href="blog/nemoclaw-explained.html" class="read-more">Read article</a>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="tips">
+        <div class="card-thumb tips" aria-hidden="true">⚡</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="cat-badge tips">Tips & Tricks</span>
+            <span class="card-date">Mar 10, 2026</span>
+            <span class="card-read">· 5 min read</span>
+          </div>
+          <h2>10 OpenClaw Tips to 10x Your Productivity</h2>
+          <p>From SOUL.md persona tricks to chaining skills and setting up overnight automation schedules — 10 techniques that separate casual users from power users.</p>
+          <a href="blog/10-openclaw-productivity-tips.html" class="read-more">Read article</a>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="spotlight">
+        <div class="card-thumb spotlight" aria-hidden="true">🎨</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="cat-badge spotlight">Use Case Spotlight</span>
+            <span class="card-date">Mar 5, 2026</span>
+            <span class="card-read">· 7 min read</span>
+          </div>
+          <h2>How a Freelance Designer Automated Their Entire Workflow with OpenClaw</h2>
+          <p>Client emails, invoice generation, project briefs, and social scheduling — one freelancer's story of getting 15 hours a week back using nothing but OpenClaw and WhatsApp.</p>
+          <a href="blog/openclaw-freelancer-case-study.html" class="read-more">Read article</a>
+        </div>
+      </article>
+
+      <article class="post-card" data-category="tips">
+        <div class="card-thumb tips" aria-hidden="true">🏆</div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="cat-badge tips">Tips & Tricks</span>
+            <span class="card-date">Feb 28, 2026</span>
+            <span class="card-read">· 5 min read</span>
+          </div>
+          <h2>The 5 Best OpenClaw Skills to Install in 2026</h2>
+          <p>The Skill Marketplace has hundreds of options. We cut through the noise and picked the five skills that deliver the biggest quality-of-life improvement for most users.</p>
+          <a href="blog/best-openclaw-skills-2026.html" class="read-more">Read article</a>
+        </div>
+      </article>
+
+    </section>
+
+    <p class="no-results" id="no-results" role="status">No posts found in this category yet. Check back soon!</p>
+
+  </main>
+
+  <footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+      <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://en.wikipedia.org/wiki/OpenClaw" target="_blank" rel="noopener">Wikipedia</a>
+    </div>
+    <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+  </footer>
+
+  <script>
+    // Hamburger
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Category filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const postCards  = document.querySelectorAll('.post-card');
+    const noResults  = document.getElementById('no-results');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        let visible = 0;
+        postCards.forEach(card => {
+          const match = filter === 'all' || card.dataset.category === filter;
+          card.style.display = match ? '' : 'none';
+          if (match) visible++;
+        });
+        noResults.classList.toggle('visible', visible === 0);
+      });
+    });
+  </script>
+</body>
+</html>

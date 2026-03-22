@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Architecture — Heartbeat, Soul, Memory &amp; How It All Works</title>
+  <meta name="description" content="A deep dive into how OpenClaw works under the hood — the Heartbeat loop, SOUL.md identity system, SQLite memory, context compaction, the Gateway, and the agentic loop." />
+  <meta name="keywords" content="OpenClaw architecture, OpenClaw heartbeat, OpenClaw SOUL.md, OpenClaw memory, agentic loop, context compaction, SQLite AI memory, OpenClaw technical" />
+  <link rel="canonical" href="https://learnopenclaw.org/architecture.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Architecture — Heartbeat, Soul, Memory &amp; How It All Works" />
+  <meta property="og:description" content="A deep dive into how OpenClaw works under the hood — Heartbeat, SOUL.md, SQLite memory, context compaction, and the agentic loop." />
+  <meta property="og:url" content="https://learnopenclaw.org/architecture.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Architecture — Heartbeat, Soul &amp; Memory Explained" />
+  <meta name="twitter:description" content="How OpenClaw's Heartbeat, SOUL.md, and SQLite memory actually work under the hood." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw Architecture — Heartbeat, Soul, Memory & How It All Works",
+    "description": "A deep dive into how OpenClaw works under the hood.",
+    "url": "https://learnopenclaw.org/architecture.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Architecture","item":"https://learnopenclaw.org/architecture.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #2563eb;
+      --blue-lt:    #eff6ff;
+      --indigo:     #4f46e5;
+      --indigo-lt:  #eef2ff;
+      --indigo-md:  #c7d2fe;
+      --indigo-dk:  #3730a3;
+      --slate:      #475569;
+      --green:      #16a34a;
+      --green-lt:   #f0fdf4;
+      --green-md:   #bbf7d0;
+      --amber:      #d97706;
+      --amber-lt:   #fffbeb;
+      --amber-md:   #fde68a;
+      --red:        #dc2626;
+      --red-lt:     #fef2f2;
+      --gray-1:     #f9fafb;
+      --gray-2:     #f3f4f6;
+      --gray-3:     #e5e7eb;
+      --gray-5:     #6b7280;
+      --gray-7:     #374151;
+      --gray-8:     #1f2937;
+      --gray-9:     #111827;
+      --white:      #ffffff;
+      --code-bg:    #0f172a;
+      --code-text:  #e2e8f0;
+      --radius:     12px;
+      --shadow:     0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--indigo); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--indigo);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--indigo); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+    .section--dark {
+      background: var(--gray-9);
+      color: var(--code-text);
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+    .nav-links a { color: var(--gray-5); font-size: .88rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--indigo); text-decoration: none; }
+    .nav-links a.active { color: var(--indigo); font-weight: 700; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(160deg, var(--indigo-lt) 0%, var(--white) 60%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--indigo-md);
+      color: var(--indigo-dk);
+      font-size: .75rem; font-weight: 700; letter-spacing: .07em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: normal; color: var(--indigo); }
+    .hero p {
+      font-size: 1.08rem; color: var(--gray-5);
+      max-width: 600px; margin: 0 auto;
+    }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--indigo);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .section-subtitle {
+      font-size: 1rem; color: var(--gray-5);
+      max-width: 640px; margin-bottom: 40px;
+      line-height: 1.65;
+    }
+
+    /* ── Architecture overview diagram ── */
+    .arch-diagram {
+      background: var(--gray-9);
+      border-radius: var(--radius);
+      padding: 32px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .82rem;
+      color: var(--code-text);
+      overflow-x: auto;
+      line-height: 1.9;
+      box-shadow: 0 4px 24px rgba(0,0,0,.2);
+      margin-bottom: 40px;
+    }
+    .arch-diagram .comment  { color: #64748b; }
+    .arch-diagram .label    { color: #7dd3fc; font-weight: 700; }
+    .arch-diagram .arrow    { color: #818cf8; }
+    .arch-diagram .box      { color: #a5f3fc; }
+    .arch-diagram .file     { color: #86efac; }
+    .arch-diagram .storage  { color: #fca5a5; }
+
+    /* ── Component deep-dive cards ── */
+    .component-section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .component-section:last-of-type { border-bottom: none; }
+
+    .component-header {
+      display: flex; align-items: flex-start; gap: 18px;
+      margin-bottom: 28px;
+    }
+    .component-icon-wrap {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; flex-shrink: 0;
+    }
+    .icon-heartbeat { background: #fef2f2; }
+    .icon-soul      { background: #f5f3ff; }
+    .icon-memory    { background: #ecfdf5; }
+    .icon-gateway   { background: #eff6ff; }
+    .icon-loop      { background: #fffbeb; }
+    .icon-compaction { background: #f0fdf4; }
+    .icon-tools     { background: var(--indigo-lt); }
+
+    .component-header-text h2 {
+      font-size: 1.5rem; font-weight: 800; margin-bottom: 4px;
+    }
+    .component-header-text .subtitle {
+      font-size: .9rem; color: var(--gray-5);
+    }
+
+    .prose { font-size: .97rem; color: var(--gray-7); line-height: 1.75; }
+    .prose p { margin-bottom: 16px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose strong { color: var(--gray-8); font-weight: 700; }
+
+    /* ── Inline code ── */
+    code {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .83em;
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 5px;
+      padding: 1px 6px;
+      color: var(--indigo-dk);
+    }
+
+    /* ── Code block ── */
+    .code-block {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 20px 24px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .82rem;
+      color: var(--code-text);
+      overflow-x: auto;
+      line-height: 1.8;
+      margin: 20px 0;
+    }
+    .code-block .kw  { color: #c084fc; }
+    .code-block .str { color: #86efac; }
+    .code-block .cm  { color: #475569; }
+    .code-block .fn  { color: #7dd3fc; }
+    .code-block .num { color: #fca5a5; }
+    .code-block .key { color: #fde68a; }
+
+    /* ── Fact pills row ── */
+    .fact-row {
+      display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0;
+    }
+    .fact-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--indigo-lt);
+      border: 1px solid var(--indigo-md);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: .82rem; font-weight: 600; color: var(--indigo-dk);
+    }
+
+    /* ── Two-col layout ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px; margin: 20px 0;
+    }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+    .info-card {
+      background: var(--gray-1);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .info-card h4 { font-size: .9rem; font-weight: 700; margin-bottom: 8px; }
+    .info-card p, .info-card li {
+      font-size: .875rem; color: var(--gray-5); line-height: 1.65;
+    }
+    .info-card ul { padding-left: 18px; }
+    .info-card li { margin-bottom: 4px; }
+
+    /* ── Flow diagram ── */
+    .flow {
+      display: flex; align-items: center;
+      gap: 0; flex-wrap: wrap;
+      margin: 24px 0;
+    }
+    .flow-step {
+      background: var(--white);
+      border: 2px solid var(--indigo-md);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: .85rem; font-weight: 600;
+      text-align: center;
+      color: var(--indigo-dk);
+      min-width: 120px;
+    }
+    .flow-arrow {
+      font-size: 1.1rem; color: var(--indigo);
+      padding: 0 8px; flex-shrink: 0;
+    }
+
+    /* ── Memory diagram ── */
+    .memory-layers {
+      display: flex; flex-direction: column; gap: 0;
+      border: 2px solid var(--gray-3);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 24px 0;
+    }
+    .memory-layer {
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 16px;
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .memory-layer:last-child { border-bottom: none; }
+    .memory-layer-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .memory-layer-info h4 { font-size: .9rem; font-weight: 700; margin-bottom: 3px; }
+    .memory-layer-info p  { font-size: .82rem; color: var(--gray-5); }
+    .layer-1 { background: #faf5ff; }
+    .layer-2 { background: #f0fdf4; }
+    .layer-3 { background: var(--indigo-lt); }
+    .layer-4 { background: var(--amber-lt); }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Alert ── */
+    .note-box {
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex; gap: 12px;
+      align-items: flex-start;
+      margin: 20px 0;
+      font-size: .9rem;
+    }
+    .note-box--indigo { background: var(--indigo-lt); border: 1px solid var(--indigo-md); color: var(--indigo-dk); }
+    .note-box--green  { background: var(--green-lt);  border: 1px solid var(--green-md);  color: #14532d; }
+    .note-box--amber  { background: var(--amber-lt);  border: 1px solid var(--amber-md);  color: #78350f; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    /* ── Mobile nav ── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; position: absolute;
+        top: 60px; left: 0; right: 0;
+        background: var(--white); border-bottom: 1px solid var(--gray-3);
+        flex-direction: column; padding: 16px 24px; gap: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      nav { position: sticky; top: 0; }
+    }
+  
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge"><span aria-hidden="true">&#x2699;&#xFE0F;</span> Technical Deep Dive</div>
+  <h1>Inside <em>OpenClaw</em>: The Architecture</h1>
+  <p>OpenClaw isn't magic — it's a thoughtfully designed system of components working together. Here's exactly how the Heartbeat, Soul, Memory, Gateway, and Agentic Loop all fit together.</p>
+</header>
+
+<!-- Architecture Overview -->
+<section class="section section--alt" id="overview">
+  <div class="container">
+    <div class="section-label">System overview</div>
+    <h2 class="section-title">The Big Picture</h2>
+    <p class="section-subtitle">OpenClaw is built around a persistent, loop-driven agent that wakes up, thinks, acts, and remembers — all on your local machine. No cloud required.</p>
+
+    <div class="arch-diagram" role="img" aria-label="Architecture diagram showing OpenClaw components">
+<span class="comment">┌─────────────────────────────────────────────────────────────────┐</span>
+<span class="comment">│                     YOUR LOCAL MACHINE                          │</span>
+<span class="comment">│                                                                 │</span>
+<span class="comment">│  ┌──────────────┐    ┌─────────────────────────────────────┐  │</span>
+<span class="comment">│  │</span>  <span class="label">MESSAGING     </span><span class="comment">│    │           </span><span class="label">GATEWAY                     </span><span class="comment">│  │</span>
+<span class="comment">│  │</span>  <span class="box">WhatsApp      </span><span class="comment">│───▶│  Receives messages, routes to     │  │</span>
+<span class="comment">│  │</span>  <span class="box">Telegram      </span><span class="comment">│    │  the Agent Loop. Suppresses       │  │</span>
+<span class="comment">│  │</span>  <span class="box">Slack         </span><span class="comment">│◀───│  HEARTBEAT_OK responses.          │  │</span>
+<span class="comment">│  └──────────────┘    └──────────────┬──────────────────────┘  │</span>
+<span class="comment">│                                      │                          │</span>
+<span class="comment">│                                      ▼                          │</span>
+<span class="comment">│            ┌─────────────────────────────────────────┐         │</span>
+<span class="comment">│            │            </span><span class="label">AGENTIC LOOP                  </span><span class="comment">│         │</span>
+<span class="comment">│            │                                         │         │</span>
+<span class="comment">│            │  1. Load </span><span class="file">SOUL.md</span><span class="comment"> (identity + values)   │         │</span>
+<span class="comment">│            │  2. Load </span><span class="file">HEARTBEAT.md</span><span class="comment"> (task checklist)  │         │</span>
+<span class="comment">│            │  3. Retrieve memory from </span><span class="storage">SQLite</span>          │         │</span>
+<span class="comment">│            │  4. Call LLM with full context           │         │</span>
+<span class="comment">│            │  5. Execute tools / skills               │         │</span>
+<span class="comment">│            │  6. Write result back to </span><span class="storage">SQLite</span>          │         │</span>
+<span class="comment">│            │  7. Compact memory if needed             │         │</span>
+<span class="comment">│            └─────────────────────────────────────────┘         │</span>
+<span class="comment">│                                                                 │</span>
+<span class="comment">│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐  │</span>
+<span class="comment">│  │</span><span class="file">SOUL.md   </span><span class="comment">│  │</span><span class="file">HEARTBEAT </span><span class="comment">│  │</span><span class="storage">SQLite DB </span><span class="comment">│  │</span><span class="box">SKILLS/TOOLS  </span><span class="comment">│  │</span>
+<span class="comment">│  │</span><span class="comment"> identity  </span><span class="comment">│  │</span><span class="comment"> .md       </span><span class="comment">│  │</span><span class="comment"> memory    </span><span class="comment">│  │</span><span class="comment"> shell, web,   </span><span class="comment">│  │</span>
+<span class="comment">│  │</span><span class="comment"> values    </span><span class="comment">│  │</span><span class="comment"> task list  </span><span class="comment">│  │</span><span class="comment"> embeddings</span><span class="comment">│  │</span><span class="comment"> email, files  </span><span class="comment">│  │</span>
+<span class="comment">│  └──────────┘  └──────────┘  └──────────┘  └──────────────┘  │</span>
+<span class="comment">└─────────────────────────────────────────────────────────────────┘</span>
+    </div>
+
+    <div class="fact-row" role="list" aria-label="Key architecture facts">
+      <div class="fact-pill" role="listitem"><span aria-hidden="true">&#x1F4BE;</span> SQLite — the only database</div>
+      <div class="fact-pill" role="listitem"><span aria-hidden="true">&#x1F4C4;</span> Markdown files for config</div>
+      <div class="fact-pill" role="listitem"><span aria-hidden="true">&#x1F501;</span> Loop-driven, not event-only</div>
+      <div class="fact-pill" role="listitem"><span aria-hidden="true">&#x1F4BB;</span> 100% local execution</div>
+      <div class="fact-pill" role="listitem"><span aria-hidden="true">&#x1F9E0;</span> Model agnostic LLM brain</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Component Sections -->
+<section class="section" id="components">
+  <div class="container">
+
+    <!-- HEARTBEAT -->
+    <div class="component-section" id="heartbeat">
+      <div class="component-header">
+        <div class="component-icon-wrap icon-heartbeat" aria-hidden="true">&#x1F493;</div>
+        <div class="component-header-text">
+          <h2>The Heartbeat</h2>
+          <p class="subtitle">Proactive autonomy through a scheduled agentic loop</p>
+        </div>
+      </div>
+      <div class="prose">
+        <p>Most AI tools are purely <strong>reactive</strong> — they only do something when you ask. OpenClaw is different because of the <strong>Heartbeat</strong>: a scheduled trigger that fires automatically on a regular interval (every 30 minutes by default) and wakes the agent up to check whether there's anything it should be doing proactively.</p>
+        <p>On each heartbeat, the agent reads <code>HEARTBEAT.md</code> — a simple Markdown checklist of recurring responsibilities you've defined. It might include things like "check if any emails need urgent replies," "verify the build passed," or "remind me of tomorrow's meetings at 6pm." The agent evaluates each item against the current context and decides whether to act.</p>
+        <p>If there's nothing to do, the agent responds with the special token <code>HEARTBEAT_OK</code>. The <strong>Gateway</strong> recognises this and suppresses it — you never see it. If there <em>is</em> something to do, the agent acts and delivers the result to your messaging app.</p>
+      </div>
+
+      <div class="code-block" role="region" aria-label="Example HEARTBEAT.md file">
+<span class="cm"># HEARTBEAT.md — Example</span>
+<span class="cm"># The agent reads this every 30 minutes</span>
+
+<span class="key">- </span><span class="str">Check email inbox. Flag anything marked urgent.</span>
+<span class="key">- </span><span class="str">If it's after 5pm on a weekday, summarise today's activity.</span>
+<span class="key">- </span><span class="str">If the CI build status changed since last check, notify me on Slack.</span>
+<span class="key">- </span><span class="str">Every morning at 8am, send me today's calendar summary on WhatsApp.</span>
+      </div>
+
+      <div class="two-col">
+        <div class="info-card">
+          <h4>&#x23F0; Default interval: 30 minutes</h4>
+          <p>Configurable in your OpenClaw settings. You can set it to 5 minutes for a highly active agent or 2 hours for a lighter-touch setup.</p>
+        </div>
+        <div class="info-card">
+          <h4>&#x1F910; The HEARTBEAT_OK token</h4>
+          <p>When there's nothing to act on, the agent returns this special string. The Gateway silently drops it so you're never spammed with "nothing to do" messages.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOUL -->
+    <div class="component-section" id="soul">
+      <div class="component-header">
+        <div class="component-icon-wrap icon-soul" aria-hidden="true">&#x1FA78;</div>
+        <div class="component-header-text">
+          <h2>The Soul — <code>SOUL.md</code></h2>
+          <p class="subtitle">Persistent identity, personality, and values</p>
+        </div>
+      </div>
+      <div class="prose">
+        <p><code>SOUL.md</code> is the most foundational file in an OpenClaw installation. It defines <strong>who your agent is</strong> — its name, personality, communication style, core values, and standing instructions that persist across every single interaction, heartbeat, and session.</p>
+        <p>Unlike a traditional chatbot that forgets its "personality" when you close the window, OpenClaw loads <code>SOUL.md</code> into the context at the start of every agentic loop iteration. This means your agent behaves consistently — it always knows its name, its tone, what it prioritises, and what boundaries you've set for it.</p>
+        <p>You write <code>SOUL.md</code> yourself in plain Markdown. It can be as simple as a few lines or as detailed as a full character document. The more specific you are, the more consistently the agent reflects your preferences.</p>
+      </div>
+
+      <div class="code-block" role="region" aria-label="Example SOUL.md file">
+<span class="cm"># SOUL.md — Example</span>
+
+<span class="key">## Identity</span>
+<span class="str">Your name is Max. You are a focused, professional assistant</span>
+<span class="str">working for Conan. You are direct, concise, and never verbose.</span>
+
+<span class="key">## Values</span>
+<span class="str">- Privacy first: never share personal data with third-party skills</span>
+<span class="str">- Always ask before taking irreversible actions</span>
+<span class="str">- When uncertain, ask rather than assume</span>
+
+<span class="key">## Communication Style</span>
+<span class="str">- Use plain language. No jargon.</span>
+<span class="str">- Keep responses under 3 sentences unless asked for detail</span>
+<span class="str">- Respond in the same language the user writes in</span>
+
+<span class="key">## Standing Instructions</span>
+<span class="str">- Never send emails without showing me a draft first</span>
+<span class="str">- Flag anything time-sensitive immediately</span>
+      </div>
+
+      <div class="note-box note-box--indigo" role="note">
+        <span aria-hidden="true">&#x1F4A1;</span>
+        <p><strong>Think of SOUL.md as a permanent system prompt</strong> — it's injected at the top of every conversation and heartbeat cycle, giving your agent a consistent identity across all contexts and time.</p>
+      </div>
+    </div>
+
+    <!-- MEMORY -->
+    <div class="component-section" id="memory">
+      <div class="component-header">
+        <div class="component-icon-wrap icon-memory" aria-hidden="true">&#x1F9E0;</div>
+        <div class="component-header-text">
+          <h2>Memory &amp; Storage</h2>
+          <p class="subtitle">SQLite, embeddings, and context compaction</p>
+        </div>
+      </div>
+      <div class="prose">
+        <p>OpenClaw's memory system is deliberately simple and local. There's <strong>no external database</strong> — no Redis, no Pinecone, no cloud vector store. Everything lives in a local <strong>SQLite</strong> file on your machine. This keeps the system portable, private, and fast.</p>
+        <p>Memory is layered. The agent stores every conversation turn, heartbeat action, and result in SQLite. When you ask a question or give a command, the agent retrieves relevant context using <strong>embedding-based semantic search</strong> — optionally accelerated by the <code>sqlite-vec</code> extension, which enables fast vector similarity queries directly inside SQLite.</p>
+        <p>For installations that need both conceptual and exact matching, OpenClaw supports a <strong>hybrid search</strong> mode that combines embedding similarity with keyword-based search. This means the agent can find memories by meaning ("what did I say about the project deadline?") and by exact terms ("show me messages containing 'invoice #4421'").</p>
+      </div>
+
+      <div class="memory-layers" role="list" aria-label="Memory system layers">
+        <div class="memory-layer layer-1" role="listitem">
+          <div class="memory-layer-icon" aria-hidden="true">&#x1F4AC;</div>
+          <div class="memory-layer-info">
+            <h4>Conversation History</h4>
+            <p>Every message and response stored as timestamped turns in SQLite. The full record of everything you've said and the agent has done.</p>
+          </div>
+        </div>
+        <div class="memory-layer layer-2" role="listitem">
+          <div class="memory-layer-icon" aria-hidden="true">&#x1F4BE;</div>
+          <div class="memory-layer-info">
+            <h4>Semantic Embeddings</h4>
+            <p>Each memory turn is vectorised and stored. When context is needed, the agent runs a similarity search to surface the most relevant past interactions.</p>
+          </div>
+        </div>
+        <div class="memory-layer layer-3" role="listitem">
+          <div class="memory-layer-icon" aria-hidden="true">&#x1F5DC;&#xFE0F;</div>
+          <div class="memory-layer-info">
+            <h4>Compacted Summaries</h4>
+            <p>When conversation history grows too large for the context window, older turns are automatically summarised and replaced with compressed entries — preserving meaning, reducing tokens.</p>
+          </div>
+        </div>
+        <div class="memory-layer layer-4" role="listitem">
+          <div class="memory-layer-icon" aria-hidden="true">&#x1F4C4;</div>
+          <div class="memory-layer-info">
+            <h4>SOUL.md &amp; Config Files</h4>
+            <p>Personality, values, and standing instructions stored as Markdown files — loaded fresh into context on every loop iteration.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTEXT COMPACTION -->
+    <div class="component-section" id="compaction">
+      <div class="component-header">
+        <div class="component-icon-wrap icon-compaction" aria-hidden="true">&#x1F5DC;&#xFE0F;</div>
+        <div class="component-header-text">
+          <h2>Context Compaction</h2>
+          <p class="subtitle">How OpenClaw manages the LLM context window limit</p>
+        </div>
+      </div>
+      <div class="prose">
+        <p>Every LLM has a <strong>context window limit</strong> — a maximum number of tokens it can process at once. For a persistent agent that accumulates thousands of conversation turns over days and weeks, this is a real engineering challenge.</p>
+        <p>OpenClaw solves this with an automatic <strong>compaction process</strong>. When loading the full conversation history would exceed the context window, OpenClaw runs a summarisation step over the oldest turns — condensing multiple messages into a single compressed summary entry that preserves the semantic meaning while using far fewer tokens.</p>
+        <p>The key insight is that <strong>recent turns are kept verbatim</strong> (the last N interactions stay in full detail), while older history is progressively compacted. This means the agent always has perfect recall of recent events and a semantic approximation of older history — just like human working memory.</p>
+      </div>
+
+      <div class="flow" role="img" aria-label="Compaction process flow diagram">
+        <div class="flow-step">Load history<br>from SQLite</div>
+        <div class="flow-arrow" aria-hidden="true">&#x279C;</div>
+        <div class="flow-step">Exceeds context<br>window?</div>
+        <div class="flow-arrow" aria-hidden="true">&#x279C;</div>
+        <div class="flow-step">Summarise<br>oldest turns</div>
+        <div class="flow-arrow" aria-hidden="true">&#x279C;</div>
+        <div class="flow-step">Replace with<br>compact summary</div>
+        <div class="flow-arrow" aria-hidden="true">&#x279C;</div>
+        <div class="flow-step">Write back<br>to SQLite</div>
+      </div>
+
+      <div class="note-box note-box--green" role="note">
+        <span aria-hidden="true">&#x1F7E2;</span>
+        <p><strong>Nothing is permanently lost.</strong> The original raw turns remain in a separate SQLite table for auditing. Only the working memory used in the context window is compacted.</p>
+      </div>
+    </div>
+
+    <!-- THE GATEWAY -->
+    <div class="component-section" id="gateway">
+      <div class="component-header">
+        <div class="component-icon-wrap icon-gateway" aria-hidden="true">&#x1F6AA;</div>
+        <div class="component-header-text">
+          <h2>The Gateway</h2>
+          <p class="subtitle">The bridge between your messaging apps and the agent</p>
+        </div>
+      </div>
+      <div class="prose">
+        <p>The <strong>Gateway</strong> is the local server process that bridges your messaging apps and the OpenClaw agent. It listens for incoming messages from WhatsApp, Telegram, Slack, Discord, or iMessage — normalises them into a standard format — and routes them into the Agentic Loop.</p>
+        <p>On the way back out, the Gateway takes the agent's response and delivers it through the correct messaging platform. It handles authentication, message queueing, and rate limiting automatically.</p>
+        <p>The Gateway also plays an important filtering role: it recognises the <code>HEARTBEAT_OK</code> token and drops it silently, ensuring that the dozens of "nothing to do" heartbeat results never reach you as noise. Only meaningful responses get delivered.</p>
+      </div>
+
+      <div class="two-col">
+        <div class="info-card">
+          <h4>&#x1F4E5; Inbound handling</h4>
+          <ul>
+            <li>Receives messages from all connected platforms</li>
+            <li>Normalises message format</li>
+            <li>Queues messages to prevent overload</li>
+            <li>Handles webhook authentication</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>&#x1F4E4; Outbound handling</h4>
+          <ul>
+            <li>Routes responses to the correct platform</li>
+            <li>Suppresses <code>HEARTBEAT_OK</code> silently</li>
+            <li>Applies rate limits per platform</li>
+            <li>Logs all activity to SQLite</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE AGENTIC LOOP -->
+    <div class="component-section" id="loop">
+      <div class="component-header">
+        <div class="component-icon-wrap icon-loop" aria-hidden="true">&#x1F501;</div>
+        <div class="component-header-text">
+          <h2>The Agentic Loop</h2>
+          <p class="subtitle">The core reasoning and execution engine</p>
+        </div>
+      </div>
+      <div class="prose">
+        <p>The <strong>Agentic Loop</strong> is the heart of OpenClaw's intelligence. It's the process that runs on every trigger — whether from a user message or a heartbeat — and orchestrates reasoning, tool use, and memory updates.</p>
+        <p>On each iteration, the loop assembles a full context packet: it loads <code>SOUL.md</code>, retrieves relevant memories from SQLite, adds the current trigger (message or heartbeat), and sends everything to the configured LLM. The model responds with either a direct reply or a <strong>tool call</strong> — an instruction to execute a skill, run a shell command, search the web, and so on.</p>
+        <p>If the LLM calls a tool, the loop executes it, captures the result, and feeds it back into the model — this continues in a reasoning cycle until the LLM produces a final answer. The result is then returned through the Gateway and written to memory.</p>
+      </div>
+
+      <div class="code-block" role="region" aria-label="Pseudocode of the agentic loop">
+<span class="cm">// Agentic Loop — pseudocode</span>
+<span class="kw">function</span> <span class="fn">agenticLoop</span>(trigger) {
+  <span class="cm">// 1. Build context</span>
+  <span class="kw">const</span> soul    = <span class="fn">loadFile</span>(<span class="str">'SOUL.md'</span>);
+  <span class="kw">const</span> hb      = <span class="fn">loadFile</span>(<span class="str">'HEARTBEAT.md'</span>);
+  <span class="kw">const</span> memory  = <span class="fn">retrieveMemory</span>(trigger, <span class="num">topK: 20</span>);
+
+  <span class="cm">// 2. Reason with LLM</span>
+  <span class="kw">let</span> response = <span class="fn">callLLM</span>({ soul, hb, memory, trigger });
+
+  <span class="cm">// 3. Tool-use loop</span>
+  <span class="kw">while</span> (response.hasToolCall()) {
+    <span class="kw">const</span> result = <span class="fn">executeTool</span>(response.toolCall);
+    response = <span class="fn">callLLM</span>({ ...context, toolResult: result });
+  }
+
+  <span class="cm">// 4. Persist and deliver</span>
+  <span class="fn">saveToMemory</span>(trigger, response);
+  <span class="fn">compactIfNeeded</span>();
+  <span class="kw">return</span> response.text; <span class="cm">// Gateway delivers this</span>
+}
+      </div>
+    </div>
+
+    <!-- TOOLS & SKILLS -->
+    <div class="component-section" id="tools">
+      <div class="component-header">
+        <div class="component-icon-wrap icon-tools" aria-hidden="true">&#x1F9F0;</div>
+        <div class="component-header-text">
+          <h2>Tools &amp; Skills</h2>
+          <p class="subtitle">How the agent takes action in the real world</p>
+        </div>
+      </div>
+      <div class="prose">
+        <p><strong>Tools</strong> are the built-in capabilities OpenClaw ships with — shell execution, file system access, web browsing, email, and calendar. These are always available to the Agentic Loop with no extra installation needed.</p>
+        <p><strong>Skills</strong> are community-built tool extensions installed from ClawHub. When installed, a skill registers new tool definitions that the LLM can call during the loop — enabling integrations like GitHub, Notion, Spotify, and hundreds of others. From the loop's perspective, a skill is just another callable tool.</p>
+        <p>All tool definitions are injected into the LLM's context as a <strong>tool schema</strong> — a structured description of what each tool does, what parameters it takes, and what it returns. The LLM decides autonomously which tools to call and in what sequence based on your instruction.</p>
+      </div>
+
+      <div class="note-box note-box--amber" role="note">
+        <span aria-hidden="true">&#x26A0;&#xFE0F;</span>
+        <p><strong>Security implication:</strong> Skills can register arbitrary tool definitions and execute code. A malicious skill can abuse the tool-call mechanism to run harmful commands during the loop. This is why reviewing skill permissions before installing is critical. See the <a href="security.html">Security Guide</a>.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="automation.html">Automation</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="security.html">Security</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>

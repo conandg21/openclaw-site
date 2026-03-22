@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw FAQ — Frequently Asked Questions 2026</title>
+  <meta name="description" content="Answers to the most common OpenClaw questions — setup, cost, privacy, AI models, skills, security, and more. Everything you need to know before getting started." />
+  <meta name="keywords" content="OpenClaw FAQ, OpenClaw questions, OpenClaw help, how to use OpenClaw, OpenClaw setup help, OpenClaw privacy, OpenClaw free" />
+  <link rel="canonical" href="https://learnopenclaw.org/faq.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw FAQ — Frequently Asked Questions 2026" />
+  <meta property="og:description" content="Answers to the most common OpenClaw questions — setup, cost, privacy, AI models, skills, security, and more." />
+  <meta property="og:url" content="https://learnopenclaw.org/faq.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw FAQ — Frequently Asked Questions" />
+  <meta name="twitter:description" content="Everything you need to know about OpenClaw before getting started." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Do I need to know how to code to use OpenClaw?","acceptedAnswer":{"@type":"Answer","text":"No. OpenClaw is designed to be set up through config files written in plain Markdown. You don't need to write any code."}},
+      {"@type":"Question","name":"Is OpenClaw free?","acceptedAnswer":{"@type":"Answer","text":"Yes. OpenClaw itself is completely free and open-source. You only pay for the AI model API you connect it to (e.g. Claude or GPT-4), or you can run a free local model with no API costs at all."}},
+      {"@type":"Question","name":"Is my data private with OpenClaw?","acceptedAnswer":{"@type":"Answer","text":"Yes. OpenClaw runs entirely on your own machine. Your files, messages, and memory are stored in a local SQLite database and never sent to any server unless you explicitly configure a cloud AI model."}},
+      {"@type":"Question","name":"What AI model should I use with OpenClaw?","acceptedAnswer":{"@type":"Answer","text":"OpenClaw works with any LLM — Claude, GPT-4, Gemini, or a local model like LLaMA. For most users, Claude or GPT-4 give the best results. For maximum privacy, a local model means zero data leaves your machine."}},
+      {"@type":"Question","name":"What is the difference between a tool and a skill?","acceptedAnswer":{"@type":"Answer","text":"Tools are built-in capabilities that ship with OpenClaw — like shell execution, web browsing, email, and calendar. Skills are community-built extensions installed from ClawHub that add new integrations like GitHub, Notion, or Spotify."}}
+    ],
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"FAQ","item":"https://learnopenclaw.org/faq.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #2563eb;
+      --blue-lt:   #eff6ff;
+      --blue-md:   #bfdbfe;
+      --blue-dk:   #1d4ed8;
+      --green:     #16a34a;
+      --green-lt:  #f0fdf4;
+      --green-md:  #bbf7d0;
+      --gray-1:    #f9fafb;
+      --gray-2:    #f3f4f6;
+      --gray-3:    #e5e7eb;
+      --gray-5:    #6b7280;
+      --gray-7:    #374151;
+      --gray-8:    #1f2937;
+      --white:     #ffffff;
+      --radius:    12px;
+      --shadow:    0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--blue);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+    .nav-links a { color: var(--gray-5); font-size: .88rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    .nav-links a.active { color: var(--blue); font-weight: 700; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--blue-lt) 0%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--blue-md);
+      color: var(--blue-dk);
+      font-size: .75rem; font-weight: 700; letter-spacing: .07em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 540px; margin: 0 auto;
+    }
+
+    /* ── Category nav ── */
+    .cat-nav {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 40px;
+      position: static; z-index: auto;
+      border-bottom: none; padding: 0; background: transparent;
+    }
+    .cat-link {
+      padding: 7px 16px; border-radius: 100px;
+      background: var(--gray-2); border: 1px solid var(--gray-3);
+      font-size: .85rem; font-weight: 600; color: var(--gray-7);
+      text-decoration: none; transition: background .15s;
+    }
+    .cat-link:hover { background: var(--blue-lt); color: var(--blue); text-decoration: none; border-color: var(--blue-md); }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--blue);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(1.3rem, 3vw, 1.7rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--gray-3);
+    }
+
+    /* ── Accordion ── */
+    .faq-group { margin-bottom: 52px; }
+    .faq-group:last-child { margin-bottom: 0; }
+
+    .faq-item {
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: box-shadow .15s;
+    }
+    .faq-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+
+    .faq-question {
+      width: 100%;
+      background: var(--white);
+      border: none;
+      padding: 18px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+      text-align: left;
+      font-size: .97rem; font-weight: 700;
+      color: var(--gray-8);
+      font-family: inherit;
+    }
+    .faq-question:hover { background: var(--gray-1); }
+    .faq-question[aria-expanded="true"] { background: var(--blue-lt); color: var(--blue-dk); }
+
+    .faq-chevron {
+      flex-shrink: 0;
+      font-size: .75rem;
+      color: var(--gray-5);
+      transition: transform .2s;
+    }
+    .faq-question[aria-expanded="true"] .faq-chevron {
+      transform: rotate(180deg);
+      color: var(--blue);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 4px 20px 20px;
+      background: var(--white);
+      font-size: .93rem;
+      color: var(--gray-7);
+      line-height: 1.75;
+      border-top: 1px solid var(--gray-3);
+    }
+    .faq-answer.open { display: block; }
+    .faq-answer p { margin-bottom: 10px; }
+    .faq-answer p:last-child { margin-bottom: 0; }
+    .faq-answer a { color: var(--blue); }
+    .faq-answer code {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .83em;
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 5px;
+      padding: 1px 6px;
+    }
+    .faq-answer ul {
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+    .faq-answer li { margin-bottom: 5px; }
+
+    /* ── Still have questions ── */
+    .cta-box {
+      background: var(--blue-lt);
+      border: 1px solid var(--blue-md);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+    }
+    .cta-box h2 { font-size: 1.2rem; font-weight: 800; margin-bottom: 10px; }
+    .cta-box p  { font-size: .95rem; color: var(--gray-5); margin-bottom: 20px; }
+    .cta-links  { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .cta-btn {
+      display: inline-block;
+      padding: 10px 22px; border-radius: 8px;
+      font-weight: 700; font-size: .9rem;
+      text-decoration: none;
+    }
+    .cta-btn--blue    { background: var(--blue);  color: var(--white); }
+    .cta-btn--outline { background: var(--white); color: var(--blue); border: 2px solid var(--blue-md); }
+    .cta-btn:hover { opacity: .88; text-decoration: none; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    /* ── Mobile nav ── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; position: absolute;
+        top: 60px; left: 0; right: 0;
+        background: var(--white); border-bottom: 1px solid var(--gray-3);
+        flex-direction: column; padding: 16px 24px; gap: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      nav { position: sticky; top: 0; }
+    }
+  
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html" aria-current="page">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+<main id="main-content">
+
+<header class="hero">
+  <div class="hero-badge"><span aria-hidden="true">&#x2753;</span> FAQ</div>
+  <h1>Frequently Asked Questions</h1>
+  <p>Everything you wanted to know about OpenClaw — answered clearly and without the jargon.</p>
+</header>
+
+<section class="section" id="faq">
+  <div class="container">
+
+    <nav class="cat-nav" aria-label="FAQ categories">
+      <a class="cat-link" href="#getting-started">Getting Started</a>
+      <a class="cat-link" href="#cost-models">Cost &amp; Models</a>
+      <a class="cat-link" href="#privacy">Privacy &amp; Data</a>
+      <a class="cat-link" href="#skills-tools">Skills &amp; Tools</a>
+      <a class="cat-link" href="#technical">Technical</a>
+      <a class="cat-link" href="#troubleshooting">Troubleshooting</a>
+    </nav>
+
+    <!-- Getting Started -->
+    <div class="faq-group" id="getting-started">
+      <div class="section-label">Getting Started</div>
+      <h2 class="section-title">Before You Begin</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q1">
+          Do I need to know how to code to use OpenClaw?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q1" role="region">
+          <p><strong>No.</strong> OpenClaw is intentionally designed for non-developers. You configure it by editing plain Markdown files like <code>SOUL.md</code> and <code>HEARTBEAT.md</code> — no programming required. If you can write a text file, you can run OpenClaw.</p>
+          <p>The only technical step is the initial setup — cloning the repo and running a start command — which takes about 5 minutes following the guide on our <a href="index.html#how">How to Use</a> page.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q2">
+          What do I need to run OpenClaw?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q2" role="region">
+          <p>To get started you need:</p>
+          <ul>
+            <li>A computer running macOS, Windows, or Linux</li>
+            <li>Node.js installed (free download from nodejs.org)</li>
+            <li>An API key for your preferred AI model (Claude, GPT-4, Gemini, or a free local model)</li>
+            <li>At least one messaging app to connect (WhatsApp, Telegram, Slack, Discord, or iMessage)</li>
+          </ul>
+          <p>No cloud account, subscription, or Docker required.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q3">
+          How long does setup take?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q3" role="region">
+          <p>Most people have OpenClaw up and running in <strong>10–20 minutes</strong>. The bulk of the time is connecting your messaging app, which varies by platform. Telegram is the fastest (about 2 minutes). WhatsApp takes a little longer due to QR code authentication.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q4">
+          Does OpenClaw work on Windows?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q4" role="region">
+          <p>Yes. OpenClaw runs on macOS, Windows, and Linux. Windows users should use PowerShell or Windows Terminal for the setup commands. Some users on Windows prefer running OpenClaw inside WSL2 (Windows Subsystem for Linux) for a smoother experience.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q5">
+          Can I run OpenClaw on a phone or tablet?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q5" role="region">
+          <p>OpenClaw itself runs on a desktop or laptop computer — not directly on a phone. However, once it's set up, you <em>control</em> it entirely through your phone via WhatsApp, Telegram, or whichever messaging app you connect. So you interact with it on your phone, but it runs on your computer.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cost & Models -->
+    <div class="faq-group" id="cost-models">
+      <div class="section-label">Cost &amp; Models</div>
+      <h2 class="section-title">Pricing &amp; AI Models</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q6">
+          Is OpenClaw free?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q6" role="region">
+          <p><strong>Yes — OpenClaw itself is completely free and open-source forever.</strong> There are no subscriptions, no tiers, and no hidden fees.</p>
+          <p>The only cost comes from the AI model API you connect it to. For example, using Claude or GPT-4 costs money per API call (typically fractions of a cent per message). If you want zero API costs, you can run a local model like LLaMA entirely for free.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q7">
+          What AI model should I use?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q7" role="region">
+          <p>It depends on your priorities:</p>
+          <ul>
+            <li><strong>Best performance:</strong> Claude (Anthropic) or GPT-4 (OpenAI) — both give excellent results for everyday tasks</li>
+            <li><strong>Best privacy (zero data leaves your machine):</strong> A local model like LLaMA 3 or Mistral via Ollama</li>
+            <li><strong>Best value:</strong> Claude Haiku or GPT-4o Mini — fast, cheap, and more than capable for most automation tasks</li>
+          </ul>
+          <p>You can switch models anytime by changing a single line in your <code>.env</code> file — no reinstalling needed.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q8">
+          How much will API costs be per month?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q8" role="region">
+          <p>For typical personal use — a few dozen conversations and heartbeat checks per day — most users spend <strong>$1–5 per month</strong> on API costs. OpenClaw is one of the most token-efficient agents available, so costs are much lower than AutoGPT or similar tools.</p>
+          <p>Heavy users running frequent heartbeats and complex automations might see $10–20/month. You can set hard spending limits in your API provider's dashboard to prevent surprises.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q9">
+          Can I use a completely offline, local AI model?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q9" role="region">
+          <p>Yes. OpenClaw supports local models via <strong>Ollama</strong>, which lets you run models like LLaMA 3, Mistral, or Phi-3 entirely on your machine with no internet connection required for the AI brain. This means zero API costs and complete offline privacy.</p>
+          <p>Local models are slightly less capable than frontier models like Claude or GPT-4, but for most everyday automation tasks they work very well — especially on modern hardware with a decent GPU.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy & Data -->
+    <div class="faq-group" id="privacy">
+      <div class="section-label">Privacy &amp; Data</div>
+      <h2 class="section-title">Your Data &amp; Privacy</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q10">
+          Is my data private? Does OpenClaw send anything to the cloud?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q10" role="region">
+          <p><strong>OpenClaw runs 100% locally on your machine.</strong> Your files, messages, conversation history, and memory are stored in a local SQLite database and never transmitted to any server by OpenClaw itself.</p>
+          <p>The only exception is when the agent calls your configured AI model — for example, if you're using Claude or GPT-4, your messages are sent to Anthropic or OpenAI's API to generate a response. This is the same as using those services directly. If full offline privacy is critical, use a local model instead.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q11">
+          Where is my data stored?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q11" role="region">
+          <p>Everything is stored in a single SQLite database file on your computer — typically in your OpenClaw installation directory. This includes conversation history, memories, heartbeat logs, and skill data. You can back it up, move it, or delete it just like any other file.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q12">
+          Can OpenClaw read all my files?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q12" role="region">
+          <p>By default, OpenClaw can access your file system — that's what lets it organise files, read documents, and run scripts on your behalf. It operates with your user account's permissions, so it can access anything you can access.</p>
+          <p>This is why running OpenClaw inside a virtual machine is strongly recommended for extra security. A VM limits what it can reach even if something goes wrong. See the <a href="security.html">Security Guide</a> for details.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q13">
+          Does OpenClaw access my WhatsApp or Telegram messages automatically?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q13" role="region">
+          <p>OpenClaw only reads messages that are directed to it through the connected account or bot. For Telegram and Slack, you typically create a dedicated bot — so it only sees messages in channels or DMs where the bot is present. For WhatsApp and iMessage, it operates through a linked session on a specific number.</p>
+          <p>It does not have access to your entire messaging history unless you specifically ask it to retrieve it.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skills & Tools -->
+    <div class="faq-group" id="skills-tools">
+      <div class="section-label">Skills &amp; Tools</div>
+      <h2 class="section-title">Skills, Tools &amp; the Marketplace</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q14">
+          What is the difference between a tool and a skill?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q14" role="region">
+          <p><strong>Tools</strong> are built-in capabilities that ship with OpenClaw — shell execution, file management, web browsing, email, and calendar access. These are always available with no extra installation.</p>
+          <p><strong>Skills</strong> are community-built extensions installed from ClawHub, the OpenClaw marketplace. They teach the agent new integrations — like controlling GitHub, writing to Notion, or playing Spotify. Think of skills as plugins that add new tools to the agent's repertoire.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q15">
+          Are ClawHub skills safe to install?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q15" role="region">
+          <p><strong>Not all of them.</strong> In early 2026, malicious skills were distributed through ClawHub that installed malware on users' machines. The OpenClaw team has since added signature verification, but risk still exists with unverified community skills.</p>
+          <p>Always look for the green <strong>Verified</strong> badge from the OpenClaw team. Read the permissions a skill requests before installing — a recipe skill asking for shell access is a major red flag. See the <a href="security.html">Security Guide</a> for the full safety checklist.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q16">
+          How do I uninstall a skill?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q16" role="region">
+          <p>You can uninstall any skill from the OpenClaw dashboard or by running the CLI command:</p>
+          <p><code>openclaw skills remove &lt;skill-name&gt;</code></p>
+          <p>The skill will be removed and its tools will no longer be available to the agent immediately.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q17">
+          Can I build and publish my own skill?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q17" role="region">
+          <p>Yes. Skills can be defined in YAML or JavaScript and published to ClawHub by anyone. The OpenClaw documentation has a full guide on skill development. Community skill building is actively encouraged — over 1,200 contributors have published skills so far.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical -->
+    <div class="faq-group" id="technical">
+      <div class="section-label">Technical</div>
+      <h2 class="section-title">Under the Hood</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q18">
+          What is SOUL.md?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q18" role="region">
+          <p><code>SOUL.md</code> is a plain Markdown file where you define your agent's personality, name, communication style, values, and standing instructions. It's loaded into the AI's context at the start of every interaction, giving the agent a consistent identity that persists across sessions.</p>
+          <p>Think of it as a permanent system prompt you write once and never have to repeat. You can make your agent formal or casual, verbose or brief, cautious or bold — entirely up to you. See the <a href="architecture.html#soul">Architecture page</a> for a full explanation and example.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q19">
+          What is the Heartbeat?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q19" role="region">
+          <p>The Heartbeat is what makes OpenClaw <em>proactive</em> rather than just reactive. Every 30 minutes (by default), OpenClaw automatically wakes up, reads your <code>HEARTBEAT.md</code> task checklist, and decides whether there's anything it should be doing — without you having to send a message.</p>
+          <p>If there's nothing to do, it silently returns a <code>HEARTBEAT_OK</code> signal and you never see it. If something needs action, it acts and delivers the result to your messaging app. See the <a href="architecture.html#heartbeat">Architecture page</a> for more detail.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q20">
+          Does OpenClaw remember previous conversations?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q20" role="region">
+          <p>Yes. OpenClaw has persistent memory stored in a local SQLite database. It remembers everything you've told it, tasks it has completed, and context from previous conversations. Unlike a standard chatbot that forgets everything when you close the window, OpenClaw's memory persists indefinitely.</p>
+          <p>When older memories would exceed the AI's context window, they are automatically compacted into summaries — preserving the meaning while reducing token usage. See <a href="architecture.html#memory">Memory &amp; Storage</a> for the full breakdown.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q21">
+          How is OpenClaw different from just using ChatGPT?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q21" role="region">
+          <p>ChatGPT is a chatbot — it answers questions and generates text. OpenClaw is an <em>agent</em> — it takes real action. The key differences are:</p>
+          <ul>
+            <li><strong>Actions:</strong> OpenClaw can run commands, send emails, manage files, and control apps. ChatGPT can only generate text.</li>
+            <li><strong>Proactivity:</strong> OpenClaw acts on its own via the Heartbeat. ChatGPT only responds when you talk to it.</li>
+            <li><strong>Memory:</strong> OpenClaw remembers everything persistently. ChatGPT's memory is limited and resets.</li>
+            <li><strong>Interface:</strong> You talk to OpenClaw through WhatsApp or Telegram. ChatGPT requires its own web app.</li>
+            <li><strong>Privacy:</strong> OpenClaw runs locally. ChatGPT sends everything to OpenAI's servers.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="faq-group" id="troubleshooting">
+      <div class="section-label">Troubleshooting</div>
+      <h2 class="section-title">Common Issues</h2>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q22">
+          OpenClaw isn't responding to my messages. What's wrong?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q22" role="region">
+          <p>Check these things in order:</p>
+          <ul>
+            <li><strong>Is OpenClaw still running?</strong> Check your terminal — the process may have crashed. Restart it with your start command.</li>
+            <li><strong>Is your API key valid?</strong> Open your <code>.env</code> file and verify your API key hasn't expired or hit its limit.</li>
+            <li><strong>Is the messaging connection active?</strong> For WhatsApp, the QR code session may have expired and need re-scanning.</li>
+            <li><strong>Check the logs</strong> — OpenClaw outputs detailed logs to the terminal. Look for error messages that point to the issue.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q23">
+          The agent is acting strangely or ignoring my instructions. What should I do?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q23" role="region">
+          <p>This is usually a <code>SOUL.md</code> issue. If the agent's personality or instructions are unclear or contradictory, it may behave unpredictably. Review your <code>SOUL.md</code> file and make sure your standing instructions are clear and unambiguous.</p>
+          <p>It can also happen if the context memory has grown stale or contains conflicting information. You can reset the agent's working memory from the dashboard without losing your full history.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q24">
+          My API costs are higher than expected. How do I reduce them?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q24" role="region">
+          <p>A few things to try:</p>
+          <ul>
+            <li><strong>Increase the Heartbeat interval</strong> — if it fires every 5 minutes, reduce it to 30 or 60 minutes.</li>
+            <li><strong>Switch to a cheaper model</strong> — Claude Haiku or GPT-4o Mini are much cheaper than their full-size counterparts and handle most tasks just as well.</li>
+            <li><strong>Shorten your SOUL.md</strong> — it's loaded on every loop. A very long SOUL.md uses more tokens per interaction.</li>
+            <li><strong>Set API spending limits</strong> — your model provider lets you set hard monthly caps so costs can never spiral.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" aria-controls="q25">
+          How do I update OpenClaw to the latest version?
+          <span class="faq-chevron" aria-hidden="true">&#x25BC;</span>
+        </button>
+        <div class="faq-answer" id="q25" role="region">
+          <p>Run the following command in your OpenClaw directory:</p>
+          <p><code>git pull origin main</code></p>
+          <p>This pulls the latest changes from GitHub. After updating, restart OpenClaw. Your <code>SOUL.md</code>, <code>HEARTBEAT.md</code>, <code>.env</code>, and SQLite database are not affected by updates.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-box" role="region" aria-label="Still have questions">
+      <h2>Still have questions?</h2>
+      <p>Check the official OpenClaw documentation or the GitHub discussions where the community actively answers questions.</p>
+      <div class="cta-links">
+        <a href="https://openclaw.ai" class="cta-btn cta-btn--blue" target="_blank" rel="noopener">Official Docs</a>
+        <a href="https://github.com/OpenClaw/openclaw" class="cta-btn cta-btn--outline" target="_blank" rel="noopener">GitHub Discussions</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="automation.html">Automation</a>
+    <a href="marketplace.html">Marketplace</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="compare.html">Compare</a>
+    <a href="faq.html">FAQ</a>
+    <a href="security.html">Security</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+<script>
+  // Accordion toggle
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      const answerId = btn.getAttribute('aria-controls');
+      const answer   = document.getElementById(answerId);
+
+      // Close all others
+      document.querySelectorAll('.faq-question').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
+      });
+
+      // Toggle this one
+      if (!expanded) {
+        btn.setAttribute('aria-expanded', 'true');
+        answer.classList.add('open');
+      }
+    });
+  });
+
+  // Hamburger nav
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>10 OpenClaw Tips to 10x Your Productivity | learnopenclaw.org</title>
+  <meta name="description" content="10 practical OpenClaw tips covering SOUL.md tricks, skill chaining, overnight automation, messaging shortcuts, and power-user prompting techniques." />
+  <meta name="keywords" content="OpenClaw tips, OpenClaw productivity, OpenClaw tricks, SOUL.md tips, OpenClaw power user, OpenClaw automation tips" />
+  <link rel="canonical" href="https://learnopenclaw.org/blog/10-openclaw-productivity-tips.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="10 OpenClaw Tips to 10x Your Productivity" />
+  <meta property="og:description" content="From SOUL.md persona tricks to overnight automation and skill chaining — 10 techniques that separate casual users from power users." />
+  <meta property="og:url" content="https://learnopenclaw.org/blog/10-openclaw-productivity-tips.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="10 OpenClaw Tips to 10x Your Productivity" />
+  <meta name="twitter:description" content="SOUL.md tricks, skill chaining, overnight automation, and 7 more OpenClaw power-user tips." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "10 OpenClaw Tips to 10x Your Productivity",
+    "description": "10 practical OpenClaw tips covering SOUL.md tricks, skill chaining, overnight automation, messaging shortcuts, and power-user prompting.",
+    "url": "https://learnopenclaw.org/blog/10-openclaw-productivity-tips.html",
+    "datePublished": "2026-03-10",
+    "dateModified": "2026-03-10",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://learnopenclaw.org/blog.html"},
+        {"@type": "ListItem", "position": 3, "name": "10 OpenClaw Productivity Tips", "item": "https://learnopenclaw.org/blog/10-openclaw-productivity-tips.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --amber: #d97706; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--blue); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .hamburger { display: flex; }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid #fde68a; padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+    .disclaimer-bar a { color: #92400e; font-weight: 600; }
+
+    .post-header { background: linear-gradient(180deg, var(--amber-lt) 0%, var(--white) 100%); padding: 56px 24px 40px; text-align: center; border-bottom: 3px solid var(--amber-md); }
+    .breadcrumb { font-size: .82rem; color: var(--gray-5); margin-bottom: 20px; }
+    .breadcrumb a { color: var(--gray-5); }
+    .post-cat { display: inline-block; background: var(--amber-md); color: var(--amber); font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 16px; }
+    .post-header h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25; max-width: 700px; margin: 0 auto 20px; }
+    .post-meta { display: flex; align-items: center; justify-content: center; gap: 16px; font-size: .88rem; color: var(--gray-5); flex-wrap: wrap; }
+    .post-meta span::before { content: '· '; }
+    .post-meta span:first-child::before { content: ''; }
+
+    .post-body { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+    .post-body p  { margin-bottom: 18px; }
+    .post-body ul { padding-left: 22px; margin-bottom: 18px; }
+    .post-body li { margin-bottom: 6px; }
+
+    /* Numbered tip cards */
+    .tip-card { border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px 26px; margin: 32px 0; background: var(--white); box-shadow: var(--shadow); position: relative; }
+    .tip-number { position: absolute; top: -16px; left: 24px; background: var(--amber); color: var(--white); font-weight: 800; font-size: .9rem; padding: 4px 14px; border-radius: 100px; letter-spacing: .02em; }
+    .tip-card h2 { font-size: 1.15rem; font-weight: 800; margin: 8px 0 12px; padding-top: 4px; }
+    .tip-card p  { margin-bottom: 12px; font-size: .97rem; }
+    .tip-card pre { background: var(--gray-8); color: #e5e7eb; border-radius: 8px; padding: 16px 18px; overflow-x: auto; margin: 12px 0; font-size: .85rem; line-height: 1.6; }
+    .tip-card code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+    .tip-card pre code { background: none; padding: 0; }
+
+    .callout { border-left: 4px solid var(--amber); background: var(--amber-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 24px 0; font-size: .95rem; }
+    .callout strong { color: var(--amber); }
+
+    .related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; }
+    .related-inner { max-width: 720px; margin: 0 auto; }
+    .related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+    .related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--blue); margin-bottom: 8px; }
+    .related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+
+    footer { background: var(--gray-8); color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+    footer a { color: #60a5fa; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-nav">Skip to main content</a>
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../blog.html" aria-current="page">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="../gettingstarted.html">Get Started</a>
+        <a href="../usecases.html">Use Cases</a>
+        <a href="../automation.html">Automation</a>
+        <a href="../marketplace.html">Marketplace</a>
+        <a href="../architecture.html">Architecture</a>
+        <a href="../multiagent.html">Multi-Agent</a>
+        <a href="../nemoclaw.html">🟢 NemoClaw</a>
+        <a href="../compare.html">Compare</a>
+        <a href="../shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+          <a href="../security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="../faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+  <div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+    <strong>learnopenclaw.org</strong> is an independent community resource. Not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+  </div>
+
+  <main id="main">
+    <header class="post-header">
+<div class="post-cat">Tips & Tricks</div>
+      <h1>10 OpenClaw Tips to 10x Your Productivity</h1>
+      <div class="post-meta">
+        <span>March 10, 2026</span>
+        <span>5 min read</span>
+        <span>By learnopenclaw.org</span>
+      </div>
+    </header>
+
+    <article class="post-body" id="main-content">
+      <p>Most people use OpenClaw like a smarter chatbot — ask, wait, read. But OpenClaw's real power comes from treating it like a <strong>delegated colleague</strong> that can act, not just answer. These 10 tips will get you there.</p>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 1</div>
+        <h2>Write your SOUL.md like an onboarding doc, not a prompt</h2>
+        <p>The biggest mistake new users make is writing a vague SOUL.md. Instead of "I like concise answers", write actual context: your job title, your tools, your working hours, your recurring tasks, and your hard limits. Treat it like you're onboarding a new assistant.</p>
+        <pre><code># Role
+I'm a product manager at a B2B SaaS company.
+Tools: Notion, Linear, Slack, Google Meet.
+Working hours: 9 AM–6 PM CET, Mon–Fri.
+
+# Hard limits
+Never send a Slack message without showing it to me first.
+Never create Linear tickets without my approval.</code></pre>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 2</div>
+        <h2>Use multi-step prompts, not single sentences</h2>
+        <p>OpenClaw handles complex, multi-step instructions well. Don't break your request into ten back-and-forth messages. Write the full task upfront:</p>
+        <pre><code>Search for the 3 most recent articles about AI regulation in the EU.
+For each one: extract the headline, source, date, and a 2-sentence summary.
+Format as a table. Save to a file called eu-ai-regulation-digest.md.</code></pre>
+        <p>Giving the full task upfront reduces errors, avoids unnecessary clarification loops, and is faster overall.</p>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 3</div>
+        <h2>Chain skills together for compound workflows</h2>
+        <p>Individual skills are useful. Chained skills are powerful. You can instruct OpenClaw to run multiple skills in sequence as part of a single task. For example:</p>
+        <pre><code>&gt; Run email-digest, then create a Notion page with today's summary,
+  then message me on WhatsApp with the three most urgent items.</code></pre>
+        <p>OpenClaw handles the coordination — no scripting required. Visit the <a href="../marketplace.html">Marketplace</a> to find skills worth chaining.</p>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 4</div>
+        <h2>Set up overnight automation schedules</h2>
+        <p>OpenClaw's automation system lets you schedule tasks using plain-English cron-like syntax. Run it in the background and wake up to finished work:</p>
+        <pre><code>claw schedule add "Every weekday at 6 AM: pull today's calendar,
+check my inbox for flagged emails, prepare a morning brief,
+and send it to me on Telegram."</code></pre>
+        <p>See the full <a href="../automation.html">Automation guide</a> for scheduling syntax and examples.</p>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 5</div>
+        <h2>Control OpenClaw from WhatsApp with short commands</h2>
+        <p>Once you've connected WhatsApp (<code>claw connect whatsapp</code>), you can use short commands from your phone. You don't need to type full sentences — OpenClaw learns your shorthand from SOUL.md context:</p>
+        <ul>
+          <li>"morning brief" → triggers your scheduled morning summary</li>
+          <li>"emails" → runs email-digest right now</li>
+          <li>"free today?" → checks your calendar and replies inline</li>
+        </ul>
+        <p>Define your shortcuts in SOUL.md under a <code># Quick commands</code> section.</p>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 6</div>
+        <h2>Use output format instructions every time</h2>
+        <p>OpenClaw will default to whatever format seems sensible. You'll get better, more consistent results by being explicit:</p>
+        <pre><code>&gt; Summarise this research paper. Format:
+  - TL;DR (2 sentences)
+  - Key findings (bullet list, max 5)
+  - Limitations (bullet list, max 3)
+  - My action items (if any)</code></pre>
+        <p>Consistent formatting makes it easier to skim outputs and pipe results into other tools.</p>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 7</div>
+        <h2>Give OpenClaw a "thinking style" in SOUL.md</h2>
+        <p>You can shape how OpenClaw reasons by adding a reasoning style section to SOUL.md:</p>
+        <pre><code># Thinking style
+Before acting, briefly state your plan and any assumptions.
+If something is ambiguous, flag it — don't guess.
+Prefer reversible actions. If you're unsure, ask once.</code></pre>
+        <p>This one section dramatically reduces the number of times OpenClaw does something unexpected.</p>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 8</div>
+        <h2>Use the --dry-run flag before any irreversible action</h2>
+        <p>For high-stakes tasks (sending emails, modifying files, posting to social media), use the dry-run flag to preview exactly what OpenClaw would do — without actually doing it:</p>
+        <pre><code>claw run --dry-run "Send a follow-up email to everyone who didn't respond to my proposal"</code></pre>
+        <p>OpenClaw will show you the list of recipients and the draft email for each one before you commit.</p>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 9</div>
+        <h2>Run a weekly SOUL.md review</h2>
+        <p>Your workflow changes. Your SOUL.md should too. Set a 10-minute calendar block every Monday to review it. Ask yourself: did OpenClaw do anything surprising this week? Did it ask for clarification on something that should be in SOUL.md? Update it accordingly.</p>
+        <p>A well-maintained SOUL.md is the difference between an agent that always needs hand-holding and one that genuinely runs on autopilot.</p>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-number">Tip 10</div>
+        <h2>Use multi-agent mode for research-heavy tasks</h2>
+        <p>For tasks that require gathering information from many sources simultaneously — competitive analysis, literature reviews, market research — switch to multi-agent mode:</p>
+        <pre><code>claw run --multi-agent "Research the top 5 project management tools.
+For each: pricing, key features, limitations, and best-fit use case."</code></pre>
+        <p>OpenClaw spins up parallel sub-agents to research each tool simultaneously, then synthesises the results. What would take 20 minutes sequentially takes 3–4 minutes with fan-out. Read the full <a href="../multiagent.html">Multi-Agent guide</a> for more patterns.</p>
+      </div>
+
+      <div class="callout">
+        <strong>Bonus tip:</strong> Check the <a href="../usecases.html">Use Cases gallery</a> — each of the 32 examples includes a sample prompt and step breakdown you can adapt for your own SOUL.md.
+      </div>
+
+    </article>
+
+    <section class="nl-section" aria-label="Newsletter signup" style="margin:48px -24px 0; border-radius: 0;">
+      <div style="max-width:520px;margin:0 auto;">
+        <h2 style="font-size:1.2rem;">Enjoyed this? <em>Get more in your inbox.</em></h2>
+        <p>OpenClaw tutorials, tips, and updates — straight to you. No spam.</p>
+        <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+        <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+          <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+          <button type="submit">Subscribe free</button>
+        </form>
+        <p class="nl-fine">Unsubscribe any time · Powered by ConvertKit</p>
+      </div>
+    </section>
+
+    <section class="related" aria-label="Related articles">
+      <div class="related-inner">
+        <h2>Keep reading</h2>
+        <div class="related-grid">
+          <div class="related-card">
+            <div class="rc-cat">Tutorial</div>
+            <h3>Getting Started with OpenClaw: Complete Setup Guide</h3>
+            <a href="getting-started-openclaw-2026.html">Read →</a>
+          </div>
+          <div class="related-card">
+            <div class="rc-cat">Tips & Tricks</div>
+            <h3>The 5 Best OpenClaw Skills to Install in 2026</h3>
+            <a href="best-openclaw-skills-2026.html">Read →</a>
+          </div>
+          <div class="related-card">
+            <div class="rc-cat">Use Case Spotlight</div>
+            <h3>How a Freelancer Automated Their Entire Workflow</h3>
+            <a href="openclaw-freelancer-case-study.html">Read →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+      <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+      <a href="../blog.html">Blog</a>
+    </div>
+    <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

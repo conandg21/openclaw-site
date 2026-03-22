@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Automation — Tools, Workflows & AI Automation Guide</title>
+  <meta name="description" content="Discover everything OpenClaw can automate — from emails and calendars to file management and web browsing. Explore built-in tools, skill integrations, and real automation workflows." />
+  <meta name="keywords" content="OpenClaw automation, AI automation, AI agent tools, automate email, automate calendar, OpenClaw skills, AI workflow" />
+  <link rel="canonical" href="https://learnopenclaw.org/automation.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Automation — Tools, Workflows & AI Automation Guide" />
+  <meta property="og:description" content="Everything OpenClaw can automate. Built-in tools, skill integrations, and step-by-step workflow examples." />
+  <meta property="og:url" content="https://learnopenclaw.org/automation.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Automation Guide" />
+  <meta name="twitter:description" content="Everything OpenClaw can automate — emails, calendars, files, web browsing, and more." />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OpenClaw Automation — Tools, Workflows & AI Automation Guide",
+    "description": "Everything OpenClaw can automate, from emails and calendars to file management and web browsing.",
+    "url": "https://learnopenclaw.org/automation.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Automation","item":"https://learnopenclaw.org/automation.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:     #2563eb;
+      --blue-lt:  #eff6ff;
+      --blue-md:  #bfdbfe;
+      --purple:   #7c3aed;
+      --purple-lt:#f5f3ff;
+      --purple-md:#ddd6fe;
+      --green:    #16a34a;
+      --green-lt: #f0fdf4;
+      --green-md: #bbf7d0;
+      --gray-1:   #f9fafb;
+      --gray-2:   #f3f4f6;
+      --gray-3:   #e5e7eb;
+      --gray-5:   #6b7280;
+      --gray-8:   #1f2937;
+      --white:    #ffffff;
+      --radius:   12px;
+      --shadow:   0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── Skip nav (ADA) ── */
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--purple); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    /* ── Focus styles (ADA) ── */
+    a:focus, button:focus {
+      outline: 3px solid var(--purple);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 28px; flex-wrap: wrap; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--purple); text-decoration: none; }
+    .nav-links a.active { color: var(--purple); font-weight: 700; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, var(--purple-lt) 0%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--purple-md);
+      color: var(--purple);
+      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: normal; color: var(--purple); }
+    .hero p {
+      font-size: 1.1rem; color: var(--gray-5);
+      max-width: 580px; margin: 0 auto;
+    }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--purple);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 800; line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 620px; margin-bottom: 40px;
+    }
+
+    /* ── Tools grid ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .tool-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .tool-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .tool-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .tool-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+    .tool-card p  { font-size: .875rem; color: var(--gray-5); margin-bottom: 10px; }
+    .tool-examples { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .tool-examples li {
+      font-size: .8rem; color: var(--purple);
+      background: var(--purple-lt);
+      border-radius: 6px; padding: 3px 8px;
+      font-style: italic;
+    }
+
+    /* ── Workflow cards ── */
+    .workflow-list { display: flex; flex-direction: column; gap: 24px; }
+    .workflow-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .workflow-num {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      color: var(--white);
+      font-size: 1.1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .workflow-body h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+    .workflow-body p  { font-size: .9rem; color: var(--gray-5); margin-bottom: 12px; }
+    .command-bubble {
+      display: inline-block;
+      background: var(--gray-8);
+      color: #e2e8f0;
+      border-radius: 8px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .8rem;
+      padding: 8px 14px;
+      margin-top: 4px;
+    }
+    .command-bubble::before {
+      content: '> ';
+      color: var(--purple-md);
+    }
+
+    /* ── Skills table ── */
+    .skills-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .skills-table th {
+      text-align: left; padding: 12px 16px;
+      background: var(--gray-2);
+      border-bottom: 2px solid var(--gray-3);
+      font-weight: 700; font-size: .8rem;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .skills-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+    .skills-table tr:last-child td { border-bottom: none; }
+    .skills-table tr:hover td { background: var(--gray-1); }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px; border-radius: 100px;
+      font-size: .75rem; font-weight: 600;
+      background: var(--purple-lt); color: var(--purple);
+      margin-right: 4px; margin-bottom: 2px;
+    }
+
+    /* ── Prompt tip box ── */
+    .prompt-box {
+      background: var(--purple-lt);
+      border: 1px solid var(--purple-md);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+    }
+    .prompt-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: var(--purple); }
+    .prompt-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .prompt-list li {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      background: var(--white);
+      border: 1px solid var(--purple-md);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--gray-8);
+      position: relative;
+    }
+    .prompt-list li::before {
+      content: '"';
+      font-size: 1.2rem;
+      color: var(--purple);
+      margin-right: 4px;
+    }
+    .prompt-list li::after {
+      content: '"';
+      font-size: 1.2rem;
+      color: var(--purple);
+    }
+
+    /* ── CTA banner ── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      text-align: center;
+      color: var(--white);
+    }
+    .cta-banner h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
+    .cta-banner p  { font-size: .95rem; opacity: .85; margin-bottom: 24px; }
+    .cta-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .cta-btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: 700; font-size: .9rem;
+      text-decoration: none;
+    }
+    .cta-btn--white { background: var(--white); color: var(--purple); }
+    .cta-btn--outline {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,.6);
+    }
+    .cta-btn:hover { opacity: .9; text-decoration: none; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    @media (max-width: 600px) {
+      .workflow-card { grid-template-columns: 1fr; }
+    }
+
+    /* ── Mobile nav ── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; position: absolute;
+        top: 60px; left: 0; right: 0;
+        background: var(--white); border-bottom: 1px solid var(--gray-3);
+        flex-direction: column; padding: 16px 24px; gap: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99;
+      }
+      .nav-links.open { display: flex; }
+      nav { position: sticky; top: 0; }
+    }
+  
+    /* ── Universal hamburger menu (all screen sizes) ── */
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+  
+    /* ── Nav section grouping ── */
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--blue-md);
+      font-size: .88rem;
+    }
+  
+    /* ── Newsletter signup ── */
+    .nl-section {
+      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
+      border-top: 1px solid var(--blue-md);
+      border-bottom: 1px solid var(--blue-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #1d4ed8; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* Footer inline signup */
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--blue); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+    </div>
+    </div>
+  </nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge"><span aria-hidden="true">&#x26A1;</span> Automation Guide</div>
+  <h1>Automate Everything with <em>OpenClaw</em></h1>
+  <p>OpenClaw isn't just a chatbot — it's your personal automation engine. Here's every tool it has, what it can do, and real-world workflows to get you started.</p>
+</header>
+
+<!-- Built-in Tools -->
+<section class="section section--alt" id="tools">
+  <div class="container">
+    <div class="section-label">Built-in tools</div>
+    <h2 class="section-title">What OpenClaw Can Access</h2>
+    <p class="section-subtitle">These are the core tools OpenClaw ships with out of the box — no extra skills needed.</p>
+
+    <div class="tools-grid">
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x1F4BB;</div>
+        <h3>Shell Execution</h3>
+        <p>Run terminal commands on your machine. Automate scripts, move files, install packages, run builds — all from a chat message.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>Run my backup script now</li>
+          <li>Compress all images in my Downloads folder</li>
+          <li>Show me what's using the most disk space</li>
+        </ul>
+      </article>
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x1F4C2;</div>
+        <h3>File System</h3>
+        <p>Read, write, move, rename, and organise files anywhere on your machine.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>Organise my Downloads by file type</li>
+          <li>Find all PDFs created this month</li>
+          <li>Summarise the document on my Desktop</li>
+        </ul>
+      </article>
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x1F310;</div>
+        <h3>Web Browser</h3>
+        <p>Search the web, visit pages, extract content, and monitor sites on your behalf.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>What's the weather this week in Miami?</li>
+          <li>Find the latest news on OpenAI</li>
+          <li>Check if my website is down</li>
+        </ul>
+      </article>
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x1F4E7;</div>
+        <h3>Email</h3>
+        <p>Read, draft, and send emails. Summarise your inbox and create smart filters.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>Summarise my unread emails</li>
+          <li>Draft a reply to John's last email</li>
+          <li>Send the invoice to client@example.com</li>
+        </ul>
+      </article>
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x1F4C5;</div>
+        <h3>Calendar</h3>
+        <p>Check availability, create events, reschedule meetings, and set reminders.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>Am I free Thursday afternoon?</li>
+          <li>Schedule a 1-hour meeting with Sarah tomorrow at 2pm</li>
+          <li>What's on my calendar this week?</li>
+        </ul>
+      </article>
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x1F4DD;</div>
+        <h3>Text &amp; Document Creation</h3>
+        <p>Write, edit, and save documents — reports, emails, summaries, code files, and more.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>Write a project summary from my notes</li>
+          <li>Turn this bullet list into a professional email</li>
+          <li>Create a README for my GitHub repo</li>
+        </ul>
+      </article>
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x1F4AC;</div>
+        <h3>Messaging Apps</h3>
+        <p>Send and read messages in WhatsApp, Telegram, Slack, Discord, or iMessage.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>Send the team the standup summary on Slack</li>
+          <li>Forward that Telegram message to my notes</li>
+          <li>Alert me on WhatsApp when the build finishes</li>
+        </ul>
+      </article>
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x1F50D;</div>
+        <h3>Web Scraping</h3>
+        <p>Extract structured data from websites — prices, listings, articles, and more.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>Track the price of this product daily</li>
+          <li>Scrape all job listings matching "AI engineer"</li>
+          <li>Extract the data table from this webpage</li>
+        </ul>
+      </article>
+
+      <article class="tool-card">
+        <div class="tool-icon" aria-hidden="true">&#x23F0;</div>
+        <h3>Scheduled Tasks</h3>
+        <p>Set OpenClaw to run tasks automatically on a schedule — hourly, daily, or weekly.</p>
+        <ul class="tool-examples" aria-label="Example commands">
+          <li>Every morning at 8am, email me a news summary</li>
+          <li>Back up my Documents folder every Sunday</li>
+          <li>Check my inbox at 9am and flag urgent emails</li>
+        </ul>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Real Automation Workflows -->
+<section class="section" id="workflows">
+  <div class="container">
+    <div class="section-label">Workflows</div>
+    <h2 class="section-title">Real-World Automation Examples</h2>
+    <p class="section-subtitle">Here's how people are using OpenClaw to automate their day-to-day — and the commands that power each workflow.</p>
+
+    <div class="workflow-list">
+
+      <article class="workflow-card">
+        <div class="workflow-num" aria-hidden="true">1</div>
+        <div class="workflow-body">
+          <h3>Morning Briefing</h3>
+          <p>Every morning, OpenClaw checks your calendar, summarises overnight emails, pulls the latest news, and sends everything as a single digest to your phone via WhatsApp.</p>
+          <div class="command-bubble">Every day at 8am, summarise my emails, check my calendar, and send me a morning briefing on WhatsApp</div>
+        </div>
+      </article>
+
+      <article class="workflow-card">
+        <div class="workflow-num" aria-hidden="true">2</div>
+        <div class="workflow-body">
+          <h3>Auto File Organiser</h3>
+          <p>Point OpenClaw at your messy Downloads folder. It reads file types, creation dates, and content, then sorts everything into labelled folders automatically.</p>
+          <div class="command-bubble">Organise my Downloads folder — sort by file type, rename duplicates, and delete anything older than 6 months</div>
+        </div>
+      </article>
+
+      <article class="workflow-card">
+        <div class="workflow-num" aria-hidden="true">3</div>
+        <div class="workflow-body">
+          <h3>Smart Email Responder</h3>
+          <p>OpenClaw monitors your inbox, drafts replies to routine messages (meeting requests, acknowledgements, status updates), and asks you to confirm before sending.</p>
+          <div class="command-bubble">Check my inbox every hour. For any meeting requests, draft a polite reply and ask me to approve it before sending</div>
+        </div>
+      </article>
+
+      <article class="workflow-card">
+        <div class="workflow-num" aria-hidden="true">4</div>
+        <div class="workflow-body">
+          <h3>Research Compiler</h3>
+          <p>Give OpenClaw a topic and it searches the web, pulls key information from multiple sources, and writes a structured summary saved to a file on your desktop.</p>
+          <div class="command-bubble">Research the top 5 AI coding tools in 2026 and save a summary report to my Desktop</div>
+        </div>
+      </article>
+
+      <article class="workflow-card">
+        <div class="workflow-num" aria-hidden="true">5</div>
+        <div class="workflow-body">
+          <h3>Dev Build Monitor</h3>
+          <p>OpenClaw watches your build process, notifies you on Slack when it completes or fails, and if it fails, attaches the relevant error lines for you to review.</p>
+          <div class="command-bubble">Run the build, and if it fails, send me the error output on Slack. If it passes, just say "Build green" in #dev</div>
+        </div>
+      </article>
+
+      <article class="workflow-card">
+        <div class="workflow-num" aria-hidden="true">6</div>
+        <div class="workflow-body">
+          <h3>Weekly Report Generator</h3>
+          <p>Every Friday afternoon, OpenClaw checks your completed calendar events, reviews your sent emails, and generates a weekly activity summary saved as a document.</p>
+          <div class="command-bubble">Every Friday at 4pm, create a summary of what I worked on this week based on my calendar and emails</div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Skill Integrations -->
+<section class="section section--alt" id="skills">
+  <div class="container">
+    <div class="section-label">Skill integrations</div>
+    <h2 class="section-title">Extend with ClawHub Skills</h2>
+    <p class="section-subtitle">Beyond the built-in tools, ClawHub skills unlock integrations with popular third-party apps and services. Always review permissions carefully before installing.</p>
+
+    <table class="skills-table" aria-label="Available skill integrations">
+      <thead>
+        <tr>
+          <th scope="col">Skill / Integration</th>
+          <th scope="col">What it automates</th>
+          <th scope="col">Tags</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>GitHub Skill</strong></td>
+          <td>Create issues, open PRs, check build status, push commits, and manage repos from chat.</td>
+          <td><span class="tag">Dev</span><span class="tag">Git</span></td>
+        </tr>
+        <tr>
+          <td><strong>Notion Skill</strong></td>
+          <td>Create pages, update databases, search notes, and append content to Notion workspaces.</td>
+          <td><span class="tag">Productivity</span><span class="tag">Notes</span></td>
+        </tr>
+        <tr>
+          <td><strong>Google Drive Skill</strong></td>
+          <td>Upload, find, and share files in Google Drive. Create Docs and Sheets from templates.</td>
+          <td><span class="tag">Files</span><span class="tag">Google</span></td>
+        </tr>
+        <tr>
+          <td><strong>Spotify Skill</strong></td>
+          <td>Play music, create playlists, and control playback based on your mood or task type.</td>
+          <td><span class="tag">Media</span><span class="tag">Music</span></td>
+        </tr>
+        <tr>
+          <td><strong>Jira Skill</strong></td>
+          <td>Create tickets, update status, assign issues, and get sprint summaries via chat.</td>
+          <td><span class="tag">Dev</span><span class="tag">Project Mgmt</span></td>
+        </tr>
+        <tr>
+          <td><strong>RSS Feed Monitor</strong></td>
+          <td>Follow any RSS feed and receive summaries of new posts automatically on a schedule.</td>
+          <td><span class="tag">News</span><span class="tag">Research</span></td>
+        </tr>
+        <tr>
+          <td><strong>Home Assistant Skill</strong></td>
+          <td>Control smart home devices — lights, thermostats, locks — directly from your messaging app.</td>
+          <td><span class="tag">Smart Home</span><span class="tag">IoT</span></td>
+        </tr>
+        <tr>
+          <td><strong>Zapier Bridge</strong></td>
+          <td>Connect OpenClaw to thousands of apps via Zapier — trigger zaps or receive webhooks.</td>
+          <td><span class="tag">Integration</span><span class="tag">Webhooks</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Prompt Tips -->
+<section class="section" id="prompts">
+  <div class="container">
+    <div class="section-label">Pro tips</div>
+    <h2 class="section-title">Writing Great Automation Commands</h2>
+    <p class="section-subtitle">The clearer your instruction, the better OpenClaw performs. Here's how to phrase commands for best results.</p>
+
+    <div class="prompt-box" role="region" aria-label="Example automation commands">
+      <h3>&#x1F4A1; Try commands like these:</h3>
+      <ul class="prompt-list" aria-label="Sample commands">
+        <li>Every weekday at 7:30am, check my calendar and email me a summary of today's meetings</li>
+        <li>Monitor the price of [product URL] and text me on Telegram if it drops below $50</li>
+        <li>Scan my Downloads folder, delete duplicates, and move files older than 3 months to an Archive folder</li>
+        <li>Draft a professional reply to the last email from my boss and show it to me before sending</li>
+        <li>Search for "machine learning internships 2026" and save a list of links to a file on my Desktop</li>
+        <li>Run my tests, and if any fail, open a GitHub issue with the failure details automatically</li>
+        <li>Every Sunday evening, summarise what I worked on this week and save it as a weekly log entry</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="cta-banner" role="region" aria-label="Call to action">
+      <h2>Ready to Start Automating?</h2>
+      <p>Set up OpenClaw in minutes and start taking back your time. It's free, open-source, and runs entirely on your machine.</p>
+      <div class="cta-links">
+        <a href="index.html#how" class="cta-btn cta-btn--white">Get Started</a>
+        <a href="security.html" class="cta-btn cta-btn--outline"><span aria-hidden="true">&#x1F6E1;&#xFE0F;</span> Read Security Guide</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="automation.html">Automation</a>
+    <a href="security.html">Security</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>

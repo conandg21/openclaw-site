@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw + Shopify: The Complete Integration Guide | learnopenclaw.org</title>
+  <meta name="description" content="Everything you need to connect OpenClaw to your Shopify store — step-by-step setup, what OpenClaw can and cannot do, real automation examples, API limits, and security best practices." />
+  <meta name="keywords" content="OpenClaw Shopify, OpenClaw Shopify integration, connect OpenClaw to Shopify, OpenClaw ecommerce, Shopify AI agent, OpenClaw store automation, Shopify MCP OpenClaw" />
+  <link rel="canonical" href="https://learnopenclaw.org/shopify.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw + Shopify: The Complete Integration Guide" />
+  <meta property="og:description" content="Connect OpenClaw to Shopify in minutes. Everything it can do, everything it can't, and the automations that will actually save you time." />
+  <meta property="og:url" content="https://learnopenclaw.org/shopify.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw + Shopify: The Complete Integration Guide" />
+  <meta name="twitter:description" content="Connect OpenClaw to Shopify — step-by-step setup, capabilities, limitations, automations, and API gotchas." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OpenClaw + Shopify: The Complete Integration Guide",
+    "description": "Everything you need to connect OpenClaw to your Shopify store — step-by-step setup, capabilities, limitations, real automation examples, API limits, and security best practices.",
+    "url": "https://learnopenclaw.org/shopify.html",
+    "datePublished": "2026-03-22",
+    "dateModified": "2026-03-22",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "OpenClaw + Shopify", "item": "https://learnopenclaw.org/shopify.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #2563eb; --blue-lt:   #eff6ff; --blue-md:   #bfdbfe;
+      --green:     #16a34a; --green-lt:  #f0fdf4; --green-md:  #bbf7d0; --green-dk: #14532d;
+      --red:       #dc2626; --red-lt:    #fef2f2; --red-md:    #fecaca;
+      --amber:     #d97706; --amber-lt:  #fffbeb; --amber-md:  #fde68a;
+      --gray-1:    #f9fafb; --gray-2:    #f3f4f6; --gray-3:    #e5e7eb;
+      --gray-5:    #6b7280; --gray-8:    #1f2937; --white:     #ffffff;
+      --radius: 12px;
+      --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--green); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.65; color: var(--gray-8); background: var(--white); }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--green); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-section { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2); padding: 10px 0; margin: 2px 0; }
+    .nav-section-label { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5); }
+    .nav-section a { padding-left: 10px; border-left: 2px solid var(--blue-md); font-size: .88rem; }
+
+    /* ── Disclaimer ── */
+    .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid #fde68a; padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+    .disclaimer-bar a { color: #92400e; font-weight: 600; }
+
+    /* ── Hero ── */
+    .hero { padding: 64px 24px 48px; text-align: center; background: linear-gradient(180deg, var(--green-lt) 0%, var(--white) 100%); border-bottom: 3px solid var(--green-md); }
+    .hero-badge { display: inline-block; background: var(--green-md); color: var(--green-dk); font-size: .78rem; font-weight: 700; letter-spacing: .06em; padding: 4px 14px; border-radius: 100px; margin-bottom: 20px; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(1.8rem, 4vw, 2.7rem); font-weight: 800; line-height: 1.2; margin-bottom: 16px; max-width: 760px; margin-left: auto; margin-right: auto; }
+    .hero h1 em { font-style: normal; color: var(--green); }
+    .hero p { font-size: 1.1rem; color: var(--gray-5); max-width: 600px; margin: 0 auto 32px; }
+    .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .hero-pill { background: var(--white); border: 1px solid var(--green-md); border-radius: 100px; padding: 6px 16px; font-size: .85rem; font-weight: 600; color: var(--green-dk); }
+
+    /* ── Section labels ── */
+    .section-label { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--green-dk); margin-bottom: 10px; }
+    .section-title { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; line-height: 1.25; margin-bottom: 12px; }
+    .section-sub { font-size: 1rem; color: var(--gray-5); max-width: 640px; margin-bottom: 40px; line-height: 1.7; }
+
+    /* ── Method cards (connection options) ── */
+    .method-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .method-card { border: 2px solid var(--gray-3); border-radius: var(--radius); padding: 28px 24px; background: var(--white); box-shadow: var(--shadow); transition: border-color .2s; }
+    .method-card.recommended { border-color: var(--green); }
+    .method-badge { display: inline-block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 3px 10px; border-radius: 100px; margin-bottom: 14px; }
+    .badge--green { background: var(--green-md); color: var(--green-dk); }
+    .badge--gray  { background: var(--gray-2); color: var(--gray-5); }
+    .method-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+    .method-card p { font-size: .9rem; color: var(--gray-5); margin-bottom: 14px; line-height: 1.6; }
+    .method-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .method-card li { font-size: .875rem; color: var(--gray-5); padding-left: 18px; position: relative; }
+    .method-card li::before { content: '→'; position: absolute; left: 0; color: var(--green-dk); font-weight: 700; }
+
+    /* ── Steps ── */
+    .steps-list { display: flex; flex-direction: column; gap: 0; }
+    .step { display: grid; grid-template-columns: 52px 1fr; gap: 20px; align-items: start; padding: 28px 0; border-bottom: 1px solid var(--gray-3); }
+    .step:last-child { border-bottom: none; }
+    .step-num { width: 44px; height: 44px; background: linear-gradient(135deg, var(--green), var(--blue)); border-radius: 12px; color: var(--white); font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .step-body p { font-size: .9rem; color: var(--gray-5); margin-bottom: 10px; line-height: 1.65; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .code-block { background: var(--gray-8); color: #e2e8f0; border-radius: 8px; padding: 12px 16px; font-family: "SF Mono", "Fira Code", monospace; font-size: .83rem; line-height: 1.6; margin: 10px 0; overflow-x: auto; }
+    .code-block .comment { color: #6b7280; }
+    .scope-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .scope { background: var(--gray-8); color: #86efac; font-family: "SF Mono", "Fira Code", monospace; font-size: .78rem; padding: 3px 10px; border-radius: 6px; }
+
+    /* ── Can / Cannot grid ── */
+    .can-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 720px) { .can-grid { grid-template-columns: 1fr; } }
+    .can-col { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .can-col-header { padding: 16px 20px; font-weight: 800; font-size: .95rem; display: flex; align-items: center; gap: 10px; }
+    .can-col-header.yes { background: var(--green-dk); color: var(--white); }
+    .can-col-header.no  { background: var(--red); color: var(--white); }
+    .can-items { background: var(--white); border: 1px solid var(--gray-3); border-top: none; }
+    .can-item { display: flex; gap: 12px; align-items: flex-start; padding: 13px 18px; border-bottom: 1px solid var(--gray-3); font-size: .88rem; line-height: 1.5; }
+    .can-item:last-child { border-bottom: none; }
+    .can-item strong { display: block; font-weight: 700; color: var(--gray-8); margin-bottom: 1px; }
+    .can-item span { color: var(--gray-5); font-size: .83rem; }
+    .can-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Automation examples ── */
+    .auto-list { display: flex; flex-direction: column; gap: 20px; }
+    .auto-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px 28px; box-shadow: var(--shadow); }
+    .auto-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .auto-card p { font-size: .9rem; color: var(--gray-5); margin-bottom: 14px; line-height: 1.6; }
+    .prompt-bubble { background: var(--gray-1); border-left: 3px solid var(--green); border-radius: 0 8px 8px 0; padding: 12px 16px; font-style: italic; font-size: .875rem; color: var(--gray-8); margin-bottom: 8px; line-height: 1.6; }
+    .prompt-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--gray-5); margin-bottom: 6px; }
+
+    /* ── Limits table ── */
+    .limits-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .limits-table th { text-align: left; padding: 12px 16px; background: var(--gray-2); border-bottom: 2px solid var(--gray-3); font-weight: 700; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; }
+    .limits-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; line-height: 1.55; }
+    .limits-table tr:last-child td { border-bottom: none; }
+    .limits-table tr:hover td { background: var(--gray-1); }
+    .lim-badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: .75rem; font-weight: 700; }
+    .lim-badge.warn   { background: var(--amber-lt); color: var(--amber); }
+    .lim-badge.hard   { background: var(--red-lt); color: var(--red); }
+    .lim-badge.note   { background: var(--blue-lt); color: var(--blue); }
+
+    /* ── Callout / tip ── */
+    .callout { border-left: 4px solid var(--green); background: var(--green-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 24px 0; font-size: .92rem; line-height: 1.65; }
+    .callout strong { color: var(--green-dk); }
+    .callout.amber { border-left-color: var(--amber); background: var(--amber-lt); }
+    .callout.amber strong { color: var(--amber); }
+    .callout.red { border-left-color: var(--red); background: var(--red-lt); }
+    .callout.red strong { color: var(--red); }
+
+    /* ── Security checklist ── */
+    .sec-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .sec-list li { display: flex; gap: 14px; align-items: flex-start; font-size: .92rem; line-height: 1.6; }
+    .sec-icon { flex-shrink: 0; font-size: 1.1rem; margin-top: 1px; }
+
+    /* ── CTA banner ── */
+    .cta-banner { background: linear-gradient(135deg, var(--green-dk), var(--blue)); border-radius: var(--radius); padding: 44px 32px; text-align: center; color: var(--white); }
+    .cta-banner h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 10px; }
+    .cta-banner p { font-size: .97rem; opacity: .85; margin-bottom: 28px; }
+    .cta-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+    .cta-btn { display: inline-block; padding: 12px 26px; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; }
+    .cta-btn--white { background: var(--white); color: var(--green-dk); }
+    .cta-btn--outline { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,.6); }
+    .cta-btn:hover { opacity: .9; text-decoration: none; }
+
+    /* ── Newsletter ── */
+    .nl-section { background: linear-gradient(135deg, var(--green-lt) 0%, #f0fdf4 100%); border-top: 1px solid var(--green-md); border-bottom: 1px solid var(--green-md); padding: 48px 24px; text-align: center; }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--green); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] { flex: 1; min-width: 200px; padding: 12px 16px; border: 1.5px solid var(--gray-3); border-radius: 8px; font-size: .95rem; font-family: inherit; background: var(--white); color: var(--gray-8); transition: border-color .18s; }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--green); }
+    .nl-form button { background: var(--green); color: var(--white); border: none; border-radius: 8px; padding: 12px 22px; font-size: .95rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .18s; white-space: nowrap; }
+    .nl-form button:hover { background: #15803d; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* ── Footer ── */
+    footer { background: var(--gray-8); color: #9ca3af; text-align: center; padding: 36px 24px; font-size: .875rem; }
+    footer a { color: #60a5fa; }
+    .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] { padding: 9px 14px; border-radius: 7px; border: 1px solid #374151; background: #374151; color: #f9fafb; font-size: .88rem; font-family: inherit; min-width: 200px; flex: 1; max-width: 280px; }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .18s; }
+    .footer-nl-form button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <div class="nav-section" role="group" aria-label="Learn">
+          <span class="nav-section-label">Learn</span>
+          <a href="gettingstarted.html">Get Started</a>
+          <a href="usecases.html">Use Cases</a>
+          <a href="automation.html">Automation</a>
+          <a href="marketplace.html">Marketplace</a>
+          <a href="architecture.html">Architecture</a>
+          <a href="multiagent.html">Multi-Agent</a>
+          <a href="nemoclaw.html">🟢 NemoClaw</a>
+          <a href="compare.html">Compare</a>
+          <a href="shopify.html" aria-current="page" style="color:var(--green);font-weight:700;">🛍️ Shopify</a>
+          <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+        </div>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+    <strong>learnopenclaw.org</strong> is an independent community resource. Not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+  </div>
+
+  <main id="main">
+
+    <!-- ── Hero ── -->
+    <header class="hero">
+      <div class="hero-badge">Integration Guide</div>
+      <h1>OpenClaw + <em>Shopify</em><br>The Complete Guide</h1>
+      <p>How to connect them, everything your agent can do inside your store, the hard limits you need to know, and the automations worth building first.</p>
+      <div class="hero-pills">
+        <span class="hero-pill">📦 Products</span>
+        <span class="hero-pill">🧾 Orders</span>
+        <span class="hero-pill">👤 Customers</span>
+        <span class="hero-pill">📊 Inventory</span>
+        <span class="hero-pill">✍️ Content</span>
+        <span class="hero-pill">⚡ Alerts</span>
+      </div>
+    </header>
+
+    <!-- ── Two connection methods ── -->
+    <section class="section" id="how-to-connect">
+      <div class="container">
+        <p class="section-label">Step 1 — Choose Your Method</p>
+        <h2 class="section-title">Two Ways to Connect OpenClaw to Shopify</h2>
+        <p class="section-sub">Both methods work. The Composio route is faster to set up and handles authentication for you. The Custom App route gives you more control and keeps everything within your own Shopify account.</p>
+
+        <div class="method-grid">
+          <div class="method-card recommended">
+            <span class="method-badge badge--green">Recommended</span>
+            <h3>Method A — Composio MCP Server</h3>
+            <p>Composio acts as a middleware layer that connects your OpenClaw agent to Shopify's API. Authentication is handled for you — no digging around in Shopify settings for API keys.</p>
+            <ul>
+              <li>Fastest setup — under 5 minutes</li>
+              <li>Handles OAuth and token management</li>
+              <li>Works with multiple stores</li>
+              <li>Free tier available</li>
+            </ul>
+          </div>
+          <div class="method-card">
+            <span class="method-badge badge--gray">Manual Setup</span>
+            <h3>Method B — Shopify Custom App (Direct API)</h3>
+            <p>Create a private Custom App directly inside your Shopify Admin. You generate your own API credentials and paste them into your OpenClaw SOUL.md or config. More setup, more control.</p>
+            <ul>
+              <li>No third-party middleware</li>
+              <li>You choose exact API scopes</li>
+              <li>Credentials stay in your Shopify account</li>
+              <li>Best for privacy-focused setups</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Method A steps ── -->
+    <section class="section section--alt" id="method-a">
+      <div class="container">
+        <p class="section-label">Method A</p>
+        <h2 class="section-title">Connect via Composio MCP (Recommended)</h2>
+
+        <div class="steps-list">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h3>Create a free Composio account</h3>
+              <p>Go to <strong>composio.dev</strong> and sign up for a free account. Composio is the MCP server that bridges OpenClaw and Shopify — it manages the OAuth handshake so you don't have to handle API tokens yourself.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h3>Connect your Shopify store in Composio</h3>
+              <p>Inside Composio, find Shopify in the integrations list and click Connect. You'll be redirected to Shopify to authorize access. Log in to the store you want to connect and approve the permissions.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h3>Copy your Composio MCP server URL</h3>
+              <p>After connecting, Composio gives you a personal MCP server URL. It looks like this:</p>
+              <div class="code-block">https://connect.composio.dev/mcp/YOUR_API_KEY</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h3>Add the MCP server to OpenClaw</h3>
+              <p>Open your OpenClaw settings and add the Composio URL as an MCP server. OpenClaw will automatically discover all the Shopify tools Composio exposes and make them available to your agent.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h3>Test the connection</h3>
+              <p>In your OpenClaw task panel, type a simple test prompt:</p>
+              <div class="code-block">List the last 5 orders from my Shopify store.</div>
+              <p style="margin-top:10px;">If you see real order data come back, you're connected.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Method B steps ── -->
+    <section class="section" id="method-b">
+      <div class="container">
+        <p class="section-label">Method B</p>
+        <h2 class="section-title">Connect via Shopify Custom App (Direct)</h2>
+
+        <div class="steps-list">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h3>Enable custom app development in Shopify</h3>
+              <p>In your Shopify Admin, go to <strong>Settings → Apps and sales channels</strong>. Click <strong>Develop apps</strong>, then click <strong>Allow custom app development</strong>. Confirm when prompted.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h3>Create a new custom app</h3>
+              <p>Click <strong>Create an app</strong>. Name it something clear like <em>OpenClaw AI</em> and enter your email as the app developer. Click <strong>Create app</strong>.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h3>Set the API scopes you need</h3>
+              <p>Go to the <strong>Configuration</strong> tab of your new app and click <strong>Configure Admin API scopes</strong>. Enable only what you actually need — more on choosing scopes below. A typical OpenClaw setup needs:</p>
+              <div class="scope-list">
+                <span class="scope">read_products</span>
+                <span class="scope">write_products</span>
+                <span class="scope">read_orders</span>
+                <span class="scope">write_orders</span>
+                <span class="scope">read_customers</span>
+                <span class="scope">write_customers</span>
+                <span class="scope">read_inventory</span>
+                <span class="scope">write_inventory</span>
+              </div>
+              <p style="margin-top:12px;">Click <strong>Save</strong> when done.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h3>Install the app and get your API credentials</h3>
+              <p>Go to the <strong>API credentials</strong> tab and click <strong>Install app</strong>. Once installed, you'll see your <strong>Admin API access token</strong> — copy it now, it's only shown once. Also note your <strong>API key</strong> and <strong>API secret key</strong>.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h3>Add credentials to your OpenClaw SOUL.md</h3>
+              <p>Add a section to your SOUL.md (or use OpenClaw's config file) with your store credentials:</p>
+              <div class="code-block"><span class="comment"># Shopify Integration</span>
+shopify_store: your-store.myshopify.com
+shopify_token: shpat_xxxxxxxxxxxxxxxxxxxx
+<span class="comment"># Never share this file with anyone</span></div>
+              <div class="callout amber" style="margin-top:12px;">
+                <strong>Important:</strong> Treat your Admin API token like a password. Anyone with it has full access to your store based on the scopes you granted. Never paste it into a chat, email, or shared document.
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <h3>Install the Shopify skill from the Marketplace</h3>
+              <p>Open the OpenClaw Marketplace and search for <strong>Shopify</strong>. Install the official Shopify Commerce skill — it gives your agent structured tools for products, orders, customers, and inventory using the credentials you just configured.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Can / Cannot ── -->
+    <section class="section section--alt" id="capabilities">
+      <div class="container">
+        <p class="section-label">Capabilities</p>
+        <h2 class="section-title">What OpenClaw Can and Cannot Do</h2>
+        <p class="section-sub">OpenClaw works through Shopify's Admin API. That means it can do anything the API supports — and nothing the API doesn't. Here's the full breakdown.</p>
+
+        <div class="can-grid">
+          <div class="can-col">
+            <div class="can-col-header yes" role="heading" aria-level="3">✅ What it CAN do</div>
+            <div class="can-items">
+
+              <div class="can-item">
+                <span class="can-icon">📦</span>
+                <div>
+                  <strong>Read & list all products</strong>
+                  <span>Browse your full catalog, search by title or tag, filter by collection, check status and pricing.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">✏️</span>
+                <div>
+                  <strong>Create and update products</strong>
+                  <span>Add new products with title, description, price, variants, and images. Bulk-update descriptions or tags across your catalog.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🗑️</span>
+                <div>
+                  <strong>Delete or archive products</strong>
+                  <span>Remove discontinued items or set their status to draft or archived.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🖼️</span>
+                <div>
+                  <strong>Manage product images</strong>
+                  <span>Add, reorder, or remove images from product listings.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🧾</span>
+                <div>
+                  <strong>Read all order data</strong>
+                  <span>View order history, status, line items, shipping addresses, fulfillment details, and financial summaries.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🏷️</span>
+                <div>
+                  <strong>Tag and annotate orders</strong>
+                  <span>Add custom tags to orders for routing, sorting, or internal tracking purposes.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">✅</span>
+                <div>
+                  <strong>Fulfil and close orders</strong>
+                  <span>Mark orders as fulfilled, add tracking numbers, and close orders once complete (requires fulfillment scope).</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">👤</span>
+                <div>
+                  <strong>Create and update customers</strong>
+                  <span>Add new customer records, update contact details, add tags, and add notes to customer profiles.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🔍</span>
+                <div>
+                  <strong>Search and segment customers</strong>
+                  <span>Find customers by email, tag, purchase history, or location for targeted follow-up drafts.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">📊</span>
+                <div>
+                  <strong>Read and set inventory levels</strong>
+                  <span>Check stock at any location, adjust inventory levels after stock arrivals, and sync across warehouses.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🔔</span>
+                <div>
+                  <strong>Trigger low-stock alerts</strong>
+                  <span>Set up an OpenClaw workflow that checks inventory each morning and sends you an alert when anything drops below your threshold.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">📝</span>
+                <div>
+                  <strong>Write and update product descriptions</strong>
+                  <span>Draft SEO-optimised product copy, rewrite descriptions in bulk, or translate listings for different markets.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">📈</span>
+                <div>
+                  <strong>Generate daily sales summaries</strong>
+                  <span>Pull yesterday's order count, revenue, and top products into a morning briefing sent to your email or phone.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">📤</span>
+                <div>
+                  <strong>Export store data</strong>
+                  <span>Pull orders, products, or customer lists into CSV format or a structured report for external use.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🏷️</span>
+                <div>
+                  <strong>Create discount codes</strong>
+                  <span>Generate basic discount codes with amount, percentage, or free shipping conditions (requires the discount write scope).</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">📦</span>
+                <div>
+                  <strong>Manage collections</strong>
+                  <span>Create manual collections, add or remove products from collections, and update collection metadata.</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="can-col">
+            <div class="can-col-header no" role="heading" aria-level="3">❌ What it CANNOT do</div>
+            <div class="can-items">
+
+              <div class="can-item">
+                <span class="can-icon">💳</span>
+                <div>
+                  <strong>Process or refund payments directly</strong>
+                  <span>Shopify handles payment processing inside its own secure checkout. OpenClaw cannot charge cards, issue refunds, or access payment processor data directly.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🛒</span>
+                <div>
+                  <strong>Interact with the customer-facing checkout</strong>
+                  <span>The storefront checkout flow is a security boundary. OpenClaw works on the admin side only — it cannot see or control what customers do during checkout.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">💰</span>
+                <div>
+                  <strong>Access customer payment method details</strong>
+                  <span>Card numbers, billing details, and payment tokens are never exposed through the Admin API. This is a hard Shopify security rule with no workaround.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🎨</span>
+                <div>
+                  <strong>Edit your storefront theme or Liquid code</strong>
+                  <span>OpenClaw cannot modify your store's visual design, theme files, or any frontend Liquid templates. Theme edits must be done in the Shopify theme editor.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🔌</span>
+                <div>
+                  <strong>Install, uninstall, or configure Shopify apps</strong>
+                  <span>Managing apps in your Shopify App Store requires logging into Shopify directly. OpenClaw cannot install or configure third-party apps on your behalf.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">📩</span>
+                <div>
+                  <strong>Send emails or SMS directly to customers</strong>
+                  <span>OpenClaw can draft customer messages and prepare segments, but it cannot send Shopify Email campaigns or trigger SMS messages without a connected third-party skill (like Klaviyo or Omnisend).</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">📊</span>
+                <div>
+                  <strong>Access Shopify Analytics dashboards</strong>
+                  <span>The Shopify Analytics UI is not accessible via the API. OpenClaw can calculate its own summaries from raw order data, but it cannot pull from your built-in Shopify reports.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🔒</span>
+                <div>
+                  <strong>Override fraud protection or payment holds</strong>
+                  <span>Shopify's fraud analysis and payment holds are internal systems that cannot be bypassed or controlled via API.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🖥️</span>
+                <div>
+                  <strong>Control Shopify POS hardware</strong>
+                  <span>Physical point-of-sale terminals, card readers, and barcode scanners are outside the scope of the Admin API.</span>
+                </div>
+              </div>
+
+              <div class="can-item">
+                <span class="can-icon">🌐</span>
+                <div>
+                  <strong>Manage your Shopify subscription or billing</strong>
+                  <span>Account-level settings like your Shopify plan, billing information, and staff permissions require logging into Shopify directly.</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top:32px;">
+          <strong>The rule of thumb:</strong> If you can do it in Shopify Admin through a browser, there's a good chance OpenClaw can do it via the API too. If it involves the customer-facing storefront, payments, or account-level settings — it's off-limits.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Automation examples ── -->
+    <section class="section" id="automations">
+      <div class="container">
+        <p class="section-label">Real Examples</p>
+        <h2 class="section-title">10 Automations Worth Building First</h2>
+        <p class="section-sub">These are the highest-ROI things to set up once your connection is live. Most can be running within a day.</p>
+
+        <div class="auto-list">
+
+          <div class="auto-card">
+            <h3><span>📊</span> Daily Store Morning Briefing</h3>
+            <p>Set up a scheduled workflow that runs every morning at 8 AM. OpenClaw pulls yesterday's total orders, revenue, any unfulfilled orders older than 24 hours, and flags any products that sold out overnight. It sends everything to your email or phone in one clean summary.</p>
+            <p class="prompt-label">Sample prompt to set it up</p>
+            <div class="prompt-bubble">Every morning at 8 AM, check my Shopify store and give me: yesterday's order count and revenue, any unfulfilled orders over 24 hours old, and any products now out of stock. Email me the summary.</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>🔔</span> Low Inventory Alerts</h3>
+            <p>OpenClaw monitors your inventory levels daily and alerts you the moment any product drops below a threshold you define. No more discovering you're out of stock after customers have already tried to buy.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">Check my Shopify inventory every day at 9 AM. If any product variant has fewer than 10 units remaining, send me an alert with the product name, SKU, and current stock level.</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>✍️</span> Bulk Product Description Rewriter</h3>
+            <p>Got a catalog of products with thin or poorly written descriptions? OpenClaw can read each listing, rewrite the description to be more compelling and SEO-friendly, and update it in Shopify — all in one pass. Especially useful after importing products from a supplier.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">Look through all my Shopify products tagged "needs-description". For each one, write a new product description that's 80–120 words, focuses on benefits over features, and sounds like it was written for a 25–35-year-old urban shopper. Update each product with the new description.</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>🏷️</span> Automatic Order Tagging</h3>
+            <p>Tag incoming orders automatically based on rules — high-value orders get tagged for priority handling, international orders get flagged for customs, repeat customers get recognised. Makes your fulfillment workflow dramatically faster to manage at a glance.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">Every day, check new unfulfilled orders in my Shopify store. Tag any order over $150 as "high-value". Tag any international order as "international-shipping". Tag any order from a customer with 3+ previous orders as "repeat-customer".</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>📤</span> Weekly Sales Export</h3>
+            <p>OpenClaw pulls the past 7 days of orders every Monday morning and generates a structured CSV or summary — product breakdown, top sellers, revenue by channel. Saves you from clicking through Shopify admin reports every week.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">Every Monday at 7 AM, pull all orders from the past 7 days from my Shopify store. Summarise total revenue, number of orders, top 5 products by units sold, and average order value. Save it as a CSV and email it to me.</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>👤</span> Customer Segment Builder</h3>
+            <p>Ask OpenClaw to find customers meeting specific criteria — spent over $200, haven't ordered in 90 days, bought a specific product — and build a list with their names and emails. Use it to brief a re-engagement campaign.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">Find all customers in my Shopify store who placed at least one order in 2025 but have not ordered since January 2026. List their names and emails. I want to send them a win-back offer.</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>📦</span> New Product Launch Prep</h3>
+            <p>When you're adding a new product, OpenClaw can draft the full listing for you — title, description, SEO meta title, meta description, and suggested tags — based on a brief you give it. Then create the product draft in Shopify ready for your review.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">I'm launching a new product: a hand-poured soy candle, 8oz, scented with cedarwood and vanilla, priced at $28. Create a draft product in my Shopify store with a compelling title, an 80-word description, and relevant tags. Set it to draft status so I can review before publishing.</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>🔁</span> Abandoned Order Follow-Up Drafts</h3>
+            <p>OpenClaw can check for orders stuck in unfulfilled status and draft a customer note or internal task for each one. It won't send emails directly without a connected email skill, but it can prepare everything for your review and one-click sending.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">Check my Shopify store for any orders that have been in unfulfilled status for more than 48 hours. For each one, draft a short customer update email explaining there's a delay and we're working on it. Show me the drafts before sending anything.</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>🎟️</span> Discount Code Generator</h3>
+            <p>Generate a batch of unique discount codes for a promotion — fixed amount, percentage off, or free shipping — with expiry dates and usage limits, ready to distribute to your list.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">Create 20 unique 15%-off discount codes in my Shopify store. Set them to expire on April 30, 2026, with a one-use limit per code. Name them all starting with SPRING26-. Give me the list when done.</div>
+          </div>
+
+          <div class="auto-card">
+            <h3><span>📋</span> Inventory Audit Report</h3>
+            <p>Once a month, OpenClaw audits your full product catalog — finds products with zero inventory, products with no images, products still in draft that should be live, and any pricing inconsistencies — and sends you a clean report.</p>
+            <p class="prompt-label">Sample prompt</p>
+            <div class="prompt-bubble">On the first of every month, run a full audit of my Shopify store. Find: products with zero inventory, active products with no description, active products with no images, and any product priced at $0. Send me a report with links to fix each issue.</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── API Limits ── -->
+    <section class="section section--alt" id="limits">
+      <div class="container">
+        <p class="section-label">Important</p>
+        <h2 class="section-title">API Rate Limits & Known Gotchas</h2>
+        <p class="section-sub">Shopify enforces API rate limits and OpenClaw has its own request handling quirks. Know these before you build anything that touches your catalog in bulk.</p>
+
+        <div style="overflow-x:auto; margin-bottom:32px;">
+          <table class="limits-table">
+            <thead>
+              <tr>
+                <th>Limit</th>
+                <th>Details</th>
+                <th>Severity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Shopify REST API — bucket rate</strong></td>
+                <td>40 requests per bucket. The bucket refills at 2 requests/second. If OpenClaw fires requests faster than that (e.g. bulk product updates), it will start getting 429 errors.</td>
+                <td><span class="lim-badge warn">Watch out</span></td>
+              </tr>
+              <tr>
+                <td><strong>Shopify GraphQL API — cost limit</strong></td>
+                <td>1,000 cost points per second. Complex queries (fetching orders with all line items) consume more points per request. If your queries are large, you'll hit this faster than you expect.</td>
+                <td><span class="lim-badge warn">Watch out</span></td>
+              </tr>
+              <tr>
+                <td><strong>OpenClaw 429 cooldown bug</strong></td>
+                <td>A known issue in OpenClaw means that when it receives a 429 (rate limit) response, it can enter an aggressive cooldown and refuse to retry even after the limit has cleared. If your agent goes quiet during a bulk task, this is likely why. Restarting OpenClaw clears it.</td>
+                <td><span class="lim-badge hard">Known bug</span></td>
+              </tr>
+              <tr>
+                <td><strong>API token shown once</strong></td>
+                <td>When you create a Shopify Custom App, your Admin API access token is only displayed once at install time. If you miss it, you have to uninstall and reinstall the app to generate a new one.</td>
+                <td><span class="lim-badge hard">Hard limit</span></td>
+              </tr>
+              <tr>
+                <td><strong>Bulk operations &gt; 250 products</strong></td>
+                <td>For stores with large catalogs, bulk operations via the standard Admin API can be slow. Shopify's Bulk Operations API (GraphQL) is more efficient for catalogs over 250 products, but requires more configuration.</td>
+                <td><span class="lim-badge note">Large stores</span></td>
+              </tr>
+              <tr>
+                <td><strong>Read-only scopes for sensitive data</strong></td>
+                <td>Even with write_customers scope, OpenClaw cannot access customer passwords, stored payment methods, or protected PII that Shopify encrypts at rest.</td>
+                <td><span class="lim-badge note">By design</span></td>
+              </tr>
+              <tr>
+                <td><strong>Draft orders vs. live orders</strong></td>
+                <td>OpenClaw can create and manage draft orders (quotes, manual orders). Converting a draft order to a live order with payment collection requires the customer to complete checkout — OpenClaw cannot do this step for them.</td>
+                <td><span class="lim-badge note">By design</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout amber">
+          <strong>Bulk update tip:</strong> If you're running a large bulk operation (rewriting 500 product descriptions, for example), add a pause instruction to your prompt — something like "update 20 products at a time and wait 15 seconds between batches." This keeps you inside Shopify's rate limits and prevents OpenClaw's cooldown bug from triggering.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Security ── -->
+    <section class="section" id="security">
+      <div class="container">
+        <p class="section-label">Security</p>
+        <h2 class="section-title">Keeping Your Store Safe</h2>
+        <p class="section-sub">Your Shopify Admin API token has real power over your store. A few simple practices dramatically reduce your risk.</p>
+
+        <ul class="sec-list">
+          <li>
+            <span class="sec-icon">🔒</span>
+            <div><strong>Grant only the scopes you actually need.</strong> If you're only using OpenClaw for read-only reporting, don't enable write scopes. Each scope you grant is an additional surface area if your credentials are ever leaked. Start minimal and add scopes only when you need them.</div>
+          </li>
+          <li>
+            <span class="sec-icon">🙈</span>
+            <div><strong>Never put your API token in a prompt.</strong> Your SOUL.md is the right place for credentials — it's local to your machine. Typing your token into a chat prompt means it could appear in logs, conversation history, or memory. If you accidentally paste it in a prompt, regenerate the token immediately.</div>
+          </li>
+          <li>
+            <span class="sec-icon">👀</span>
+            <div><strong>Always review before publishing or sending.</strong> Configure OpenClaw to present changes for your approval before pushing them live. A prompt like "show me all the changes before updating anything in Shopify" costs you 30 seconds and protects you from a runaway bulk operation that overwrites your entire catalog.</div>
+          </li>
+          <li>
+            <span class="sec-icon">🔄</span>
+            <div><strong>Rotate your API token periodically.</strong> Especially if anyone else ever sees your SOUL.md, or if you share screen during a setup. In Shopify Admin, go to your Custom App settings and reinstall the app to generate a fresh token.</div>
+          </li>
+          <li>
+            <span class="sec-icon">🏷️</span>
+            <div><strong>Use a separate Custom App for OpenClaw.</strong> Don't reuse credentials from another integration. A dedicated app with its own token makes it easy to revoke OpenClaw's access in one click without disrupting anything else.</div>
+          </li>
+          <li>
+            <span class="sec-icon">📋</span>
+            <div><strong>Check the audit log after bulk operations.</strong> Shopify keeps a log of API activity. After any large automated task, spend a minute in Settings → Plan → Activity log to confirm everything that changed was expected.</div>
+          </li>
+        </ul>
+
+        <div class="callout red" style="margin-top:32px;">
+          <strong>If something goes wrong:</strong> Shopify doesn't have a one-click "undo all API changes" button. For product edits, you can restore from a Shopify backup or re-import a CSV. This is the main reason to always have OpenClaw show you a summary before making bulk changes — prevention is the only real safety net.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CTA ── -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="cta-banner">
+          <h2>Ready to connect your store?</h2>
+          <p>Follow the setup steps above and have OpenClaw running on your Shopify store in under 15 minutes.</p>
+          <div class="cta-links">
+            <a href="gettingstarted.html" class="cta-btn cta-btn--white">Get OpenClaw set up first →</a>
+            <a href="marketplace.html" class="cta-btn cta-btn--outline">Browse the Skill Marketplace</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Newsletter ── -->
+    <section class="nl-section" aria-label="Newsletter signup">
+      <div style="max-width:520px;margin:0 auto;">
+        <h2>Get integration guides <em>in your inbox.</em></h2>
+        <p>New OpenClaw integrations, tutorials, and tips — no spam, unsubscribe any time.</p>
+        <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+          <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+          <button type="submit">Subscribe free</button>
+        </form>
+        <p class="nl-fine">Unsubscribe any time · Powered by ConvertKit</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-nl">
+      <p>Get the latest OpenClaw tips straight to your inbox</p>
+      <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+        <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+      <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+    <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>
