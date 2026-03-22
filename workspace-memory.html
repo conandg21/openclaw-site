@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw MEMORY.md Guide — Give Your Agent Long-Term Memory</title>
+  <meta name="description" content="MEMORY.md gives your OpenClaw agent memory that persists across sessions. Learn the two-tier memory system, what to write, and how daily notes and long-term memory work together." />
+  <meta name="keywords" content="OpenClaw MEMORY.md, agent memory, persistent memory, workspace guide, daily notes" />
+  <link rel="canonical" href="https://learnopenclaw.org/workspace-memory.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw MEMORY.md Guide — Give Your Agent Long-Term Memory" />
+  <meta property="og:description" content="MEMORY.md gives your agent memory that persists across sessions. Learn the two-tier memory system and complete guide." />
+  <meta property="og:url" content="https://learnopenclaw.org/workspace-memory.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw MEMORY.md Guide" />
+  <meta name="twitter:description" content="Give your agent persistent memory. Learn the two-tier system and complete guide." />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OpenClaw MEMORY.md Guide — Give Your Agent Long-Term Memory",
+    "description": "MEMORY.md gives your agent memory that persists across sessions. Learn the two-tier memory system.",
+    "url": "https://learnopenclaw.org/workspace-memory.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"MEMORY.md","item":"https://learnopenclaw.org/workspace-memory.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7c3aed;
+      --purple-lt: #f5f3ff;
+      --purple-md: #ddd6fe;
+      --blue:    #2563eb;
+      --blue-lt: #eff6ff;
+      --blue-md: #bfdbfe;
+      --red:     #dc2626;
+      --red-lt:  #fef2f2;
+      --red-md:  #fecaca;
+      --green:   #16a34a;
+      --green-lt:#f0fdf4;
+      --yellow:  #d97706;
+      --yellow-lt:#fffbeb;
+      --gray-1:  #f9fafb;
+      --gray-2:  #f3f4f6;
+      --gray-3:  #e5e7eb;
+      --gray-5:  #6b7280;
+      --gray-8:  #1f2937;
+      --white:   #ffffff;
+      --radius:  12px;
+      --shadow:  0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--purple); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--purple);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, #f5f3ff 0%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--purple-md);
+      color: var(--purple);
+      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: normal; color: var(--purple); }
+    .hero p {
+      font-size: 1.1rem; color: var(--gray-5);
+      max-width: 560px; margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--purple);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 800; line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 620px; margin-bottom: 40px;
+    }
+
+    .alert {
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 40px;
+    }
+    .alert--red    { background: var(--red-lt);    border: 1px solid var(--red-md); }
+    .alert--yellow { background: var(--yellow-lt); border: 1px solid #fcd34d; }
+    .alert--green  { background: var(--green-lt);  border: 1px solid #bbf7d0; }
+    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+    .alert--red    p { color: #991b1b; font-size: .95rem; }
+    .alert--yellow p { color: #92400e; font-size: .95rem; }
+    .alert--green  p { color: #14532d; font-size: .95rem; }
+    .alert strong { font-weight: 700; }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .tip-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .tip-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .tip-card .tip-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .tip-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .tip-card p  { font-size: .875rem; color: var(--gray-5); }
+
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .checklist li {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+      font-size: .95rem;
+    }
+    .checklist li .check { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .checklist li strong { display: block; font-weight: 700; margin-bottom: 2px; }
+    .checklist li span { color: var(--gray-5); font-size: .875rem; }
+
+    .command-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin: 20px 0; }
+    .command-table th {
+      text-align: left; padding: 12px 16px;
+      background: var(--gray-2);
+      border-bottom: 2px solid var(--gray-3);
+      font-weight: 700; font-size: .8rem;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .command-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+    .command-table tr:last-child td { border-bottom: none; }
+    .command-table tr:hover td { background: var(--gray-1); }
+    .command-table code {
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+    }
+
+    pre {
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      line-height: 1.5;
+      margin: 20px 0;
+      color: var(--gray-8);
+    }
+
+    .steps { display: flex; flex-direction: column; position: relative; }
+    .steps::before {
+      content: '';
+      position: absolute; left: 23px; top: 28px;
+      width: 2px; height: calc(100% - 56px);
+      background: var(--gray-3);
+    }
+    .step {
+      display: flex; gap: 20px; align-items: flex-start;
+      position: relative; padding-bottom: 32px;
+    }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      flex-shrink: 0;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--purple);
+      color: var(--white);
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px var(--purple-lt);
+      position: relative; z-index: 1;
+    }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
+    .step-body p  { font-size: .95rem; color: var(--gray-5); }
+    .step-body code {
+      display: inline-block;
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 6px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      padding: 4px 10px; margin-top: 6px;
+    }
+
+    .divider { height: 1px; background: var(--gray-3); }
+
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      text-align: center;
+      padding: 36px 24px;
+      font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .hamburger { display: flex; }
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--purple-md);
+      font-size: .88rem;
+    }
+
+    .nl-section {
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+      border-top: 1px solid var(--purple-md);
+      border-bottom: 1px solid var(--purple-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--purple); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--purple); }
+    .nl-form button {
+      background: var(--purple); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #6d28d9; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--purple); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #6d28d9; }
+
+    .sibling-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .sibling-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .sibling-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .sibling-card a { display: flex; flex-direction: column; gap: 8px; color: inherit; }
+    .sibling-card .sibling-icon { font-size: 2rem; }
+    .sibling-card h3 { font-size: .95rem; font-weight: 700; color: var(--gray-8); }
+    .sibling-card p { font-size: .85rem; color: var(--gray-5); }
+    .sibling-card:hover h3 { color: var(--purple); }
+
+    .diagram {
+      background: var(--gray-2);
+      border: 1px solid var(--gray-3);
+      border-radius: 8px;
+      padding: 24px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: var(--gray-8);
+      margin: 24px 0;
+    }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <div style="padding-left:12px;border-left:3px solid #ddd6fe;display:flex;flex-direction:column;gap:8px;margin:2px 0 4px;">
+          <span style="font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#7c3aed;">Workspace Files</span>
+          <a href="workspace-user.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">USER.md</a>
+          <a href="workspace-agents.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">AGENTS.md</a>
+          <a href="workspace-memory.html" aria-current="page" style="font-family:'SF Mono',monospace;font-size:.83rem;">MEMORY.md</a>
+          <a href="workspace-heartbeat.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">HEARTBEAT.md</a>
+        </div>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="agentchannels.html" style="color:#0d9488;font-weight:700;"><span aria-hidden="true">📡</span> Agent Channels</a>
+        <a href="mcp.html" style="color:#4f46e5;font-weight:700;"><span aria-hidden="true">🔌</span> MCP</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+        <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+      <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+      <a href="glossary.html" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+<header class="hero">
+  <div class="hero-badge">🧠 MEMORY.md</div>
+  <h1>Give Your Agent <em>Memory That Lasts</em></h1>
+  <p>Without MEMORY.md, your agent forgets everything when a session ends. With it, facts, preferences, and context survive indefinitely — turning a stateless chatbot into an assistant that truly knows you.</p>
+</header>
+
+<section class="section" id="system">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">The Two-Tier Memory System</h2>
+    <p class="section-subtitle">OpenClaw uses a smart two-tier approach to memory:</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;">
+      <div style="background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--purple);">📝 Daily Notes</h3>
+        <p style="font-size: .95rem; color: var(--gray-5); margin-bottom: 12px;"><strong>File:</strong> memory/YYYY-MM-DD.md</p>
+        <ul style="list-style: none; font-size: .9rem; color: var(--gray-5); display: flex; flex-direction: column; gap: 8px;">
+          <li>✓ Raw, timestamped, verbose</li>
+          <li>✓ Auto-written by agent after each session</li>
+          <li>✓ Like a journal or transcript</li>
+          <li>✓ Think of it as temporary storage</li>
+        </ul>
+      </div>
+
+      <div style="background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--purple);">🧠 MEMORY.md</h3>
+        <p style="font-size: .95rem; color: var(--gray-5); margin-bottom: 12px;"><strong>File:</strong> MEMORY.md (root)</p>
+        <ul style="list-style: none; font-size: .9rem; color: var(--gray-5); display: flex; flex-direction: column; gap: 8px;">
+          <li>✓ Curated, permanent, concise</li>
+          <li>✓ Only long-term facts</li>
+          <li>✓ Manually edited by you (or agent suggests)</li>
+          <li>✓ Think of it as a knowledge base</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="diagram">
+Session starts → loads MEMORY.md + recent daily notes
+                  ↓
+Agent works, learns new things
+                  ↓
+Session ends → agent writes to memory/YYYY-MM-DD.md
+                  ↓
+Over days/weeks → agent curates key facts into MEMORY.md
+                  ↓
+Next session → loads updated MEMORY.md + recent notes
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section section--alt" id="include">
+  <div class="container">
+    <div class="section-label">Essential Sections</div>
+    <h2 class="section-title">What Goes in MEMORY.md</h2>
+    <p class="section-subtitle">Keep these categories in your MEMORY.md:</p>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">💬</div>
+        <h3>Preferences</h3>
+        <p>Communication style, format preferences, tools you like, workflow quirks. Things that don't change.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">👥</div>
+        <h3>Key People</h3>
+        <p>Contacts, their roles, how to reach them. People the agent interacts with regularly.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📋</div>
+        <h3>Current Projects</h3>
+        <p>What you're working on and the status. Updated as things progress or complete.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🎓</div>
+        <h3>Lessons Learned</h3>
+        <p>Things the agent got wrong and was corrected on. Mistakes to never repeat.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📌</div>
+        <h3>Standing Instructions</h3>
+        <p>Permanent rules that override defaults. "Always do X before Y" type rules.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📚</div>
+        <h3>Context</h3>
+        <p>Background info the agent needs long-term. Domain knowledge, business context, etc.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="template">
+  <div class="container">
+    <div class="section-label">Copy & Customize</div>
+    <h2 class="section-title">Complete MEMORY.md Template</h2>
+    <p class="section-subtitle">Start with this template and customize it:</p>
+
+    <pre>
+# MEMORY.md — Long-Term Memory
+
+## Preferences
+
+- Prefer bullet points over prose
+- Use 24-hour time format
+- Always confirm before sending emails
+- Want code examples, not explanations
+
+## Current Projects
+
+- **Project A:** Building a mobile app (React Native). Status: in active development, backend needs work.
+- **Project B:** Research on AI safety. Status: early stage, collecting papers.
+
+## Key People
+
+- **Alice** (co-founder, CTO) — alice@company.com, makes final decisions on architecture
+- **Bob** (designer, old friend) — bob@design.io, works on UI/UX
+
+## Lessons Learned
+
+- 2024-01-15: Don't commit without showing diffs. Agent committed breaking code once.
+- 2024-02-03: Always ask before deleting — lost a file once without confirmation.
+
+## Standing Instructions
+
+- Before any git push, show me the commits
+- Always use descriptive commit messages
+- Save backups before major refactors
+
+## Context
+
+- Work as a freelancer, not in an office
+- Use MacBook Pro 16" with 32GB RAM
+- Primary tech stack: Python, TypeScript, PostgreSQL
+    </pre>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section section--alt" id="how">
+  <div class="container">
+    <div class="section-label">The Process</div>
+    <h2 class="section-title">How Daily Notes Become Memory</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Session Ends</h3>
+          <p>Agent automatically creates <code>memory/2024-12-15.md</code> with everything that happened: decisions, code written, bugs fixed, preferences revealed, things learned.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Next Session Starts</h3>
+          <p>Agent loads the last 2 days of notes (per AGENTS.md config). Also loads MEMORY.md. Now it has context from all recent work plus long-term facts.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Over Days/Weeks</h3>
+          <p>Agent sees patterns. It notices: "This preference comes up a lot", "This person is important", "This lesson matters". It suggests updates to MEMORY.md.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>You Review & Update</h3>
+          <p>Every few weeks, review what's in MEMORY.md. Add important facts. Remove outdated things. This keeps it focused and fast.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="commands">
+  <div class="container">
+    <div class="section-label">Memory Commands</div>
+    <h2 class="section-title">How to Interact with Memory</h2>
+    <p class="section-subtitle">These commands let you manage your agent's memory:</p>
+
+    <table class="command-table">
+      <thead>
+        <tr>
+          <th scope="col">Command</th>
+          <th scope="col">What It Does</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/memory show</code></td>
+          <td>Display the current MEMORY.md file in full.</td>
+        </tr>
+        <tr>
+          <td><code>/memory add "..."</code></td>
+          <td>Append a new fact to MEMORY.md immediately. Example: <code>/memory add "I prefer Python over Go"</code></td>
+        </tr>
+        <tr>
+          <td><code>/memory forget "..."</code></td>
+          <td>Remove a fact from MEMORY.md. Example: <code>/memory forget "old project name"</code></td>
+        </tr>
+        <tr>
+          <td><code>/memory search "..."</code></td>
+          <td>Search across all daily notes and MEMORY.md. Great for finding past decisions.</td>
+        </tr>
+        <tr>
+          <td><code>/memory summary</code></td>
+          <td>Ask agent to summarize recent daily notes and suggest what should go in MEMORY.md.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section section--alt" id="tips">
+  <div class="container">
+    <div class="section-label">Best Practices</div>
+    <h2 class="section-title">Memory Tips & Gotchas</h2>
+
+    <ul class="checklist">
+      <li>
+        <span class="check">📏</span>
+        <div>
+          <strong>Keep MEMORY.md under 2,000 words</strong>
+          <span>Larger files slow down the agent. It has to read the whole thing every session. Be concise.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">🔄</span>
+        <div>
+          <strong>Review it monthly</strong>
+          <span>Go through MEMORY.md once a month. Delete outdated projects. Update statuses. Add new lessons learned.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">🔐</span>
+        <div>
+          <strong>Never write sensitive data</strong>
+          <span>No passwords, API keys, credit cards, or personal IDs in memory files. These are searchable and could be exposed.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">✏️</span>
+        <div>
+          <strong>Be specific, not vague</strong>
+          <span>"Prefers TypeScript over JavaScript" beats "likes coding". Details help the agent help you better.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">📅</span>
+        <div>
+          <strong>Include dates in lessons learned</strong>
+          <span>When recording a lesson ("Don't commit without diffs"), add the date. Helps you remember context later.</span>
+        </div>
+      </li>
+      <li>
+        <span class="check">🎯</span>
+        <div>
+          <strong>Focus on what's actionable</strong>
+          <span>MEMORY.md should help the agent do better work. Random facts that don't affect behavior don't belong.</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="alert alert--green" style="margin-top: 40px;">
+      <div class="alert-icon">💡</div>
+      <p><strong>Best practice:</strong> Review and update MEMORY.md monthly. Spend 5 minutes removing old projects, updating status, adding new lessons. This keeps your agent sharp and focused on what actually matters.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="siblings">
+  <div class="container">
+    <div class="section-label">Explore the Workspace</div>
+    <h2 class="section-title">Related Workspace Files</h2>
+    <p class="section-subtitle">MEMORY.md is one of four key workspace files. Learn about the others:</p>
+
+    <div class="sibling-links">
+      <div class="sibling-card">
+        <a href="workspace-user.html">
+          <div class="sibling-icon">👤</div>
+          <h3>USER.md</h3>
+          <p>Tell your agent who you are. Name, timezone, preferences, communication style.</p>
+        </a>
+      </div>
+      <div class="sibling-card">
+        <a href="workspace-agents.html">
+          <div class="sibling-icon">📋</div>
+          <h3>AGENTS.md</h3>
+          <p>Your agent's operating manual. Defines rules, permissions, and behavior.</p>
+        </a>
+      </div>
+      <div class="sibling-card">
+        <a href="workspace-heartbeat.html">
+          <div class="sibling-icon">💓</div>
+          <h3>HEARTBEAT.md</h3>
+          <p>Recurring tasks. Checks email, monitors systems, sends alerts on a timer.</p>
+        </a>
+      </div>
+      <div class="sibling-card">
+        <a href="architecture.html">
+          <div class="sibling-icon">🏗️</div>
+          <h3>Architecture</h3>
+          <p>Understand how OpenClaw workspaces work at a higher level.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<section class="nl-section">
+  <div class="container">
+    <h2>Get OpenClaw tips in your inbox <em>every week</em></h2>
+    <p>New guides, workspace templates, and pro tips for getting more out of your AI agent.</p>
+    <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="nl-fine">We respect your inbox. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project.</p>
+</footer>
+
+</body>
+</html>

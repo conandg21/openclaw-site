@@ -3,33 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpenClaw Security Guide — Stay Safe with AI Agents</title>
-  <meta name="description" content="Learn how to secure your OpenClaw AI agent installation. Covers the ClawHub malware incident, threat levels, step-by-step hardening, and an ADA-friendly security checklist." />
-  <meta name="keywords" content="OpenClaw security, AI agent security, ClawHub malware, secure AI agent, OpenClaw guide" />
-  <link rel="canonical" href="https://learnopenclaw.org/security.html" />
+  <title>OpenClaw USER.md Guide — Tell Your Agent Who You Are</title>
+  <meta name="description" content="Learn what to put in your OpenClaw USER.md file. A complete guide with templates and examples for timezone, preferences, communication style, and current projects." />
+  <meta name="keywords" content="OpenClaw USER.md, agent context, workspace guide, communication preferences, agent templates" />
+  <link rel="canonical" href="https://learnopenclaw.org/workspace-user.html" />
   <!-- Open Graph -->
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="OpenClaw Security Guide — Stay Safe with AI Agents" />
-  <meta property="og:description" content="How to protect yourself when using OpenClaw. Covers real incidents, threat levels, step-by-step hardening, and a full security checklist." />
-  <meta property="og:url" content="https://learnopenclaw.org/security.html" />
+  <meta property="og:title" content="OpenClaw USER.md Guide — Tell Your Agent Who You Are" />
+  <meta property="og:description" content="Complete guide to USER.md with templates and examples for timezone, preferences, communication style, and current projects." />
+  <meta property="og:url" content="https://learnopenclaw.org/workspace-user.html" />
   <meta property="og:site_name" content="learnopenclaw.org" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="OpenClaw Security Guide" />
-  <meta name="twitter:description" content="Protect yourself when using OpenClaw. Real incidents, threat levels, and a full security checklist." />
+  <meta name="twitter:title" content="OpenClaw USER.md Guide" />
+  <meta name="twitter:description" content="Tell your agent who you are. Complete guide with templates and examples." />
   <!-- Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "OpenClaw Security Guide — Stay Safe with AI Agents",
-    "description": "How to protect yourself when using OpenClaw AI agent.",
-    "url": "https://learnopenclaw.org/security.html",
+    "headline": "OpenClaw USER.md Guide — Tell Your Agent Who You Are",
+    "description": "Complete guide to USER.md with templates and examples.",
+    "url": "https://learnopenclaw.org/workspace-user.html",
     "breadcrumb": {
       "@type": "BreadcrumbList",
       "itemListElement": [
         {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
-        {"@type":"ListItem","position":2,"name":"Security","item":"https://learnopenclaw.org/security.html"}
+        {"@type":"ListItem","position":2,"name":"USER.md","item":"https://learnopenclaw.org/workspace-user.html"}
       ]
     }
   }
@@ -38,6 +38,9 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
+      --purple: #7c3aed;
+      --purple-lt: #f5f3ff;
+      --purple-md: #ddd6fe;
       --blue:    #2563eb;
       --blue-lt: #eff6ff;
       --blue-md: #bfdbfe;
@@ -63,7 +66,7 @@
     /* ── Skip nav (ADA) ── */
     .skip-nav {
       position: absolute; top: -100px; left: 16px;
-      background: var(--red); color: var(--white);
+      background: var(--purple); color: var(--white);
       padding: 8px 16px; border-radius: 6px;
       font-weight: 700; font-size: .9rem;
       z-index: 9999; transition: top .2s;
@@ -72,7 +75,7 @@
 
     /* ── Focus styles (ADA) ── */
     a:focus, button:focus {
-      outline: 3px solid var(--red);
+      outline: 3px solid var(--purple);
       outline-offset: 3px;
       border-radius: 4px;
     }
@@ -112,18 +115,18 @@
     .nav-links { display: flex; gap: 28px; }
     .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
     .nav-links a:hover { color: var(--blue); text-decoration: none; }
-    .nav-links a.active { color: var(--red); font-weight: 700; }
+    .nav-links a.active { color: var(--purple); font-weight: 700; }
 
     /* ── Hero ── */
     .hero {
       padding: 64px 24px 48px;
       text-align: center;
-      background: linear-gradient(180deg, var(--red-lt) 0%, var(--white) 100%);
+      background: linear-gradient(180deg, #f5f3ff 0%, var(--white) 100%);
     }
     .hero-badge {
       display: inline-block;
-      background: var(--red-md);
-      color: var(--red);
+      background: var(--purple-md);
+      color: var(--purple);
       font-size: .78rem; font-weight: 700; letter-spacing: .06em;
       padding: 4px 12px; border-radius: 100px;
       margin-bottom: 20px;
@@ -134,7 +137,7 @@
       font-weight: 800; line-height: 1.2;
       margin-bottom: 16px;
     }
-    .hero h1 em { font-style: normal; color: var(--red); }
+    .hero h1 em { font-style: normal; color: var(--purple); }
     .hero p {
       font-size: 1.1rem; color: var(--gray-5);
       max-width: 560px; margin: 0 auto;
@@ -143,7 +146,7 @@
     /* ── Section headings ── */
     .section-label {
       font-size: .78rem; font-weight: 700; letter-spacing: .08em;
-      text-transform: uppercase; color: var(--red);
+      text-transform: uppercase; color: var(--purple);
       margin-bottom: 10px;
     }
     .section-title {
@@ -206,26 +209,19 @@
     .checklist li strong { display: block; font-weight: 700; margin-bottom: 2px; }
     .checklist li span { color: var(--gray-5); font-size: .875rem; }
 
-    /* ── Threat table ── */
-    .threat-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-    .threat-table th {
-      text-align: left; padding: 12px 16px;
+    /* ── Code blocks ── */
+    pre {
       background: var(--gray-2);
-      border-bottom: 2px solid var(--gray-3);
-      font-weight: 700; font-size: .8rem;
-      text-transform: uppercase; letter-spacing: .05em;
+      border: 1px solid var(--gray-3);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      line-height: 1.5;
+      margin: 20px 0;
+      color: var(--gray-8);
     }
-    .threat-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
-    .threat-table tr:last-child td { border-bottom: none; }
-    .threat-table tr:hover td { background: var(--gray-1); }
-    .badge {
-      display: inline-block;
-      padding: 2px 8px; border-radius: 100px;
-      font-size: .75rem; font-weight: 700;
-    }
-    .badge--high   { background: #fee2e2; color: #991b1b; }
-    .badge--medium { background: #fef3c7; color: #92400e; }
-    .badge--low    { background: #dcfce7; color: #14532d; }
 
     /* ── Steps ── */
     .steps { display: flex; flex-direction: column; position: relative; }
@@ -244,11 +240,11 @@
       flex-shrink: 0;
       width: 46px; height: 46px;
       border-radius: 50%;
-      background: var(--red);
+      background: var(--purple);
       color: var(--white);
       font-size: 1rem; font-weight: 800;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 0 4px var(--red-lt);
+      box-shadow: 0 0 0 4px var(--purple-lt);
       position: relative; z-index: 1;
     }
     .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
@@ -292,19 +288,7 @@
     .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
     .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-    @media (max-width: 780px) {
-      .hamburger { display: flex; }
-      .nav-links {
-        display: none; position: absolute;
-        top: 60px; left: 0; right: 0;
-        background: var(--white); border-bottom: 1px solid var(--gray-3);
-        flex-direction: column; padding: 16px 24px; gap: 14px;
-        box-shadow: 0 4px 12px rgba(0,0,0,.08); z-index: 99;
-      }
-      .nav-links.open { display: flex; }
-      nav { position: sticky; top: 0; }
-    }
-  
+
     /* ── Universal hamburger menu (all screen sizes) ── */
     .hamburger { display: flex; }
     .nav-inner { position: relative; }
@@ -320,7 +304,7 @@
     @media (max-width: 600px) {
       .nav-links { left: 0; min-width: unset; border-radius: 0; }
     }
-  
+
     /* ── Nav section grouping ── */
     .nav-section {
       display: flex; flex-direction: column; gap: 10px;
@@ -335,19 +319,19 @@
     }
     .nav-section a {
       padding-left: 10px;
-      border-left: 2px solid var(--blue-md);
+      border-left: 2px solid var(--purple-md);
       font-size: .88rem;
     }
-  
+
     /* ── Newsletter signup ── */
     .nl-section {
-      background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 100%);
-      border-top: 1px solid var(--blue-md);
-      border-bottom: 1px solid var(--blue-md);
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+      border-top: 1px solid var(--purple-md);
+      border-bottom: 1px solid var(--purple-md);
       padding: 48px 24px; text-align: center;
     }
     .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
-    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section h2 em { font-style: normal; color: var(--purple); }
     .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
     .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
     .nl-form input[type="email"] {
@@ -357,15 +341,15 @@
       background: var(--white); color: var(--gray-8);
       transition: border-color .18s;
     }
-    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--purple); }
     .nl-form button {
-      background: var(--blue); color: var(--white);
+      background: var(--purple); color: var(--white);
       border: none; border-radius: 8px;
       padding: 12px 22px; font-size: .95rem; font-weight: 700;
       cursor: pointer; font-family: inherit; transition: background .18s;
       white-space: nowrap;
     }
-    .nl-form button:hover { background: #1d4ed8; }
+    .nl-form button:hover { background: #6d28d9; }
     .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
 
     /* Footer inline signup */
@@ -381,12 +365,34 @@
     .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
     .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
     .footer-nl-form button {
-      background: var(--blue); color: var(--white);
+      background: var(--purple); color: var(--white);
       border: none; border-radius: 7px;
       padding: 9px 18px; font-size: .88rem; font-weight: 700;
       cursor: pointer; font-family: inherit; transition: background .18s;
     }
-    .footer-nl-form button:hover { background: #1d4ed8; }
+    .footer-nl-form button:hover { background: #6d28d9; }
+
+    /* ── Sibling page cards ── */
+    .sibling-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .sibling-card {
+      background: var(--white);
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .sibling-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .sibling-card a { display: flex; flex-direction: column; gap: 8px; color: inherit; }
+    .sibling-card .sibling-icon { font-size: 2rem; }
+    .sibling-card h3 { font-size: .95rem; font-weight: 700; color: var(--gray-8); }
+    .sibling-card p { font-size: .85rem; color: var(--gray-5); }
+    .sibling-card:hover h3 { color: var(--purple); }
   </style>
 </head>
 <body>
@@ -395,8 +401,8 @@
 <!-- Nav -->
 <nav role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
-    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
-        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+    <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
       <span></span><span></span><span></span>
     </button>
     <div class="nav-links" id="nav-links">
@@ -411,7 +417,7 @@
         <a href="architecture.html">Architecture</a>
         <div style="padding-left:12px;border-left:3px solid #ddd6fe;display:flex;flex-direction:column;gap:8px;margin:2px 0 4px;">
           <span style="font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#7c3aed;">Workspace Files</span>
-          <a href="workspace-user.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">USER.md</a>
+          <a href="workspace-user.html" aria-current="page" style="font-family:'SF Mono',monospace;font-size:.83rem;">USER.md</a>
           <a href="workspace-agents.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">AGENTS.md</a>
           <a href="workspace-memory.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">MEMORY.md</a>
           <a href="workspace-heartbeat.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">HEARTBEAT.md</a>
@@ -422,50 +428,83 @@
         <a href="nemoclaw.html">🟢 NemoClaw</a>
         <a href="compare.html">Compare</a>
         <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
-      <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+        <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
       </div>
       <a href="faq.html">FAQ</a>
       <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
       <a href="glossary.html" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
     </div>
-    </div>
-  </nav>
+  </div>
+</nav>
 
 <main id="main-content">
 <!-- Hero -->
 <header class="hero">
-  <div class="hero-badge">&#x26A0;&#xFE0F; Security Guide</div>
-  <h1>Stay Safe with <em>OpenClaw</em></h1>
-  <p>OpenClaw is powerful — but with great power comes real risk. Here's everything you need to know to protect yourself.</p>
+  <div class="hero-badge">👤 USER.md</div>
+  <h1>Tell Your Agent <em>Who You Are</em></h1>
+  <p>USER.md is the context card your agent reads at the start of every session. Five minutes filling it in means your agent never asks "what timezone are you in?" again.</p>
 </header>
 
-<!-- The Incident -->
-<section class="section" id="incident">
+<!-- What is USER.md -->
+<section class="section" id="what">
   <div class="container">
-    <div class="section-label">What happened</div>
-    <h2 class="section-title">The ClawHub Malware Incident</h2>
-    <p class="section-subtitle">In early 2026, OpenClaw faced its first major security crisis — and it's a cautionary tale every user should know.</p>
+    <div class="section-label">The Basics</div>
+    <h2 class="section-title">What is USER.md?</h2>
+    <p class="section-subtitle">It's a plain Markdown file that lives in your workspace root. The agent loads it into every session so it always knows who it's working for.</p>
 
-    <div class="alert alert--red">
-      <div class="alert-icon">&#x1F6A8;</div>
-      <p><strong>Real incident:</strong> Malicious skills were published to ClawHub, OpenClaw's official skill marketplace. Users who installed them unknowingly gave attackers full access to their machines — including file systems, shell execution, and messaging apps.</p>
+    <div class="alert alert--green">
+      <div class="alert-icon">✅</div>
+      <p><strong>Without USER.md:</strong> Every session starts cold with zero context about you. Your agent asks the same questions again and again — "What timezone are you in?", "What's your email?", "What language do you code in?"</p>
     </div>
+
+    <p style="font-size: 1.05rem; color: var(--gray-5); margin-bottom: 24px;">With USER.md, those facts are always loaded. Your agent knows your name, timezone, communication style, current projects, and preferences from the moment the session begins.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- What to Include -->
+<section class="section section--alt" id="include">
+  <div class="container">
+    <div class="section-label">Essential Sections</div>
+    <h2 class="section-title">What to Include in USER.md</h2>
+    <p class="section-subtitle">Here are the key sections that make your agent genuinely useful:</p>
 
     <div class="tips-grid">
       <div class="tip-card">
-        <div class="tip-icon">&#x1F578;&#xFE0F;</div>
-        <h3>How it happened</h3>
-        <p>Attackers uploaded skills that appeared legitimate — with good descriptions and fake reviews. Once installed, they used OpenClaw's own shell execution capabilities to run malicious code.</p>
+        <div class="tip-icon">⏰</div>
+        <h3>Name & Timezone</h3>
+        <p>Your name, timezone (e.g. Europe/London), role, and location. This prevents "what time is it for you?" from ever being asked.</p>
       </div>
       <div class="tip-card">
-        <div class="tip-icon">&#x1F4A5;</div>
-        <h3>Why it was dangerous</h3>
-        <p>OpenClaw runs with local machine access by design. A malicious skill has the same privileges as you — it can read files, send emails, and execute commands without asking.</p>
+        <div class="tip-icon">💬</div>
+        <h3>Communication Style</h3>
+        <p>Be direct or verbose? Prefer bullet points or prose? Use emojis? How much explanation do you want? Your agent adapts to match.</p>
       </div>
       <div class="tip-card">
-        <div class="tip-icon">&#x1F6E0;&#xFE0F;</div>
-        <h3>What was fixed</h3>
-        <p>The OpenClaw team added skill signature verification and permission sandboxing. But user vigilance remains the most important line of defence.</p>
+        <div class="tip-icon">🏢</div>
+        <h3>Work Context</h3>
+        <p>Your role, company, industry, and what you do. Helps the agent understand your domain and provide relevant guidance.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📋</div>
+        <h3>Current Projects</h3>
+        <p>2-3 active projects with brief descriptions. So your agent knows what you're actively working on.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🛠️</div>
+        <h3>Tools & Preferences</h3>
+        <p>Preferred languages (Python, TypeScript, etc), code editor, hosting platform, how you like answers formatted.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">👥</div>
+        <h3>Trusted Contacts</h3>
+        <p>People you work with often. So your agent knows who to trust with sensitive information or who to send messages to.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">⛔</div>
+        <h3>Boundaries</h3>
+        <p>What the agent should never do without asking you first. Sending emails, deleting files, posting publicly, etc.</p>
       </div>
     </div>
   </div>
@@ -473,115 +512,95 @@
 
 <div class="divider"></div>
 
-<!-- Threat Overview -->
-<section class="section section--alt" id="threats">
+<!-- Full Template -->
+<section class="section" id="template">
   <div class="container">
-    <div class="section-label">Know the risks</div>
-    <h2 class="section-title">Common Threats &amp; Their Risk Level</h2>
-    <p class="section-subtitle">Understanding what can go wrong is the first step to staying safe.</p>
+    <div class="section-label">Copy & Customize</div>
+    <h2 class="section-title">Complete USER.md Template</h2>
+    <p class="section-subtitle">Here's a full template you can copy into your workspace and customize:</p>
 
-    <table class="threat-table">
-      <thead>
-        <tr>
-          <th scope="col">Threat</th>
-          <th scope="col">Risk</th>
-          <th scope="col">Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Malicious Skills</strong></td>
-          <td><span class="badge badge--high">High</span></td>
-          <td>Third-party skills with hidden malware that exploit OpenClaw's local access to compromise your machine.</td>
-        </tr>
-        <tr>
-          <td><strong>API Key Theft</strong></td>
-          <td><span class="badge badge--high">High</span></td>
-          <td>Your AI model API key stored in the <code>.env</code> file can be stolen and used to rack up huge bills on your account.</td>
-        </tr>
-        <tr>
-          <td><strong>Message Injection</strong></td>
-          <td><span class="badge badge--medium">Medium</span></td>
-          <td>Malicious content in emails or web pages tricks OpenClaw into executing unintended commands.</td>
-        </tr>
-        <tr>
-          <td><strong>Overprivileged Skills</strong></td>
-          <td><span class="badge badge--medium">Medium</span></td>
-          <td>Skills requesting more permissions than they need — a red flag that can lead to unintended data access.</td>
-        </tr>
-        <tr>
-          <td><strong>Exposed Messaging Tokens</strong></td>
-          <td><span class="badge badge--medium">Medium</span></td>
-          <td>WhatsApp, Telegram, or Slack tokens stored insecurely can give attackers access to your messaging accounts.</td>
-        </tr>
-        <tr>
-          <td><strong>Unencrypted Config Files</strong></td>
-          <td><span class="badge badge--low">Low</span></td>
-          <td>Storing your <code>.env</code> file in a shared or synced folder (e.g. iCloud, Dropbox) can expose your credentials.</td>
-        </tr>
-      </tbody>
-    </table>
+    <pre>
+# About Me
+
+- **Name:** [Your name]
+- **Timezone:** [e.g. Europe/London UTC+0]
+- **Role:** [e.g. Freelance designer, Software engineer at Acme]
+- **Location:** [City, Country]
+
+# Communication Style
+
+- [e.g. Be direct. Skip pleasantries. Use bullet points.]
+- [e.g. I prefer code examples over explanations.]
+- [e.g. Use British English spelling.]
+- [e.g. Include emojis to keep things light.]
+
+# Current Projects
+
+- **[Project name]:** [1 line description + current status]
+- **[Project name]:** [1 line description + current status]
+- **[Project name]:** [1 line description + current status]
+
+# Tools & Stack
+
+- **Code:** [e.g. Python, TypeScript, Go]
+- **Editor:** [e.g. VS Code, Cursor, Neovim]
+- **Hosting:** [e.g. Vercel, AWS, Fly.io]
+- **Package Manager:** [e.g. npm, uv, cargo]
+
+# Key Contacts
+
+- **[Name]** ([relationship]) — [email or handle]
+- **[Name]** ([relationship]) — [email or handle]
+
+# Preferences
+
+- [e.g. Always confirm before sending emails]
+- [e.g. Save research to ~/Documents/research/]
+- [e.g. I use 24-hour time]
+- [e.g. I work in sprints, not continuous mode]
+- [e.g. Prefer working on a single task until done, not context switching]
+
+# Off-Limits (Always Ask First)
+
+- Deleting files
+- Sending messages to anyone outside my contact list
+- Committing to git without showing me the diff first
+- Making any public posts or submissions
+- Opening sensitive files or credentials
+    </pre>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- How to Secure -->
-<section class="section" id="howto">
+<!-- Good vs Empty -->
+<section class="section section--alt" id="example">
   <div class="container">
-    <div class="section-label">How to protect yourself</div>
-    <h2 class="section-title">Step-by-Step Security Setup</h2>
-    <p class="section-subtitle">Follow these steps when setting up or reviewing your OpenClaw installation.</p>
+    <div class="section-label">See the Difference</div>
+    <h2 class="section-title">Empty vs. Well-Filled USER.md</h2>
+    <p class="section-subtitle">Here's what happens with and without a good USER.md file:</p>
 
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <h3>Run OpenClaw in a Virtual Machine</h3>
-          <p>The single most effective protection. Install OpenClaw inside a VM (like VirtualBox or UTM on Mac). Even if a malicious skill runs, it's isolated from your real files and system.</p>
-        </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px;">
+      <div style="background: var(--red-lt); border: 1px solid var(--red-md); border-radius: var(--radius); padding: 24px;">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: #991b1b;">❌ Empty USER.md</h3>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+          <li style="font-size: .95rem; color: #991b1b;">Agent: "What timezone are you in?"</li>
+          <li style="font-size: .95rem; color: #991b1b;">Agent: "What's your preferred language?"</li>
+          <li style="font-size: .95rem; color: #991b1b;">Agent: "Do you want verbose explanations?"</li>
+          <li style="font-size: .95rem; color: #991b1b;">Agent: "What are you working on?"</li>
+          <li style="font-size: .95rem; color: #991b1b;">Every. Single. Session.</li>
+        </ul>
       </div>
 
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <h3>Only Install Skills You Trust</h3>
-          <p>Treat skills like apps from an unknown developer. Before installing any skill from ClawHub, check: Who published it? How many verified installs does it have? What permissions does it request? If anything looks off, skip it.</p>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <h3>Protect Your .env File</h3>
-          <p>Your API keys and tokens live here. Make sure it's never committed to Git, never stored in a synced cloud folder, and has restricted file permissions.</p>
-          <code>chmod 600 .env</code>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <h3>Use Scoped API Keys</h3>
-          <p>When generating API keys for OpenClaw, give them the minimum permissions needed. If possible, set usage limits and expiry dates so a stolen key can't do much damage.</p>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <h3>Review Skill Permissions Before Installing</h3>
-          <p>Every OpenClaw skill declares what it can access. A recipe skill asking for shell access is a major red flag. Only approve permissions that make sense for what the skill does.</p>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num">6</div>
-        <div class="step-body">
-          <h3>Keep OpenClaw Updated</h3>
-          <p>Security patches are released regularly. Stay on the latest version to benefit from signature verification, sandboxing improvements, and other fixes.</p>
-          <code>git pull origin main</code>
-        </div>
+      <div style="background: var(--green-lt); border: 1px solid #bbf7d0; border-radius: var(--radius); padding: 24px;">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: #14532d;">✅ Well-Filled USER.md</h3>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+          <li style="font-size: .95rem; color: #14532d;">Agent: Loads USER.md. Knows you're in London.</li>
+          <li style="font-size: .95rem; color: #14532d;">Knows you code in TypeScript.</li>
+          <li style="font-size: .95rem; color: #14532d;">Prefers direct, concise answers.</li>
+          <li style="font-size: .95rem; color: #14532d;">Knows you're working on project X.</li>
+          <li style="font-size: .95rem; color: #14532d;">Agent just gets to work.</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -589,68 +608,81 @@
 
 <div class="divider"></div>
 
-<!-- Quick Checklist -->
-<section class="section section--alt" id="checklist">
+<!-- When to Update -->
+<section class="section" id="update">
   <div class="container">
-    <div class="section-label">Quick reference</div>
-    <h2 class="section-title">Security Checklist</h2>
-    <p class="section-subtitle">Run through this list before and after setting up OpenClaw.</p>
+    <div class="section-label">Keep It Fresh</div>
+    <h2 class="section-title">When to Update USER.md</h2>
+    <p class="section-subtitle">USER.md is not a "set it and forget it" file. Review and update it when:</p>
 
-    <ul class="checklist">
-      <li>
-        <span class="check">&#x2705;</span>
-        <div>
-          <strong>Running in a VM or container</strong>
-          <span>OpenClaw is isolated from your main system files and OS.</span>
-        </div>
-      </li>
-      <li>
-        <span class="check">&#x2705;</span>
-        <div>
-          <strong>.env file has restricted permissions</strong>
-          <span>Only your user account can read the file (<code>chmod 600 .env</code>).</span>
-        </div>
-      </li>
-      <li>
-        <span class="check">&#x2705;</span>
-        <div>
-          <strong>.env is in .gitignore</strong>
-          <span>Your secrets will never be accidentally committed to a public repo.</span>
-        </div>
-      </li>
-      <li>
-        <span class="check">&#x2705;</span>
-        <div>
-          <strong>Only trusted skills installed</strong>
-          <span>Each skill has been reviewed for permissions and source credibility.</span>
-        </div>
-      </li>
-      <li>
-        <span class="check">&#x2705;</span>
-        <div>
-          <strong>API keys are scoped and have expiry dates</strong>
-          <span>No master keys — each key only does what it needs to.</span>
-        </div>
-      </li>
-      <li>
-        <span class="check">&#x2705;</span>
-        <div>
-          <strong>OpenClaw is on the latest version</strong>
-          <span>All known security patches have been applied.</span>
-        </div>
-      </li>
-      <li>
-        <span class="check">&#x2705;</span>
-        <div>
-          <strong>Messaging tokens stored securely</strong>
-          <span>WhatsApp, Telegram, Slack tokens are not shared or stored in plain text outside .env.</span>
-        </div>
-      </li>
-    </ul>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">🚀</div>
+        <h3>Starting a New Project</h3>
+        <p>Add the project to your Current Projects section so the agent knows about it immediately.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">💼</div>
+        <h3>Changing Jobs</h3>
+        <p>Update your role and company. This context shapes how the agent helps you.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🔧</div>
+        <h3>Getting the Same Answer Wrong</h3>
+        <p>If the agent keeps doing something you don't like, add a note to Preferences or Boundaries.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">⏰</div>
+        <h3>Preferences Change</h3>
+        <p>You started wanting more explanation, or switched languages, or changed your schedule. Update it.</p>
+      </div>
+    </div>
 
-    <div class="alert alert--green" style="margin-top: 32px;">
-      <div class="alert-icon">&#x1F7E2;</div>
-      <p><strong>You're in good shape</strong> if you can check every box above. Security isn't a one-time task — revisit this list whenever you add new skills or update your setup.</p>
+    <div class="alert alert--yellow" style="margin-top: 40px;">
+      <div class="alert-icon">💡</div>
+      <p><strong>Tip:</strong> Review USER.md once a month. Delete outdated projects, add new ones, refine your communication preferences. The agent learns from every session, but USER.md is where you codify permanent truths about yourself.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Sibling Navigation -->
+<section class="section section--alt" id="siblings">
+  <div class="container">
+    <div class="section-label">Explore the Workspace</div>
+    <h2 class="section-title">Related Workspace Files</h2>
+    <p class="section-subtitle">USER.md is one of four key workspace files. Learn about the others:</p>
+
+    <div class="sibling-links">
+      <div class="sibling-card">
+        <a href="workspace-agents.html">
+          <div class="sibling-icon">📋</div>
+          <h3>AGENTS.md</h3>
+          <p>Your agent's operating manual. Defines rules, permissions, and behavior.</p>
+        </a>
+      </div>
+      <div class="sibling-card">
+        <a href="workspace-memory.html">
+          <div class="sibling-icon">🧠</div>
+          <h3>MEMORY.md</h3>
+          <p>Long-term memory that persists across sessions. Facts that matter forever.</p>
+        </a>
+      </div>
+      <div class="sibling-card">
+        <a href="workspace-heartbeat.html">
+          <div class="sibling-icon">💓</div>
+          <h3>HEARTBEAT.md</h3>
+          <p>Recurring tasks. Checks email, monitors systems, sends alerts on a timer.</p>
+        </a>
+      </div>
+      <div class="sibling-card">
+        <a href="architecture.html">
+          <div class="sibling-icon">🏗️</div>
+          <h3>Architecture</h3>
+          <p>Understand how OpenClaw workspaces work at a higher level.</p>
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -670,25 +702,43 @@
       hamburger.setAttribute('aria-expanded', 'false');
     }
   });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
 </script>
+
+<!-- Newsletter section -->
+<section class="nl-section">
+  <div class="container">
+    <h2>Get OpenClaw tips in your inbox <em>every week</em></h2>
+    <p>New guides, workspace templates, and pro tips for getting more out of your AI agent.</p>
+    <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="nl-fine">We respect your inbox. Unsubscribe anytime.</p>
+  </div>
+</section>
 
 <!-- Footer -->
 <footer role="contentinfo">
   <div class="footer-nl">
     <p>Get the latest OpenClaw tips straight to your inbox</p>
-    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
     <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
       <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
       <button type="submit">Subscribe</button>
     </form>
   </div>
-  
+
   <div class="footer-links" aria-label="Footer navigation">
     <a href="index.html">Home</a>
     <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
     <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
   </div>
-  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project.</p>
 </footer>
 
 </body>
