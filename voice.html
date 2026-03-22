@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Voice Mode — Talk to Your AI Agent with Whisper &amp; ElevenLabs</title>
+  <meta name="description" content="Set up OpenClaw Voice Mode: Whisper speech-to-text, ElevenLabs TTS, wake word activation, and Talk Mode. Full step-by-step guide for macOS, iOS, and Android." />
+  <meta name="keywords" content="OpenClaw voice mode, OpenClaw Talk Mode, OpenClaw Whisper STT, OpenClaw ElevenLabs, AI voice agent, OpenClaw wake word, Hey OpenClaw, OpenClaw speech to text" />
+  <link rel="canonical" href="https://learnopenclaw.org/voice.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Voice Mode — Talk to Your AI Agent" />
+  <meta property="og:description" content="Enable Whisper STT, ElevenLabs TTS, and wake word activation. Your complete guide to going hands-free with OpenClaw." />
+  <meta property="og:url" content="https://learnopenclaw.org/voice.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Voice Mode Setup Guide" />
+  <meta name="twitter:description" content="Whisper STT + ElevenLabs TTS + wake word. Everything you need to talk to your OpenClaw agent hands-free." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw Voice Mode — Talk to Your AI Agent with Whisper and ElevenLabs",
+    "description": "Complete guide to enabling OpenClaw Voice Mode: Whisper speech-to-text, ElevenLabs text-to-speech, wake word setup, and Talk Mode across macOS, iOS, and Android.",
+    "url": "https://learnopenclaw.org/voice.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Learn","item":"https://learnopenclaw.org/gettingstarted.html"},
+        {"@type":"ListItem","position":3,"name":"Voice Mode","item":"https://learnopenclaw.org/voice.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:    #16a34a;
+      --green-lt: #f0fdf4;
+      --green-md: #bbf7d0;
+      --green-dk: #15803d;
+      --blue:     #2563eb;
+      --blue-lt:  #eff6ff;
+      --blue-md:  #bfdbfe;
+      --teal:     #0d9488;
+      --teal-lt:  #f0fdfa;
+      --teal-md:  #99f6e4;
+      --purple:   #7c3aed;
+      --purple-lt:#f5f3ff;
+      --purple-md:#ddd6fe;
+      --amber:    #d97706;
+      --amber-lt: #fffbeb;
+      --amber-md: #fde68a;
+      --red:      #dc2626;
+      --red-lt:   #fef2f2;
+      --red-md:   #fecaca;
+      --gray-1:   #f9fafb;
+      --gray-2:   #f3f4f6;
+      --gray-3:   #e5e7eb;
+      --gray-5:   #6b7280;
+      --gray-8:   #1f2937;
+      --white:    #ffffff;
+      --radius:   12px;
+      --shadow:   0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--green); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--green);
+      outline-offset: 3px; border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links {
+      display: none; position: absolute; top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-section { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2); padding: 10px 0; margin: 2px 0; }
+    .nav-section-label { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5); }
+    .nav-section a { padding-left: 10px; border-left: 2px solid var(--blue-md); font-size: .88rem; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 52px; text-align: center;
+      background: linear-gradient(160deg, var(--green-lt) 0%, #ecfdf5 50%, var(--white) 100%);
+    }
+    .hero-badge { display: inline-block; background: var(--green-md); color: var(--green); font-size: .78rem; font-weight: 700; letter-spacing: .06em; padding: 4px 14px; border-radius: 100px; margin-bottom: 20px; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+    .hero h1 em { font-style: normal; color: var(--green); }
+    .hero p { font-size: 1.1rem; color: var(--gray-5); max-width: 580px; margin: 0 auto 32px; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 22px; border-radius: 8px; font-size: .95rem; font-weight: 700; text-decoration: none; transition: all .18s; }
+    .btn--green { background: var(--green); color: var(--white); }
+    .btn--green:hover { background: var(--green-dk); text-decoration: none; color: var(--white); }
+    .btn--ghost { background: transparent; color: var(--green); border: 2px solid var(--green); }
+    .btn--ghost:hover { background: var(--green-lt); text-decoration: none; }
+
+    /* ── Section headings ── */
+    .section-label { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--green); margin-bottom: 10px; }
+    .section-title { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; line-height: 1.25; margin-bottom: 16px; }
+    .section-subtitle { font-size: 1.05rem; color: var(--gray-5); max-width: 660px; margin-bottom: 40px; }
+
+    /* ── Alerts ── */
+    .alert { border-radius: var(--radius); padding: 20px 24px; display: flex; gap: 14px; align-items: flex-start; margin-bottom: 32px; }
+    .alert--green  { background: var(--green-lt); border: 1px solid var(--green-md); }
+    .alert--amber  { background: var(--amber-lt); border: 1px solid var(--amber-md); }
+    .alert--blue   { background: var(--blue-lt);  border: 1px solid var(--blue-md); }
+    .alert--red    { background: var(--red-lt);   border: 1px solid var(--red-md); }
+    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+    .alert--green  p { color: #14532d; font-size: .95rem; }
+    .alert--amber  p { color: #92400e; font-size: .95rem; }
+    .alert--blue   p { color: #1e3a8a; font-size: .95rem; }
+    .alert--red    p { color: #991b1b; font-size: .95rem; }
+    .alert strong { font-weight: 700; }
+
+    /* ── Pipeline flow ── */
+    .pipeline {
+      display: flex; align-items: stretch; gap: 0;
+      background: #0f172a; border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .pip-step { flex: 1; min-width: 130px; padding: 24px 18px; text-align: center; border-right: 1px solid #1e293b; position: relative; }
+    .pip-step:last-child { border-right: none; }
+    .pip-step .ps-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .pip-step .ps-label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #64748b; margin-bottom: 6px; }
+    .pip-step .ps-name { font-size: .88rem; font-weight: 700; color: #e2e8f0; margin-bottom: 4px; }
+    .pip-step .ps-tech { font-size: .75rem; color: #94a3b8; font-family: "SF Mono", monospace; }
+    .pip-step.active { background: #1e293b; }
+    .pip-step.active .ps-name { color: #86efac; }
+
+    /* ── Cards ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .card h3   { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .card p    { font-size: .875rem; color: var(--gray-5); }
+
+    /* ── Platform comparison ── */
+    .platform-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .plat-card { border: 1px solid var(--gray-3); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .plat-head { padding: 16px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--gray-3); }
+    .plat-head .ph-icon { font-size: 1.5rem; }
+    .plat-head h3 { font-size: 1rem; font-weight: 700; }
+    .plat-head .ph-badge { margin-left: auto; font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; text-transform: uppercase; }
+    .badge-full  { background: var(--green-lt); color: var(--green); }
+    .badge-part  { background: var(--amber-lt); color: var(--amber); }
+    .badge-soon  { background: var(--gray-2);   color: var(--gray-5); }
+    .plat-body { padding: 16px 20px; }
+    .plat-feature { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: .875rem; border-bottom: 1px solid var(--gray-2); }
+    .plat-feature:last-child { border-bottom: none; }
+    .plat-feature .pf-icon { font-size: .95rem; flex-shrink: 0; }
+    .plat-feature span { color: var(--gray-5); }
+    .plat-feature.yes span { color: var(--gray-8); }
+
+    /* ── Setup blocks ── */
+    .setup-block { border: 1px solid var(--gray-3); border-radius: var(--radius); overflow: hidden; margin-bottom: 32px; box-shadow: var(--shadow); }
+    .setup-head { display: flex; align-items: center; gap: 14px; padding: 18px 24px; background: var(--gray-1); border-bottom: 1px solid var(--gray-3); }
+    .setup-head .sh-logo { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .setup-head h3 { font-size: 1.05rem; font-weight: 700; }
+    .setup-head .sh-time { margin-left: auto; font-size: .78rem; color: var(--gray-5); background: var(--gray-2); padding: 3px 10px; border-radius: 100px; }
+    .setup-body { padding: 24px; }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; position: relative; }
+    .steps::before { content: ''; position: absolute; left: 23px; top: 28px; width: 2px; height: calc(100% - 56px); background: var(--gray-3); }
+    .step { display: flex; gap: 20px; align-items: flex-start; position: relative; padding-bottom: 30px; }
+    .step:last-child { padding-bottom: 0; }
+    .step-num { flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; background: var(--green); color: var(--white); font-size: 1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px var(--green-lt); position: relative; z-index: 1; }
+    .step-body h4 { font-size: .97rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
+    .step-body p  { font-size: .9rem; color: var(--gray-5); }
+
+    /* ── Code blocks ── */
+    .code-block { background: #0f172a; border-radius: var(--radius); padding: 22px 24px; margin: 14px 0; overflow-x: auto; }
+    .code-block pre { font-family: "SF Mono", "Fira Code", monospace; font-size: .83rem; line-height: 1.8; color: #e2e8f0; white-space: pre; }
+    .code-label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-5); margin-bottom: 6px; }
+    .ck { color: #94a3b8; }
+    .kw { color: #7dd3fc; }
+    .sv { color: #86efac; }
+    .nm { color: #fde68a; }
+    .br { color: #c4b5fd; }
+
+    /* ── Cost table ── */
+    .cost-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin-bottom: 32px; }
+    .cost-table th { text-align: left; padding: 11px 16px; background: var(--gray-2); border-bottom: 2px solid var(--gray-3); font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+    .cost-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: middle; }
+    .cost-table tr:last-child td { border-bottom: none; }
+    .cost-table tr:hover td { background: var(--gray-1); }
+    .cost-table .free-badge { background: var(--green-lt); color: var(--green); font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+    .cost-table .paid-badge { background: var(--amber-lt); color: var(--amber); font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+
+    /* ── Tips checklist ── */
+    .tips-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .tips-list li { display: flex; gap: 14px; align-items: flex-start; background: var(--white); border: 1px solid var(--gray-3); border-radius: 10px; padding: 16px 20px; box-shadow: var(--shadow); font-size: .9rem; }
+    .tips-list li .t-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .tips-list li strong { display: block; font-weight: 700; margin-bottom: 3px; }
+    .tips-list li span { color: var(--gray-5); font-size: .875rem; }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 16px; }
+    .faq-item { border: 1px solid var(--gray-3); border-radius: var(--radius); overflow: hidden; }
+    .faq-q { width: 100%; text-align: left; background: var(--white); border: none; cursor: pointer; padding: 18px 20px; font-size: .95rem; font-weight: 700; color: var(--gray-8); display: flex; justify-content: space-between; align-items: center; font-family: inherit; transition: background .15s; }
+    .faq-q:hover { background: var(--gray-1); }
+    .faq-q[aria-expanded="true"] { background: var(--green-lt); color: var(--green); }
+    .faq-chevron { font-size: .75rem; transition: transform .2s; }
+    .faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); }
+    .faq-a { display: none; padding: 0 20px 18px; font-size: .9rem; color: var(--gray-5); line-height: 1.7; }
+    .faq-a.open { display: block; }
+
+    /* ── Related ── */
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .rel-card { border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); text-decoration: none; color: inherit; display: block; transition: transform .15s, box-shadow .15s; }
+    .rel-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); text-decoration: none; }
+    .rel-card .r-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .rel-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+    .rel-card p  { font-size: .83rem; color: var(--gray-5); }
+
+    /* ── Newsletter / Footer ── */
+    .nl-section { background: linear-gradient(135deg, var(--green-lt) 0%, #ecfdf5 100%); border-top: 1px solid var(--green-md); border-bottom: 1px solid var(--green-md); padding: 48px 24px; text-align: center; }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--green); }
+    .nl-section > p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] { flex: 1; min-width: 200px; padding: 12px 16px; border: 1.5px solid var(--gray-3); border-radius: 8px; font-size: .95rem; font-family: inherit; background: var(--white); color: var(--gray-8); }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--green); }
+    .nl-form button { background: var(--green); color: var(--white); border: none; border-radius: 8px; padding: 12px 22px; font-size: .95rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .nl-form button:hover { background: var(--green-dk); }
+    footer { background: var(--gray-8); color: #9ca3af; text-align: center; padding: 36px 24px; font-size: .875rem; }
+    footer a { color: #60a5fa; }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] { padding: 9px 14px; border-radius: 7px; border: 1px solid #374151; background: #374151; color: #f9fafb; font-size: .88rem; font-family: inherit; min-width: 200px; flex: 1; max-width: 280px; }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <div style="padding-left:12px;border-left:3px solid #ddd6fe;display:flex;flex-direction:column;gap:8px;margin:2px 0 4px;">
+          <span style="font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#7c3aed;">Workspace Files</span>
+          <a href="workspace-user.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">USER.md</a>
+          <a href="workspace-agents.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">AGENTS.md</a>
+          <a href="workspace-memory.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">MEMORY.md</a>
+          <a href="workspace-heartbeat.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">HEARTBEAT.md</a>
+        </div>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="agentchannels.html" style="color:#0d9488;font-weight:700;"><span aria-hidden="true">📡</span> Agent Channels</a>
+        <a href="mcp.html" style="color:#4f46e5;font-weight:700;"><span aria-hidden="true">🔌</span> MCP</a>
+        <a href="voice.html" aria-current="page" style="color:#16a34a;font-weight:700;"><span aria-hidden="true">🎙️</span> Voice Mode</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+        <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+      <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+      <a href="glossary.html" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">&#x1F399;&#xFE0F; Voice Mode</div>
+  <h1>Say It Out Loud.<br>Your Agent <em>Listens.</em></h1>
+  <p>Voice Mode turns OpenClaw into a hands-free AI assistant. Speak naturally, get spoken replies, and trigger your agent with a wake word — no keyboard, no phone, no friction.</p>
+  <div class="hero-cta">
+    <a href="#whisper" class="btn btn--green">Set Up Whisper STT</a>
+    <a href="#elevenlabs" class="btn btn--ghost">Add ElevenLabs TTS</a>
+  </div>
+</header>
+
+<!-- How it works -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-label">The Pipeline</div>
+    <h2 class="section-title">How Voice Mode Works</h2>
+    <p class="section-subtitle">Voice Mode chains four stages together. Each one is independently configurable — you can use any combination, or just one stage at a time.</p>
+
+    <div class="pipeline" role="img" aria-label="Voice pipeline: wake word detection, speech to text, AI processing, text to speech">
+      <div class="pip-step">
+        <div class="ps-icon">🎤</div>
+        <div class="ps-label">Stage 1</div>
+        <div class="ps-name">Wake Word</div>
+        <div class="ps-tech">"Hey OpenClaw"</div>
+      </div>
+      <div class="pip-step active">
+        <div class="ps-icon">🗣️</div>
+        <div class="ps-label">Stage 2</div>
+        <div class="ps-name">Speech → Text</div>
+        <div class="ps-tech">OpenAI Whisper</div>
+      </div>
+      <div class="pip-step">
+        <div class="ps-icon">🦞</div>
+        <div class="ps-label">Stage 3</div>
+        <div class="ps-name">AI Processing</div>
+        <div class="ps-tech">Your LLM</div>
+      </div>
+      <div class="pip-step active">
+        <div class="ps-icon">🔊</div>
+        <div class="ps-label">Stage 4</div>
+        <div class="ps-name">Text → Speech</div>
+        <div class="ps-tech">ElevenLabs</div>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">🎤</div>
+        <h3>Wake Word</h3>
+        <p>Say a trigger phrase ("Hey OpenClaw" or anything you choose) and the agent starts listening. Available on macOS and iOS. Uses native on-device detection — no audio is sent anywhere until after the wake word fires.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🗣️</div>
+        <h3>Speech-to-Text (STT)</h3>
+        <p>Your voice is transcribed by OpenAI Whisper — one of the most accurate speech recognition models available. Works with heavy accents, technical terms, and noisy environments. About $0.006 per minute.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🦞</div>
+        <h3>AI Processing</h3>
+        <p>The transcribed text is sent to your configured LLM exactly like a typed message. The agent runs its full capabilities — tools, memory, skills — and generates a response.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔊</div>
+        <h3>Text-to-Speech (TTS)</h3>
+        <p>The response is converted to speech by ElevenLabs and streamed back with incremental playback — so you hear the first sentence while the rest is still being generated. Latency under 1 second.</p>
+      </div>
+    </div>
+
+    <div class="alert alert--green">
+      <div class="alert-icon">💡</div>
+      <p><strong>Start with just Whisper STT.</strong> Most people add text-to-speech later once they've got STT working. The agent's text replies are still visible on screen — adding ElevenLabs just means you hear them aloud too. Get Stage 2 working first.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Platform support -->
+<section class="section section--alt" id="platforms">
+  <div class="container">
+    <div class="section-label">Platform Support</div>
+    <h2 class="section-title">Voice Features by Platform</h2>
+    <p class="section-subtitle">Voice Mode capabilities differ slightly across platforms. Here's exactly what works where.</p>
+
+    <div class="platform-grid">
+
+      <div class="plat-card">
+        <div class="plat-head" style="background:#f0fdf4;">
+          <div class="ph-icon">🍎</div>
+          <h3>macOS</h3>
+          <span class="ph-badge badge-full">Full support</span>
+        </div>
+        <div class="plat-body">
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Wake word detection</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Talk Mode (continuous)</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Whisper STT</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>ElevenLabs TTS</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Push-to-talk</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Interrupt on speech</span></div>
+        </div>
+      </div>
+
+      <div class="plat-card">
+        <div class="plat-head" style="background:#eff6ff;">
+          <div class="ph-icon">📱</div>
+          <h3>iOS</h3>
+          <span class="ph-badge badge-full">Full support</span>
+        </div>
+        <div class="plat-body">
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Wake word detection</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Talk Mode (continuous)</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Whisper STT</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>ElevenLabs TTS</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Push-to-talk</span></div>
+          <div class="plat-feature"><span class="pf-icon">⚠️</span><span>Background audio (limited)</span></div>
+        </div>
+      </div>
+
+      <div class="plat-card">
+        <div class="plat-head" style="background:#fffbeb;">
+          <div class="ph-icon">🤖</div>
+          <h3>Android</h3>
+          <span class="ph-badge badge-part">Partial</span>
+        </div>
+        <div class="plat-body">
+          <div class="plat-feature"><span class="pf-icon">🚫</span><span>Wake word (not yet)</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Talk Mode (manual mic)</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Whisper STT</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>ElevenLabs TTS</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Push-to-talk</span></div>
+          <div class="plat-feature"><span class="pf-icon">⚠️</span><span>System assistant integration</span></div>
+        </div>
+      </div>
+
+      <div class="plat-card">
+        <div class="plat-head" style="background:#f9fafb;">
+          <div class="ph-icon">🪟</div>
+          <h3>Windows / Linux</h3>
+          <span class="ph-badge badge-part">CLI only</span>
+        </div>
+        <div class="plat-body">
+          <div class="plat-feature"><span class="pf-icon">🚫</span><span>Native wake word</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Talk Mode (web UI)</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Whisper STT</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>ElevenLabs TTS</span></div>
+          <div class="plat-feature yes"><span class="pf-icon">✅</span><span>Push-to-talk (web UI)</span></div>
+          <div class="plat-feature"><span class="pf-icon">⚠️</span><span>Via localhost:7799 web UI</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Whisper STT Setup -->
+<section class="section" id="whisper">
+  <div class="container">
+    <div class="section-label">Step-by-Step Setup</div>
+    <h2 class="section-title" style="color:var(--blue);">🗣️ Set Up Whisper Speech-to-Text</h2>
+    <p class="section-subtitle">Whisper is the easiest place to start. You'll need an OpenAI API key — even if you use Claude as your main LLM, Whisper is an OpenAI product and needs its own key.</p>
+
+    <div class="setup-block">
+      <div class="setup-head">
+        <div class="sh-logo" style="background:#dbeafe;">🗣️</div>
+        <h3>Whisper STT Configuration</h3>
+        <span class="sh-time">⏱ ~5 minutes</span>
+      </div>
+      <div class="setup-body">
+        <div class="steps" aria-label="Whisper setup steps">
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">1</div>
+            <div class="step-body">
+              <h4>Get an OpenAI API key</h4>
+              <p>Go to <strong>platform.openai.com</strong> → API keys → Create new secret key. You only need the <code>whisper-1</code> model — a $5 credit lasts the average person several months of voice use.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">2</div>
+            <div class="step-body">
+              <h4>Add the STT block to openclaw.json</h4>
+              <div class="code-block">
+                <div class="code-label">~/.openclaw/openclaw.json</div>
+                <pre><span class="br">{</span>
+  <span class="kw">"voice"</span>: <span class="br">{</span>
+    <span class="kw">"stt"</span>: <span class="br">{</span>
+      <span class="kw">"provider"</span>: <span class="sv">"whisper"</span>,
+      <span class="kw">"model"</span>:    <span class="sv">"whisper-1"</span>,
+      <span class="kw">"apiKey"</span>:   <span class="sv">"sk-proj-xxxxxxxxxxxx"</span>,
+      <span class="kw">"language"</span>: <span class="sv">"en"</span>  <span class="ck">// optional — auto-detect if omitted</span>
+    <span class="br">}</span>
+  <span class="br">}</span>
+<span class="br">}</span></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">3</div>
+            <div class="step-body">
+              <h4>Restart OpenClaw and test</h4>
+              <p>Restart OpenClaw and open the web UI at <code>localhost:7799</code>. You'll see a microphone icon in the input bar. Click it, speak, and release — your words should appear as text in the message field.</p>
+              <div class="code-block">
+                <div class="code-label">Terminal confirmation</div>
+                <pre><span class="sv">✅ Voice STT: Whisper (whisper-1) — ready</span>
+<span class="ck">   Click the mic icon in the web UI to start speaking</span></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">4</div>
+            <div class="step-body">
+              <h4>Enable Talk Mode for continuous conversation</h4>
+              <p>Talk Mode keeps the microphone open after each reply so you can have a back-and-forth without clicking the mic button each time. Enable it with:</p>
+              <div class="code-block">
+                <div class="code-label">~/.openclaw/openclaw.json</div>
+                <pre><span class="kw">"voice"</span>: <span class="br">{</span>
+  <span class="kw">"talkMode"</span>: <span class="br">{</span>
+    <span class="kw">"enabled"</span>:           <span class="sv">true</span>,
+    <span class="kw">"silenceTimeoutMs"</span>:  <span class="nm">1500</span>,  <span class="ck">// ms of silence before submitting</span>
+    <span class="kw">"interruptOnSpeech"</span>: <span class="sv">true</span>   <span class="ck">// speaking cancels current TTS reply</span>
+  <span class="br">}</span>
+<span class="br">}</span></pre>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ElevenLabs TTS Setup -->
+<section class="section section--alt" id="elevenlabs">
+  <div class="container">
+    <div class="section-label">Step-by-Step Setup</div>
+    <h2 class="section-title" style="color:#7c3aed;">🔊 Set Up ElevenLabs Text-to-Speech</h2>
+    <p class="section-subtitle">ElevenLabs gives your agent a natural, human-sounding voice. It streams audio incrementally so replies start playing within about a second of generation.</p>
+
+    <div class="setup-block">
+      <div class="setup-head">
+        <div class="sh-logo" style="background:#f5f3ff;">🔊</div>
+        <h3>ElevenLabs TTS Configuration</h3>
+        <span class="sh-time">⏱ ~10 minutes</span>
+      </div>
+      <div class="setup-body">
+        <div class="steps" aria-label="ElevenLabs setup steps">
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">1</div>
+            <div class="step-body">
+              <h4>Create an ElevenLabs account</h4>
+              <p>Go to <strong>elevenlabs.io</strong> and sign up. The free tier gives you 10,000 characters per month — enough for testing. For daily use, the Starter plan ($5/month, 30,000 characters) is plenty for most people.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">2</div>
+            <div class="step-body">
+              <h4>Get your API key and choose a voice</h4>
+              <p>In the ElevenLabs dashboard: go to <strong>Profile → API Key</strong> and copy your key. Then go to <strong>Voice Library</strong> and pick a voice you like — copy its <strong>Voice ID</strong> from the voice card. Popular choices: <em>Rachel</em>, <em>Adam</em>, <em>Aria</em>.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">3</div>
+            <div class="step-body">
+              <h4>Add the TTS block to openclaw.json</h4>
+              <div class="code-block">
+                <div class="code-label">~/.openclaw/openclaw.json</div>
+                <pre><span class="br">{</span>
+  <span class="kw">"voice"</span>: <span class="br">{</span>
+    <span class="kw">"tts"</span>: <span class="br">{</span>
+      <span class="kw">"provider"</span>:    <span class="sv">"elevenlabs"</span>,
+      <span class="kw">"apiKey"</span>:      <span class="sv">"sk_xxxxxxxxxxxxxxxx"</span>,
+      <span class="kw">"voiceId"</span>:     <span class="sv">"21m00Tcm4TlvDq8ikWAM"</span>,  <span class="ck">// Rachel</span>
+      <span class="kw">"modelId"</span>:     <span class="sv">"eleven_turbo_v2_5"</span>,        <span class="ck">// fast + cheap</span>
+      <span class="kw">"outputFormat"</span>:<span class="sv">"mp3_44100_128"</span>,
+      <span class="kw">"streaming"</span>:   <span class="sv">true</span>                       <span class="ck">// incremental playback</span>
+    <span class="br">}</span>
+  <span class="br">}</span>
+<span class="br">}</span></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">4</div>
+            <div class="step-body">
+              <h4>Choose your model</h4>
+              <p>ElevenLabs has several models. Here's how to choose:</p>
+              <div class="code-block">
+                <div class="code-label">Model comparison</div>
+                <pre><span class="sv">eleven_turbo_v2_5</span>    <span class="ck">// ← Recommended. Fast, cheap, great quality</span>
+<span class="sv">eleven_multilingual_v2</span> <span class="ck">// Best quality, supports 29 languages, slower</span>
+<span class="sv">eleven_monolingual_v1</span>  <span class="ck">// Older, English only — avoid unless on free tier</span></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">5</div>
+            <div class="step-body">
+              <h4>Test it</h4>
+              <p>Restart OpenClaw and send any message via the web UI or Telegram. The response should play as audio on your speakers. You'll see a speaker icon in the message if TTS is active.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert--blue">
+      <div class="alert-icon">🎭</div>
+      <p><strong>Clone your own voice.</strong> ElevenLabs lets you upload 1–5 minutes of your own voice recordings to create a personal voice clone. You can then make your OpenClaw agent speak in your own voice — handy for generating audio notes or dictating messages that sound like you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Wake Word Setup -->
+<section class="section" id="wakeword">
+  <div class="container">
+    <div class="section-label">Hands-Free Trigger</div>
+    <h2 class="section-title">&#x1F3A4; Wake Word Setup</h2>
+    <p class="section-subtitle">Wake word lets you activate your agent without touching your keyboard or phone. Say the phrase, pause, then give your command — all hands-free.</p>
+
+    <div class="alert alert--amber">
+      <div class="alert-icon">⚠️</div>
+      <p><strong>macOS and iOS only.</strong> Wake word uses native on-device speech detection. Android uses manual push-to-talk instead. Wake word detection runs fully locally — no audio is sent to any server until after you speak the trigger phrase.</p>
+    </div>
+
+    <div class="setup-block">
+      <div class="setup-head">
+        <div class="sh-logo" style="background:#dcfce7;">🎤</div>
+        <h3>Wake Word Configuration</h3>
+        <span class="sh-time">⏱ ~2 minutes</span>
+      </div>
+      <div class="setup-body">
+        <div class="steps" aria-label="Wake word setup steps">
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">1</div>
+            <div class="step-body">
+              <h4>Add wake words to openclaw.json</h4>
+              <p>Set one or more trigger phrases. You can use anything — "Hey OpenClaw", your agent's name, or something less likely to fire accidentally. All phrases are normalized to lowercase.</p>
+              <div class="code-block">
+                <div class="code-label">~/.openclaw/openclaw.json</div>
+                <pre><span class="br">{</span>
+  <span class="kw">"voice"</span>: <span class="br">{</span>
+    <span class="kw">"wakeWord"</span>: <span class="br">{</span>
+      <span class="kw">"enabled"</span>: <span class="sv">true</span>,
+      <span class="kw">"phrases"</span>: [
+        <span class="sv">"hey openclaw"</span>,
+        <span class="sv">"hey claw"</span>,
+        <span class="sv">"ok lobster"</span>  <span class="ck">// add as many as you like</span>
+      ],
+      <span class="kw">"confirmationSound"</span>: <span class="sv">true</span>  <span class="ck">// plays a soft chime when triggered</span>
+    <span class="br">}</span>
+  <span class="br">}</span>
+<span class="br">}</span></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">2</div>
+            <div class="step-body">
+              <h4>Grant microphone permission</h4>
+              <p>On macOS: <strong>System Settings → Privacy &amp; Security → Microphone</strong> — enable OpenClaw. On iOS: you'll be prompted automatically on first use.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-num" aria-hidden="true">3</div>
+            <div class="step-body">
+              <h4>Test it</h4>
+              <p>Say your wake phrase clearly. You'll hear a confirmation chime (if enabled), then a short silence. Speak your command. The agent transcribes and responds.</p>
+              <div class="code-block">
+                <div class="code-label">Example interaction</div>
+                <pre><span class="sv">You:</span>     <span class="ck">"Hey OpenClaw..."</span>
+<span class="sv">Agent:</span>   <span class="ck">*chime* [listening...]</span>
+<span class="sv">You:</span>     <span class="ck">"What's on my calendar today?"</span>
+<span class="sv">Agent:</span>   <span class="ck">*speaks reply via ElevenLabs*</span></pre>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Full config reference -->
+<section class="section section--alt" id="config">
+  <div class="container">
+    <div class="section-label">Reference</div>
+    <h2 class="section-title">Complete Voice Config</h2>
+    <p class="section-subtitle">The full <code>voice</code> block in <code>openclaw.json</code> — every option in one place with comments.</p>
+
+    <div class="code-block">
+      <div class="code-label">~/.openclaw/openclaw.json — complete voice block</div>
+      <pre><span class="br">{</span>
+  <span class="kw">"voice"</span>: <span class="br">{</span>
+
+    <span class="ck">// ── Speech-to-Text ──────────────────────────────────</span>
+    <span class="kw">"stt"</span>: <span class="br">{</span>
+      <span class="kw">"provider"</span>: <span class="sv">"whisper"</span>,       <span class="ck">// "whisper" | "native" | "deepgram"</span>
+      <span class="kw">"model"</span>:    <span class="sv">"whisper-1"</span>,
+      <span class="kw">"apiKey"</span>:   <span class="sv">"sk-proj-xxxx"</span>,
+      <span class="kw">"language"</span>: <span class="sv">"en"</span>              <span class="ck">// omit for auto-detect</span>
+    <span class="br">}</span>,
+
+    <span class="ck">// ── Text-to-Speech ──────────────────────────────────</span>
+    <span class="kw">"tts"</span>: <span class="br">{</span>
+      <span class="kw">"provider"</span>:     <span class="sv">"elevenlabs"</span>,   <span class="ck">// "elevenlabs" | "openai" | "native"</span>
+      <span class="kw">"apiKey"</span>:       <span class="sv">"sk_xxxx"</span>,
+      <span class="kw">"voiceId"</span>:      <span class="sv">"21m00Tcm4TlvDq8ikWAM"</span>,
+      <span class="kw">"modelId"</span>:      <span class="sv">"eleven_turbo_v2_5"</span>,
+      <span class="kw">"outputFormat"</span>: <span class="sv">"mp3_44100_128"</span>,
+      <span class="kw">"streaming"</span>:    <span class="sv">true</span>,          <span class="ck">// start playing before full text generated</span>
+      <span class="kw">"speed"</span>:        <span class="nm">1.0</span>            <span class="ck">// 0.7–1.2 playback speed</span>
+    <span class="br">}</span>,
+
+    <span class="ck">// ── Talk Mode ───────────────────────────────────────</span>
+    <span class="kw">"talkMode"</span>: <span class="br">{</span>
+      <span class="kw">"enabled"</span>:           <span class="sv">true</span>,
+      <span class="kw">"silenceTimeoutMs"</span>:  <span class="nm">1500</span>, <span class="ck">// pause length before sending (ms)</span>
+      <span class="kw">"interruptOnSpeech"</span>: <span class="sv">true</span>, <span class="ck">// speaking stops current TTS playback</span>
+      <span class="kw">"pushToTalk"</span>:        <span class="sv">false</span> <span class="ck">// true = hold key/button instead of VAD</span>
+    <span class="br">}</span>,
+
+    <span class="ck">// ── Wake Word ───────────────────────────────────────</span>
+    <span class="kw">"wakeWord"</span>: <span class="br">{</span>
+      <span class="kw">"enabled"</span>:            <span class="sv">true</span>,
+      <span class="kw">"phrases"</span>:            [<span class="sv">"hey openclaw"</span>, <span class="sv">"hey claw"</span>],
+      <span class="kw">"confirmationSound"</span>:  <span class="sv">true</span>,
+      <span class="kw">"listenDurationMs"</span>:   <span class="nm">8000</span> <span class="ck">// how long to listen after wake word (ms)</span>
+    <span class="br">}</span>,
+
+    <span class="ck">// ── Quiet Hours ─────────────────────────────────────</span>
+    <span class="kw">"quietHours"</span>: <span class="br">{</span>
+      <span class="kw">"enabled"</span>: <span class="sv">true</span>,
+      <span class="kw">"start"</span>:   <span class="sv">"23:00"</span>,  <span class="ck">// local time</span>
+      <span class="kw">"end"</span>:     <span class="sv">"07:00"</span>   <span class="ck">// TTS is silenced during this window</span>
+    <span class="br">}</span>
+
+  <span class="br">}</span>
+<span class="br">}</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Costs -->
+<section class="section" id="costs">
+  <div class="container">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">What Does Voice Mode Cost?</h2>
+    <p class="section-subtitle">Voice Mode uses third-party APIs for STT and TTS. Here's what each costs and how to keep bills low.</p>
+
+    <div style="overflow-x:auto; margin-bottom:32px;">
+    <table class="cost-table" aria-label="Voice mode pricing comparison">
+      <thead>
+        <tr>
+          <th scope="col">Service</th>
+          <th scope="col">Free tier</th>
+          <th scope="col">Paid pricing</th>
+          <th scope="col">Typical monthly cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Whisper STT</strong></td>
+          <td><span class="paid-badge">None</span></td>
+          <td>$0.006 / minute of audio</td>
+          <td>$0.50–$2 (light use)</td>
+        </tr>
+        <tr>
+          <td><strong>ElevenLabs TTS (Turbo)</strong></td>
+          <td><span class="free-badge">10k chars/mo</span></td>
+          <td>$0.50 / 1,000 chars (Starter)</td>
+          <td>$5–$11 (Starter plan)</td>
+        </tr>
+        <tr>
+          <td><strong>ElevenLabs TTS (Multilingual)</strong></td>
+          <td><span class="free-badge">10k chars/mo</span></td>
+          <td>$0.55 / 1,000 chars (Starter)</td>
+          <td>$5–$11 (Starter plan)</td>
+        </tr>
+        <tr>
+          <td><strong>OpenAI TTS (alternative)</strong></td>
+          <td><span class="paid-badge">None</span></td>
+          <td>$0.015 / 1,000 chars (tts-1)</td>
+          <td>$1–$3 (light use)</td>
+        </tr>
+        <tr>
+          <td><strong>Native TTS (macOS/iOS)</strong></td>
+          <td><span class="free-badge">100% free</span></td>
+          <td>Included with OS</td>
+          <td>$0 always</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="alert alert--green">
+      <div class="alert-icon">💰</div>
+      <p><strong>Use native TTS to start for free.</strong> macOS and iOS have built-in text-to-speech that's completely free. Set <code>"tts": &#123; "provider": "native" &#125;</code> — the quality isn't as natural as ElevenLabs, but there's zero cost. Switch to ElevenLabs once you know you'll use Voice Mode regularly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Tips -->
+<section class="section section--alt" id="tips">
+  <div class="container">
+    <div class="section-label">Pro Tips</div>
+    <h2 class="section-title">Get the Best Out of Voice Mode</h2>
+
+    <ul class="tips-list" aria-label="Voice mode tips">
+      <li>
+        <span class="t-icon">🎙️</span>
+        <div>
+          <strong>Use a headset or AirPods for Talk Mode</strong>
+          <span>Built-in laptop speakers cause echo and feedback loops where the mic picks up TTS output. Any earbuds eliminate this entirely — Talk Mode works much better with audio isolated to your ears.</span>
+        </div>
+      </li>
+      <li>
+        <span class="t-icon">🔇</span>
+        <div>
+          <strong>Set quiet hours so TTS doesn't play at 3am</strong>
+          <span>If you use HEARTBEAT.md for automated tasks, the agent may reply via TTS even when you're asleep. Set <code>quietHours</code> in your config to silence audio between 23:00 and 07:00.</span>
+        </div>
+      </li>
+      <li>
+        <span class="t-icon">⏸️</span>
+        <div>
+          <strong>Enable interruptOnSpeech for natural conversation</strong>
+          <span>With <code>"interruptOnSpeech": true</code>, speaking while the agent is talking immediately stops playback and starts listening. This makes conversations feel natural instead of waiting for the agent to finish.</span>
+        </div>
+      </li>
+      <li>
+        <span class="t-icon">🌐</span>
+        <div>
+          <strong>Set the language for faster Whisper transcription</strong>
+          <span>If you always speak English, set <code>"language": "en"</code> in your STT config. Whisper skips language detection and transcribes faster. Supports 50+ languages — use your ISO code (e.g. "fr", "de", "ja").</span>
+        </div>
+      </li>
+      <li>
+        <span class="t-icon">🎭</span>
+        <div>
+          <strong>Pick a distinct wake phrase to avoid false triggers</strong>
+          <span>"Hey OpenClaw" is reliable, but if you often say "hey" in conversation, add something more unique like "ok lobster" or your agent's custom name. Fewer false triggers means less frustration.</span>
+        </div>
+      </li>
+      <li>
+        <span class="t-icon">🔋</span>
+        <div>
+          <strong>Disable wake word on battery power</strong>
+          <span>Always-on wake word detection uses a small but constant amount of CPU. If you're on a laptop away from power, set a keyboard shortcut for push-to-talk instead to save battery.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-label">Common Questions</div>
+    <h2 class="section-title">Frequently Asked Questions</h2>
+
+    <div class="faq-list" role="list">
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq1">
+          Do I need an OpenAI account to use Whisper if I use Claude as my LLM?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq1" role="region">
+          Yes — Whisper is an OpenAI model and requires its own API key regardless of which LLM you use for the main agent. The good news is you only need a small amount of credit: $5 typically lasts months of regular voice use. Alternatively, you can use native macOS/iOS STT for free, or a third-party like Deepgram.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq2">
+          Is my voice sent to OpenAI or ElevenLabs servers?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq2" role="region">
+          Yes — audio is sent to OpenAI for Whisper transcription, and text is sent to ElevenLabs for speech synthesis. Wake word detection happens entirely on-device (nothing is sent until the wake word fires). If privacy is a concern, use native STT/TTS — macOS Siri voices and on-device speech recognition process everything locally. Check OpenAI's and ElevenLabs' data retention policies if you're handling sensitive conversations.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq3">
+          Can I use Voice Mode without ElevenLabs?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq3" role="region">
+          Yes — TTS is entirely optional. Without it, the agent's replies appear as text (same as normal). You can also use the free <strong>native</strong> provider (macOS system voices, iOS speech engine, or Windows SAPI) or OpenAI's TTS API as alternatives to ElevenLabs. Native is free; OpenAI TTS is cheaper than ElevenLabs but slightly less natural sounding.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq4">
+          How accurate is Whisper with accents or technical terms?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq4" role="region">
+          Whisper is one of the most accent-resilient models available. It handles non-native English, regional accents, and technical jargon very well. For domain-specific terms (code function names, medical terminology), speaking clearly at a moderate pace helps. You can also add a prompt hint in your config that mentions common terms so Whisper biases toward them.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq5">
+          How do I change the voice ElevenLabs uses?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq5" role="region">
+          Browse the ElevenLabs Voice Library at <a href="https://elevenlabs.io/voice-library" target="_blank" rel="noopener">elevenlabs.io/voice-library</a>, preview voices, and copy the Voice ID of your favourite. Replace the <code>voiceId</code> in your <code>openclaw.json</code> and restart OpenClaw. The change takes effect immediately.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq6">
+          Can I use Voice Mode on my phone while OpenClaw runs on my desktop?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq6" role="region">
+          Yes — if you've connected OpenClaw to Telegram or WhatsApp via <a href="agentchannels.html">Agent Channels</a>, you can speak into those apps' built-in voice note feature. The audio note is sent to OpenClaw, transcribed (if you have STT enabled), and the agent responds. Full native Voice Mode with wake word requires the OpenClaw app on your device, but voice notes via messaging apps work on any phone.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Related -->
+<section class="section section--alt" id="related">
+  <div class="container">
+    <div class="section-label">Keep Learning</div>
+    <h2 class="section-title">Related Topics</h2>
+    <div class="rel-grid">
+      <a href="agentchannels.html" class="rel-card" aria-label="Agent Channels — WhatsApp and Telegram">
+        <div class="r-icon">📡</div>
+        <h3>Agent Channels</h3>
+        <p>Send voice notes via WhatsApp or Telegram when full Voice Mode isn't available.</p>
+      </a>
+      <a href="workspace-heartbeat.html" class="rel-card" aria-label="HEARTBEAT.md guide">
+        <div class="r-icon">💓</div>
+        <h3>HEARTBEAT.md</h3>
+        <p>Schedule tasks that run automatically — your agent can speak results aloud via TTS.</p>
+      </a>
+      <a href="gettingstarted.html" class="rel-card" aria-label="Getting Started guide">
+        <div class="r-icon">🚀</div>
+        <h3>Get Started</h3>
+        <p>New to OpenClaw? Set up the core system before adding Voice Mode.</p>
+      </a>
+      <a href="security.html" class="rel-card" aria-label="Security guide">
+        <div class="r-icon">🛡️</div>
+        <h3>Security Guide</h3>
+        <p>Understand the privacy implications of sending audio to STT and TTS APIs.</p>
+      </a>
+      <a href="cheatsheet.html" class="rel-card" aria-label="Command cheat sheet">
+        <div class="r-icon">📋</div>
+        <h3>Cheat Sheet</h3>
+        <p>All OpenClaw commands including voice controls and Talk Mode shortcuts.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Newsletter -->
+<section class="nl-section" aria-label="Newsletter signup">
+  <div class="container">
+    <h2>Get <em>Voice Mode Tips</em> by Email</h2>
+    <p>New voice setups, ElevenLabs tricks, and OpenClaw automation ideas — every week.</p>
+    <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank" aria-label="Newsletter signup form">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+    <p style="margin-top:12px; font-size:.78rem; color:var(--gray-5);">No spam. Unsubscribe any time.</p>
+  </div>
+</section>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.faq-q').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
+      });
+      if (!expanded) {
+        btn.setAttribute('aria-expanded', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('open');
+      }
+    });
+  });
+</script>
+
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>
