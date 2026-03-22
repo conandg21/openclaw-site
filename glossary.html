@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Glossary — 300+ Terms Defined | learnopenclaw.org</title>
+  <meta name="description" content="The complete OpenClaw glossary. Over 300 terms defined — agents, skills, scheduling, memory, integrations, CLI commands, AI concepts, and more. Updated for 2026." />
+  <meta name="keywords" content="OpenClaw glossary, OpenClaw terms, OpenClaw definitions, AI agent terminology, ClawHub, openclaw skills, openclaw commands, AI glossary" />
+  <link rel="canonical" href="https://learnopenclaw.org/glossary.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="OpenClaw Glossary — 300+ Terms Defined" />
+  <meta property="og:description" content="Every OpenClaw term explained clearly. Agents, skills, integrations, CLI commands, AI concepts, and more." />
+  <meta property="og:url" content="https://learnopenclaw.org/glossary.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Glossary — 300+ Terms Defined" />
+  <meta name="twitter:description" content="Every OpenClaw term explained clearly." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "name": "OpenClaw Glossary",
+    "description": "A comprehensive glossary of over 300 terms related to OpenClaw, the open-source autonomous AI agent framework.",
+    "url": "https://learnopenclaw.org/glossary.html",
+    "inDefinedTermSet": "https://learnopenclaw.org/glossary.html"
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #2563eb;
+      --blue-dk:   #1e3a5f;
+      --blue-lt:   #eff6ff;
+      --blue-md:   #bfdbfe;
+      --gray-1:    #f9fafb;
+      --gray-2:    #f3f4f6;
+      --gray-3:    #e5e7eb;
+      --gray-5:    #6b7280;
+      --gray-7:    #374151;
+      --gray-8:    #1f2937;
+      --gray-9:    #111827;
+      --white:     #ffffff;
+      --accent:    #7c3aed;
+      --accent-lt: #ede9fe;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-9); background: var(--white);
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-9); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+
+    /* Hamburger */
+    .hamburger {
+      display: flex; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Nav dropdown */
+    .nav-inner { position: relative; }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5);
+    }
+    .nav-section a { padding-left: 10px; border-left: 2px solid var(--blue-md); font-size: .88rem; }
+
+    /* ── Disclaimer ── */
+    .disclaimer-bar {
+      background: #fefce8; border-bottom: 1px solid #fde047;
+      padding: 8px 24px; font-size: .82rem; color: #713f12; text-align: center;
+    }
+
+    /* ── Hero ── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--blue-dk) 0%, #1d4ed8 100%);
+      color: var(--white); padding: 52px 24px 44px; text-align: center;
+    }
+    .page-hero .pill {
+      display: inline-block; background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 100px; padding: 4px 14px;
+      font-size: .78rem; font-weight: 700; letter-spacing: .05em; margin-bottom: 16px;
+    }
+    .page-hero h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; margin-bottom: 12px; }
+    .page-hero p { font-size: 1.02rem; opacity: .85; max-width: 580px; margin: 0 auto 24px; }
+    .hero-stats { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+    .hero-stats .stat strong { display: block; font-size: 1.4rem; font-weight: 800; }
+    .hero-stats .stat span { font-size: .8rem; opacity: .75; }
+
+    /* ── Search bar ── */
+    .search-wrap {
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      padding: 12px 24px; position: sticky; top: 60px; z-index: 900;
+    }
+    .search-inner { max-width: 960px; margin: 0 auto; position: relative; }
+    .search-inner input {
+      width: 100%; padding: 10px 14px 10px 40px;
+      border: 1px solid var(--gray-3); border-radius: 8px; font-size: .95rem;
+      outline: none; transition: border-color .2s;
+    }
+    .search-inner input:focus { border-color: var(--blue); }
+    .search-inner .s-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: .9rem; pointer-events: none; }
+    #search-count { font-size: .8rem; color: var(--gray-5); margin-top: 6px; }
+
+    /* ── Alphabet nav ── */
+    .alpha-nav {
+      background: var(--gray-1); border-bottom: 1px solid var(--gray-3);
+      padding: 10px 24px; position: sticky; top: 108px; z-index: 890; overflow-x: auto;
+    }
+    .alpha-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; gap: 4px; flex-wrap: wrap;
+    }
+    .alpha-btn {
+      min-width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 6px; font-size: .85rem; font-weight: 700;
+      background: var(--white); border: 1px solid var(--gray-3);
+      color: var(--gray-7); cursor: pointer; text-decoration: none;
+      transition: background .15s, color .15s;
+    }
+    .alpha-btn:hover { background: var(--blue-dk); color: var(--white); border-color: var(--blue-dk); text-decoration: none; }
+    .alpha-btn.has-terms { border-color: var(--blue-md); color: var(--blue-dk); }
+    .alpha-btn.has-terms:hover { background: var(--blue-dk); color: var(--white); }
+
+    /* ── Main content ── */
+    main { padding: 40px 0 80px; }
+
+    /* ── Letter section ── */
+    .letter-section { margin-bottom: 48px; }
+    .letter-section[hidden] { display: none; }
+    .letter-heading {
+      font-size: 2.2rem; font-weight: 900; color: var(--blue-dk);
+      border-bottom: 3px solid var(--blue-md); padding-bottom: 8px;
+      margin-bottom: 20px; scroll-margin-top: 180px;
+    }
+
+    /* ── Definition list ── */
+    dl.glossary { display: flex; flex-direction: column; gap: 0; }
+    .entry {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray-3);
+      display: grid; grid-template-columns: 220px 1fr; gap: 16px;
+    }
+    .entry[hidden] { display: none; }
+    .entry:last-child { border-bottom: none; }
+    dt {
+      font-weight: 700; font-size: .97rem; color: var(--gray-9);
+      padding-top: 2px; line-height: 1.4;
+    }
+    dt .tag {
+      display: inline-block; font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: 1px 6px; border-radius: 4px; margin-left: 6px;
+      vertical-align: middle;
+    }
+    .tag-cmd  { background: var(--blue-lt);   color: var(--blue-dk); }
+    .tag-core { background: var(--accent-lt);  color: var(--accent); }
+    .tag-api  { background: #fef3c7;           color: #92400e; }
+    .tag-ai   { background: #f0fdf4;           color: #14532d; }
+    dd {
+      font-size: .93rem; line-height: 1.65; color: var(--gray-7);
+    }
+    dd code {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: .82rem; background: var(--gray-2);
+      padding: 1px 5px; border-radius: 4px; color: var(--blue-dk);
+    }
+
+    /* Highlight search matches */
+    mark { background: #fef08a; border-radius: 2px; padding: 0 2px; color: inherit; }
+
+    /* no results */
+    #no-results {
+      display: none; text-align: center; padding: 60px 0;
+      color: var(--gray-5); font-size: 1rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .entry { grid-template-columns: 1fr; gap: 4px; }
+      dt { font-size: .95rem; }
+      .alpha-nav { top: 100px; }
+      .search-wrap { top: 60px; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-9); color: #9ca3af;
+      padding: 32px 24px; text-align: center; font-size: .85rem;
+    }
+    footer .footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+    footer a { color: #d1d5db; }
+    footer a:hover { color: var(--white); }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+    .footer-nl-form input { padding: 8px 14px; border-radius: 6px; border: none; font-size: .9rem; min-width: 220px; }
+    .footer-nl-form button { padding: 8px 18px; border-radius: 6px; border: none; background: var(--blue); color: var(--white); font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <!-- Nav -->
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <div class="nav-section" role="group" aria-label="Learn">
+          <span class="nav-section-label">Learn</span>
+          <a href="gettingstarted.html">Get Started</a>
+          <a href="usecases.html">Use Cases</a>
+          <a href="automation.html">Automation</a>
+          <a href="marketplace.html">Marketplace</a>
+          <a href="architecture.html">Architecture</a>
+          <a href="multiagent.html">Multi-Agent</a>
+          <a href="nemoclaw.html">🟢 NemoClaw</a>
+          <a href="compare.html">Compare</a>
+          <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+          <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+        </div>
+        <a href="faq.html">FAQ</a>
+        <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+        <a href="glossary.html" aria-current="page" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+    <strong>learnopenclaw.org</strong> is an independent community learning resource — not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+  </div>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <div class="pill">COMPLETE REFERENCE</div>
+    <h1>OpenClaw Glossary</h1>
+    <p>Over 300 terms defined — from core agent concepts to CLI commands, integrations, AI terminology, and beyond.</p>
+    <div class="hero-stats">
+      <div class="stat"><strong>300+</strong><span>Terms defined</span></div>
+      <div class="stat"><strong>A–Z</strong><span>Alphabetical order</span></div>
+      <div class="stat"><strong>2026</strong><span>Up to date</span></div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap" role="search" aria-label="Search glossary terms">
+    <div class="search-inner">
+      <span class="s-icon" aria-hidden="true">🔍</span>
+      <input type="search" id="gloss-search" placeholder="Search terms… e.g. agent, skill, memory, cron" aria-label="Search glossary" autocomplete="off" />
+    </div>
+    <div class="container"><div id="search-count" aria-live="polite" aria-atomic="true"></div></div>
+  </div>
+
+  <!-- Alphabet nav -->
+  <nav class="alpha-nav" aria-label="Jump to letter">
+    <div class="alpha-inner">
+      <a class="alpha-btn has-terms" href="#letter-A">A</a>
+      <a class="alpha-btn has-terms" href="#letter-B">B</a>
+      <a class="alpha-btn has-terms" href="#letter-C">C</a>
+      <a class="alpha-btn has-terms" href="#letter-D">D</a>
+      <a class="alpha-btn has-terms" href="#letter-E">E</a>
+      <a class="alpha-btn has-terms" href="#letter-F">F</a>
+      <a class="alpha-btn has-terms" href="#letter-G">G</a>
+      <a class="alpha-btn has-terms" href="#letter-H">H</a>
+      <a class="alpha-btn has-terms" href="#letter-I">I</a>
+      <a class="alpha-btn has-terms" href="#letter-J">J</a>
+      <a class="alpha-btn has-terms" href="#letter-K">K</a>
+      <a class="alpha-btn has-terms" href="#letter-L">L</a>
+      <a class="alpha-btn has-terms" href="#letter-M">M</a>
+      <a class="alpha-btn has-terms" href="#letter-N">N</a>
+      <a class="alpha-btn has-terms" href="#letter-O">O</a>
+      <a class="alpha-btn has-terms" href="#letter-P">P</a>
+      <a class="alpha-btn has-terms" href="#letter-Q">Q</a>
+      <a class="alpha-btn has-terms" href="#letter-R">R</a>
+      <a class="alpha-btn has-terms" href="#letter-S">S</a>
+      <a class="alpha-btn has-terms" href="#letter-T">T</a>
+      <a class="alpha-btn has-terms" href="#letter-U">U</a>
+      <a class="alpha-btn has-terms" href="#letter-V">V</a>
+      <a class="alpha-btn has-terms" href="#letter-W">W</a>
+      <a class="alpha-btn" href="#letter-X">X</a>
+      <a class="alpha-btn has-terms" href="#letter-Y">Y</a>
+      <a class="alpha-btn has-terms" href="#letter-Z">Z</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <div class="container">
+      <div id="no-results" role="status" aria-live="polite">No terms match your search.</div>
+
+      <!-- ── A ── -->
+      <section class="letter-section" id="letter-A" aria-labelledby="heading-A">
+        <h2 class="letter-heading" id="heading-A">A</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Agent <span class="tag tag-core">Core</span></dt><dd>The central concept of OpenClaw. An agent is an AI-powered process that can receive instructions in natural language, reason about them, and take real actions — reading emails, calling APIs, managing files — without requiring you to write code. An OpenClaw agent runs persistently on your machine and listens for commands via your connected messaging platform.</dd></div>
+          <div class="entry"><dt>Agent Chain</dt><dd>A sequence of agents where the output of one becomes the input of the next. Used to break complex tasks into smaller, specialised steps. For example, a research agent can pass its findings to a writing agent, which passes the draft to an email agent for delivery.</dd></div>
+          <div class="entry"><dt>Agent Channel</dt><dd>The messaging platform or communication pathway through which a user interacts with an agent. Supported channels include WhatsApp, Telegram, Slack, Discord, and iMessage. Each channel is configured separately and can be assigned its own agent persona.</dd></div>
+          <div class="entry"><dt>Agent Config</dt><dd>The configuration file or settings object that defines how an individual agent behaves, including its system prompt, connected skills, model selection, memory settings, and platform assignments. Accessed via <code>openclaw agent edit &lt;name&gt;</code>.</dd></div>
+          <div class="entry"><dt>Agent Context</dt><dd>The complete body of information available to an agent when processing a request — including the conversation history, injected memory entries, system prompt, tool results, and any retrieved documents. The size of the agent context is bounded by the model's context window.</dd></div>
+          <div class="entry"><dt>Agent Directive</dt><dd>A high-level instruction given to an agent that shapes its long-term behaviour. Unlike a one-off command, a directive persists across sessions and is usually embedded in the system prompt. Example: "Always respond in bullet points" or "Never send emails without my confirmation."</dd></div>
+          <div class="entry"><dt>Agent Export</dt><dd>The process of serialising an agent's full configuration — system prompt, skill list, memory, and settings — into a portable JSON file. Run via <code>openclaw agent export &lt;name&gt;</code>. Useful for backups, sharing agent templates, or migrating between machines.</dd></div>
+          <div class="entry"><dt>Agent ID</dt><dd>A unique identifier automatically assigned to each agent when it is created. Used internally to route messages, reference schedules, and track history. Not typically shown to the end user but visible in config files and log output.</dd></div>
+          <div class="entry"><dt>Agent Import</dt><dd>Loading an agent configuration from a previously exported JSON file using <code>openclaw agent import &lt;file&gt;</code>. Restores the agent's name, system prompt, skill assignments, and all settings exactly as they were when exported.</dd></div>
+          <div class="entry"><dt>Agent Loop</dt><dd>The execution cycle an agent follows when processing a task: receive input → reason → select tool or skill → execute → observe result → reason again → respond. OpenClaw agents can complete multiple loop iterations before returning a final answer to the user.</dd></div>
+          <div class="entry"><dt>Agent Memory</dt><dd>The persistent storage layer that allows an agent to remember facts, preferences, and context across separate conversations. Memory entries are stored locally and injected into the agent's context at runtime. Managed via the <code>openclaw memory</code> command group.</dd></div>
+          <div class="entry"><dt>Agent Mode</dt><dd>The operating mode of an agent, which can be interactive (responds immediately to user messages), scheduled (runs tasks on a cron schedule), headless (background daemon with no terminal output), or debug (verbose logging for troubleshooting).</dd></div>
+          <div class="entry"><dt>Agent Orchestration</dt><dd>The coordination of multiple agents to complete a complex task. One agent — the orchestrator — decomposes the goal into sub-tasks, delegates each to a specialist agent, and aggregates the results. OpenClaw supports orchestration natively through multi-agent pipelines.</dd></div>
+          <div class="entry"><dt>Agent Persona</dt><dd>The name, tone, and behavioural style assigned to an agent via its system prompt. A persona makes an agent feel like a dedicated assistant with a specific role — for example, "Aria, your e-commerce operations manager" instead of a generic AI assistant.</dd></div>
+          <div class="entry"><dt>Agent Pipeline</dt><dd>A connected series of agents and skills that work together to complete a multi-step workflow. Each stage in the pipeline receives the output of the previous stage as its input, enabling complex automations to be built from simple, reusable components.</dd></div>
+          <div class="entry"><dt>Agent Profile</dt><dd>A saved set of agent settings including model, system prompt, connected skills, and platform assignments. Profiles can be cloned, exported, and shared. Use <code>openclaw agent clone &lt;name&gt;</code> to duplicate a profile for a new use case.</dd></div>
+          <div class="entry"><dt>Agent Runtime</dt><dd>The execution environment that hosts an OpenClaw agent process — including the Node.js runtime, loaded skills, allocated memory, and active connections to messaging platforms and AI providers. The runtime starts when you run <code>openclaw start</code> and stops with <code>openclaw stop</code>.</dd></div>
+          <div class="entry"><dt>Agent Session</dt><dd>A single continuous conversation between a user and an agent. Sessions begin when a user sends a message and end when the conversation is closed or times out. History from past sessions can be retrieved with <code>openclaw history</code>.</dd></div>
+          <div class="entry"><dt>Agent Skill Set</dt><dd>The collection of ClawHub skills currently installed and enabled for a specific agent. Skills in the set are available as tools the agent can invoke during task execution. Managed per-agent through the agent config or globally through the <code>openclaw skills</code> commands.</dd></div>
+          <div class="entry"><dt>Agent Stack</dt><dd>The full combination of model, skills, memory, and system prompt that defines an agent's total capability. Changing any element of the stack changes what the agent can do. Teams often maintain multiple stacks for different use cases.</dd></div>
+          <div class="entry"><dt>Agent Template</dt><dd>A pre-built agent configuration designed for a specific purpose — for example, an "E-Commerce Manager" template or a "Daily Briefing" template. Templates can be imported from the ClawHub registry or created and shared manually using <code>openclaw agent export</code>.</dd></div>
+          <div class="entry"><dt>Agent Test</dt><dd>A diagnostic run initiated by <code>openclaw agent test &lt;name&gt;</code> that sends a predefined test message to an agent and reports the response, latency, and any errors. Used to verify that a new or edited agent is working correctly before deploying it.</dd></div>
+          <div class="entry"><dt>Anthropic API</dt><dd>The API service provided by Anthropic that gives OpenClaw access to Claude language models. To use Claude as your model provider, configure your Anthropic API key via <code>openclaw config set api_key &lt;key&gt;</code> and set the model to a supported Claude variant.</dd></div>
+          <div class="entry"><dt>API Key <span class="tag tag-api">API</span></dt><dd>A secret credential that authenticates OpenClaw's requests to an AI model provider such as OpenAI, Anthropic, or Google. Set via <code>openclaw config set api_key &lt;key&gt;</code>. The key is stored locally in your config file and never sent to OpenClaw's servers.</dd></div>
+          <div class="entry"><dt>API Rate Limit <span class="tag tag-api">API</span></dt><dd>A cap imposed by an AI model provider on the number of requests or tokens you can use within a given time window. OpenClaw includes built-in retry logic and back-off strategies to handle rate limit errors gracefully without crashing the agent.</dd></div>
+          <div class="entry"><dt>Async Agent</dt><dd>An agent that processes tasks asynchronously, meaning it can start a long-running job in the background and notify you when it's done — rather than blocking your conversation thread while it works. Most scheduled tasks run as async agents.</dd></div>
+          <div class="entry"><dt>Authentication</dt><dd>The process of verifying your identity when connecting OpenClaw to a third-party service. Depending on the platform, authentication may use OAuth tokens, API keys, bot tokens, or QR code scanning. Each platform connection requires its own authentication step.</dd></div>
+          <div class="entry"><dt>Auto-Reply</dt><dd>A behaviour where an agent automatically responds to incoming messages without requiring the user to re-engage. Auto-reply is commonly used for customer-facing agents that monitor a Slack channel or email inbox and reply to inquiries instantly.</dd></div>
+          <div class="entry"><dt>Auto-Schedule</dt><dd>A feature that lets you define a recurring task in plain language — such as "every morning at 8am, summarise my unread emails" — and have OpenClaw convert it automatically into a cron schedule. Removes the need to understand cron syntax directly.</dd></div>
+          <div class="entry"><dt>Auto-Update</dt><dd>A setting that keeps OpenClaw and its installed skills up to date automatically. Can be enabled in the config file or triggered manually with <code>openclaw update</code>. Auto-updates are checked on startup by default unless disabled.</dd></div>
+          <div class="entry"><dt>Autonomous Agent</dt><dd>An agent that operates independently over an extended period, pursuing a goal through multiple steps without requiring human input at each stage. OpenClaw agents can operate autonomously within defined guardrails set by the system prompt and directive rules.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── B ── -->
+      <section class="letter-section" id="letter-B" aria-labelledby="heading-B">
+        <h2 class="letter-heading" id="heading-B">B</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Background Mode</dt><dd>An operating mode enabled by <code>openclaw start --headless</code> where the agent daemon runs silently without terminal output. Background mode is ideal for servers, always-on automation setups, or when you want the agent active without occupying a terminal window.</dd></div>
+          <div class="entry"><dt>Back-off Strategy</dt><dd>The algorithm OpenClaw uses when a request to an API fails — typically due to rate limits or transient errors. Instead of retrying immediately, the agent waits an increasing amount of time between attempts, reducing the risk of being permanently blocked.</dd></div>
+          <div class="entry"><dt>Base Model</dt><dd>The foundational large language model that powers an OpenClaw agent's reasoning and language generation. Supported base models include GPT-4o, Claude 3.5 Sonnet, Gemini, and locally hosted models like LLaMA 3. Changed via <code>openclaw config set model &lt;name&gt;</code>.</dd></div>
+          <div class="entry"><dt>Base URL</dt><dd>The root endpoint of an AI provider's API. For locally hosted models such as LLaMA via Ollama, you set a custom base URL (e.g. <code>http://localhost:11434</code>) so OpenClaw knows where to send inference requests instead of using a cloud provider.</dd></div>
+          <div class="entry"><dt>Batch Processing</dt><dd>The execution of multiple tasks or commands in a single run, rather than one at a time. OpenClaw supports batch processing for operations like updating multiple product listings, sending a collection of emails, or processing a queue of scheduled jobs simultaneously.</dd></div>
+          <div class="entry"><dt>Bearer Token</dt><dd>A type of access token used in HTTP Authorization headers to authenticate API requests. Some skill integrations, particularly those connecting to REST APIs, require a bearer token that is stored securely in OpenClaw's credential vault.</dd></div>
+          <div class="entry"><dt>Bot Token</dt><dd>A secret string issued by a messaging platform — such as Telegram's BotFather or Discord's developer portal — that allows OpenClaw to authenticate as a bot on that platform. Entered during the platform connection setup via <code>openclaw connect &lt;platform&gt;</code>.</dd></div>
+          <div class="entry"><dt>Briefing</dt><dd>A summarised daily or periodic report delivered by an agent to your messaging platform. A briefing might cover unread emails, calendar events, open orders, or news headlines depending on your skills and system prompt. Common as a morning scheduled task.</dd></div>
+          <div class="entry"><dt>Bucket Rate Limit <span class="tag tag-api">API</span></dt><dd>A rate-limiting model used by the Shopify Admin API. Requests consume "tokens" from a bucket (default capacity: 40) that refills at 2 per second. If the bucket empties, further requests are throttled until it refills. OpenClaw's Shopify skill manages this automatically.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── C ── -->
+      <section class="letter-section" id="letter-C" aria-labelledby="heading-C">
+        <h2 class="letter-heading" id="heading-C">C</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Cache</dt><dd>A temporary store of frequently accessed data — such as API responses, skill metadata, or prompt results — held in memory or on disk to avoid redundant network requests. Clear with <code>openclaw clear-cache</code> if you encounter stale data or unexplained behaviour.</dd></div>
+          <div class="entry"><dt>Channel</dt><dd>See <em>Agent Channel</em>. The communication medium through which users send commands to and receive responses from an OpenClaw agent, such as WhatsApp, Telegram, Slack, Discord, or iMessage.</dd></div>
+          <div class="entry"><dt>ClawHub <span class="tag tag-core">Core</span></dt><dd>The official OpenClaw skill marketplace and registry where developers publish and users discover agent skills. ClawHub hosts hundreds of skills covering productivity, e-commerce, coding, smart home, and more. Browse at marketplace or search via <code>openclaw skills search &lt;query&gt;</code>.</dd></div>
+          <div class="entry"><dt>ClawHub Registry</dt><dd>The back-end index of all published skills on ClawHub, including their names, versions, descriptions, required permissions, and download URLs. When you run <code>openclaw skills install</code>, the CLI queries this registry to find and download the correct package.</dd></div>
+          <div class="entry"><dt>ClawHub Score</dt><dd>A community-driven quality rating assigned to each skill in the ClawHub marketplace based on downloads, user reviews, and reliability metrics. Higher-scored skills are generally more trustworthy, better maintained, and less likely to break between updates.</dd></div>
+          <div class="entry"><dt>CLI <span class="tag tag-cmd">CMD</span></dt><dd>Command-Line Interface. OpenClaw's primary interaction method for setup, configuration, and management tasks. You access the CLI by typing <code>openclaw</code> followed by a command in your terminal. All agent management, skill installation, and platform connections are done through the CLI.</dd></div>
+          <div class="entry"><dt>CLI Flag</dt><dd>An optional modifier appended to a CLI command to change its behaviour. Flags are prefixed with <code>--</code>, for example <code>--headless</code>, <code>--debug</code>, or <code>--port 3000</code>. Run <code>openclaw --help</code> to see all available flags for any command.</dd></div>
+          <div class="entry"><dt>Composio</dt><dd>A third-party integration platform that provides a Model Context Protocol (MCP) server enabling OpenClaw to connect to hundreds of SaaS apps — including Shopify — via OAuth, without requiring you to build custom API integrations from scratch.</dd></div>
+          <div class="entry"><dt>Config File</dt><dd>The local JSON or YAML file that stores all of OpenClaw's settings — including model, API keys, port, timezone, language, and platform connection details. Opened with <code>openclaw config</code>, printed with <code>openclaw config --show</code>, and reset with <code>openclaw config reset</code>.</dd></div>
+          <div class="entry"><dt>Config Reset</dt><dd>The action of restoring all configuration settings to their factory defaults, performed by running <code>openclaw config reset</code>. This does not delete agents, memory, or installed skills — it only resets general settings such as model, port, and API keys.</dd></div>
+          <div class="entry"><dt>Config Schema</dt><dd>The formal structure and validation rules that define what fields are allowed in the OpenClaw config file, what types they must be, and which are required versus optional. The schema is enforced automatically; invalid config values produce a clear error message on startup.</dd></div>
+          <div class="entry"><dt>Connection Pool</dt><dd>A managed collection of reusable connections to external services — such as databases, APIs, or messaging platforms — maintained by OpenClaw to avoid the overhead of establishing a new connection for every request. Improves performance for high-frequency automations.</dd></div>
+          <div class="entry"><dt>Context Injection</dt><dd>The automatic addition of relevant data — such as memory entries, user preferences, or retrieved documents — into the agent's context window before a prompt is sent to the language model. Context injection is transparent to the user and happens at runtime.</dd></div>
+          <div class="entry"><dt>Context Limit</dt><dd>The maximum number of tokens (roughly words and punctuation) that can be included in a single request to an AI model. When the conversation history and injected context exceed this limit, OpenClaw automatically prunes older messages to stay within bounds.</dd></div>
+          <div class="entry"><dt>Context Pruning</dt><dd>The automatic removal of older or lower-priority items from an agent's context window when it approaches the model's token limit. Pruning preserves the most recent and most relevant context while discarding content that is less likely to affect the current response.</dd></div>
+          <div class="entry"><dt>Context Window</dt><dd>The total amount of text a language model can "see" and process in a single request, measured in tokens. GPT-4o supports up to 128,000 tokens; Claude 3.5 Sonnet supports up to 200,000. Larger context windows allow agents to handle longer conversations and bigger documents.</dd></div>
+          <div class="entry"><dt>Cooldown Period</dt><dd>A mandatory delay between consecutive executions of an automated task, preventing runaway loops or excessive API usage. Cooldowns are configurable per schedule and are enforced by the OpenClaw scheduler before allowing a task to run again.</dd></div>
+          <div class="entry"><dt>Credential</dt><dd>Any secret used to authenticate access to a service — API keys, OAuth tokens, passwords, or bot tokens. OpenClaw stores credentials locally in an encrypted credential vault and never transmits them to third-party servers except the target service itself.</dd></div>
+          <div class="entry"><dt>Credential Vault</dt><dd>The encrypted local storage used by OpenClaw to securely hold API keys, OAuth tokens, and other sensitive credentials. The vault is unlocked at startup and credentials are loaded into memory — they are never written to plain-text log files.</dd></div>
+          <div class="entry"><dt>Cron Expression</dt><dd>A five-field string used to define a recurring schedule in Unix-style cron format: <code>minute hour day month weekday</code>. For example, <code>0 9 * * 1-5</code> means "9:00 AM every weekday." Used in <code>openclaw schedule add --cron</code> to set precise automation timings.</dd></div>
+          <div class="entry"><dt>Cron Job</dt><dd>A scheduled task defined using a cron expression that OpenClaw executes automatically at the specified times. Cron jobs run even when no user is actively chatting with the agent. Managed via the <code>openclaw schedule</code> command group.</dd></div>
+          <div class="entry"><dt>Custom Agent</dt><dd>An agent you create and configure yourself — with a unique name, system prompt, skill set, and platform assignment — as opposed to using a default agent. Created via <code>openclaw agent create</code> and fully customisable to suit any workflow or persona.</dd></div>
+          <div class="entry"><dt>Custom App (Shopify)</dt><dd>A private Shopify application you create in your store's admin panel to generate your own Admin API access token. Used as an alternative to Composio for connecting OpenClaw to Shopify when you want direct API access without a third-party intermediary.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── D ── -->
+      <section class="letter-section" id="letter-D" aria-labelledby="heading-D">
+        <h2 class="letter-heading" id="heading-D">D</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Daemon</dt><dd>A background process that runs continuously without user interaction, waiting to respond to events or execute scheduled tasks. When you run <code>openclaw start --headless</code>, OpenClaw launches as a daemon — it keeps running even after you close the terminal.</dd></div>
+          <div class="entry"><dt>Debug Flag</dt><dd>The <code>--debug</code> option appended to <code>openclaw start</code> that enables verbose logging, showing every request, tool call, model response, and internal event. Essential for diagnosing unexpected agent behaviour or skill failures.</dd></div>
+          <div class="entry"><dt>Debug Mode</dt><dd>An operating mode where OpenClaw outputs detailed diagnostic information to the console during agent execution. Enabled with <code>openclaw start --debug</code>. Includes full request/response payloads, token counts, skill invocations, and latency timings.</dd></div>
+          <div class="entry"><dt>Default Agent</dt><dd>The agent OpenClaw uses to handle incoming messages when no specific agent has been assigned to a platform channel. You can change the default agent in your config, or assign specific agents to specific channels for more granular control.</dd></div>
+          <div class="entry"><dt>Default Model</dt><dd>The AI language model used by OpenClaw unless overridden in an agent's individual config. Set globally with <code>openclaw config set model &lt;name&gt;</code>. Individual agents can override this to use a different model without affecting the global setting.</dd></div>
+          <div class="entry"><dt>Deployment Config</dt><dd>The full set of settings and environment variables required to run OpenClaw in a specific environment — such as a local machine, a VPS, or a Raspberry Pi. Exported using <code>openclaw export-config</code> and restored with <code>openclaw import-config</code>.</dd></div>
+          <div class="entry"><dt>Diagnostic Report</dt><dd>A structured summary of your OpenClaw installation's health, generated by <code>openclaw doctor</code>. It checks Node.js version, config validity, platform connections, installed skills, API key accessibility, and other system requirements, flagging any issues.</dd></div>
+          <div class="entry"><dt>Directive</dt><dd>See <em>Agent Directive</em>. A persistent instruction embedded in an agent's system prompt that governs long-term behaviour — such as response format, approval requirements before sending messages, or restrictions on which topics the agent should address.</dd></div>
+          <div class="entry"><dt>Discord Integration</dt><dd>The connection between OpenClaw and a Discord server, established via <code>openclaw connect discord</code>. Once connected, users can interact with your agent directly in Discord channels or DMs. Requires a Discord bot token from the Discord Developer Portal.</dd></div>
+          <div class="entry"><dt>Doctor Command <span class="tag tag-cmd">CMD</span></dt><dd>The <code>openclaw doctor</code> command that performs a comprehensive health check of your OpenClaw installation. It verifies dependencies, validates config, tests API connectivity, and checks that all platform connections are active — making it the first step in troubleshooting.</dd></div>
+          <div class="entry"><dt>Draft Order (Shopify)</dt><dd>A manually created Shopify order that has not yet been completed or paid. OpenClaw's Shopify skill can create draft orders on your behalf using natural language: "Create a draft order for 2 units of SKU-123 for customer John Smith."</dd></div>
+          <div class="entry"><dt>Dynamic Prompt</dt><dd>A prompt template that includes variable placeholders — such as today's date, the user's name, or live data from an API — that are filled in at runtime before being sent to the language model. Used to create context-aware, personalised agent responses.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── E ── -->
+      <section class="letter-section" id="letter-E" aria-labelledby="heading-E">
+        <h2 class="letter-heading" id="heading-E">E</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Environment Variable</dt><dd>A key-value pair stored in the operating system's environment, used to pass configuration values — such as API keys or port numbers — to OpenClaw without hardcoding them in the config file. Useful for deployment in server environments or containers.</dd></div>
+          <div class="entry"><dt>Event Bus</dt><dd>An internal message-passing system within OpenClaw that allows different components — skills, schedulers, platform connectors — to communicate by emitting and listening for events, without being tightly coupled to one another.</dd></div>
+          <div class="entry"><dt>Event-Driven</dt><dd>An architecture where agent actions are triggered by external events — such as a new message arriving, a file changing, or a webhook being received — rather than being initiated by a user command or a fixed schedule.</dd></div>
+          <div class="entry"><dt>Event Trigger</dt><dd>A condition that, when met, automatically starts an agent task. Examples include: a new email from a specific sender, a Shopify order being placed, a price change detected on a product page, or a specific keyword appearing in a Slack channel.</dd></div>
+          <div class="entry"><dt>Execution Context</dt><dd>The complete runtime environment available to an agent or skill at the moment of execution — including loaded config, available tools, active memory, input data, and the current conversation state. Each agent run has its own isolated execution context.</dd></div>
+          <div class="entry"><dt>Execution Plan</dt><dd>A structured breakdown of the steps an agent intends to take before it begins acting. Some OpenClaw configurations prompt the agent to output an explicit plan — "Step 1: fetch orders. Step 2: filter by status. Step 3: email customer" — before executing each step.</dd></div>
+          <div class="entry"><dt>Export Config</dt><dd>The operation performed by <code>openclaw export-config</code> that saves your complete OpenClaw configuration — including all settings but excluding sensitive credentials — to a portable JSON file for backup or migration purposes.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── F ── -->
+      <section class="letter-section" id="letter-F" aria-labelledby="heading-F">
+        <h2 class="letter-heading" id="heading-F">F</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Fail-Safe</dt><dd>A built-in protection mechanism that prevents an agent from taking destructive or irreversible actions in error conditions. Fail-safes can be configured in the system prompt — for example: "Never delete files. Always ask for confirmation before sending messages to more than 10 people."</dd></div>
+          <div class="entry"><dt>Fallback Agent</dt><dd>A secondary agent that takes over when the primary agent fails, times out, or is unavailable. Configuring a fallback ensures continuity in automated workflows — important for production setups where uptime is critical.</dd></div>
+          <div class="entry"><dt>Fallback Model</dt><dd>An alternative AI model that OpenClaw switches to automatically if the primary model is unavailable, over its rate limit, or returns repeated errors. Configured in the agent settings to improve resilience without manual intervention.</dd></div>
+          <div class="entry"><dt>File Monitor</dt><dd>A skill or trigger that watches a local directory for changes — new files, modifications, or deletions — and fires an event when a change is detected. Useful for agents that process uploaded documents, sync folders, or respond to new data files.</dd></div>
+          <div class="entry"><dt>Filter Chain</dt><dd>A sequence of rules applied in order to decide whether an incoming message, event, or data item should be processed by an agent. Each filter in the chain can allow, block, or transform the data before passing it to the next stage.</dd></div>
+          <div class="entry"><dt>Flag</dt><dd>See <em>CLI Flag</em>. An optional parameter added to a CLI command to modify its behaviour, prefixed with <code>--</code>. For example, <code>openclaw start --debug --port 5000</code> uses two flags simultaneously.</dd></div>
+          <div class="entry"><dt>Flow Control</dt><dd>The logic that governs the sequence, branching, and looping of steps within an agent's task execution. Flow control determines whether to retry a failed step, skip an optional step, or branch to a different action based on the result of a previous step.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── G ── -->
+      <section class="letter-section" id="letter-G" aria-labelledby="heading-G">
+        <h2 class="letter-heading" id="heading-G">G</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>GitHub Skill</dt><dd>A ClawHub skill that connects OpenClaw to the GitHub API, enabling your agent to create and manage issues, open pull requests, check build status, push commits, and interact with repositories — all through natural language commands.</dd></div>
+          <div class="entry"><dt>Global Config</dt><dd>The top-level configuration that applies to all agents and skills unless overridden at the agent level. Set via <code>openclaw config set &lt;key&gt; &lt;value&gt;</code>. Includes model choice, API key, default port, timezone, and language.</dd></div>
+          <div class="entry"><dt>Global Install</dt><dd>Installing the OpenClaw CLI package globally on your system via <code>npm install -g openclaw</code>, making the <code>openclaw</code> command available from any directory in your terminal without needing to specify a path.</dd></div>
+          <div class="entry"><dt>Global Memory</dt><dd>Memory entries that are accessible to all agents rather than being scoped to a single agent. Global memory stores cross-agent context — such as your name, preferred communication style, or recurring preferences — that every agent should be aware of.</dd></div>
+          <div class="entry"><dt>Goal Decomposition</dt><dd>The process by which an agent breaks a high-level objective — "manage my entire e-commerce operations" — into discrete, achievable sub-tasks that can be executed in sequence or in parallel. A core capability of autonomous and multi-agent OpenClaw setups.</dd></div>
+          <div class="entry"><dt>Goal-Oriented Agent</dt><dd>An agent configured with a specific long-term objective rather than just responding to individual commands. A goal-oriented agent proactively takes actions to achieve its objective — checking data, sending reports, managing inventories — without being explicitly prompted each time.</dd></div>
+          <div class="entry"><dt>Google Drive Skill</dt><dd>A ClawHub skill that connects OpenClaw to Google Drive, enabling your agent to upload, find, share, and organise files, as well as create Docs and Sheets from templates using natural language commands.</dd></div>
+          <div class="entry"><dt>GraphQL API <span class="tag tag-api">API</span></dt><dd>An API query language used by Shopify's Admin API (2024+ versions) as an alternative to REST. GraphQL allows precise data fetching in a single request. Shopify's GraphQL API has a cost-based rate limit of 1,000 points per second, managed automatically by OpenClaw's Shopify skill.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── H ── -->
+      <section class="letter-section" id="letter-H" aria-labelledby="heading-H">
+        <h2 class="letter-heading" id="heading-H">H</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Headless Mode</dt><dd>An operational mode in which OpenClaw runs as a background process with no terminal output, enabled via <code>openclaw start --headless</code>. Ideal for always-on server deployments or setups where the agent should run quietly in the background of your machine.</dd></div>
+          <div class="entry"><dt>Health Check</dt><dd>A diagnostic process that verifies all components of your OpenClaw setup are functioning correctly. The comprehensive health check is run with <code>openclaw doctor</code> and covers dependencies, config validity, API connectivity, and platform connection status.</dd></div>
+          <div class="entry"><dt>Heartbeat</dt><dd>A periodic signal sent by the OpenClaw daemon to confirm it is still running and responsive. If the heartbeat stops, monitoring tools or watchdog processes can detect the failure and automatically restart the agent. Check with <code>openclaw status</code>.</dd></div>
+          <div class="entry"><dt>Help Command <span class="tag tag-cmd">CMD</span></dt><dd>The built-in documentation command accessed via <code>openclaw --help</code> or <code>openclaw &lt;command&gt; --help</code> that displays a list of available commands, sub-commands, flags, and brief descriptions. The fastest way to discover command syntax without leaving the terminal.</dd></div>
+          <div class="entry"><dt>History</dt><dd>The stored record of past conversations between users and an OpenClaw agent. Accessible via <code>openclaw history</code>. History enables agents to maintain context across sessions and allows users to review or audit past interactions. Cleared with <code>openclaw history clear</code>.</dd></div>
+          <div class="entry"><dt>History Buffer</dt><dd>The in-memory collection of recent conversation turns maintained by an agent during an active session. The buffer is injected into the context window to give the model awareness of the ongoing conversation. Its size is bounded by the context limit.</dd></div>
+          <div class="entry"><dt>Hot Reload</dt><dd>The ability to apply changes to an agent's config, system prompt, or skill settings without fully restarting the OpenClaw daemon. Some configuration changes take effect immediately via hot reload; others require a <code>openclaw restart</code> to apply.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── I ── -->
+      <section class="letter-section" id="letter-I" aria-labelledby="heading-I">
+        <h2 class="letter-heading" id="heading-I">I</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>iMessage Integration</dt><dd>The connection between OpenClaw and Apple's iMessage platform, established via <code>openclaw connect imessage</code>. Available on macOS only, this integration lets you send natural language commands to your agent directly from the Messages app on your Mac or iPhone.</dd></div>
+          <div class="entry"><dt>Import Config</dt><dd>The operation performed by <code>openclaw import-config &lt;file&gt;</code> that restores a previously exported configuration. Used when migrating to a new machine, recovering from a reset, or deploying a shared config to multiple environments.</dd></div>
+          <div class="entry"><dt>Inference</dt><dd>The process of running input text through a language model to generate an output response. Every time OpenClaw sends a prompt to an AI provider, it is performing inference. Inference speed and cost depend on the model selected and the length of the context.</dd></div>
+          <div class="entry"><dt>Inference Engine</dt><dd>The software system responsible for running AI model inference. For cloud-based models (GPT-4o, Claude), the inference engine is hosted by the provider. For local models like LLaMA, OpenClaw connects to a local inference server such as Ollama running on your machine.</dd></div>
+          <div class="entry"><dt>Input Validation</dt><dd>The process of checking that data passed to a skill or command conforms to expected types and formats before execution. Input validation prevents malformed data from causing skill failures or unexpected agent behaviour.</dd></div>
+          <div class="entry"><dt>Intent Classification</dt><dd>The process by which OpenClaw's language model determines what action a user wants to take based on a natural language message — such as distinguishing between "check my emails" (read intent) and "reply to my emails" (write intent) — before selecting the appropriate skill or tool.</dd></div>
+          <div class="entry"><dt>Integration</dt><dd>A connection between OpenClaw and an external service or platform — such as Shopify, GitHub, Google Drive, or Slack — typically established via a ClawHub skill and authenticated with an OAuth token or API key. Each integration unlocks a set of actions the agent can perform.</dd></div>
+          <div class="entry"><dt>Interval</dt><dd>The time gap between successive executions of a recurring scheduled task. Expressed as a human-readable value (e.g. <code>--every 30m</code>, <code>--every 1h</code>) or as a cron expression. Minimum interval depends on the task type to prevent runaway execution.</dd></div>
+          <div class="entry"><dt>Inventory Management</dt><dd>One of the key capabilities of the OpenClaw Shopify skill — tracking, querying, and updating product stock levels via natural language. Commands like "show out-of-stock items" or "add 50 units to SKU-X" are translated to Shopify Admin API calls.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── J ── -->
+      <section class="letter-section" id="letter-J" aria-labelledby="heading-J">
+        <h2 class="letter-heading" id="heading-J">J</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Jira Skill</dt><dd>A ClawHub skill that connects OpenClaw to Atlassian Jira, enabling your agent to create tickets, update issue status, assign tasks, and retrieve sprint summaries through natural language commands sent from your messaging platform.</dd></div>
+          <div class="entry"><dt>Job ID</dt><dd>A unique identifier assigned to each scheduled task or background job created in OpenClaw. Used to reference a specific job in commands like <code>openclaw schedule pause &lt;id&gt;</code>, <code>openclaw schedule run &lt;id&gt;</code>, and <code>openclaw schedule history &lt;id&gt;</code>.</dd></div>
+          <div class="entry"><dt>Job Queue</dt><dd>An ordered list of pending tasks waiting to be executed by the OpenClaw scheduler. The queue ensures tasks are run in the correct order and that system resources are not overwhelmed by running too many jobs simultaneously.</dd></div>
+          <div class="entry"><dt>JSON Config</dt><dd>The configuration file format used by OpenClaw, stored as a structured JSON document. Contains all settings for the installation including model, API keys, platform connections, and agent definitions. Edited directly or via CLI commands.</dd></div>
+          <div class="entry"><dt>JSON Payload</dt><dd>The structured data body of an API request or response, formatted as JSON. OpenClaw skills communicate with external APIs by constructing and parsing JSON payloads. Understanding payloads helps when debugging skill integrations or writing custom API connectors.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── K ── -->
+      <section class="letter-section" id="letter-K" aria-labelledby="heading-K">
+        <h2 class="letter-heading" id="heading-K">K</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Key Rotation</dt><dd>The security practice of periodically replacing API keys and tokens with new ones to limit the exposure window if a credential is compromised. In OpenClaw, update a rotated key via <code>openclaw config set api_key &lt;new_key&gt;</code> and restart the daemon.</dd></div>
+          <div class="entry"><dt>Keyword Trigger</dt><dd>A trigger that fires an agent action when a specific word or phrase appears in an incoming message. For example, an agent could be configured to escalate any message containing "urgent" or to route messages with "invoice" to a billing workflow.</dd></div>
+          <div class="entry"><dt>Knowledge Base</dt><dd>A collection of documents, FAQs, or data sources that an agent can search and retrieve from to answer questions accurately. Skills like a RAG (Retrieval-Augmented Generation) connector allow OpenClaw agents to query a knowledge base before generating a response.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── L ── -->
+      <section class="letter-section" id="letter-L" aria-labelledby="heading-L">
+        <h2 class="letter-heading" id="heading-L">L</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Language Detection</dt><dd>The automatic identification of the language used in an incoming message. OpenClaw can detect the user's language and configure the agent to respond in the same language, or enforce a specific response language via <code>openclaw config set language &lt;code&gt;</code>.</dd></div>
+          <div class="entry"><dt>Latency</dt><dd>The time between when a user sends a command and when the agent delivers its response. Latency in OpenClaw is affected by the AI model provider's response time, the number of skill calls made, network conditions, and the length of the context being processed.</dd></div>
+          <div class="entry"><dt>LLaMA</dt><dd>An open-source large language model family developed by Meta. LLaMA models can be run locally on your own hardware, giving OpenClaw full offline capability with no API costs or data sent to the cloud. Connect via Ollama and set <code>openclaw config set model llama3</code>.</dd></div>
+          <div class="entry"><dt>Local Model</dt><dd>An AI language model hosted on your own machine rather than a cloud provider. OpenClaw supports local models through compatible inference servers such as Ollama. Local models provide privacy, offline capability, and zero per-token costs at the expense of hardware requirements.</dd></div>
+          <div class="entry"><dt>Log Level</dt><dd>A setting that determines the verbosity of OpenClaw's log output. Common levels are <code>error</code> (only critical failures), <code>warn</code> (warnings and errors), <code>info</code> (standard activity), and <code>debug</code> (full diagnostic output). Set via <code>openclaw logs --level &lt;level&gt;</code>.</dd></div>
+          <div class="entry"><dt>Log Tail</dt><dd>The act of viewing a continuous stream of the most recent log entries as they are written — like watching activity in real time. Run <code>openclaw logs</code> to start tailing, or <code>openclaw logs --lines 100</code> to view a static snapshot of the last 100 lines.</dd></div>
+          <div class="entry"><dt>Loop Prevention</dt><dd>A built-in safeguard that detects and stops an agent from entering an infinite action loop — where the output of one step keeps triggering the same step repeatedly. OpenClaw tracks execution steps per task and raises an error if a loop threshold is exceeded.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── M ── -->
+      <section class="letter-section" id="letter-M" aria-labelledby="heading-M">
+        <h2 class="letter-heading" id="heading-M">M</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Marketplace</dt><dd>See <em>ClawHub</em>. The official directory of OpenClaw skills and agent templates. Accessible from the CLI via <code>openclaw skills list --available</code> or through the learnopenclaw.org marketplace page.</dd></div>
+          <div class="entry"><dt>Max Tokens</dt><dd>The maximum number of tokens that an AI model can generate in a single response. This can be configured per-agent to control response length — shorter limits for concise replies, longer for detailed reports. Exceeding the limit results in truncated output.</dd></div>
+          <div class="entry"><dt>MCP (Model Context Protocol) <span class="tag tag-core">Core</span></dt><dd>An open standard that defines how AI agents communicate with external tools and data sources. OpenClaw uses MCP-compatible servers — such as Composio — to connect agents to third-party APIs without custom integration code. MCP standardises tool discovery, invocation, and result handling.</dd></div>
+          <div class="entry"><dt>Memory <span class="tag tag-core">Core</span></dt><dd>OpenClaw's persistent storage layer that allows agents to remember information across separate conversations. Memory entries can be added manually (<code>openclaw memory add "..."</code>), added by the agent during conversation, or imported from a file. Memory is injected into the context at runtime.</dd></div>
+          <div class="entry"><dt>Memory Buffer</dt><dd>The in-memory data structure that holds recently accessed memory entries during an active agent session. The buffer allows fast retrieval without hitting disk storage on every message, improving response speed for memory-heavy agents.</dd></div>
+          <div class="entry"><dt>Memory Decay</dt><dd>An optional feature that automatically reduces the priority or removes memory entries that have not been accessed or referenced for a configurable period. Memory decay helps prevent the context from becoming cluttered with outdated or irrelevant information.</dd></div>
+          <div class="entry"><dt>Memory Entry</dt><dd>A single stored fact or preference in OpenClaw's memory system — for example: "User prefers Slack notifications over email" or "Monthly report is due on the 1st." Each entry has a unique ID, creation date, and optional tags for organisation.</dd></div>
+          <div class="entry"><dt>Memory Export</dt><dd>The serialisation of all stored memory entries to a JSON file for backup or migration purposes. Allows you to preserve learned preferences and facts when moving to a new machine or sharing agent state with a colleague.</dd></div>
+          <div class="entry"><dt>Memory Namespace</dt><dd>A logical grouping that scopes memory entries to a specific agent or context. Global namespace entries are available to all agents; named namespace entries (e.g. <code>shopify:</code>) are only injected when the relevant agent is active.</dd></div>
+          <div class="entry"><dt>Memory Persistence</dt><dd>The guarantee that memory entries survive agent restarts, system reboots, and session changes. OpenClaw writes memory to local disk storage, ensuring nothing is lost even if the daemon crashes unexpectedly.</dd></div>
+          <div class="entry"><dt>Memory Search</dt><dd>The ability to query stored memory entries by keyword using <code>openclaw memory search &lt;query&gt;</code>. Useful for finding a specific preference or fact stored weeks or months ago without scrolling through the full memory list.</dd></div>
+          <div class="entry"><dt>Message Queue</dt><dd>A buffer that holds incoming messages when the agent is busy processing a previous request. The queue ensures no messages are dropped during high-traffic periods and that they are processed in the order they were received.</dd></div>
+          <div class="entry"><dt>Messaging Platform</dt><dd>Any chat application that OpenClaw can connect to for user interaction — including WhatsApp, Telegram, Slack, Discord, and iMessage. You can connect multiple platforms simultaneously, each optionally assigned a different agent persona.</dd></div>
+          <div class="entry"><dt>Model <span class="tag tag-ai">AI</span></dt><dd>The large language model powering an OpenClaw agent's reasoning capability. Supported models include GPT-4o (OpenAI), Claude 3.5 Sonnet (Anthropic), Gemini Pro (Google), and local models like LLaMA 3. Changed via <code>openclaw config set model &lt;name&gt;</code>.</dd></div>
+          <div class="entry"><dt>Model Agnostic</dt><dd>A core design principle of OpenClaw — the framework works with any supported AI model provider. You can switch from GPT-4o to Claude or LLaMA with a single config change, without rewriting agents, skills, or prompts.</dd></div>
+          <div class="entry"><dt>Model Fallback</dt><dd>The automatic switch to a secondary model when the primary model is unavailable, rate-limited, or repeatedly failing. Configuring a model fallback prevents agent downtime during provider outages or quota exhaustion.</dd></div>
+          <div class="entry"><dt>Model Provider</dt><dd>The company or service that hosts and serves the AI model used by OpenClaw. Supported providers include OpenAI, Anthropic, Google, and any Ollama-compatible local inference server. Each provider requires its own API key.</dd></div>
+          <div class="entry"><dt>Multi-Agent <span class="tag tag-core">Core</span></dt><dd>An OpenClaw architecture where multiple specialised agents collaborate to complete complex tasks. One agent acts as the orchestrator, delegating sub-tasks to specialist agents — a research agent, a writing agent, a notification agent — and aggregating their outputs into a final result.</dd></div>
+          <div class="entry"><dt>Multi-Step Task</dt><dd>Any task that requires more than one sequential action to complete — such as fetching data, analysing it, and then sending a formatted report. OpenClaw agents handle multi-step tasks natively through the agent loop, executing each step and using the result to inform the next.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── N ── -->
+      <section class="letter-section" id="letter-N" aria-labelledby="heading-N">
+        <h2 class="letter-heading" id="heading-N">N</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Natural Language Command</dt><dd>An instruction given to OpenClaw in plain conversational language rather than formal syntax — for example, "check my unread emails and tell me what needs attention" instead of a CLI command or API call. Natural language commands are the primary way users interact with OpenClaw agents.</dd></div>
+          <div class="entry"><dt>Natural Language Processing (NLP) <span class="tag tag-ai">AI</span></dt><dd>The branch of AI concerned with enabling computers to understand and generate human language. OpenClaw relies on NLP — provided by the connected language model — to interpret user commands, extract intent, and generate coherent, contextual responses.</dd></div>
+          <div class="entry"><dt>NemoClaw</dt><dd>A specialised configuration or variant of OpenClaw optimised for specific use cases such as customer support or enterprise workflows. NemoClaw extends the standard OpenClaw stack with enhanced memory management, stricter guardrails, and enterprise-grade logging.</dd></div>
+          <div class="entry"><dt>Node.js</dt><dd>The JavaScript runtime environment that OpenClaw is built on. Node.js enables OpenClaw to run efficiently on most operating systems with a single global install. Required as a prerequisite — install Node.js 18+ before running <code>npm install -g openclaw</code>.</dd></div>
+          <div class="entry"><dt>Notification</dt><dd>A message sent proactively by an OpenClaw agent to your connected platform — not as a response to a command, but as an alert. Examples: "Your order #1234 is now out of stock" or "Your scheduled report is ready." Triggered by events, schedules, or threshold conditions.</dd></div>
+          <div class="entry"><dt>Notification Channel</dt><dd>The specific messaging platform or endpoint where OpenClaw delivers notifications. You can configure different notification channels for different alert types — critical errors to Slack, daily briefings to WhatsApp, and reports to email — within the agent's config.</dd></div>
+          <div class="entry"><dt>npm</dt><dd>Node Package Manager — the package manager used to install, update, and remove OpenClaw and its dependencies. OpenClaw is installed globally with <code>npm install -g openclaw</code> and updated with <code>npm update -g openclaw</code>. npm is bundled with Node.js.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── O ── -->
+      <section class="letter-section" id="letter-O" aria-labelledby="heading-O">
+        <h2 class="letter-heading" id="heading-O">O</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>OAuth</dt><dd>An open-standard authorisation framework used by OpenClaw to connect securely to third-party services — such as Slack, Google Drive, and Shopify via Composio — without requiring you to share your password. OpenClaw initiates an OAuth flow and stores the resulting access token locally.</dd></div>
+          <div class="entry"><dt>OAuth Token</dt><dd>The access credential obtained at the end of an OAuth flow, granting OpenClaw permission to act on your behalf within a specific service. Tokens are stored in OpenClaw's encrypted credential vault and refreshed automatically when they expire.</dd></div>
+          <div class="entry"><dt>Ollama</dt><dd>A local inference server that allows you to run open-source language models such as LLaMA 3, Mistral, and Gemma on your own hardware. OpenClaw connects to Ollama by setting a custom base URL in the config, enabling fully offline, private agent operations.</dd></div>
+          <div class="entry"><dt>On-Demand Task</dt><dd>A task that is triggered manually rather than on a schedule — either by a user command or by running <code>openclaw schedule run &lt;id&gt;</code>. On-demand tasks give you the flexibility to run any scheduled automation at any time without waiting for its next scheduled window.</dd></div>
+          <div class="entry"><dt>OpenAI API <span class="tag tag-api">API</span></dt><dd>The API service provided by OpenAI giving OpenClaw access to GPT-4o, GPT-4 Turbo, and other OpenAI models. Configure your OpenAI API key via <code>openclaw config set api_key &lt;key&gt;</code> and set the model to a supported GPT variant to use this provider.</dd></div>
+          <div class="entry"><dt>OpenClaw <span class="tag tag-core">Core</span></dt><dd>An open-source autonomous AI agent framework that runs locally on your machine and integrates with your favourite messaging apps. OpenClaw bridges large language models with real-world tools — email, files, APIs, smart home — enabling natural language automation of your digital life.</dd></div>
+          <div class="entry"><dt>Orchestrator Agent</dt><dd>In a multi-agent setup, the orchestrator is the top-level agent responsible for decomposing a complex goal into sub-tasks and delegating each to a specialist agent. The orchestrator then collects and synthesises the outputs before delivering a final result to the user.</dd></div>
+          <div class="entry"><dt>Output Format</dt><dd>The structure and style in which an agent delivers its response — plain text, bullet points, markdown tables, JSON, or a formatted report. Output format is usually specified in the system prompt: "Always respond with a numbered list" or "Format reports as markdown tables."</dd></div>
+          <div class="entry"><dt>Output Parser</dt><dd>A component within a skill or the agent runtime that extracts structured data from a language model's raw text output. For example, parsing "Order #123 is out of stock" into <code>{"order_id": 123, "status": "out_of_stock"}</code> for downstream processing.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── P ── -->
+      <section class="letter-section" id="letter-P" aria-labelledby="heading-P">
+        <h2 class="letter-heading" id="heading-P">P</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Parallel Agent</dt><dd>Two or more agents running simultaneously to process different parts of a task independently. OpenClaw supports parallel agent execution in multi-agent pipelines, where tasks that don't depend on each other can run at the same time to reduce total completion time.</dd></div>
+          <div class="entry"><dt>Payload</dt><dd>The data body of a message, API request, or webhook event. In OpenClaw, payloads are the structured information passed between the agent and external services — including the user's command, the API response, or a webhook notification from a connected platform.</dd></div>
+          <div class="entry"><dt>Permission</dt><dd>The scope of access a skill is granted to act on a connected service. For example, a read-only permission allows the skill to fetch data but not modify it. OpenClaw prompts users to review permissions during skill installation and stores them in the skill's manifest.</dd></div>
+          <div class="entry"><dt>Persistent Memory</dt><dd>See <em>Memory Persistence</em>. The guarantee that memory entries survive restarts. All OpenClaw memory is persistent by default — written to local disk so that learned preferences and stored facts are available in future sessions.</dd></div>
+          <div class="entry"><dt>Ping Command <span class="tag tag-cmd">CMD</span></dt><dd>The <code>openclaw ping</code> command that sends a lightweight test request to your configured AI provider to verify that the connection is live, the API key is valid, and the model is responding. Quick first step when diagnosing a non-responsive agent.</dd></div>
+          <div class="entry"><dt>Platform Auth</dt><dd>The authentication process for connecting OpenClaw to a specific messaging platform. Each platform uses a different method: WhatsApp uses QR code scanning, Telegram uses a bot token, Slack uses OAuth, and Discord uses a bot token from the developer portal.</dd></div>
+          <div class="entry"><dt>Platform Bridge</dt><dd>The component within OpenClaw that translates messages between a messaging platform's native format and the internal format understood by the agent runtime. Platform bridges handle connection management, reconnection logic, and message delivery guarantees.</dd></div>
+          <div class="entry"><dt>Platform Connector</dt><dd>A module that handles the full lifecycle of a messaging platform integration — authentication, message receiving and sending, session management, and error handling. Each supported platform (WhatsApp, Telegram, Slack, Discord, iMessage) has its own connector.</dd></div>
+          <div class="entry"><dt>Plugin</dt><dd>An installable extension that adds new capabilities to OpenClaw beyond what built-in skills provide. Plugins can introduce new commands, UI integrations, or data sources. Not to be confused with skills — plugins operate at the framework level while skills operate at the agent level.</dd></div>
+          <div class="entry"><dt>Poll Interval</dt><dd>The frequency at which an agent checks an external source — such as a web page, API endpoint, or inbox — for new data. Shorter intervals detect changes faster but consume more API quota. Configure the interval when setting up event-driven or monitoring tasks.</dd></div>
+          <div class="entry"><dt>Port</dt><dd>The network port on which the OpenClaw local web server or WebSocket listener runs. Default port is 4000. Changed via <code>openclaw start --port &lt;number&gt;</code>. The port is used internally for skill communication and browser-based interfaces.</dd></div>
+          <div class="entry"><dt>Prompt <span class="tag tag-ai">AI</span></dt><dd>The input text sent to a language model to elicit a response. In OpenClaw, every user message — plus the system prompt, memory injections, and tool results — is assembled into a prompt before being sent to the model. Well-crafted prompts dramatically improve output quality.</dd></div>
+          <div class="entry"><dt>Prompt Chain</dt><dd>A sequence of prompts where the output of one serves as the input to the next. OpenClaw uses prompt chaining in multi-step tasks — for example, first prompting the model to extract key data from an email, then using that data to construct a draft reply.</dd></div>
+          <div class="entry"><dt>Prompt Engineering</dt><dd>The practice of designing, refining, and optimising prompts to produce better AI outputs. In OpenClaw, this applies to system prompts, agent directives, task instructions, and skill descriptions. Small wording changes can significantly affect agent accuracy and reliability.</dd></div>
+          <div class="entry"><dt>Prompt Injection</dt><dd>A security attack where malicious content in data processed by an agent — such as a webpage or email body — contains hidden instructions designed to override the agent's system prompt or make it take unauthorised actions. OpenClaw recommends using fail-safes and approval steps to mitigate this risk.</dd></div>
+          <div class="entry"><dt>Prompt Library</dt><dd>A curated collection of reusable prompt templates for common tasks — daily briefings, report summaries, email replies — that users can install and assign to agents. ClawHub hosts community-contributed prompt libraries alongside skills.</dd></div>
+          <div class="entry"><dt>Prompt Template</dt><dd>A reusable prompt structure with variable placeholders that are filled in at runtime. For example: "Summarise the following {document_type} in {num_words} words, highlighting key action items." Templates enable consistent, parameterised prompting across many different inputs.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── Q ── -->
+      <section class="letter-section" id="letter-Q" aria-labelledby="heading-Q">
+        <h2 class="letter-heading" id="heading-Q">Q</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Queue</dt><dd>An ordered list of messages, tasks, or API requests waiting to be processed. OpenClaw uses queues throughout the system — message queues for incoming commands, job queues for scheduled tasks, and request queues for API calls — to manage load and preserve ordering.</dd></div>
+          <div class="entry"><dt>Queue Manager</dt><dd>The internal component responsible for enqueuing, dequeuing, and prioritising items in OpenClaw's various queues. The queue manager ensures tasks are not dropped during high-traffic periods and handles retries for failed items.</dd></div>
+          <div class="entry"><dt>Queue Size</dt><dd>The maximum number of pending items allowed in a queue before new items are rejected or the oldest items are dropped. Configurable for message and job queues to prevent memory exhaustion during traffic spikes or scheduling backlogs.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── R ── -->
+      <section class="letter-section" id="letter-R" aria-labelledby="heading-R">
+        <h2 class="letter-heading" id="heading-R">R</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Rate Limit <span class="tag tag-api">API</span></dt><dd>A restriction imposed by an API provider on how many requests can be made in a given time period. OpenClaw includes automatic rate limit handling — detecting 429 (Too Many Requests) responses and applying exponential back-off before retrying.</dd></div>
+          <div class="entry"><dt>Rate Limiter</dt><dd>The internal OpenClaw component that tracks API usage and throttles outgoing requests to prevent exceeding a provider's rate limit. The rate limiter operates per-provider and per-skill, allowing different limits to be enforced for different integrations simultaneously.</dd></div>
+          <div class="entry"><dt>Reasoning Chain</dt><dd>The sequence of intermediate thoughts an AI model works through before producing a final answer, sometimes called "chain-of-thought." OpenClaw agents with complex tasks can be prompted to show their reasoning chain, making their decision process transparent and easier to debug.</dd></div>
+          <div class="entry"><dt>Reconnect Handler</dt><dd>The logic that automatically re-establishes a dropped connection to a messaging platform or API service. OpenClaw's platform connectors include reconnect handlers with configurable retry intervals to minimise downtime from transient network issues.</dd></div>
+          <div class="entry"><dt>Registered Skill</dt><dd>A skill that has been installed, authenticated, and enabled within OpenClaw so that agents can invoke it during task execution. A skill must be registered before it appears in an agent's available tool set. Register by running <code>openclaw skills install &lt;name&gt;</code>.</dd></div>
+          <div class="entry"><dt>REST API <span class="tag tag-api">API</span></dt><dd>Representational State Transfer — an architectural style for building APIs using standard HTTP methods (GET, POST, PUT, DELETE). OpenClaw's Shopify skill uses the REST Admin API for legacy endpoints; newer functionality uses Shopify's GraphQL API.</dd></div>
+          <div class="entry"><dt>Retry Config</dt><dd>The settings that control how OpenClaw handles failed requests — including the maximum number of retries, the delay between attempts, and the conditions that qualify as retryable errors (e.g. network timeouts and 429/503 responses but not 401 auth failures).</dd></div>
+          <div class="entry"><dt>Retry Logic</dt><dd>The built-in behaviour that automatically re-attempts a failed API call or skill execution after a delay. Retry logic improves agent resilience against transient failures without requiring manual intervention from the user.</dd></div>
+          <div class="entry"><dt>Role Assignment</dt><dd>The process of designating a specific purpose or persona for an agent — such as "customer support manager," "daily briefing assistant," or "Shopify operations bot" — through the system prompt. Role assignment shapes how the agent interprets requests and formats its responses.</dd></div>
+          <div class="entry"><dt>Router Agent</dt><dd>An agent whose primary job is to classify incoming requests and forward them to the most appropriate specialist agent. In a multi-agent system, the router acts as an intelligent dispatcher — routing "write me a blog post" to the content agent and "check my orders" to the Shopify agent.</dd></div>
+          <div class="entry"><dt>Runtime Config</dt><dd>Configuration values loaded and applied at the time OpenClaw starts, as opposed to settings stored in the config file. Runtime config can override file-based settings and is often passed as environment variables in server deployments.</dd></div>
+          <div class="entry"><dt>Runtime Error</dt><dd>An error that occurs during agent execution rather than at startup. Common runtime errors include API key expiry, skill permission denials, network timeouts, and context window overflows. Viewable in agent logs via <code>openclaw logs --level error</code>.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── S ── -->
+      <section class="letter-section" id="letter-S" aria-labelledby="heading-S">
+        <h2 class="letter-heading" id="heading-S">S</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Sandbox Mode</dt><dd>An isolated execution environment where an agent can run skills and test workflows without making real changes to connected services. Useful for testing Shopify automations, draft email workflows, or new agent configurations before deploying them to production.</dd></div>
+          <div class="entry"><dt>Schedule <span class="tag tag-core">Core</span></dt><dd>A configured rule that instructs OpenClaw to run a specific task automatically at a defined time or interval, without requiring a user command. Schedules use cron expressions or human-readable intervals and are managed via <code>openclaw schedule</code> commands.</dd></div>
+          <div class="entry"><dt>Scheduler</dt><dd>The internal OpenClaw component that manages all scheduled tasks — tracking their next run time, triggering execution at the correct moment, logging results, and enforcing cooldown periods. The scheduler runs as part of the OpenClaw daemon process.</dd></div>
+          <div class="entry"><dt>Scoped Memory</dt><dd>Memory entries that are only accessible to a specific agent, rather than being globally available. Scoped memory is used to keep an agent's personal context separate from other agents — for example, a Shopify agent's store preferences vs. a writing agent's style preferences.</dd></div>
+          <div class="entry"><dt>Secret Manager</dt><dd>See <em>Credential Vault</em>. The encrypted local storage where OpenClaw holds API keys, OAuth tokens, and other sensitive credentials. Credentials are never written to plain-text logs or transmitted to OpenClaw's servers.</dd></div>
+          <div class="entry"><dt>Self-Healing</dt><dd>The ability of an OpenClaw agent to detect its own failure states — such as a disconnected platform, an expired token, or a crashed skill — and automatically attempt to recover without requiring user intervention. Enabled through reconnect handlers, token refresh, and retry logic.</dd></div>
+          <div class="entry"><dt>Semantic Memory</dt><dd>A memory system where entries are stored and retrieved based on meaning and relevance rather than exact keyword match. When an agent processes a request, semantic memory surfaces entries that are conceptually related to the current topic, even if they don't share exact words.</dd></div>
+          <div class="entry"><dt>Service Account</dt><dd>A non-human identity used by OpenClaw to authenticate with a cloud service on behalf of an organisation. Service accounts are common in enterprise Shopify, Google Workspace, or Slack deployments where a personal OAuth login is inappropriate for automated processes.</dd></div>
+          <div class="entry"><dt>Session</dt><dd>See <em>Agent Session</em>. A single continuous interaction between a user and an OpenClaw agent. Each session has its own context history. Sessions can be reviewed with <code>openclaw history</code> and are stored locally for a configurable retention period.</dd></div>
+          <div class="entry"><dt>Skill <span class="tag tag-core">Core</span></dt><dd>A modular capability package that extends what an OpenClaw agent can do. Skills connect the agent to external services (GitHub, Shopify, Gmail) or add new capabilities (web scraping, image generation, smart home control). Installed from ClawHub via <code>openclaw skills install &lt;name&gt;</code>.</dd></div>
+          <div class="entry"><dt>Skill Author</dt><dd>A developer who has built and published a skill to the ClawHub marketplace. Skill authors must follow OpenClaw's publishing guidelines, declare all required permissions, and maintain their skills for compatibility with new OpenClaw versions.</dd></div>
+          <div class="entry"><dt>Skill Cache</dt><dd>A local store of recently downloaded skill packages and metadata. The cache prevents redundant downloads when reinstalling a skill or updating to a version already fetched. Cleared as part of <code>openclaw clear-cache</code>.</dd></div>
+          <div class="entry"><dt>Skill Chain</dt><dd>A sequence of skill invocations where the output of one skill is passed directly as input to the next. Skill chains enable complex workflows to be built from simple, single-purpose skills — for example: fetch email → extract data → update Shopify → send Slack notification.</dd></div>
+          <div class="entry"><dt>Skill Dependency</dt><dd>A skill or package that another skill requires in order to function. Dependencies are declared in the skill manifest and installed automatically when you install the parent skill. Dependency conflicts are flagged at install time.</dd></div>
+          <div class="entry"><dt>Skill Description</dt><dd>The plain-language explanation of what a skill does, included in its manifest. The agent uses skill descriptions to decide which skill to invoke for a given user request. Well-written descriptions improve the accuracy of skill selection significantly.</dd></div>
+          <div class="entry"><dt>Skill Disable</dt><dd>The act of deactivating a skill without uninstalling it, using <code>openclaw skills disable &lt;name&gt;</code>. A disabled skill remains on disk but is not available to agents until re-enabled with <code>openclaw skills enable &lt;name&gt;</code>.</dd></div>
+          <div class="entry"><dt>Skill Enable</dt><dd>Reactivating a previously disabled skill using <code>openclaw skills enable &lt;name&gt;</code>, making it available again for agent use without needing to reinstall from ClawHub.</dd></div>
+          <div class="entry"><dt>Skill Info</dt><dd>The command <code>openclaw skills info &lt;name&gt;</code> that displays detailed information about an installed skill — including its version, author, required permissions, available actions, and configuration options. Essential for understanding what a skill can and cannot do before using it.</dd></div>
+          <div class="entry"><dt>Skill Manifest</dt><dd>A structured metadata file included in every skill package that declares the skill's name, version, author, required permissions, available actions, input/output schemas, and dependencies. OpenClaw reads the manifest at install time to validate compatibility and prompt for permission approval.</dd></div>
+          <div class="entry"><dt>Skill Rating</dt><dd>See <em>ClawHub Score</em>. A community-assigned quality metric for skills listed on the ClawHub marketplace, reflecting user satisfaction, download count, update frequency, and reliability.</dd></div>
+          <div class="entry"><dt>Skill Registry</dt><dd>See <em>ClawHub Registry</em>. The back-end database that powers the ClawHub marketplace, listing all available skills with their metadata, download counts, version histories, and author information.</dd></div>
+          <div class="entry"><dt>Skill Update</dt><dd>Downloading and applying a newer version of an installed skill using <code>openclaw skills update &lt;name&gt;</code> or updating all skills at once with <code>openclaw skills update --all</code>. Updates may include bug fixes, new features, or compatibility improvements.</dd></div>
+          <div class="entry"><dt>Slack Integration</dt><dd>The connection between OpenClaw and a Slack workspace, established via <code>openclaw connect slack</code> using OAuth. Once connected, agents can read and send messages in channels, respond to direct messages, and trigger automations from Slack commands.</dd></div>
+          <div class="entry"><dt>Smoke Test</dt><dd>A quick, lightweight test run via <code>openclaw test-skill &lt;name&gt;</code> that verifies a skill's basic functionality — checking that it starts, connects to its service, and returns a valid response — without performing a full integration test.</dd></div>
+          <div class="entry"><dt>Sub-Agent</dt><dd>An agent that operates under the direction of an orchestrator agent in a multi-agent setup. Sub-agents are specialists — each handles a narrow task — and report results back to the orchestrator rather than directly to the user.</dd></div>
+          <div class="entry"><dt>System Prompt <span class="tag tag-ai">AI</span></dt><dd>A hidden set of instructions prepended to every conversation the agent has with the language model. The system prompt defines the agent's persona, capabilities, tone, restrictions, and default behaviours. It is set in the agent config and invisible to end users.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── T ── -->
+      <section class="letter-section" id="letter-T" aria-labelledby="heading-T">
+        <h2 class="letter-heading" id="heading-T">T</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Task Buffer</dt><dd>A temporary storage area that holds a task and its associated data while it waits to be processed by an agent. Task buffers prevent data loss when the agent is busy and ensure every queued task eventually gets executed.</dd></div>
+          <div class="entry"><dt>Task Chain</dt><dd>A series of dependent tasks executed in sequence, where each task uses the output of the previous one as its input. Task chains are the building blocks of complex automations in OpenClaw — for example: monitor inbox → extract action items → create Jira tickets → notify Slack.</dd></div>
+          <div class="entry"><dt>Task ID</dt><dd>A unique identifier assigned to each scheduled or queued task in OpenClaw. Used to reference a specific task in commands such as <code>openclaw schedule pause &lt;id&gt;</code>, <code>openclaw schedule run &lt;id&gt;</code>, and <code>openclaw schedule history &lt;id&gt;</code>.</dd></div>
+          <div class="entry"><dt>Task Runner</dt><dd>The OpenClaw component responsible for executing scheduled and on-demand tasks. The task runner receives tasks from the scheduler, loads the required agent and skills, runs the task, records the result, and handles any errors or retries.</dd></div>
+          <div class="entry"><dt>Task Timeout</dt><dd>The maximum duration allowed for a task to complete before OpenClaw forcefully terminates it. Prevents runaway tasks from hanging indefinitely. The timeout is configurable per task and a timeout error is logged when exceeded.</dd></div>
+          <div class="entry"><dt>Telegram Bot</dt><dd>A Telegram account operated by OpenClaw after connecting via <code>openclaw connect telegram</code>. The bot is created through Telegram's BotFather and given a bot token. Once connected, users can chat with their OpenClaw agent directly in the Telegram app.</dd></div>
+          <div class="entry"><dt>Template Engine</dt><dd>The system responsible for rendering dynamic prompt and message templates at runtime — substituting variable placeholders with actual values such as the current date, user name, or fetched data before sending the completed text to the language model.</dd></div>
+          <div class="entry"><dt>Throttle</dt><dd>The deliberate slowing of outgoing requests to stay within an API provider's rate limit. OpenClaw's rate limiter applies throttling automatically — spacing out requests with small delays — to avoid hitting quota walls during bulk operations like processing many orders.</dd></div>
+          <div class="entry"><dt>Token <span class="tag tag-ai">AI</span></dt><dd>The basic unit of text that language models process. Tokens are roughly equivalent to three-quarters of a word in English — "OpenClaw" is two tokens, for example. API costs and context limits are measured in tokens. Longer conversations and documents consume more tokens.</dd></div>
+          <div class="entry"><dt>Token Budget</dt><dd>A configurable limit on the total number of tokens an agent can use in a single task execution. Setting a token budget prevents runaway cost on complex multi-step tasks that might otherwise consume thousands of tokens in a single run.</dd></div>
+          <div class="entry"><dt>Token Count</dt><dd>The number of tokens in a given piece of text — calculated by the tokeniser used by the active language model. OpenClaw tracks token counts for prompts and responses to manage context limits and estimate API costs.</dd></div>
+          <div class="entry"><dt>Token Limit</dt><dd>The maximum number of input tokens a model can accept in a single request, also called the context window size. If the total tokens — system prompt + history + injected memory + user input — exceeds this limit, older content must be pruned before the request is sent.</dd></div>
+          <div class="entry"><dt>Tool Call</dt><dd>A structured request made by the language model to invoke a specific capability — such as searching the web, calling an API, or executing a skill function — as part of generating its response. OpenClaw handles tool calls automatically, executing them and feeding results back to the model.</dd></div>
+          <div class="entry"><dt>Tool Use <span class="tag tag-ai">AI</span></dt><dd>The ability of a language model to request the execution of external tools — APIs, code runners, database queries — as part of answering a question or completing a task. OpenClaw is built around tool use: every skill is a tool the model can call.</dd></div>
+          <div class="entry"><dt>Trigger</dt><dd>Any event or condition that causes an OpenClaw agent to start executing a task without a direct user command. Triggers include scheduled times (cron), incoming messages, webhooks, file changes, keyword matches, and threshold conditions.</dd></div>
+          <div class="entry"><dt>Trigger Config</dt><dd>The settings that define the conditions for an event-driven trigger — specifying what event to watch for, what data to extract from it, and which agent or task to execute in response. Stored alongside the schedule or integration that owns the trigger.</dd></div>
+          <div class="entry"><dt>Trigger Rule</dt><dd>A logical condition that must be true for a trigger to fire. For example: "only trigger if the email is from a domain ending in @company.com" or "only trigger if the Shopify order total exceeds $500." Rules prevent agents from acting on irrelevant events.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── U ── -->
+      <section class="letter-section" id="letter-U" aria-labelledby="heading-U">
+        <h2 class="letter-heading" id="heading-U">U</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Update Command <span class="tag tag-cmd">CMD</span></dt><dd>The <code>openclaw update</code> command that checks for and installs the latest version of OpenClaw and all installed skills in a single operation. Keeping OpenClaw updated ensures you have the latest bug fixes, security patches, and new features.</dd></div>
+          <div class="entry"><dt>Uptime</dt><dd>The cumulative time an OpenClaw daemon has been running continuously without a restart. Viewable via <code>openclaw status</code>. Long uptime indicates a stable installation; unexpected drops in uptime may indicate crashes or external restarts that should be investigated.</dd></div>
+          <div class="entry"><dt>Uptime Monitor</dt><dd>A watchdog process — external to OpenClaw or built into the OS — that periodically checks whether the OpenClaw daemon is still running and restarts it automatically if it has crashed. Common setups use <code>systemd</code>, <code>pm2</code>, or a similar process manager.</dd></div>
+          <div class="entry"><dt>User Preference</dt><dd>A personal setting stored in OpenClaw's memory that shapes how the agent behaves for a specific user — such as preferred response language, notification timing, report format, or communication style. Added with <code>openclaw memory add "..."</code> or learned by the agent during conversation.</dd></div>
+          <div class="entry"><dt>User Profile</dt><dd>The aggregated set of memory entries, preferences, and behavioural patterns associated with a user, built up over multiple interactions. A well-developed user profile enables an agent to personalise every response without requiring explicit instructions each time.</dd></div>
+          <div class="entry"><dt>User State</dt><dd>The current context of a user's interaction with an agent — including any active tasks, pending approvals, recent commands, and session variables. User state is maintained in memory across the current session and can optionally persist to future sessions.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── V ── -->
+      <section class="letter-section" id="letter-V" aria-labelledby="heading-V">
+        <h2 class="letter-heading" id="heading-V">V</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Verbose Mode</dt><dd>An extended logging mode enabled by <code>openclaw start --debug</code> that outputs full details of every operation — model requests and responses, skill calls, memory retrievals, platform messages, and internal events. Used during development and troubleshooting.</dd></div>
+          <div class="entry"><dt>Version Check</dt><dd>An automatic or manual comparison of your installed OpenClaw version against the latest available release. Run <code>openclaw --version</code> to see your current version. OpenClaw checks for updates on startup and notifies you if a newer version is available.</dd></div>
+          <div class="entry"><dt>Version Control</dt><dd>The tracking of changes to skill packages, agent configurations, and OpenClaw itself over time. Skills on ClawHub use semantic versioning (e.g. 2.1.4) so users can pin to a specific version or always use the latest with <code>openclaw skills update</code>.</dd></div>
+          <div class="entry"><dt>Vibe Coding</dt><dd>A casual, conversational approach to programming where the user describes what they want in natural language and the agent writes or modifies code accordingly. OpenClaw agents with a coding skill can assist with vibe coding sessions — turning ideas into working scripts without formal syntax knowledge.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── W ── -->
+      <section class="letter-section" id="letter-W" aria-labelledby="heading-W">
+        <h2 class="letter-heading" id="heading-W">W</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Watch Mode</dt><dd>An agent operating mode that continuously monitors a source — such as an inbox, a folder, a price feed, or a social media mention — and triggers actions automatically when new content is detected, without polling on a fixed schedule.</dd></div>
+          <div class="entry"><dt>Webhook</dt><dd>An HTTP callback triggered by an external service when a specific event occurs — such as a new Shopify order, a GitHub push, or a form submission. OpenClaw can receive webhooks via a local or cloud-hosted endpoint and route them to the appropriate agent or skill.</dd></div>
+          <div class="entry"><dt>Webhook Event</dt><dd>The specific occurrence that causes a webhook to fire — for example, <code>orders/create</code> in Shopify, <code>push</code> in GitHub, or <code>message</code> in Telegram. OpenClaw registers for webhook events with connected services and maps each event type to an agent action.</dd></div>
+          <div class="entry"><dt>Webhook Payload</dt><dd>The JSON data sent by a service when it fires a webhook, containing details about the event — the order contents, the commit metadata, the form response. OpenClaw parses the payload and extracts the relevant fields before passing them to the agent or skill.</dd></div>
+          <div class="entry"><dt>WhatsApp Integration</dt><dd>The connection between OpenClaw and WhatsApp, established via <code>openclaw connect whatsapp</code> by scanning a QR code. Once connected, you can send natural language commands to your agent directly in WhatsApp and receive responses just like a normal conversation.</dd></div>
+          <div class="entry"><dt>Worker Thread</dt><dd>An isolated execution thread used to run a skill or background task without blocking the main agent process. Worker threads allow OpenClaw to perform long-running operations — like processing a large CSV file — concurrently with ongoing agent conversations.</dd></div>
+          <div class="entry"><dt>Workflow Engine</dt><dd>The subsystem within OpenClaw that manages the execution of multi-step, conditional automation workflows — handling branching logic, step sequencing, error recovery, and state persistence between steps. The workflow engine is what makes complex multi-skill automations possible.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── X ── -->
+      <section class="letter-section" id="letter-X" aria-labelledby="heading-X">
+        <h2 class="letter-heading" id="heading-X">X</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>XML Config</dt><dd>An alternative configuration format occasionally used by legacy or enterprise OpenClaw deployments. While the default config format is JSON, XML configs are supported for compatibility with enterprise tooling that requires XML-based infrastructure definitions.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── Y ── -->
+      <section class="letter-section" id="letter-Y" aria-labelledby="heading-Y">
+        <h2 class="letter-heading" id="heading-Y">Y</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>YAML Config</dt><dd>A human-readable configuration format that some OpenClaw users prefer over JSON for its cleaner syntax and support for inline comments. OpenClaw accepts YAML-formatted config files, which are especially convenient when managing complex multi-agent deployments with many settings.</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── Z ── -->
+      <section class="letter-section" id="letter-Z" aria-labelledby="heading-Z">
+        <h2 class="letter-heading" id="heading-Z">Z</h2>
+        <dl class="glossary">
+          <div class="entry"><dt>Zapier Bridge</dt><dd>A ClawHub skill that connects OpenClaw to the Zapier automation platform, giving your agent access to thousands of app integrations via Zapier's webhook and trigger system. Install with <code>openclaw skills install zapier</code>.</dd></div>
+          <div class="entry"><dt>Zero-Shot Prompt <span class="tag tag-ai">AI</span></dt><dd>A prompt that asks a language model to perform a task without providing any examples. OpenClaw agents rely heavily on zero-shot prompting for everyday tasks — the model is expected to understand the instruction from its training alone, without needing sample input/output pairs.</dd></div>
+          <div class="entry"><dt>Zone Config</dt><dd>The timezone configuration setting used by OpenClaw's scheduler to interpret cron expressions correctly for your local time. Set via <code>openclaw config set timezone &lt;zone&gt;</code> using IANA timezone names such as <code>America/New_York</code> or <code>Europe/London</code>.</dd></div>
+        </dl>
+      </section>
+
+    </div><!-- /container -->
+  </main>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <div class="footer-nl">
+      <p>Get the latest OpenClaw tips straight to your inbox</p>
+      <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+        <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+      <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+      <a href="cheatsheet.html">Cheat Sheet</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+    <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+  </footer>
+
+  <script>
+    // ── Hamburger ──────────────────────────────────────────────────────────
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // ── Search ─────────────────────────────────────────────────────────────
+    const searchInput = document.getElementById('gloss-search');
+    const countEl     = document.getElementById('search-count');
+    const noResults   = document.getElementById('no-results');
+    const allEntries  = document.querySelectorAll('.entry');
+    const allSections = document.querySelectorAll('.letter-section');
+
+    function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+    function applySearch() {
+      const q = searchInput.value.trim().toLowerCase();
+      let visible = 0;
+
+      allEntries.forEach(entry => {
+        const dt = entry.querySelector('dt');
+        const dd = entry.querySelector('dd');
+        const dtOrig = dt.dataset.orig || dt.innerText;
+        const ddOrig = dd.dataset.orig || dd.innerText;
+        if (!dt.dataset.orig) dt.dataset.orig = dtOrig;
+        if (!dd.dataset.orig) dd.dataset.orig = ddOrig;
+
+        const matches = !q
+          || dtOrig.toLowerCase().includes(q)
+          || ddOrig.toLowerCase().includes(q);
+
+        entry.hidden = !matches;
+        if (matches) {
+          visible++;
+          if (q) {
+            const re = new RegExp(`(${escapeRe(q)})`, 'gi');
+            dt.innerHTML = dtOrig.replace(re, '<mark>$1</mark>');
+            dd.innerHTML = ddOrig.replace(re, '<mark>$1</mark>');
+          } else {
+            dt.innerHTML = dtOrig;
+            dd.innerHTML = ddOrig;
+          }
+        }
+      });
+
+      // hide empty sections
+      allSections.forEach(sec => {
+        const anyVisible = [...sec.querySelectorAll('.entry')].some(e => !e.hidden);
+        sec.hidden = !anyVisible;
+      });
+
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+      countEl.textContent = q ? `${visible} term${visible !== 1 ? 's' : ''} found` : '';
+    }
+
+    searchInput.addEventListener('input', applySearch);
+
+    // ── Keyboard: Escape clears search ────────────────────────────────────
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { searchInput.value = ''; applySearch(); }
+    });
+  </script>
+</body>
+</html>
