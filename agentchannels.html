@@ -3,27 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpenClaw Agent Channels — Real-Time Communication Between AI Agents</title>
-  <meta name="description" content="Master OpenClaw Agent Channels — the pub/sub messaging system that lets AI agents broadcast events, subscribe to topics, coordinate workflows, and react to real-world triggers in real time." />
-  <meta name="keywords" content="OpenClaw agent channels, AI agent communication, pub sub agents, agent events, OpenClaw channels, agent messaging, OpenClaw workflow automation, agent broadcasting" />
+  <title>OpenClaw Agent Channels — Talk to Your AI Agent via WhatsApp &amp; Telegram</title>
+  <meta name="description" content="Connect OpenClaw to WhatsApp, Telegram, Slack, Discord, and iMessage. Send tasks to your AI agent from any messaging app you already use — no new interface to learn." />
+  <meta name="keywords" content="OpenClaw WhatsApp, OpenClaw Telegram, AI agent messaging, talk to AI agent, OpenClaw agent channels, OpenClaw Slack, OpenClaw Discord, AI bot WhatsApp, AI bot Telegram" />
   <link rel="canonical" href="https://learnopenclaw.org/agentchannels.html" />
-  <!-- Open Graph -->
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="OpenClaw Agent Channels — Real-Time Communication Between AI Agents" />
-  <meta property="og:description" content="Learn how OpenClaw Agent Channels enable agents to publish events, subscribe to topics, and react to real-world triggers without polling." />
+  <meta property="og:title" content="OpenClaw Agent Channels — Talk to Your AI Agent via WhatsApp &amp; Telegram" />
+  <meta property="og:description" content="Send tasks to your OpenClaw AI agent from WhatsApp, Telegram, Slack, Discord, or iMessage. Full setup guide for every channel." />
   <meta property="og:url" content="https://learnopenclaw.org/agentchannels.html" />
   <meta property="og:site_name" content="learnopenclaw.org" />
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="OpenClaw Agent Channels" />
-  <meta name="twitter:description" content="Master the pub/sub messaging layer that lets OpenClaw agents talk to each other and react to the world in real time." />
-  <!-- Structured Data -->
+  <meta name="twitter:title" content="OpenClaw Agent Channels — WhatsApp, Telegram &amp; More" />
+  <meta name="twitter:description" content="Talk to your OpenClaw AI agent through any messaging app. Full setup guide for WhatsApp, Telegram, Slack, Discord, and iMessage." />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "OpenClaw Agent Channels — Real-Time Communication Between AI Agents",
-    "description": "Complete guide to OpenClaw Agent Channels: architecture, channel types, commands, patterns, and advanced usage.",
+    "headline": "OpenClaw Agent Channels — Talk to Your AI Agent via WhatsApp and Telegram",
+    "description": "How to connect OpenClaw to WhatsApp, Telegram, Slack, Discord, and iMessage so you can send tasks to your AI agent from any messaging app.",
     "url": "https://learnopenclaw.org/agentchannels.html",
     "breadcrumb": {
       "@type": "BreadcrumbList",
@@ -31,16 +28,6 @@
         {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
         {"@type":"ListItem","position":2,"name":"Learn","item":"https://learnopenclaw.org/gettingstarted.html"},
         {"@type":"ListItem","position":3,"name":"Agent Channels","item":"https://learnopenclaw.org/agentchannels.html"}
-      ]
-    },
-    "mainEntity": {
-      "@type": "HowTo",
-      "name": "How to Use OpenClaw Agent Channels",
-      "step": [
-        {"@type":"HowToStep","name":"Create a channel","text":"Use /channel create <name> to define a named channel."},
-        {"@type":"HowToStep","name":"Subscribe an agent","text":"Use /channel subscribe <channel> to attach a listener."},
-        {"@type":"HowToStep","name":"Publish an event","text":"Use /channel publish <channel> <payload> to broadcast a message."},
-        {"@type":"HowToStep","name":"Trigger workflows","text":"Define on-event handlers that fire automatically when a message arrives."}
       ]
     }
   }
@@ -55,15 +42,18 @@
       --teal:     #0d9488;
       --teal-lt:  #f0fdfa;
       --teal-md:  #99f6e4;
+      --green:    #16a34a;
+      --green-lt: #f0fdf4;
+      --green-md: #bbf7d0;
       --purple:   #7c3aed;
       --purple-lt:#f5f3ff;
       --purple-md:#ddd6fe;
       --amber:    #d97706;
       --amber-lt: #fffbeb;
       --amber-md: #fde68a;
-      --green:    #16a34a;
-      --green-lt: #f0fdf4;
-      --green-md: #bbf7d0;
+      --red:      #dc2626;
+      --red-lt:   #fef2f2;
+      --red-md:   #fecaca;
       --gray-1:   #f9fafb;
       --gray-2:   #f3f4f6;
       --gray-3:   #e5e7eb;
@@ -76,7 +66,6 @@
 
     html { scroll-behavior: smooth; }
 
-    /* ── Skip nav (ADA) ── */
     .skip-nav {
       position: absolute; top: -100px; left: 16px;
       background: var(--teal); color: var(--white);
@@ -86,7 +75,6 @@
     }
     .skip-nav:focus { top: 8px; }
 
-    /* ── Focus styles (ADA) ── */
     a:focus, button:focus {
       outline: 3px solid var(--teal);
       outline-offset: 3px;
@@ -95,10 +83,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      font-size: 16px;
-      line-height: 1.65;
-      color: var(--gray-8);
-      background: var(--white);
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
     }
 
     a { color: var(--blue); text-decoration: none; }
@@ -111,23 +97,18 @@
     /* ── Nav ── */
     nav {
       position: sticky; top: 0; z-index: 1000;
-      background: var(--white);
-      border-bottom: 1px solid var(--gray-3);
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
       padding: 0 24px;
     }
     .nav-inner {
       max-width: 900px; margin: 0 auto;
       display: flex; align-items: center; justify-content: space-between;
-      height: 60px;
-      position: relative;
+      height: 60px; position: relative;
     }
     .nav-logo {
       font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
-      display: flex; align-items: center; gap: 8px;
-      text-decoration: none;
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
     }
-
-    /* ── Universal hamburger ── */
     .hamburger {
       display: flex; flex-direction: column; gap: 5px;
       background: none; border: none; cursor: pointer; padding: 4px;
@@ -150,53 +131,53 @@
     .nav-links.open { display: flex; }
     .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
     .nav-links a:hover { color: var(--blue); text-decoration: none; }
-    @media (max-width: 600px) {
-      .nav-links { left: 0; min-width: unset; border-radius: 0; }
-    }
-
-    /* ── Nav section grouping (Learn) ── */
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
     .nav-section {
       display: flex; flex-direction: column; gap: 10px;
-      border-top: 1px solid var(--gray-2);
-      border-bottom: 1px solid var(--gray-2);
+      border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2);
       padding: 10px 0; margin: 2px 0;
     }
     .nav-section-label {
       font-size: .68rem; font-weight: 800;
-      text-transform: uppercase; letter-spacing: .12em;
-      color: var(--gray-5);
+      text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5);
     }
-    .nav-section a {
-      padding-left: 10px;
-      border-left: 2px solid var(--blue-md);
-      font-size: .88rem;
-    }
+    .nav-section a { padding-left: 10px; border-left: 2px solid var(--blue-md); font-size: .88rem; }
 
     /* ── Hero ── */
     .hero {
-      padding: 64px 24px 48px;
-      text-align: center;
-      background: linear-gradient(180deg, var(--teal-lt) 0%, var(--white) 100%);
+      padding: 64px 24px 52px; text-align: center;
+      background: linear-gradient(160deg, #f0fdfa 0%, #eff6ff 60%, var(--white) 100%);
     }
     .hero-badge {
-      display: inline-block;
-      background: var(--teal-md);
-      color: var(--teal);
+      display: inline-block; background: var(--teal-md); color: var(--teal);
       font-size: .78rem; font-weight: 700; letter-spacing: .06em;
-      padding: 4px 12px; border-radius: 100px;
-      margin-bottom: 20px;
+      padding: 4px 14px; border-radius: 100px; margin-bottom: 20px;
       text-transform: uppercase;
     }
-    .hero h1 {
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 800; line-height: 1.2;
-      margin-bottom: 16px;
-    }
+    .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
     .hero h1 em { font-style: normal; color: var(--teal); }
-    .hero p {
-      font-size: 1.1rem; color: var(--gray-5);
-      max-width: 580px; margin: 0 auto 28px;
+    .hero p { font-size: 1.1rem; color: var(--gray-5); max-width: 580px; margin: 0 auto 32px; }
+
+    /* ── Channel pill row ── */
+    .channel-pills {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 36px;
     }
+    .channel-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 18px; border-radius: 100px;
+      font-size: .88rem; font-weight: 700;
+      text-decoration: none; transition: transform .15s, box-shadow .15s;
+      border: 2px solid transparent;
+    }
+    .channel-pill:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.12); text-decoration: none; }
+    .pill-whatsapp { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+    .pill-telegram { background: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
+    .pill-slack    { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+    .pill-discord  { background: #ede9fe; color: #5b21b6; border-color: #ddd6fe; }
+    .pill-imessage { background: #fce7f3; color: #9d174d; border-color: #fbcfe8; }
+    .pill-web      { background: var(--teal-lt); color: var(--teal); border-color: var(--teal-md); }
+
     .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
@@ -212,226 +193,199 @@
     /* ── Section headings ── */
     .section-label {
       font-size: .78rem; font-weight: 700; letter-spacing: .08em;
-      text-transform: uppercase; color: var(--teal);
-      margin-bottom: 10px;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 10px;
     }
-    .section-title {
-      font-size: clamp(1.4rem, 3vw, 1.9rem);
-      font-weight: 800; line-height: 1.25;
-      margin-bottom: 16px;
-    }
-    .section-subtitle {
-      font-size: 1.05rem; color: var(--gray-5);
-      max-width: 640px; margin-bottom: 40px;
-    }
+    .section-title { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; line-height: 1.25; margin-bottom: 16px; }
+    .section-subtitle { font-size: 1.05rem; color: var(--gray-5); max-width: 640px; margin-bottom: 40px; }
 
     /* ── Alert banners ── */
     .alert {
-      border-radius: var(--radius);
-      padding: 20px 24px;
-      display: flex; gap: 14px; align-items: flex-start;
-      margin-bottom: 32px;
+      border-radius: var(--radius); padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start; margin-bottom: 32px;
     }
-    .alert--teal   { background: var(--teal-lt);   border: 1px solid var(--teal-md); }
-    .alert--amber  { background: var(--amber-lt);  border: 1px solid var(--amber-md); }
-    .alert--purple { background: var(--purple-lt); border: 1px solid var(--purple-md); }
-    .alert--green  { background: var(--green-lt);  border: 1px solid var(--green-md); }
+    .alert--teal   { background: var(--teal-lt);  border: 1px solid var(--teal-md); }
+    .alert--green  { background: var(--green-lt); border: 1px solid var(--green-md); }
+    .alert--amber  { background: var(--amber-lt); border: 1px solid var(--amber-md); }
+    .alert--red    { background: var(--red-lt);   border: 1px solid var(--red-md); }
     .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
-    .alert--teal   p { color: #134e4a; font-size: .95rem; }
-    .alert--amber  p { color: #92400e; font-size: .95rem; }
-    .alert--purple p { color: #4c1d95; font-size: .95rem; }
-    .alert--green  p { color: #14532d; font-size: .95rem; }
+    .alert--teal  p { color: #134e4a; font-size: .95rem; }
+    .alert--green p { color: #14532d; font-size: .95rem; }
+    .alert--amber p { color: #92400e; font-size: .95rem; }
+    .alert--red   p { color: #991b1b; font-size: .95rem; }
     .alert strong { font-weight: 700; }
 
-    /* ── Cards grid ── */
-    .cards-grid {
+    /* ── Channel cards ── */
+    .channel-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 24px; margin-bottom: 48px;
     }
-    .card {
-      background: var(--white);
-      border: 1px solid var(--gray-3);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      transition: transform .15s, box-shadow .15s;
+    .ch-card {
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: var(--radius); padding: 28px;
+      box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s;
     }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
-    .card-icon  { font-size: 1.8rem; margin-bottom: 12px; }
-    .card h3    { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .card p     { font-size: .875rem; color: var(--gray-5); }
-    .card .card-tag {
-      display: inline-block; margin-top: 12px;
-      font-size: .72rem; font-weight: 700; padding: 2px 8px;
-      border-radius: 100px; text-transform: uppercase;
+    .ch-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.1); }
+    .ch-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .ch-logo {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
     }
-    .tag-teal   { background: var(--teal-lt);   color: var(--teal); }
-    .tag-purple { background: var(--purple-lt);  color: var(--purple); }
-    .tag-amber  { background: var(--amber-lt);   color: var(--amber); }
-    .tag-green  { background: var(--green-lt);   color: var(--green); }
-    .tag-blue   { background: var(--blue-lt);    color: var(--blue); }
+    .ch-logo--wa      { background: #dcfce7; }
+    .ch-logo--tg      { background: #dbeafe; }
+    .ch-logo--slack   { background: #fef3c7; }
+    .ch-logo--discord { background: #ede9fe; }
+    .ch-logo--imsg    { background: #fce7f3; }
+    .ch-logo--web     { background: var(--teal-lt); }
+    .ch-card-head h3  { font-size: 1.05rem; font-weight: 700; }
+    .ch-card-head .ch-badge {
+      margin-left: auto; font-size: .68rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 100px; text-transform: uppercase;
+    }
+    .badge--best   { background: #dcfce7; color: #15803d; }
+    .badge--pop    { background: var(--blue-lt); color: var(--blue); }
+    .badge--team   { background: #fef3c7; color: #92400e; }
+    .badge--mac    { background: #fce7f3; color: #9d174d; }
+    .badge--free   { background: var(--teal-lt); color: var(--teal); }
+    .ch-card p     { font-size: .88rem; color: var(--gray-5); margin-bottom: 14px; }
+    .ch-card .ch-pros { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .ch-card .ch-pros li {
+      font-size: .82rem; color: var(--gray-5);
+      padding-left: 18px; position: relative;
+    }
+    .ch-card .ch-pros li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+    .ch-setup-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      margin-top: 16px; font-size: .82rem; font-weight: 700;
+      color: var(--teal); text-decoration: none;
+    }
+    .ch-setup-link:hover { text-decoration: underline; }
+
+    /* ── Setup steps ── */
+    .setup-block {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      overflow: hidden; margin-bottom: 32px; box-shadow: var(--shadow);
+    }
+    .setup-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 24px; background: var(--gray-1);
+      border-bottom: 1px solid var(--gray-3);
+    }
+    .setup-header .sh-logo {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .setup-header h3 { font-size: 1.05rem; font-weight: 700; }
+    .setup-header .sh-time {
+      margin-left: auto; font-size: .78rem; color: var(--gray-5);
+      background: var(--gray-2); padding: 3px 10px; border-radius: 100px;
+    }
+    .setup-body { padding: 24px; }
+    .steps { display: flex; flex-direction: column; position: relative; }
+    .steps::before {
+      content: ''; position: absolute; left: 23px; top: 28px;
+      width: 2px; height: calc(100% - 56px); background: var(--gray-3);
+    }
+    .step { display: flex; gap: 20px; align-items: flex-start; position: relative; padding-bottom: 28px; }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%;
+      background: var(--teal); color: var(--white);
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px var(--teal-lt); position: relative; z-index: 1;
+    }
+    .step-body h4 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
+    .step-body p  { font-size: .9rem; color: var(--gray-5); }
 
     /* ── Code blocks ── */
     .code-block {
-      background: #0f172a;
-      border-radius: var(--radius);
-      padding: 24px;
-      margin: 20px 0;
-      overflow-x: auto;
+      background: #0f172a; border-radius: 10px; padding: 20px 24px;
+      margin: 12px 0; overflow-x: auto;
     }
     .code-block pre {
-      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
-      font-size: .85rem;
-      line-height: 1.7;
-      color: #e2e8f0;
-      white-space: pre;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .82rem; line-height: 1.75; color: #e2e8f0; white-space: pre;
     }
-    .code-block .cm   { color: #94a3b8; }  /* comment */
-    .code-block .kw   { color: #7dd3fc; }  /* keyword */
-    .code-block .str  { color: #86efac; }  /* string */
-    .code-block .cmd  { color: #f9a8d4; }  /* command */
-    .code-block .val  { color: #fde68a; }  /* value */
     .code-label {
-      font-size: .72rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .08em; color: var(--gray-5);
-      margin-bottom: 8px;
+      font-size: .68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--gray-5); margin-bottom: 6px;
     }
+    .ck  { color: #94a3b8; }  /* comment */
+    .kw  { color: #7dd3fc; }  /* keyword / key */
+    .sv  { color: #86efac; }  /* string value */
+    .cmd { color: #f9a8d4; }  /* command */
+    .num { color: #fde68a; }  /* number */
 
-    /* ── Command reference table ── */
-    .cmd-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-    .cmd-table th {
+    /* ── Chat bubbles (example conversations) ── */
+    .chat-window {
+      background: var(--gray-1); border: 1px solid var(--gray-3);
+      border-radius: var(--radius); padding: 20px;
+      margin: 16px 0; max-width: 540px;
+    }
+    .chat-header {
+      display: flex; align-items: center; gap: 10px;
+      padding-bottom: 14px; border-bottom: 1px solid var(--gray-3); margin-bottom: 14px;
+    }
+    .chat-header .ch-dot {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--green);
+    }
+    .chat-header span { font-size: .82rem; font-weight: 700; color: var(--gray-8); }
+    .chat-header .ch-app { margin-left: auto; font-size: .72rem; color: var(--gray-5); }
+    .bubble { margin-bottom: 10px; display: flex; flex-direction: column; }
+    .bubble.you { align-items: flex-end; }
+    .bubble.agent { align-items: flex-start; }
+    .bubble span {
+      display: inline-block; padding: 10px 14px; border-radius: 14px;
+      font-size: .875rem; line-height: 1.5; max-width: 85%;
+    }
+    .bubble.you span {
+      background: var(--teal); color: var(--white);
+      border-bottom-right-radius: 4px;
+    }
+    .bubble.agent span {
+      background: var(--white); color: var(--gray-8);
+      border: 1px solid var(--gray-3); border-bottom-left-radius: 4px;
+    }
+    .bubble .bub-label { font-size: .7rem; color: var(--gray-5); margin-bottom: 4px; }
+
+    /* ── Comparison table ── */
+    .cmp-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .cmp-table th {
       text-align: left; padding: 11px 16px;
-      background: var(--gray-2);
-      border-bottom: 2px solid var(--gray-3);
+      background: var(--gray-2); border-bottom: 2px solid var(--gray-3);
       font-weight: 700; font-size: .78rem;
       text-transform: uppercase; letter-spacing: .05em;
     }
-    .cmd-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
-    .cmd-table tr:last-child td { border-bottom: none; }
-    .cmd-table tr:hover td { background: var(--gray-1); }
-    .cmd-table code {
-      font-family: "SF Mono", "Fira Code", monospace;
-      background: var(--gray-2);
-      border: 1px solid var(--gray-3);
-      padding: 2px 7px; border-radius: 5px;
-      font-size: .82rem; white-space: nowrap;
-    }
-    .cmd-table td:first-child { min-width: 240px; }
+    .cmp-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: middle; }
+    .cmp-table tr:last-child td { border-bottom: none; }
+    .cmp-table tr:hover td { background: var(--gray-1); }
+    .cmp-table .tick { color: var(--green); font-weight: 700; }
+    .cmp-table .cross { color: #9ca3af; }
+    .cmp-table .partial { color: var(--amber); font-weight: 700; }
 
-    /* ── Steps timeline ── */
-    .steps { display: flex; flex-direction: column; position: relative; }
-    .steps::before {
-      content: '';
-      position: absolute; left: 23px; top: 28px;
-      width: 2px; height: calc(100% - 56px);
-      background: var(--gray-3);
+    /* ── Tips grid ── */
+    .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .tip-card {
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);
+      transition: transform .15s;
     }
-    .step {
-      display: flex; gap: 20px; align-items: flex-start;
-      position: relative; padding-bottom: 32px;
-    }
-    .step:last-child { padding-bottom: 0; }
-    .step-num {
-      flex-shrink: 0;
-      width: 46px; height: 46px;
-      border-radius: 50%;
-      background: var(--teal);
-      color: var(--white);
-      font-size: 1rem; font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 0 4px var(--teal-lt);
-      position: relative; z-index: 1;
-    }
-    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
-    .step-body p  { font-size: .95rem; color: var(--gray-5); }
-    .step-body code {
-      display: inline-block;
-      background: var(--gray-2);
-      border: 1px solid var(--gray-3);
-      border-radius: 6px;
-      font-family: "SF Mono", "Fira Code", monospace;
-      font-size: .85rem;
-      padding: 4px 10px; margin-top: 6px;
-    }
-
-    /* ── Two-column comparison ── */
-    .compare-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-      margin-bottom: 40px;
-    }
-    @media (max-width: 620px) { .compare-grid { grid-template-columns: 1fr; } }
-    .compare-col {
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-3);
-      padding: 24px;
-    }
-    .compare-col h3 { font-size: .95rem; font-weight: 700; margin-bottom: 12px; }
-    .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .compare-col li { font-size: .875rem; color: var(--gray-5); padding-left: 20px; position: relative; }
-    .compare-col li::before { content: attr(data-icon); position: absolute; left: 0; }
-
-    /* ── Pattern cards (use-case examples) ── */
-    .pattern-card {
-      border: 1px solid var(--gray-3);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow);
-    }
-    .pattern-header {
-      display: flex; align-items: center; gap: 12px;
-      padding: 16px 20px;
-      background: var(--gray-1);
-      border-bottom: 1px solid var(--gray-3);
-    }
-    .pattern-header .p-icon { font-size: 1.4rem; }
-    .pattern-header h3 { font-size: 1rem; font-weight: 700; }
-    .pattern-header .p-tag {
-      margin-left: auto;
-      font-size: .72rem; font-weight: 700; padding: 2px 8px;
-      border-radius: 100px; text-transform: uppercase;
-    }
-    .pattern-body { padding: 20px; }
-    .pattern-body p { font-size: .9rem; color: var(--gray-5); margin-bottom: 12px; }
-
-    /* ── Arch diagram (text/ascii) ── */
-    .arch-box {
-      background: #0f172a;
-      border-radius: var(--radius);
-      padding: 28px;
-      overflow-x: auto;
-      margin: 24px 0;
-    }
-    .arch-box pre {
-      font-family: "SF Mono", "Fira Code", monospace;
-      font-size: .78rem;
-      line-height: 1.6;
-      color: #94a3b8;
-      white-space: pre;
-    }
-    .arch-box .hi { color: #7dd3fc; }
-    .arch-box .gr { color: #86efac; }
-    .arch-box .ye { color: #fde68a; }
+    .tip-card:hover { transform: translateY(-3px); }
+    .tip-card .tip-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .tip-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .tip-card p  { font-size: .875rem; color: var(--gray-5); }
 
     /* ── FAQ ── */
     .faq-list { display: flex; flex-direction: column; gap: 16px; }
-    .faq-item {
-      border: 1px solid var(--gray-3);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
+    .faq-item { border: 1px solid var(--gray-3); border-radius: var(--radius); overflow: hidden; }
     .faq-q {
-      width: 100%; text-align: left;
-      background: var(--white);
-      border: none; cursor: pointer;
-      padding: 18px 20px;
-      font-size: .95rem; font-weight: 700;
-      color: var(--gray-8);
+      width: 100%; text-align: left; background: var(--white); border: none; cursor: pointer;
+      padding: 18px 20px; font-size: .95rem; font-weight: 700; color: var(--gray-8);
       display: flex; justify-content: space-between; align-items: center;
-      font-family: inherit;
-      transition: background .15s;
+      font-family: inherit; transition: background .15s;
     }
     .faq-q:hover { background: var(--gray-1); }
     .faq-q[aria-expanded="true"] { background: var(--teal-lt); color: var(--teal); }
@@ -440,14 +394,22 @@
     .faq-a { display: none; padding: 0 20px 18px; font-size: .9rem; color: var(--gray-5); }
     .faq-a.open { display: block; }
 
-    /* ── Divider ── */
-    .divider { height: 1px; background: var(--gray-3); }
+    /* ── Related cards ── */
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+    .rel-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 22px;
+      box-shadow: var(--shadow); text-decoration: none; color: inherit;
+      transition: transform .15s, box-shadow .15s; display: block;
+    }
+    .rel-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); text-decoration: none; }
+    .rel-card .r-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .rel-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+    .rel-card p  { font-size: .83rem; color: var(--gray-5); }
 
-    /* ── Newsletter ── */
+    /* ── Footer / newsletter ── */
     .nl-section {
       background: linear-gradient(135deg, var(--teal-lt) 0%, #e0f2fe 100%);
-      border-top: 1px solid var(--teal-md);
-      border-bottom: 1px solid var(--teal-md);
+      border-top: 1px solid var(--teal-md); border-bottom: 1px solid var(--teal-md);
       padding: 48px 24px; text-align: center;
     }
     .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
@@ -457,50 +419,36 @@
     .nl-form input[type="email"] {
       flex: 1; min-width: 200px; padding: 12px 16px;
       border: 1.5px solid var(--gray-3); border-radius: 8px;
-      font-size: .95rem; font-family: inherit;
-      background: var(--white); color: var(--gray-8);
-      transition: border-color .18s;
+      font-size: .95rem; font-family: inherit; background: var(--white); color: var(--gray-8);
     }
     .nl-form input[type="email"]:focus { outline: none; border-color: var(--teal); }
     .nl-form button {
-      background: var(--teal); color: var(--white);
-      border: none; border-radius: 8px;
+      background: var(--teal); color: var(--white); border: none; border-radius: 8px;
       padding: 12px 22px; font-size: .95rem; font-weight: 700;
-      cursor: pointer; font-family: inherit; transition: background .18s;
+      cursor: pointer; font-family: inherit;
     }
     .nl-form button:hover { background: #0f766e; }
-
-    /* ── Footer ── */
     footer {
-      background: var(--gray-8);
-      color: #9ca3af;
-      text-align: center;
-      padding: 36px 24px;
-      font-size: .875rem;
+      background: var(--gray-8); color: #9ca3af; text-align: center;
+      padding: 36px 24px; font-size: .875rem;
     }
     footer a { color: #60a5fa; }
-    footer .footer-links {
-      display: flex; justify-content: center; gap: 24px;
-      margin-bottom: 12px; flex-wrap: wrap;
-    }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
     .footer-nl { margin-bottom: 20px; }
     .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
     .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
     .footer-nl-form input[type="email"] {
-      padding: 9px 14px; border-radius: 7px;
-      border: 1px solid #374151; background: #374151;
-      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      padding: 9px 14px; border-radius: 7px; border: 1px solid #374151;
+      background: #374151; color: #f9fafb; font-size: .88rem; font-family: inherit;
       min-width: 200px; flex: 1; max-width: 280px;
     }
     .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
     .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
     .footer-nl-form button {
-      background: var(--blue); color: var(--white);
-      border: none; border-radius: 7px;
+      background: var(--blue); color: var(--white); border: none; border-radius: 7px;
       padding: 9px 18px; font-size: .88rem; font-weight: 700;
-      cursor: pointer; font-family: inherit; transition: background .18s;
+      cursor: pointer; font-family: inherit;
     }
-    .footer-nl-form button:hover { background: #1d4ed8; }
   </style>
 </head>
 <body>
@@ -541,543 +489,474 @@
 
 <!-- Hero -->
 <header class="hero">
-  <div class="hero-badge">&#x1F4E1; Agent Channels</div>
-  <h1>Real-Time Communication<br>Between <em>AI Agents</em></h1>
-  <p>Agent Channels are OpenClaw's built-in pub/sub messaging layer — letting agents broadcast events, subscribe to topics, and trigger workflows the moment something happens in the world.</p>
+  <div class="hero-badge">&#x1F4AC; Agent Channels</div>
+  <h1>Talk to Your Agent on<br><em>WhatsApp, Telegram &amp; More</em></h1>
+  <p>You don't need a new app. OpenClaw plugs into the messaging apps you already use every day. Send a message, get results — from anywhere, on any device.</p>
+
+  <div class="channel-pills" role="list" aria-label="Supported messaging channels">
+    <span class="channel-pill pill-whatsapp" role="listitem">&#x1F4F1; WhatsApp</span>
+    <span class="channel-pill pill-telegram" role="listitem">&#x1F4E8; Telegram</span>
+    <span class="channel-pill pill-slack"    role="listitem">&#x1F527; Slack</span>
+    <span class="channel-pill pill-discord"  role="listitem">&#x1F3AE; Discord</span>
+    <span class="channel-pill pill-imessage" role="listitem">&#x1F4AC; iMessage</span>
+    <span class="channel-pill pill-web"      role="listitem">&#x1F310; Web UI</span>
+  </div>
+
   <div class="hero-cta">
-    <a href="#quickstart" class="btn btn--teal">Quick Start ↓</a>
-    <a href="#commands" class="btn btn--ghost">Command Reference</a>
+    <a href="#whatsapp" class="btn btn--teal">Set Up WhatsApp</a>
+    <a href="#telegram" class="btn btn--ghost">Set Up Telegram</a>
   </div>
 </header>
 
-<!-- What Are Agent Channels -->
-<section class="section" id="what">
+<!-- What are agent channels -->
+<section class="section" id="overview">
   <div class="container">
-    <div class="section-label">Foundations</div>
-    <h2 class="section-title">What Are Agent Channels?</h2>
-    <p class="section-subtitle">Think of a channel as a named broadcast pipe. Any agent can publish a message to it; every subscriber receives that message instantly. No polling, no waiting — just real-time coordination.</p>
-
-    <div class="alert alert--teal">
-      <div class="alert-icon">&#x1F4E1;</div>
-      <p><strong>Key idea:</strong> Agent Channels decouple the agent that produces an event from the agents that react to it. A <code>orders.new</code> channel can simultaneously notify your inventory agent, your Slack notification agent, and your accounting agent — without any of them knowing about each other.</p>
-    </div>
-
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-icon">&#x1F4E4;</div>
-        <h3>Publish</h3>
-        <p>Any agent can push a payload onto a channel at any time. The payload is a JSON object — pass whatever context downstream agents will need.</p>
-        <span class="card-tag tag-teal">Producer</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">&#x1F4E5;</div>
-        <h3>Subscribe</h3>
-        <p>An agent or skill registers interest in a channel. Every message that arrives on that channel is automatically forwarded to all subscribers.</p>
-        <span class="card-tag tag-purple">Consumer</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">&#x26A1;</div>
-        <h3>Event-Driven</h3>
-        <p>Wire an <code>on-event</code> handler to a channel and your workflow fires automatically — no cron jobs, no polling loops needed.</p>
-        <span class="card-tag tag-amber">Trigger</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">&#x1F517;</div>
-        <h3>Persistent</h3>
-        <p>Channels retain the last N messages by default. Agents that come online after a publish can still replay recent history.</p>
-        <span class="card-tag tag-green">Durable</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">&#x1F510;</div>
-        <h3>Scoped</h3>
-        <p>Channels are workspace-local unless you explicitly bridge them to an external webhook. Your data never leaves your machine unless you say so.</p>
-        <span class="card-tag tag-blue">Secure</span>
-      </div>
-      <div class="card">
-        <div class="card-icon">&#x1F500;</div>
-        <h3>Chainable</h3>
-        <p>The output of one channel handler can publish to another channel, creating cascading multi-step pipelines without a central orchestrator.</p>
-        <span class="card-tag tag-teal">Pipeline</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Architecture diagram -->
-<section class="section section--alt" id="architecture">
-  <div class="container">
-    <div class="section-label">How it works</div>
-    <h2 class="section-title">Channel Architecture</h2>
-    <p class="section-subtitle">Under the hood, OpenClaw routes messages through an in-process event bus backed by an optional SQLite ring buffer for persistence.</p>
-
-    <div class="arch-box" role="img" aria-label="Architecture diagram showing agents publishing to channels, channels routing to subscribers and on-event handlers">
-<pre>
-  ┌─────────────────────────────────────────────────────────────────┐
-  │                    <span class="hi">OpenClaw Agent Runtime</span>                       │
-  │                                                                 │
-  │   ┌───────────┐    publish()    ┌───────────────────────────┐  │
-  │   │  <span class="gr">Shopify</span>   │ ─────────────► │  <span class="ye">orders.new</span>  channel       │  │
-  │   │  Watcher  │                │  ring buffer (last 100)   │  │
-  │   └───────────┘                └─────────────┬─────────────┘  │
-  │                                              │ broadcast        │
-  │                              ┌───────────────┼───────────────┐ │
-  │                              ▼               ▼               ▼ │
-  │                     ┌──────────────┐  ┌──────────────┐  ┌────────────┐ │
-  │                     │  <span class="gr">Inventory</span>   │  │  <span class="gr">Slack</span>       │  │ <span class="gr">Accounting</span> │ │
-  │                     │  Agent       │  │  Notifier    │  │ Agent      │ │
-  │                     └──────────────┘  └──────────────┘  └────────────┘ │
-  │                                                                 │
-  │   ┌───────────┐    publish()    ┌───────────────────────────┐  │
-  │   │  <span class="gr">GitHub</span>    │ ─────────────► │  <span class="ye">ci.pass</span>     channel       │  │
-  │   │  Monitor  │                └─────────────┬─────────────┘  │
-  │   └───────────┘                              │                 │
-  │                                              ▼                 │
-  │                                    ┌──────────────────┐        │
-  │                                    │  <span class="gr">Deploy</span> Handler  │        │
-  │                                    │  (on-event)      │        │
-  │                                    └──────────────────┘        │
-  └─────────────────────────────────────────────────────────────────┘
-</pre>
-    </div>
-
-    <div class="compare-grid">
-      <div class="compare-col" style="background:var(--teal-lt); border-color:var(--teal-md);">
-        <h3 style="color:var(--teal);">&#x2705; Agent Channels</h3>
-        <ul>
-          <li data-icon="⚡">Event-driven — reacts instantly</li>
-          <li data-icon="🔗">Loosely coupled — agents don't know about each other</li>
-          <li data-icon="📦">Persistent ring buffer — replay recent history</li>
-          <li data-icon="🔀">Fan-out to N subscribers simultaneously</li>
-          <li data-icon="🌐">Optional webhook bridge to external services</li>
-        </ul>
-      </div>
-      <div class="compare-col" style="background:var(--gray-1);">
-        <h3 style="color:var(--gray-5);">&#x23F3; Without Channels (polling)</h3>
-        <ul>
-          <li data-icon="⏳">Delayed — checks on a timer</li>
-          <li data-icon="🔒">Tightly coupled — each agent calls each other directly</li>
-          <li data-icon="💨">No history — misses events if agent is offline</li>
-          <li data-icon="🔁">Sequential — one agent waits for another</li>
-          <li data-icon="🛠️">Requires custom integration code per service</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Channel Types -->
-<section class="section" id="types">
-  <div class="container">
-    <div class="section-label">Channel Types</div>
-    <h2 class="section-title">Four Kinds of Channels</h2>
-    <p class="section-subtitle">Choose the right channel type for your use case. All four use the same publish/subscribe API — they differ only in delivery semantics.</p>
-
-    <div class="cards-grid">
-      <div class="card" style="border-top: 3px solid var(--teal);">
-        <div class="card-icon">&#x1F4E2;</div>
-        <h3>Broadcast Channel</h3>
-        <p>Every subscriber receives every message. Use for notifications, status updates, and dashboards. No acknowledgement required.</p>
-        <div class="code-label" style="margin-top:16px;">Example topics</div>
-        <code style="display:block; background:var(--gray-2); border:1px solid var(--gray-3); border-radius:6px; padding:8px 12px; font-size:.8rem; font-family:monospace; margin-top:4px;">system.ready · alerts.info · logs.debug</code>
-        <span class="card-tag tag-teal" style="margin-top:12px;">default type</span>
-      </div>
-      <div class="card" style="border-top: 3px solid var(--purple);">
-        <div class="card-icon">&#x1F4EC;</div>
-        <h3>Queue Channel</h3>
-        <p>Messages are delivered to exactly one subscriber (round-robin). Perfect for distributing work across a pool of worker agents so no item is processed twice.</p>
-        <div class="code-label" style="margin-top:16px;">Example topics</div>
-        <code style="display:block; background:var(--gray-2); border:1px solid var(--gray-3); border-radius:6px; padding:8px 12px; font-size:.8rem; font-family:monospace; margin-top:4px;">jobs.process · emails.send · tasks.queue</code>
-        <span class="card-tag tag-purple" style="margin-top:12px;">work distribution</span>
-      </div>
-      <div class="card" style="border-top: 3px solid var(--amber);">
-        <div class="card-icon">&#x1F4CB;</div>
-        <h3>Request/Reply Channel</h3>
-        <p>Publisher sends a query and blocks (or awaits) for a single reply from exactly one subscriber. Enables synchronous-style RPC between agents.</p>
-        <div class="code-label" style="margin-top:16px;">Example topics</div>
-        <code style="display:block; background:var(--gray-2); border:1px solid var(--gray-3); border-radius:6px; padding:8px 12px; font-size:.8rem; font-family:monospace; margin-top:4px;">lookup.customer · price.check · auth.verify</code>
-        <span class="card-tag tag-amber" style="margin-top:12px;">request/response</span>
-      </div>
-      <div class="card" style="border-top: 3px solid var(--green);">
-        <div class="card-icon">&#x1F4C5;</div>
-        <h3>Scheduled Channel</h3>
-        <p>OpenClaw publishes a heartbeat message on a cron schedule. Any subscriber wakes up and acts — no external cron daemon or scheduler required.</p>
-        <div class="code-label" style="margin-top:16px;">Example topics</div>
-        <code style="display:block; background:var(--gray-2); border:1px solid var(--gray-3); border-radius:6px; padding:8px 12px; font-size:.8rem; font-family:monospace; margin-top:4px;">cron.daily · cron.hourly · heartbeat.ping</code>
-        <span class="card-tag tag-green" style="margin-top:12px;">time-driven</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Quick Start -->
-<section class="section section--alt" id="quickstart">
-  <div class="container">
-    <div class="section-label">Quick Start</div>
-    <h2 class="section-title">Up and Running in 4 Steps</h2>
-    <p class="section-subtitle">From zero to a working event-driven pipeline in under five minutes.</p>
-
-    <div class="steps" aria-label="Quick start steps">
-      <div class="step">
-        <div class="step-num" aria-hidden="true">1</div>
-        <div class="step-body">
-          <h3>Create a channel</h3>
-          <p>Give your channel a namespaced name. Use dot notation to keep topics organised — e.g. <em>domain.event</em>.</p>
-          <div class="code-block">
-            <div class="code-label">Terminal</div>
-            <pre><span class="cmd">/channel create</span> <span class="val">orders.new</span>
-<span class="cm"># Output: ✅ Channel "orders.new" created (broadcast, buffer: 100)</span></pre>
-          </div>
-          <code>/channel create &lt;name&gt; [--type broadcast|queue|rr|scheduled] [--buffer N]</code>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num" aria-hidden="true">2</div>
-        <div class="step-body">
-          <h3>Subscribe an agent</h3>
-          <p>Tell an agent to listen on the channel. The agent will be woken up every time a new message arrives.</p>
-          <div class="code-block">
-            <div class="code-label">Terminal</div>
-            <pre><span class="cmd">/channel subscribe</span> <span class="val">orders.new</span> <span class="kw">--agent</span> inventory-agent
-<span class="cm"># Output: ✅ inventory-agent is now subscribed to "orders.new"</span></pre>
-          </div>
-          <code>/channel subscribe &lt;channel&gt; --agent &lt;agent-name&gt;</code>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num" aria-hidden="true">3</div>
-        <div class="step-body">
-          <h3>Publish a message</h3>
-          <p>Push a JSON payload to the channel. All subscribers receive it immediately. You can also publish from within any agent's code or skill.</p>
-          <div class="code-block">
-            <div class="code-label">Terminal</div>
-            <pre><span class="cmd">/channel publish</span> <span class="val">orders.new</span> <span class="str">'{"id":"ORD-4821","sku":"SHOE-42","qty":2}'</span>
-<span class="cm"># Output: ✅ Message delivered to 1 subscriber</span></pre>
-          </div>
-          <code>/channel publish &lt;channel&gt; &lt;JSON payload&gt;</code>
-        </div>
-      </div>
-
-      <div class="step">
-        <div class="step-num" aria-hidden="true">4</div>
-        <div class="step-body">
-          <h3>Add an on-event handler</h3>
-          <p>Wire a skill or prompt to fire automatically whenever a message arrives. The payload is injected into the skill as <code>$event</code>.</p>
-          <div class="code-block">
-            <div class="code-label">Terminal</div>
-            <pre><span class="cmd">/channel on-event</span> <span class="val">orders.new</span> <span class="kw">--run</span> <span class="str">"Update inventory for order $event.id, SKU $event.sku, qty $event.qty"</span>
-<span class="cm"># From now on, every new order automatically updates inventory</span></pre>
-          </div>
-          <code>/channel on-event &lt;channel&gt; --run "&lt;prompt with $event placeholders&gt;"</code>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Command Reference -->
-<section class="section" id="commands">
-  <div class="container">
-    <div class="section-label">Reference</div>
-    <h2 class="section-title">Full Command Reference</h2>
-    <p class="section-subtitle">Every <code>/channel</code> command, flag, and expected output — your complete cheat sheet for Agent Channels.</p>
-
-    <div style="overflow-x:auto; margin-bottom:40px;">
-    <table class="cmd-table" aria-label="Agent Channels command reference">
-      <thead>
-        <tr>
-          <th scope="col">Command</th>
-          <th scope="col">Description</th>
-          <th scope="col">Key Flags</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>/channel create &lt;name&gt;</code></td>
-          <td>Create a new named channel</td>
-          <td><code>--type</code> broadcast | queue | rr | scheduled<br><code>--buffer</code> N (messages to retain)<br><code>--cron</code> "0 9 * * *" (for scheduled type)</td>
-        </tr>
-        <tr>
-          <td><code>/channel list</code></td>
-          <td>List all channels in the current workspace with subscriber count and message stats</td>
-          <td><code>--verbose</code> show full details</td>
-        </tr>
-        <tr>
-          <td><code>/channel subscribe &lt;channel&gt;</code></td>
-          <td>Subscribe the current agent (or a named agent) to a channel</td>
-          <td><code>--agent</code> &lt;name&gt;<br><code>--filter</code> JSONPath expression to only receive matching messages</td>
-        </tr>
-        <tr>
-          <td><code>/channel unsubscribe &lt;channel&gt;</code></td>
-          <td>Remove a subscription from a channel</td>
-          <td><code>--agent</code> &lt;name&gt;</td>
-        </tr>
-        <tr>
-          <td><code>/channel publish &lt;channel&gt; &lt;payload&gt;</code></td>
-          <td>Broadcast a JSON message to all channel subscribers</td>
-          <td><code>--priority</code> low | normal | high<br><code>--ttl</code> seconds before message expires</td>
-        </tr>
-        <tr>
-          <td><code>/channel on-event &lt;channel&gt;</code></td>
-          <td>Register an event handler that fires on every new message</td>
-          <td><code>--run</code> prompt string with $event placeholders<br><code>--skill</code> skill name to invoke<br><code>--agent</code> which agent executes the handler</td>
-        </tr>
-        <tr>
-          <td><code>/channel off-event &lt;channel&gt;</code></td>
-          <td>Remove a registered event handler</td>
-          <td><code>--id</code> handler ID (from on-event output)</td>
-        </tr>
-        <tr>
-          <td><code>/channel history &lt;channel&gt;</code></td>
-          <td>Replay buffered messages from a channel</td>
-          <td><code>--last</code> N messages<br><code>--since</code> ISO timestamp<br><code>--json</code> output as JSON array</td>
-        </tr>
-        <tr>
-          <td><code>/channel inspect &lt;channel&gt;</code></td>
-          <td>Show channel configuration, subscriber list, handler list, and buffer stats</td>
-          <td>—</td>
-        </tr>
-        <tr>
-          <td><code>/channel bridge &lt;channel&gt;</code></td>
-          <td>Forward all messages to an external webhook URL</td>
-          <td><code>--url</code> webhook endpoint<br><code>--secret</code> HMAC signing secret<br><code>--inbound</code> also accept POSTs from the webhook as publishes</td>
-        </tr>
-        <tr>
-          <td><code>/channel delete &lt;channel&gt;</code></td>
-          <td>Delete a channel and all its history</td>
-          <td><code>--force</code> skip confirmation</td>
-        </tr>
-        <tr>
-          <td><code>/channel pause &lt;channel&gt;</code></td>
-          <td>Temporarily stop delivering messages to subscribers (buffer still fills)</td>
-          <td>—</td>
-        </tr>
-        <tr>
-          <td><code>/channel resume &lt;channel&gt;</code></td>
-          <td>Resume a paused channel and flush buffered messages to subscribers</td>
-          <td>—</td>
-        </tr>
-        <tr>
-          <td><code>/channel stats</code></td>
-          <td>Show global message throughput, delivery latency, and error rates across all channels</td>
-          <td><code>--since</code> time window</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Your Agent, in Your Inbox</h2>
+    <p class="section-subtitle">OpenClaw's Gateway system bridges your messaging app to the AI engine running on your machine. Every message you send becomes a task. Every result comes back as a reply.</p>
 
     <div class="alert alert--teal">
       <div class="alert-icon">&#x1F4A1;</div>
-      <p><strong>Pro tip:</strong> You can use the <code>$event</code> variable anywhere in your <code>--run</code> prompt string. Access nested fields with dot notation: <code>$event.order.customer.email</code>, <code>$event.metadata.source</code>. The full payload is also available as <code>$event._raw</code>.</p>
+      <p><strong>One agent, every channel.</strong> The same OpenClaw instance powers all your connected channels simultaneously. A task you send on WhatsApp and a reply you get on Telegram are the same agent — your agent — working for you everywhere at once.</p>
+    </div>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4F2;</div>
+        <h3>Message from anywhere</h3>
+        <p>Send a task from your phone while commuting, get the answer before you arrive. OpenClaw runs on your computer at home; you just need your messaging app.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4AC;</div>
+        <h3>Natural language commands</h3>
+        <p>No slash commands or special syntax required. Just write what you want in plain English — "Summarise my emails", "Book a meeting for tomorrow at 3pm", "Check my Shopify orders."</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F514;</div>
+        <h3>Agent sends you alerts too</h3>
+        <p>It's a two-way channel. OpenClaw can push notifications to you — price drop alerts, CI build results, new orders, daily briefings — without you asking.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F512;</div>
+        <h3>Private by default</h3>
+        <p>Your messages go from your phone to your own machine — not through any third-party server. The agent only responds to your verified account or Telegram user ID.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Real-World Patterns -->
-<section class="section section--alt" id="patterns">
+<!-- Channel comparison -->
+<section class="section section--alt" id="compare">
   <div class="container">
-    <div class="section-label">Real-World Patterns</div>
-    <h2 class="section-title">6 Patterns You Can Build Today</h2>
-    <p class="section-subtitle">Copy any of these patterns into your own OpenClaw workspace — they're production-tested recipes, not toy demos.</p>
+    <div class="section-label">Choose Your Channel</div>
+    <h2 class="section-title">Which Channel Is Right for You?</h2>
+    <p class="section-subtitle">Every channel works for sending tasks and receiving replies. Here's how they differ so you can pick the right one for your setup.</p>
 
-    <!-- Pattern 1 -->
-    <div class="pattern-card">
-      <div class="pattern-header">
-        <div class="p-icon">&#x1F6D2;</div>
-        <h3>E-Commerce Order Pipeline</h3>
-        <span class="p-tag tag-teal">Broadcast</span>
-      </div>
-      <div class="pattern-body">
-        <p>When a new Shopify order arrives, fan out simultaneously to three agents: inventory deduction, Slack customer notification, and QuickBooks invoice creation.</p>
-        <div class="code-block">
-          <pre><span class="cm"># 1. Create the channel</span>
-<span class="cmd">/channel create</span> <span class="val">shopify.orders.new</span> <span class="kw">--buffer</span> <span class="val">500</span>
-
-<span class="cm"># 2. Wire up three independent handlers</span>
-<span class="cmd">/channel on-event</span> <span class="val">shopify.orders.new</span> <span class="kw">--run</span> <span class="str">"Deduct stock: SKU $event.sku × $event.qty"</span>
-<span class="cmd">/channel on-event</span> <span class="val">shopify.orders.new</span> <span class="kw">--run</span> <span class="str">"Post to Slack #orders: New order $event.id from $event.customer"</span>
-<span class="cmd">/channel on-event</span> <span class="val">shopify.orders.new</span> <span class="kw">--run</span> <span class="str">"Create QuickBooks invoice for $event.total to $event.customer.email"</span>
-
-<span class="cm"># 3. Shopify webhook publishes via bridge</span>
-<span class="cmd">/channel bridge</span> <span class="val">shopify.orders.new</span> <span class="kw">--inbound</span> <span class="kw">--url</span> <span class="str">https://hooks.learnopenclaw.org/shopify</span></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pattern 2 -->
-    <div class="pattern-card">
-      <div class="pattern-header">
-        <div class="p-icon">&#x1F4E7;</div>
-        <h3>Email Triage Queue</h3>
-        <span class="p-tag tag-purple">Queue</span>
-      </div>
-      <div class="pattern-body">
-        <p>New emails publish to a queue channel. Three identical triage agents each pick up one email at a time, classify it, draft a reply, and archive it — in parallel, with no duplicate processing.</p>
-        <div class="code-block">
-          <pre><span class="cm"># Queue type: each message goes to exactly one subscriber</span>
-<span class="cmd">/channel create</span> <span class="val">inbox.unread</span> <span class="kw">--type</span> <span class="val">queue</span>
-
-<span class="cmd">/channel subscribe</span> <span class="val">inbox.unread</span> <span class="kw">--agent</span> <span class="val">triage-agent-1</span>
-<span class="cmd">/channel subscribe</span> <span class="val">inbox.unread</span> <span class="kw">--agent</span> <span class="val">triage-agent-2</span>
-<span class="cmd">/channel subscribe</span> <span class="val">inbox.unread</span> <span class="kw">--agent</span> <span class="val">triage-agent-3</span>
-
-<span class="cm"># Gmail monitor publishes each unread email</span>
-<span class="cmd">/channel on-event</span> <span class="val">gmail.new</span> <span class="kw">--run</span> <span class="str">"Publish to inbox.unread: $event"</span></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pattern 3 -->
-    <div class="pattern-card">
-      <div class="pattern-header">
-        <div class="p-icon">&#x1F916;</div>
-        <h3>Multi-Agent Research Pipeline</h3>
-        <span class="p-tag tag-amber">Cascading</span>
-      </div>
-      <div class="pattern-body">
-        <p>A research task spawns sub-agents via the <a href="multiagent.html">multi-agent system</a>. Each sub-agent publishes findings to a <code>research.findings</code> channel. A synthesis agent subscribes and assembles the final report once all findings arrive.</p>
-        <div class="code-block">
-          <pre><span class="cm"># Sub-agents publish as they complete</span>
-<span class="cmd">/channel create</span> <span class="val">research.findings</span> <span class="kw">--buffer</span> <span class="val">50</span>
-<span class="cmd">/channel create</span> <span class="val">research.complete</span>
-
-<span class="cm"># Each sub-agent ends its task by publishing</span>
-<span class="cm"># /channel publish research.findings {"topic":"market-size","data":"..."}</span>
-
-<span class="cm"># Synthesis agent waits for N findings then triggers</span>
-<span class="cmd">/channel on-event</span> <span class="val">research.findings</span> <span class="kw">--run</span> <span class="str">"If research.findings has 5+ messages, synthesise all findings into a report and publish to research.complete"</span></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pattern 4 -->
-    <div class="pattern-card">
-      <div class="pattern-header">
-        <div class="p-icon">&#x23F0;</div>
-        <h3>Daily Briefing on Schedule</h3>
-        <span class="p-tag tag-green">Scheduled</span>
-      </div>
-      <div class="pattern-body">
-        <p>A scheduled channel fires every morning at 8 AM. A handler fetches your calendar, emails, Slack DMs, and GitHub PRs — and delivers a single daily briefing to your desktop.</p>
-        <div class="code-block">
-          <pre><span class="cm"># Scheduled type publishes automatically on cron</span>
-<span class="cmd">/channel create</span> <span class="val">cron.morning</span> <span class="kw">--type</span> <span class="val">scheduled</span> <span class="kw">--cron</span> <span class="str">"0 8 * * 1-5"</span>
-
-<span class="cmd">/channel on-event</span> <span class="val">cron.morning</span> <span class="kw">--run</span> <span class="str">"Fetch today's calendar events, top 5 unread emails, open GitHub PRs assigned to me, and any Slack DMs since yesterday. Write a concise morning briefing."</span></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pattern 5 -->
-    <div class="pattern-card">
-      <div class="pattern-header">
-        <div class="p-icon">&#x1F6A8;</div>
-        <h3>CI/CD Deploy Gate</h3>
-        <span class="p-tag tag-blue">Filtered</span>
-      </div>
-      <div class="pattern-body">
-        <p>Your CI system publishes all build events to <code>ci.events</code>. A filter on the subscriber ensures your deploy agent only wakes up for <code>status: "passed"</code> events on the <code>main</code> branch.</p>
-        <div class="code-block">
-          <pre><span class="cmd">/channel create</span> <span class="val">ci.events</span>
-
-<span class="cm"># Deploy agent only receives passing main-branch builds</span>
-<span class="cmd">/channel subscribe</span> <span class="val">ci.events</span> <span class="kw">--agent</span> <span class="val">deploy-agent</span> <span class="kw">--filter</span> <span class="str">"$.status=='passed' && $.branch=='main'"</span>
-
-<span class="cm"># Alerting agent gets ALL failures regardless of branch</span>
-<span class="cmd">/channel subscribe</span> <span class="val">ci.events</span> <span class="kw">--agent</span> <span class="val">alert-agent</span> <span class="kw">--filter</span> <span class="str">"$.status=='failed'"</span></pre>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pattern 6 -->
-    <div class="pattern-card">
-      <div class="pattern-header">
-        <div class="p-icon">&#x1F4CA;</div>
-        <h3>Live Dashboard Feed</h3>
-        <span class="p-tag tag-teal">Bridged</span>
-      </div>
-      <div class="pattern-body">
-        <p>Bridge a channel to an outbound webhook so your external dashboard or Notion database receives a live feed of agent activity without any custom integration code.</p>
-        <div class="code-block">
-          <pre><span class="cm"># Bridge: outbound only — all messages forwarded to webhook</span>
-<span class="cmd">/channel bridge</span> <span class="val">agent.activity</span> <span class="kw">--url</span> <span class="str">https://your-dashboard.com/ingest</span> <span class="kw">--secret</span> <span class="str">$WEBHOOK_SECRET</span>
-
-<span class="cm"># Now every agent can publish to agent.activity and your dashboard updates</span>
-<span class="cmd">/channel publish</span> <span class="val">agent.activity</span> <span class="str">'{"event":"task_complete","agent":"research","duration_s":42}'</span></pre>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- Naming Conventions -->
-<section class="section" id="naming">
-  <div class="container">
-    <div class="section-label">Best Practices</div>
-    <h2 class="section-title">Channel Naming Conventions</h2>
-    <p class="section-subtitle">A consistent naming scheme makes large multi-channel workspaces much easier to manage and debug.</p>
-
-    <div class="alert alert--purple">
-      <div class="alert-icon">&#x1F4CF;</div>
-      <p><strong>Convention:</strong> Use lowercase dot-separated namespaces — <code>domain.noun.verb</code> or <code>domain.event</code>. Avoid underscores and spaces. Keep names short but descriptive.</p>
-    </div>
-
-    <div style="overflow-x:auto; margin-bottom:32px;">
-    <table class="cmd-table" aria-label="Channel naming convention examples">
+    <div style="overflow-x:auto; margin-bottom:36px;">
+    <table class="cmp-table" aria-label="Channel comparison table">
       <thead>
         <tr>
-          <th scope="col">Pattern</th>
-          <th scope="col">Good Examples</th>
-          <th scope="col">Avoid</th>
+          <th scope="col">Channel</th>
+          <th scope="col">Setup difficulty</th>
+          <th scope="col">Works on mobile</th>
+          <th scope="col">Proactive alerts</th>
+          <th scope="col">File/image replies</th>
+          <th scope="col">Best for</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><strong>domain.event</strong></td>
-          <td><code>orders.new</code> · <code>user.signup</code> · <code>payment.failed</code></td>
-          <td><code>newOrder</code> · <code>NEW_ORDER</code></td>
+          <td><strong>📱 WhatsApp</strong></td>
+          <td>Medium (needs Meta API)</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td>Personal use, mobile-first</td>
         </tr>
         <tr>
-          <td><strong>domain.noun.verb</strong></td>
-          <td><code>github.pr.merged</code> · <code>shopify.inventory.low</code></td>
-          <td><code>github-pr-merged</code> · <code>github/pr</code></td>
+          <td><strong>✈️ Telegram</strong></td>
+          <td>Easy (free bot token)</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td>Best all-round, recommended first choice</td>
         </tr>
         <tr>
-          <td><strong>system.scope</strong></td>
-          <td><code>cron.daily</code> · <code>cron.hourly</code> · <code>alerts.critical</code></td>
-          <td><code>daily_cron</code> · <code>ALERT</code></td>
+          <td><strong>🔧 Slack</strong></td>
+          <td>Medium (workspace app)</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td>Teams, work workflows</td>
         </tr>
         <tr>
-          <td><strong>agent.status</strong></td>
-          <td><code>agent.research.complete</code> · <code>agent.deploy.started</code></td>
-          <td><code>researchDone</code> · <code>deploy</code></td>
+          <td><strong>🎮 Discord</strong></td>
+          <td>Easy (bot token)</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td>Communities, side projects</td>
         </tr>
         <tr>
-          <td><strong>app.entity.action</strong></td>
-          <td><code>notion.page.created</code> · <code>slack.dm.received</code></td>
-          <td><code>notionCreated</code> · <code>slackDM</code></td>
+          <td><strong>💬 iMessage</strong></td>
+          <td>Easy (Mac only)</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td class="partial">Partial</td>
+          <td>Apple ecosystem users</td>
+        </tr>
+        <tr>
+          <td><strong>🌐 Web UI</strong></td>
+          <td>None (built in)</td>
+          <td class="partial">Browser only</td>
+          <td class="tick">✓</td>
+          <td class="tick">✓</td>
+          <td>Getting started, desktop use</td>
         </tr>
       </tbody>
     </table>
     </div>
 
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-icon">&#x1F9F9;</div>
-        <h3>Use --filter to stay focused</h3>
-        <p>Rather than creating many narrow channels, create one broad channel per domain and use <code>--filter</code> on subscribers. This keeps your channel list manageable.</p>
+    <div class="alert alert--green">
+      <div class="alert-icon">&#x1F3C6;</div>
+      <p><strong>Recommended for most people: Telegram.</strong> It's free, takes under 5 minutes to set up, works on every device, and supports images, files, and formatted text in replies. Start here if you're not sure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Telegram Setup -->
+<section class="section" id="telegram">
+  <div class="container">
+    <div class="section-label">Step-by-Step Setup</div>
+    <h2 class="section-title" style="color:var(--blue);">&#x2708;&#xFE0F; Telegram Setup</h2>
+    <p class="section-subtitle">From zero to sending tasks in under 5 minutes. You'll need the Telegram app and a free bot token from BotFather.</p>
+
+    <div class="setup-block">
+      <div class="setup-header">
+        <div class="sh-logo" style="background:#dbeafe;">&#x2708;&#xFE0F;</div>
+        <h3>Telegram Bot Connection</h3>
+        <span class="sh-time">⏱ ~5 minutes</span>
       </div>
-      <div class="card">
-        <div class="card-icon">&#x1F4BE;</div>
-        <h3>Set appropriate --buffer sizes</h3>
-        <p>High-volume channels (logs, metrics) should use a small buffer (10–50). Low-volume critical channels (orders, alerts) should use larger buffers (500–1000) so you never miss a message.</p>
+      <div class="setup-body">
+        <div class="steps" aria-label="Telegram setup steps">
+          <div class="step">
+            <div class="step-num" aria-hidden="true">1</div>
+            <div class="step-body">
+              <h4>Create your Telegram bot</h4>
+              <p>Open Telegram and search for <strong>@BotFather</strong>. Send it the message <code>/newbot</code>, choose a name and username for your bot (e.g. <em>MyOpenClawBot</em>). BotFather will give you a <strong>bot token</strong> — copy it, you'll need it in step 3.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">2</div>
+            <div class="step-body">
+              <h4>Find your Telegram user ID</h4>
+              <p>Search for <strong>@userinfobot</strong> on Telegram and send it any message. It will reply with your numeric user ID (e.g. <code>123456789</code>). OpenClaw uses this to make sure only you can control your agent.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">3</div>
+            <div class="step-body">
+              <h4>Add your credentials to config.yaml</h4>
+              <p>Open your OpenClaw <code>config.yaml</code> file (usually at <code>~/.openclaw/config.yaml</code>) and add the <code>gateway</code> block:</p>
+              <div class="code-block">
+                <div class="code-label">~/.openclaw/config.yaml</div>
+                <pre><span class="kw">gateway</span>:
+  <span class="kw">telegram</span>: <span class="sv">true</span>
+  <span class="kw">telegram_token</span>: <span class="sv">"7312456789:AAH_your_bot_token_here"</span>
+  <span class="kw">telegram_allowed_users</span>: [<span class="num">123456789</span>]  <span class="ck"># your user ID</span></pre>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">4</div>
+            <div class="step-body">
+              <h4>Restart OpenClaw</h4>
+              <p>Stop and restart OpenClaw. You should see <code>✅ Telegram gateway connected</code> in the console output. Now open Telegram, find your bot, and send it a message.</p>
+              <div class="code-block">
+                <div class="code-label">Terminal</div>
+                <pre><span class="cmd">openclaw start</span>
+<span class="ck"># ✅ Telegram gateway connected (@MyOpenClawBot)</span>
+<span class="ck"># 🦞 OpenClaw is ready — send a message on Telegram to begin</span></pre>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">5</div>
+            <div class="step-body">
+              <h4>Send your first task</h4>
+              <p>Message your bot on Telegram with any natural language task. Try these to get started:</p>
+              <div class="chat-window" aria-label="Example Telegram conversation">
+                <div class="chat-header">
+                  <div class="ch-dot"></div>
+                  <span>MyOpenClawBot</span>
+                  <span class="ch-app">Telegram</span>
+                </div>
+                <div class="bubble you"><span class="bub-label">You</span><span>Summarise my last 5 unread emails</span></div>
+                <div class="bubble agent"><span class="bub-label">OpenClaw</span><span>Sure — fetching your inbox now...<br><br>📧 <strong>5 unread emails</strong><br>1. Invoice from Stripe — $142 due 25 Mar<br>2. GitHub: PR #44 merged by @teammate<br>3. Notion: Marcus commented on "Q2 Goals"<br>4. Shopify: New order #1082 — Nike Shoes × 2<br>5. Calendar: Meeting reminder for Fri 2pm</span></div>
+                <div class="bubble you"><span>Reply to the Stripe one and say I'll pay by Friday</span></div>
+                <div class="bubble agent"><span>Draft ready — shall I send it?<br><br><em>"Hi, thanks for the invoice. I'll arrange payment by Friday 28th March. Best, Conan"</em><br><br>Reply <strong>yes</strong> to confirm or edit it first.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-icon">&#x1F6A7;</div>
-        <h3>Pause before deployments</h3>
-        <p>Use <code>/channel pause</code> before updating a handler, then <code>/channel resume</code> afterward. Buffered messages will flush in order — no events lost during updates.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WhatsApp Setup -->
+<section class="section section--alt" id="whatsapp">
+  <div class="container">
+    <div class="section-label">Step-by-Step Setup</div>
+    <h2 class="section-title" style="color:var(--green);">&#x1F4F1; WhatsApp Setup</h2>
+    <p class="section-subtitle">WhatsApp requires a free Meta developer account to generate a phone number and access token. It takes about 15 minutes but gives you a native WhatsApp experience.</p>
+
+    <div class="alert alert--amber">
+      <div class="alert-icon">&#x26A0;&#xFE0F;</div>
+      <p><strong>Before you start:</strong> You need a Meta (Facebook) developer account and a phone number not already registered to WhatsApp. The Meta Cloud API is free for up to 1,000 conversations per month — more than enough for personal use.</p>
+    </div>
+
+    <div class="setup-block">
+      <div class="setup-header">
+        <div class="sh-logo" style="background:#dcfce7;">&#x1F4F1;</div>
+        <h3>WhatsApp Cloud API Connection</h3>
+        <span class="sh-time">⏱ ~15 minutes</span>
+      </div>
+      <div class="setup-body">
+        <div class="steps" aria-label="WhatsApp setup steps">
+          <div class="step">
+            <div class="step-num" aria-hidden="true">1</div>
+            <div class="step-body">
+              <h4>Create a Meta developer app</h4>
+              <p>Go to <strong>developers.facebook.com</strong>, create a new app, and choose <strong>Business</strong> as the type. Add the <strong>WhatsApp</strong> product to your app. Meta will give you a temporary phone number to test with.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">2</div>
+            <div class="step-body">
+              <h4>Get your access token and phone number ID</h4>
+              <p>In the Meta dashboard, navigate to <strong>WhatsApp → API Setup</strong>. Copy the <strong>temporary access token</strong> and your <strong>Phone number ID</strong>. Also note your <strong>WhatsApp Business Account ID</strong> — you'll need all three.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">3</div>
+            <div class="step-body">
+              <h4>Add your credentials to config.yaml</h4>
+              <div class="code-block">
+                <div class="code-label">~/.openclaw/config.yaml</div>
+                <pre><span class="kw">gateway</span>:
+  <span class="kw">whatsapp</span>: <span class="sv">true</span>
+  <span class="kw">whatsapp_token</span>: <span class="sv">"EAAxxxxxxxxxxxxxxxx"</span>
+  <span class="kw">whatsapp_phone_id</span>: <span class="sv">"123456789012345"</span>
+  <span class="kw">whatsapp_allowed_numbers</span>: [<span class="sv">"+447911123456"</span>] <span class="ck"># your number</span></pre>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">4</div>
+            <div class="step-body">
+              <h4>Set up the inbound webhook</h4>
+              <p>OpenClaw starts a local webhook server on port <code>7800</code>. Use <strong>ngrok</strong> or a similar tunnel to expose it so Meta can deliver incoming messages to your machine.</p>
+              <div class="code-block">
+                <div class="code-label">Terminal — two separate windows</div>
+                <pre><span class="ck"># Window 1: start OpenClaw</span>
+<span class="cmd">openclaw start</span>
+
+<span class="ck"># Window 2: expose the webhook</span>
+<span class="cmd">ngrok http 7800</span>
+<span class="ck"># Copy the https://xxxx.ngrok.io URL</span>
+<span class="ck"># Paste it into Meta Dashboard → WhatsApp → Configuration → Webhook URL</span>
+<span class="ck"># Verify token: use the value in your config.yaml webhook_verify_token field</span></pre>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num" aria-hidden="true">5</div>
+            <div class="step-body">
+              <h4>Send a test message</h4>
+              <p>In the Meta dashboard, use the <strong>Send Message</strong> test to send a WhatsApp message to your own phone number. Once it arrives, reply from your phone — OpenClaw will respond.</p>
+              <div class="chat-window" aria-label="Example WhatsApp conversation">
+                <div class="chat-header">
+                  <div class="ch-dot"></div>
+                  <span>OpenClaw Agent</span>
+                  <span class="ch-app">WhatsApp</span>
+                </div>
+                <div class="bubble you"><span class="bub-label">You</span><span>Check my Shopify orders from today</span></div>
+                <div class="bubble agent"><span class="bub-label">OpenClaw</span><span>🛍️ <strong>3 orders today</strong><br>#1082 — Nike Shoes × 2 — $189 — Processing<br>#1083 — Gym Bag — $65 — Fulfilled<br>#1084 — Water Bottle × 3 — $54 — Pending<br><br>Total revenue today: <strong>$308</strong></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slack & Discord -->
+<section class="section" id="slack-discord">
+  <div class="container">
+    <div class="section-label">More Channels</div>
+    <h2 class="section-title">Slack &amp; Discord</h2>
+    <p class="section-subtitle">Connect OpenClaw to your Slack workspace or Discord server — great for teams who want the whole group to interact with a shared agent.</p>
+
+    <div class="channel-grid">
+      <!-- Slack -->
+      <div class="ch-card">
+        <div class="ch-card-head">
+          <div class="ch-logo ch-logo--slack">&#x1F527;</div>
+          <h3>Slack</h3>
+          <span class="ch-badge badge--team">Team</span>
+        </div>
+        <p>Add OpenClaw as a Slack app to your workspace. Any team member can send tasks to the agent by messaging the bot directly or mentioning it in a channel.</p>
+        <ul class="ch-pros">
+          <li>Responds in threads to keep channels clean</li>
+          <li>Can post to specific channels for alerts</li>
+          <li>Works with Slack's built-in file sharing</li>
+          <li>Supports Slack's rich text formatting in replies</li>
+        </ul>
+        <div class="code-block" style="margin-top:16px;">
+          <div class="code-label">config.yaml</div>
+          <pre><span class="kw">gateway</span>:
+  <span class="kw">slack</span>: <span class="sv">true</span>
+  <span class="kw">slack_bot_token</span>: <span class="sv">"xoxb-your-token"</span>
+  <span class="kw">slack_signing_secret</span>: <span class="sv">"your-secret"</span>
+  <span class="kw">slack_allowed_users</span>: [<span class="sv">"U0XXXXXXX"</span>]</pre>
+        </div>
+      </div>
+
+      <!-- Discord -->
+      <div class="ch-card">
+        <div class="ch-card-head">
+          <div class="ch-logo ch-logo--discord">&#x1F3AE;</div>
+          <h3>Discord</h3>
+          <span class="ch-badge badge--pop">Popular</span>
+        </div>
+        <p>Create a Discord bot and invite it to your server. OpenClaw listens for messages in designated channels and responds like any other Discord bot.</p>
+        <ul class="ch-pros">
+          <li>Works across all your Discord servers</li>
+          <li>Can restrict to specific channels or roles</li>
+          <li>Supports slash command shortcuts</li>
+          <li>Fast — Discord bots have very low latency</li>
+        </ul>
+        <div class="code-block" style="margin-top:16px;">
+          <div class="code-label">config.yaml</div>
+          <pre><span class="kw">gateway</span>:
+  <span class="kw">discord</span>: <span class="sv">true</span>
+  <span class="kw">discord_token</span>: <span class="sv">"your-discord-bot-token"</span>
+  <span class="kw">discord_allowed_channels</span>: [<span class="num">1234567890</span>]
+  <span class="kw">discord_allowed_users</span>: [<span class="num">987654321</span>]</pre>
+        </div>
+      </div>
+
+      <!-- iMessage -->
+      <div class="ch-card">
+        <div class="ch-card-head">
+          <div class="ch-logo ch-logo--imsg">&#x1F4AC;</div>
+          <h3>iMessage</h3>
+          <span class="ch-badge badge--mac">Mac only</span>
+        </div>
+        <p>On macOS, OpenClaw can read and send iMessages directly through the Messages app. No extra accounts needed — it uses your existing Apple ID.</p>
+        <ul class="ch-pros">
+          <li>No accounts or tokens to create</li>
+          <li>Works with SMS fallback on non-iPhone devices</li>
+          <li>Native macOS notifications</li>
+          <li>Requires macOS 13+ and Full Disk Access permission</li>
+        </ul>
+        <div class="code-block" style="margin-top:16px;">
+          <div class="code-label">config.yaml</div>
+          <pre><span class="kw">gateway</span>:
+  <span class="kw">imessage</span>: <span class="sv">true</span>
+  <span class="kw">imessage_allowed_numbers</span>: [<span class="sv">"+447911123456"</span>]
+  <span class="ck"># Grant Full Disk Access in System Settings → Privacy</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert--teal" style="margin-top:8px;">
+      <div class="alert-icon">&#x1F504;</div>
+      <p><strong>Run multiple channels at once.</strong> You can enable WhatsApp, Telegram, and Slack simultaneously in the same <code>config.yaml</code>. The same agent handles all three — so you can message it from your phone on WhatsApp while a teammate uses Slack.</p>
+    </div>
+  </div>
+</section>
+
+<!-- What you can do / example tasks -->
+<section class="section section--alt" id="examples">
+  <div class="container">
+    <div class="section-label">What to send</div>
+    <h2 class="section-title">Tasks You Can Send Right Now</h2>
+    <p class="section-subtitle">Once your channel is connected, you can type anything. Here are the most popular tasks people send through their messaging apps.</p>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4E7;</div>
+        <h3>Email management</h3>
+        <p>"Summarise my last 10 emails"<br>"Reply to Marcus and say I'm free Thursday"<br>"Flag anything urgent from today"</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4C5;</div>
+        <h3>Calendar &amp; scheduling</h3>
+        <p>"What do I have on tomorrow?"<br>"Book a 30-min call with Sarah next week"<br>"Clear my Wednesday afternoon"</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F6D2;</div>
+        <h3>Shopify &amp; e-commerce</h3>
+        <p>"How many orders came in today?"<br>"What's my revenue this week?"<br>"Alert me if any order goes unfulfilled for 24h"</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F50D;</div>
+        <h3>Research &amp; web</h3>
+        <p>"Research the top 5 competitors for X"<br>"Summarise the article at this URL"<br>"Find the best price for MacBook Pro M4"</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x23F0;</div>
+        <h3>Reminders &amp; alerts</h3>
+        <p>"Remind me at 3pm to call the dentist"<br>"Alert me on WhatsApp if Bitcoin drops below $80k"<br>"Send me a Friday evening weekly summary"</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4C2;</div>
+        <h3>Files &amp; documents</h3>
+        <p>"Summarise the PDF I sent you"<br>"Create a Google Doc draft from these bullet points"<br>"Convert this CSV into a summary report"</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pro tips -->
+<section class="section" id="tips">
+  <div class="container">
+    <div class="section-label">Pro Tips</div>
+    <h2 class="section-title">Get More Out of Your Channel</h2>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4CB;</div>
+        <h3>Use the /status command</h3>
+        <p>Send <code>/status</code> to any connected channel to see what your agent is currently doing, what tasks are queued, and which skills are loaded.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x23F8;&#xFE0F;</div>
+        <h3>Pause &amp; resume your agent</h3>
+        <p>Send <code>/pause</code> to stop your agent from running tasks (it will still receive messages). Send <code>/resume</code> to start again. Useful overnight or when travelling.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F4CE;</div>
+        <h3>Send files as context</h3>
+        <p>On all channels, you can send a PDF, image, or spreadsheet with your message. OpenClaw reads the attachment and uses it as context for your task.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F550;</div>
+        <h3>Set up a morning briefing</h3>
+        <p>Tell your agent once: <em>"Every weekday at 8am, send me a summary of my emails, calendar, and Shopify orders on WhatsApp."</em> It runs automatically from then on.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F916;</div>
+        <h3>Give your agent a nickname</h3>
+        <p>Name your Telegram bot or Slack app something memorable — <em>Claw</em>, <em>Assistant</em>, <em>Rex</em>. It makes the interaction feel more natural and helps you remember which bot is which.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">&#x1F513;</div>
+        <h3>Lock it to your user ID</h3>
+        <p>Always set <code>telegram_allowed_users</code> or <code>whatsapp_allowed_numbers</code> in your config. This prevents anyone else from controlling your agent if they discover the bot name.</p>
       </div>
     </div>
   </div>
@@ -1093,71 +972,71 @@
 
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" aria-controls="faq1">
-          What happens to messages if no agent is subscribed?
+          Does my agent need to be running on my computer for messages to work?
           <span class="faq-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="faq-a" id="faq1" role="region">
-          Messages are stored in the ring buffer up to the <code>--buffer</code> limit (default 100). When an agent subscribes later, it can replay buffered messages using <code>/channel history</code>. On-event handlers will not fire retroactively — they only fire for messages that arrive after they're registered.
+          Yes — OpenClaw runs locally on your machine, so your computer needs to be on and OpenClaw running for the agent to respond. Most people just leave it running as a background process. If you're away from home and your computer is off, messages will queue and be processed when you start the agent again.
         </div>
       </div>
 
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" aria-controls="faq2">
-          Can I publish from inside a skill or SKILL.md prompt?
+          Is it safe to connect my WhatsApp or Telegram to an AI agent?
           <span class="faq-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="faq-a" id="faq2" role="region">
-          Yes. Inside any skill or prompt, use the built-in <code>publish(channel, payload)</code> function or simply run the <code>/channel publish</code> command as a shell step. Most automation skills (Shopify, GitHub, Notion) have built-in channel publish hooks — check their SKILL.md for the <code>outputs:</code> section.
+          Yes, with the right setup. OpenClaw only accepts messages from the account numbers or user IDs you explicitly whitelist in <code>config.yaml</code>. Your messages travel from your phone to the messaging platform's servers, then to your own machine — no third-party has access. We recommend reading the <a href="security.html">Security Guide</a> before connecting any sensitive capabilities.
         </div>
       </div>
 
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" aria-controls="faq3">
-          How do channels interact with Multi-Agent orchestration?
+          Why is Telegram easier to set up than WhatsApp?
           <span class="faq-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="faq-a" id="faq3" role="region">
-          Channels and <a href="multiagent.html">multi-agent orchestration</a> complement each other. The orchestrator spawns sub-agents and can also listen on a channel for their results. Sub-agents publish to channels when they complete — making the results available for replay, auditing, or triggering further workflows independently of the orchestrator lifecycle.
+          Telegram's bot API is designed for developers — you get a token in 30 seconds via @BotFather with no business verification needed. WhatsApp's Cloud API requires a Meta developer account, business verification, and a webhook setup. Both work great; Telegram is just faster to get started with.
         </div>
       </div>
 
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" aria-controls="faq4">
-          Are messages encrypted or logged?
+          Can I use the same agent across multiple channels at once?
           <span class="faq-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="faq-a" id="faq4" role="region">
-          Channel message buffers are stored in a local SQLite database inside your OpenClaw data directory. They are not encrypted at rest by default, but they never leave your machine unless you use <code>/channel bridge</code>. For sensitive payloads, avoid storing PII directly — publish a reference ID and let the subscriber fetch the full data from a secure source.
+          Yes. Enable as many gateways as you like in <code>config.yaml</code> — Telegram, WhatsApp, and Slack can all run simultaneously. The same agent processes tasks from all three. If you send a task from WhatsApp and then check in on Telegram, you're talking to the same agent with the same memory and context.
         </div>
       </div>
 
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" aria-controls="faq5">
-          What's the difference between channels and ClawHub skills?
+          What happens if I send a task and close the app before it finishes?
           <span class="faq-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="faq-a" id="faq5" role="region">
-          <a href="marketplace.html">ClawHub skills</a> are pre-packaged integrations (e.g. Gmail, Shopify, GitHub) that handle authentication and data extraction. Channels are the internal message bus those skills publish to. Think of it as: skills bring data in → channels route it → handlers act on it. They work together, not in competition.
+          The agent keeps working in the background — your phone doesn't need to stay open. When the task completes, the result is pushed back to your messaging app as a new message, which you'll see as a normal notification when you open it.
         </div>
       </div>
 
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" aria-controls="faq6">
-          Can I have more than one on-event handler per channel?
+          Can my agent send me messages without me asking first?
           <span class="faq-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="faq-a" id="faq6" role="region">
-          Yes, unlimited. Each <code>/channel on-event</code> call adds a new handler and returns a handler ID. All handlers fire concurrently when a message arrives. Use <code>/channel inspect &lt;channel&gt;</code> to list active handlers, and <code>/channel off-event &lt;channel&gt; --id &lt;id&gt;</code> to remove one.
+          Yes — this is one of the most powerful features. You can set up scheduled tasks (morning briefings, weekly summaries), alert conditions (price drops, new orders, CI failures), and event triggers (when a new email arrives from a VIP contact). Your agent will message you on WhatsApp or Telegram the moment something happens, without you needing to ask.
         </div>
       </div>
 
       <div class="faq-item" role="listitem">
         <button class="faq-q" aria-expanded="false" aria-controls="faq7">
-          How do I debug a channel that doesn't seem to be firing?
+          Does OpenClaw support voice messages on WhatsApp?
           <span class="faq-chevron" aria-hidden="true">▼</span>
         </button>
         <div class="faq-a" id="faq7" role="region">
-          Start with <code>/channel inspect &lt;name&gt;</code> to confirm subscribers and handlers exist. Check <code>/channel stats</code> to see if messages are arriving (publish count vs. delivery count). Use <code>/channel history &lt;name&gt; --last 10</code> to see recent payloads and verify the JSON structure matches what your handler expects. Finally, test with a manual <code>/channel publish</code> and watch for output.
+          Voice message transcription is available as an opt-in feature when the <code>whisper</code> or <code>voice</code> skill is installed from ClawHub. With it enabled, you can send a voice note on WhatsApp and OpenClaw will transcribe it and execute the task as if you had typed it.
         </div>
       </div>
 
@@ -1165,35 +1044,31 @@
   </div>
 </section>
 
-<!-- Related Pages -->
+<!-- Related pages -->
 <section class="section" id="related">
   <div class="container">
-    <div class="section-label">Keep Learning</div>
-    <h2 class="section-title">Related Topics</h2>
-    <div class="cards-grid">
-      <a href="multiagent.html" class="card" style="text-decoration:none; color:inherit;" aria-label="Multi-Agent Orchestration guide">
-        <div class="card-icon">&#x1F916;</div>
-        <h3>Multi-Agent Orchestration</h3>
-        <p>Spawn sub-agents, delegate tasks, and scale parallel workloads. Channels are the communication backbone for multi-agent systems.</p>
-        <span class="card-tag tag-purple">Learn →</span>
+    <div class="section-label">Keep Going</div>
+    <h2 class="section-title">What to Explore Next</h2>
+    <div class="rel-grid">
+      <a href="gettingstarted.html" class="rel-card" aria-label="Getting Started guide">
+        <div class="r-icon">&#x1F680;</div>
+        <h3>Get Started</h3>
+        <p>New to OpenClaw? The full setup guide from download to first task in under 10 minutes.</p>
       </a>
-      <a href="automation.html" class="card" style="text-decoration:none; color:inherit;" aria-label="Automation guide">
-        <div class="card-icon">&#x2699;&#xFE0F;</div>
-        <h3>Automation &amp; Skills</h3>
-        <p>Connect ClawHub skills to channels so external apps (Shopify, GitHub, Notion) can publish and subscribe automatically.</p>
-        <span class="card-tag tag-teal">Learn →</span>
+      <a href="automation.html" class="rel-card" aria-label="Automation guide">
+        <div class="r-icon">&#x2699;&#xFE0F;</div>
+        <h3>Automation</h3>
+        <p>Set up scheduled messages, alerts, and event-driven workflows so your agent acts without being asked.</p>
       </a>
-      <a href="architecture.html" class="card" style="text-decoration:none; color:inherit;" aria-label="Architecture guide">
-        <div class="card-icon">&#x1F3D7;&#xFE0F;</div>
-        <h3>Architecture Deep Dive</h3>
-        <p>Understand the full OpenClaw runtime — Agentic Loop, tool calls, memory, and how channels fit into the big picture.</p>
-        <span class="card-tag tag-blue">Learn →</span>
+      <a href="usecases.html" class="rel-card" aria-label="Use Cases">
+        <div class="r-icon">&#x1F4A1;</div>
+        <h3>Use Cases</h3>
+        <p>Real examples of what people build with OpenClaw — from Shopify monitoring to email triage.</p>
       </a>
-      <a href="cheatsheet.html" class="card" style="text-decoration:none; color:inherit;" aria-label="Command Cheat Sheet">
-        <div class="card-icon">&#x1F4CB;</div>
-        <h3>Command Cheat Sheet</h3>
-        <p>All 90+ OpenClaw commands in one place — including the complete <code>/channel</code> family with syntax and examples.</p>
-        <span class="card-tag tag-amber">Reference →</span>
+      <a href="security.html" class="rel-card" aria-label="Security guide">
+        <div class="r-icon">&#x1F6E1;&#xFE0F;</div>
+        <h3>Security Guide</h3>
+        <p>Best practices for keeping your agent channels locked down and your machine protected.</p>
       </a>
     </div>
   </div>
@@ -1204,13 +1079,13 @@
 <!-- Newsletter -->
 <section class="nl-section" aria-label="Newsletter signup">
   <div class="container">
-    <h2>Get Advanced <em>Channel Patterns</em> by Email</h2>
-    <p>New event-driven workflows, real user automations, and deep-dives — delivered to your inbox every week.</p>
+    <h2>Get Setup Tips &amp; <em>Channel Recipes</em> by Email</h2>
+    <p>New automation ideas, real user setups, and deep-dives — delivered every week.</p>
     <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank" aria-label="Newsletter signup form">
       <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
       <button type="submit">Subscribe</button>
     </form>
-    <p class="nl-fine" style="margin-top:12px; font-size:.78rem; color:var(--gray-5);">No spam. Unsubscribe any time.</p>
+    <p style="margin-top:12px; font-size:.78rem; color:var(--gray-5);">No spam. Unsubscribe any time.</p>
   </div>
 </section>
 
@@ -1228,30 +1103,26 @@
       hamburger.setAttribute('aria-expanded', 'false');
     }
   });
-
-  // FAQ accordion
-  document.querySelectorAll('.faq-q').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      // Close all
-      document.querySelectorAll('.faq-q').forEach(b => {
-        b.setAttribute('aria-expanded', 'false');
-        document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
-      });
-      // Open clicked (if was closed)
-      if (!expanded) {
-        btn.setAttribute('aria-expanded', 'true');
-        document.getElementById(btn.getAttribute('aria-controls')).classList.add('open');
-      }
-    });
-  });
-
-  // Keyboard: Escape closes nav
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       navLinks.classList.remove('open');
       hamburger.setAttribute('aria-expanded', 'false');
     }
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.faq-q').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
+      });
+      if (!expanded) {
+        btn.setAttribute('aria-expanded', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('open');
+      }
+    });
   });
 </script>
 
