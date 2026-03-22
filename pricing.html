@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Pricing Guide 2026 — Free, API, and Cloud Plans Explained</title>
+  <meta name="description" content="OpenClaw is free and open-source. Your real cost depends on your LLM API choice. Compare Claude, GPT-4o, Gemini, and free local models. Full pricing breakdown with real numbers." />
+  <meta name="keywords" content="OpenClaw pricing, OpenClaw cost, OpenClaw free, OpenClaw API cost, OpenClaw cloud, OpenClaw vs hosted, run OpenClaw free, OpenClaw Ollama, OpenClaw LLM cost" />
+  <link rel="canonical" href="https://learnopenclaw.org/pricing.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Pricing Guide 2026 — What Does It Actually Cost?" />
+  <meta property="og:description" content="OpenClaw itself is free. Your cost is your LLM API — typically $5–30/month. Or run entirely free with a local model. Every number, explained." />
+  <meta property="og:url" content="https://learnopenclaw.org/pricing.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Pricing — Free, API & Cloud Plans Compared" />
+  <meta name="twitter:description" content="Free open-source core + pay-as-you-go LLM API. Or skip APIs entirely with Ollama. Real numbers, no fluff." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw Pricing Guide 2026 — Free, API, and Cloud Plans Explained",
+    "description": "Complete breakdown of OpenClaw costs: free open-source core, LLM API options (Claude, GPT-4o, Gemini), hosted cloud plans ($14–59/month), and running fully free with local models via Ollama.",
+    "url": "https://learnopenclaw.org/pricing.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Learn","item":"https://learnopenclaw.org/gettingstarted.html"},
+        {"@type":"ListItem","position":3,"name":"Pricing","item":"https://learnopenclaw.org/pricing.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --amber:    #d97706;
+      --amber-lt: #fffbeb;
+      --amber-md: #fde68a;
+      --amber-dk: #b45309;
+      --green:    #16a34a;
+      --green-lt: #f0fdf4;
+      --blue:     #2563eb;
+      --blue-lt:  #eff6ff;
+      --blue-md:  #bfdbfe;
+      --red:      #dc2626;
+      --red-lt:   #fef2f2;
+      --purple:   #7c3aed;
+      --purple-lt:#f5f3ff;
+      --gray-0:   #f9fafb;
+      --gray-1:   #f3f4f6;
+      --gray-2:   #e5e7eb;
+      --gray-3:   #d1d5db;
+      --gray-5:   #6b7280;
+      --gray-7:   #374151;
+      --gray-8:   #1f2937;
+      --gray-9:   #111827;
+      --white:    #ffffff;
+      --radius:   12px;
+      --shadow:   0 2px 12px rgba(0,0,0,.08);
+    }
+
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--gray-9); line-height: 1.6; background: var(--white); }
+
+    /* ── Skip nav ── */
+    .skip-nav { position: absolute; top: -40px; left: 16px; background: var(--amber); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; text-decoration: none; z-index: 9999; transition: top .2s; }
+    .skip-nav:focus { top: 8px; }
+
+    /* ── Nav ── */
+    nav { background: var(--white); border-bottom: 1px solid var(--gray-2); position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; position: relative; }
+    .nav-logo { font-weight: 800; font-size: 1.1rem; color: var(--gray-9); text-decoration: none; }
+    .hamburger { margin-left: auto; background: none; border: none; cursor: pointer; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-7); border-radius: 2px; transition: .3s; }
+    .hamburger:focus { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 4px; }
+    .nav-links { display: none; flex-direction: column; gap: 4px; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-2); border-radius: var(--radius); padding: 12px 16px; min-width: 220px; box-shadow: var(--shadow); }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-7); text-decoration: none; font-size: .9rem; padding: 5px 4px; border-radius: 4px; transition: color .15s; }
+    .nav-links a:hover, .nav-links a:focus { color: var(--amber); outline: none; }
+    .nav-links a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+    .nav-links a[aria-current="page"] { color: var(--amber); font-weight: 700; }
+    .nav-section { display: flex; flex-direction: column; gap: 4px; padding: 4px 0; border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2); margin: 4px 0; }
+    .nav-section-label { font-size: .65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--gray-5); padding: 2px 4px; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* ── Hero ── */
+    .hero { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 60%, #fde68a 100%); padding: 72px 24px 64px; text-align: center; }
+    .hero-badge { display: inline-block; background: var(--amber); color: var(--white); font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; padding: 5px 14px; border-radius: 20px; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.15; color: var(--gray-9); margin-bottom: 16px; }
+    .hero h1 em { font-style: normal; color: var(--amber-dk); }
+    .hero p { font-size: 1.15rem; color: var(--gray-7); max-width: 660px; margin: 0 auto 28px; }
+    .hero-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px; }
+    .pill { background: var(--white); border: 2px solid var(--amber-md); color: var(--amber-dk); font-size: .85rem; font-weight: 700; padding: 6px 16px; border-radius: 20px; }
+    .pill.pill--free { border-color: #bbf7d0; color: var(--green); }
+    .btn { display: inline-block; padding: 13px 28px; border-radius: 8px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: opacity .15s; cursor: pointer; border: none; font-family: inherit; }
+    .btn--amber { background: var(--amber); color: var(--white); }
+    .btn--ghost { background: transparent; border: 2px solid var(--amber-dk); color: var(--amber-dk); }
+    .btn:hover, .btn:focus { opacity: .85; outline: none; }
+    .btn:focus-visible { outline: 3px solid var(--amber-dk); outline-offset: 3px; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Sections ── */
+    .section { padding: 72px 24px; }
+    .section--alt { background: var(--gray-0); }
+    .container { max-width: 960px; margin: 0 auto; }
+    .section-label { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .14em; color: var(--amber); margin-bottom: 8px; }
+    .section-title { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; color: var(--gray-9); margin-bottom: 12px; }
+    .section-subtitle { font-size: 1.05rem; color: var(--gray-5); max-width: 680px; margin-bottom: 36px; }
+
+    /* ── Summary cards ── */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .sum-card { border-radius: var(--radius); padding: 28px 24px; text-align: center; border: 2px solid transparent; }
+    .sum-card--free { background: var(--green-lt); border-color: #86efac; }
+    .sum-card--api  { background: var(--blue-lt);  border-color: var(--blue-md); }
+    .sum-card--cloud { background: var(--amber-lt); border-color: var(--amber-md); }
+    .sum-card .sc-icon { font-size: 2.4rem; margin-bottom: 10px; }
+    .sum-card .sc-price { font-size: 2rem; font-weight: 900; color: var(--gray-9); line-height: 1; margin-bottom: 4px; }
+    .sum-card .sc-label { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-5); margin-bottom: 8px; }
+    .sum-card .sc-desc { font-size: .9rem; color: var(--gray-7); }
+
+    /* ── Alerts ── */
+    .alert { display: flex; gap: 14px; align-items: flex-start; padding: 16px 20px; border-radius: 10px; margin: 24px 0; }
+    .alert--green { background: var(--green-lt); border: 1px solid #86efac; }
+    .alert--amber { background: var(--amber-lt); border: 1px solid var(--amber-md); }
+    .alert--blue  { background: var(--blue-lt);  border: 1px solid var(--blue-md); }
+    .alert--red   { background: var(--red-lt);   border: 1px solid #fca5a5; }
+    .alert-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+    .alert p { font-size: .95rem; color: var(--gray-8); }
+    .alert strong { color: var(--gray-9); }
+
+    /* ── LLM Table ── */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--gray-2); box-shadow: var(--shadow); margin: 24px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    thead th { background: var(--gray-8); color: var(--white); font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .07em; padding: 12px 16px; text-align: left; }
+    tbody tr { border-bottom: 1px solid var(--gray-2); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:nth-child(even) { background: var(--gray-0); }
+    tbody td { padding: 13px 16px; color: var(--gray-8); vertical-align: top; }
+    .tag { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .tag--green  { background: #dcfce7; color: #15803d; }
+    .tag--blue   { background: #dbeafe; color: #1e40af; }
+    .tag--amber  { background: #fef3c7; color: #92400e; }
+    .tag--purple { background: #ede9fe; color: #5b21b6; }
+    .tag--free   { background: #d1fae5; color: #065f46; font-size: .78rem; }
+
+    /* ── Plan cards ── */
+    .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin: 32px 0; }
+    .plan-card { border-radius: var(--radius); border: 2px solid var(--gray-2); padding: 28px 24px; position: relative; background: var(--white); }
+    .plan-card.plan--featured { border-color: var(--amber); box-shadow: 0 4px 20px rgba(217,119,6,.15); }
+    .plan-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--amber); color: var(--white); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+    .plan-name { font-size: 1.1rem; font-weight: 800; color: var(--gray-9); margin-bottom: 4px; }
+    .plan-price { font-size: 2.2rem; font-weight: 900; color: var(--gray-9); line-height: 1; margin-bottom: 4px; }
+    .plan-price span { font-size: .9rem; font-weight: 400; color: var(--gray-5); }
+    .plan-tagline { font-size: .88rem; color: var(--gray-5); margin-bottom: 20px; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .plan-features li { display: flex; gap: 8px; font-size: .9rem; color: var(--gray-8); align-items: flex-start; }
+    .plan-features li::before { content: '✓'; color: var(--green); font-weight: 800; flex-shrink: 0; }
+    .plan-features li.no::before { content: '✗'; color: var(--red); }
+    .plan-cta { display: block; text-align: center; margin-top: 24px; padding: 11px; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; transition: opacity .15s; }
+    .plan-cta:hover { opacity: .85; }
+    .plan-cta--amber { background: var(--amber); color: var(--white); }
+    .plan-cta--outline { border: 2px solid var(--gray-3); color: var(--gray-7); }
+    .plan-cta:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+
+    /* ── Cost estimator ── */
+    .estimator { background: var(--white); border: 2px solid var(--amber-md); border-radius: var(--radius); padding: 32px; margin: 32px 0; }
+    .estimator h3 { font-size: 1.2rem; font-weight: 800; color: var(--gray-9); margin-bottom: 6px; }
+    .estimator p { font-size: .9rem; color: var(--gray-5); margin-bottom: 24px; }
+    .est-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .est-label { font-size: .92rem; font-weight: 600; color: var(--gray-8); }
+    .est-sublabel { font-size: .78rem; color: var(--gray-5); margin-top: 2px; }
+    .est-input { display: flex; align-items: center; gap: 8px; }
+    .est-input input[type=range] { width: 160px; accent-color: var(--amber); cursor: pointer; }
+    .est-input .est-val { font-weight: 800; font-size: .95rem; color: var(--amber-dk); min-width: 60px; text-align: right; }
+    .est-select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--gray-3); font-size: .9rem; font-family: inherit; color: var(--gray-8); cursor: pointer; background: var(--white); }
+    .est-select:focus { outline: 2px solid var(--amber); }
+    .est-result { background: var(--amber-lt); border-radius: 10px; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
+    .est-result-label { font-size: .9rem; color: var(--gray-7); font-weight: 600; }
+    .est-result-price { font-size: 2rem; font-weight: 900; color: var(--amber-dk); }
+    .est-result-note { font-size: .8rem; color: var(--gray-5); width: 100%; }
+
+    /* ── Local model section ── */
+    .local-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin: 28px 0; }
+    .local-card { border: 1px solid var(--gray-2); border-radius: var(--radius); padding: 22px 20px; background: var(--white); }
+    .local-card .lc-icon { font-size: 2rem; margin-bottom: 10px; }
+    .local-card h3 { font-size: 1rem; font-weight: 800; color: var(--gray-9); margin-bottom: 6px; }
+    .local-card p { font-size: .88rem; color: var(--gray-7); margin-bottom: 10px; }
+    .local-card .lc-tag { font-size: .75rem; font-weight: 700; }
+
+    /* ── Code blocks ── */
+    .code-block { background: var(--gray-8); border-radius: 10px; padding: 20px 22px; margin: 16px 0; overflow-x: auto; }
+    .code-block pre { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: .85rem; color: #e2e8f0; line-height: 1.7; white-space: pre; }
+    .code-block .comment { color: #6b7280; }
+    .code-block .key { color: #93c5fd; }
+    .code-block .val { color: #86efac; }
+    .code-block .str { color: #fca5a5; }
+
+    /* ── Tips ── */
+    .tips-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 24px 0; }
+    .tips-list li { display: flex; gap: 14px; background: var(--white); border: 1px solid var(--gray-2); border-radius: 10px; padding: 18px 16px; align-items: flex-start; }
+    .tip-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .tip-body h4 { font-size: .95rem; font-weight: 700; color: var(--gray-9); margin-bottom: 4px; }
+    .tip-body p  { font-size: .87rem; color: var(--gray-7); }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .faq-item { border: 1px solid var(--gray-2); border-radius: 10px; overflow: hidden; }
+    .faq-q { width: 100%; background: var(--white); border: none; text-align: left; padding: 18px 20px; font-size: .95rem; font-weight: 700; color: var(--gray-9); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: inherit; transition: background .15s; }
+    .faq-q:hover { background: var(--gray-0); }
+    .faq-q:focus-visible { outline: 2px solid var(--amber); outline-offset: -2px; }
+    .faq-q .faq-arrow { font-size: 1rem; transition: transform .25s; color: var(--gray-5); flex-shrink: 0; }
+    .faq-q[aria-expanded="true"] .faq-arrow { transform: rotate(180deg); }
+    .faq-a { display: none; padding: 0 20px 18px; font-size: .93rem; color: var(--gray-7); line-height: 1.7; border-top: 1px solid var(--gray-2); padding-top: 14px; }
+    .faq-a.open { display: block; }
+    .faq-a a { color: var(--amber-dk); font-weight: 600; }
+
+    /* ── Comparison table ── */
+    .compare-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .compare-table th { background: var(--gray-8); color: var(--white); padding: 11px 14px; text-align: left; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
+    .compare-table td { padding: 12px 14px; border-bottom: 1px solid var(--gray-2); vertical-align: middle; color: var(--gray-8); }
+    .compare-table tr:last-child td { border-bottom: none; }
+    .compare-table tr:nth-child(even) td { background: var(--gray-0); }
+    .compare-table .check-yes { color: var(--green); font-weight: 800; }
+    .compare-table .check-no  { color: var(--gray-3); }
+    .compare-table .check-part { color: var(--amber); }
+
+    /* ── Footer ── */
+    footer { background: var(--gray-8); color: #9ca3af; text-align: center; padding: 36px 24px; font-size: .875rem; }
+    footer a { color: #60a5fa; }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] { padding: 9px 14px; border-radius: 7px; border: 1px solid #374151; background: #374151; color: #f9fafb; font-size: .88rem; font-family: inherit; min-width: 200px; flex: 1; max-width: 280px; }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+  </style>
+</head>
+<body>
+
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <div style="padding-left:12px;border-left:3px solid #ddd6fe;display:flex;flex-direction:column;gap:8px;margin:2px 0 4px;">
+          <span style="font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#7c3aed;">Workspace Files</span>
+          <a href="workspace-user.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">USER.md</a>
+          <a href="workspace-agents.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">AGENTS.md</a>
+          <a href="workspace-memory.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">MEMORY.md</a>
+          <a href="workspace-heartbeat.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">HEARTBEAT.md</a>
+        </div>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="agentchannels.html" style="color:#0d9488;font-weight:700;"><span aria-hidden="true">📡</span> Agent Channels</a>
+        <a href="mcp.html" style="color:#4f46e5;font-weight:700;"><span aria-hidden="true">🔌</span> MCP</a>
+        <a href="voice.html" style="color:#16a34a;font-weight:700;"><span aria-hidden="true">🎙️</span> Voice Mode</a>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+        <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html" aria-current="page" style="color:#d97706;font-weight:700;"><span aria-hidden="true">💰</span> Pricing</a>
+      <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+      <a href="glossary.html" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">💰 Pricing Guide</div>
+  <h1>OpenClaw Is Free.<br>Here's What You'll <em>Actually</em> Pay.</h1>
+  <p>OpenClaw itself costs nothing — it's open-source. Your real cost is the LLM API you connect to it. Most users pay <strong>$5–30/month</strong>. Power users on cloud plans pay <strong>$14–59/month</strong>. Or pay <strong>$0</strong> with a local model.</p>
+  <div class="hero-pills">
+    <span class="pill pill--free">✓ OpenClaw: Free forever</span>
+    <span class="pill">API: $5–30/mo typical</span>
+    <span class="pill">Cloud: $14–59/mo</span>
+    <span class="pill pill--free">✓ Local models: $0</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#estimator" class="btn btn--amber">Estimate My Cost</a>
+    <a href="#free" class="btn btn--ghost">Run It Free</a>
+  </div>
+</header>
+
+<!-- Summary -->
+<section class="section" id="overview">
+  <div class="container">
+    <div class="section-label">At a Glance</div>
+    <h2 class="section-title">Three Ways to Run OpenClaw</h2>
+    <p class="section-subtitle">Choose based on your budget, privacy preferences, and how much you want to manage yourself.</p>
+
+    <div class="summary-grid">
+      <div class="sum-card sum-card--free" role="region" aria-label="Free local model option">
+        <div class="sc-icon">🖥️</div>
+        <div class="sc-price">$0</div>
+        <div class="sc-label">Local Model</div>
+        <div class="sc-desc">Run Ollama or LM Studio on your machine. No API key, no monthly bill. Slower and less capable, but completely private and free.</div>
+      </div>
+      <div class="sum-card sum-card--api" role="region" aria-label="API self-hosted option">
+        <div class="sc-icon">🔑</div>
+        <div class="sc-price">$5–30<span style="font-size:1rem;font-weight:400;color:#6b7280;">/mo</span></div>
+        <div class="sc-label">Self-Hosted + API</div>
+        <div class="sc-desc">Run OpenClaw yourself, bring your own LLM API key. You control the hardware. Pay only for what you use.</div>
+      </div>
+      <div class="sum-card sum-card--cloud" role="region" aria-label="Cloud hosted option">
+        <div class="sc-icon">☁️</div>
+        <div class="sc-price">$14–59<span style="font-size:1rem;font-weight:400;color:#6b7280;">/mo</span></div>
+        <div class="sc-label">Hosted Cloud</div>
+        <div class="sc-desc">OpenClaw managed for you — no server, no setup. LLM access bundled in. Best for non-technical users who want zero maintenance.</div>
+      </div>
+    </div>
+
+    <div class="alert alert--amber">
+      <div class="alert-icon">⚠️</div>
+      <p><strong>The most common beginner mistake:</strong> Assuming OpenClaw has a subscription. It doesn't. The "cost" beginners hit is when they try to use Claude or GPT-4 and realise they need an API key. You can avoid this entirely by starting with a free local model, then upgrading when you want better quality.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LLM API Comparison -->
+<section class="section section--alt" id="llm">
+  <div class="container">
+    <div class="section-label">LLM APIs</div>
+    <h2 class="section-title">Which LLM Should You Use?</h2>
+    <p class="section-subtitle">OpenClaw works with any OpenAI-compatible API. Here's how the major options compare on price, quality, and speed. All prices as of early 2026 — check provider sites for current rates.</p>
+
+    <div class="table-wrap">
+      <table aria-label="LLM API comparison table for OpenClaw">
+        <thead>
+          <tr>
+            <th scope="col">Model</th>
+            <th scope="col">Provider</th>
+            <th scope="col">Input cost</th>
+            <th scope="col">Output cost</th>
+            <th scope="col">Typical monthly</th>
+            <th scope="col">Best for</th>
+            <th scope="col">Quality</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>claude-sonnet-4</strong></td>
+            <td>Anthropic</td>
+            <td>$3 / M tokens</td>
+            <td>$15 / M tokens</td>
+            <td><span class="tag tag--amber">$10–35</span></td>
+            <td>Complex tasks, coding, reasoning</td>
+            <td>⭐⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>claude-haiku-4</strong></td>
+            <td>Anthropic</td>
+            <td>$0.80 / M tokens</td>
+            <td>$4 / M tokens</td>
+            <td><span class="tag tag--green">$3–12</span></td>
+            <td>Fast daily tasks, high volume</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>gpt-4o</strong></td>
+            <td>OpenAI</td>
+            <td>$2.50 / M tokens</td>
+            <td>$10 / M tokens</td>
+            <td><span class="tag tag--amber">$8–30</span></td>
+            <td>General purpose, wide tool support</td>
+            <td>⭐⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>gpt-4o-mini</strong></td>
+            <td>OpenAI</td>
+            <td>$0.15 / M tokens</td>
+            <td>$0.60 / M tokens</td>
+            <td><span class="tag tag--green">$1–5</span></td>
+            <td>Budget option, simple tasks</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>gemini-2.0-flash</strong></td>
+            <td>Google</td>
+            <td>$0.10 / M tokens</td>
+            <td>$0.40 / M tokens</td>
+            <td><span class="tag tag--green">$1–4</span></td>
+            <td>Speed, large context, low cost</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>gemini-1.5-pro</strong></td>
+            <td>Google</td>
+            <td>$1.25 / M tokens</td>
+            <td>$5.00 / M tokens</td>
+            <td><span class="tag tag--amber">$5–20</span></td>
+            <td>1M token context window</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Llama 3.3 70B</strong></td>
+            <td>Ollama (local)</td>
+            <td>Free</td>
+            <td>Free</td>
+            <td><span class="tag tag--free">$0</span></td>
+            <td>Privacy, offline use, no API key</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Mistral 7B</strong></td>
+            <td>Ollama (local)</td>
+            <td>Free</td>
+            <td>Free</td>
+            <td><span class="tag tag--free">$0</span></td>
+            <td>Fast local inference on modest hardware</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert--blue">
+      <div class="alert-icon">💡</div>
+      <p><strong>Recommended starting point:</strong> <strong>claude-haiku-4</strong> or <strong>gpt-4o-mini</strong> for most beginners. They deliver 90% of the quality at 10% of the cost. Upgrade to Sonnet or GPT-4o for complex reasoning tasks or coding projects.</p>
+    </div>
+
+    <h3 style="font-size:1.1rem;font-weight:800;color:var(--gray-9);margin:32px 0 8px;">What's a "token"?</h3>
+    <p style="color:var(--gray-7);font-size:.95rem;margin-bottom:16px;">A token is roughly ¾ of a word. "Hello, how are you?" is about 5 tokens. A typical conversation message is 100–500 tokens. A long document summary might be 5,000 tokens. For most OpenClaw users, a full day of active use generates around 50,000–200,000 tokens — which costs $0.04–$3.00 depending on your model choice.</p>
+
+    <div class="code-block" aria-label="How to set your LLM in openclaw.json">
+      <pre><span class="comment"># Set your LLM in ~/.openclaw/openclaw.json</span>
+{
+  <span class="key">"llm"</span>: {
+    <span class="key">"provider"</span>: <span class="str">"anthropic"</span>,        <span class="comment">// or "openai", "google", "ollama"</span>
+    <span class="key">"model"</span>:    <span class="str">"claude-haiku-4"</span>,    <span class="comment">// model name from provider docs</span>
+    <span class="key">"apiKey"</span>:   <span class="str">"sk-ant-..."</span>         <span class="comment">// your API key (keep this secret)</span>
+  }
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- Cost estimator -->
+<section class="section" id="estimator">
+  <div class="container">
+    <div class="section-label">Cost Estimator</div>
+    <h2 class="section-title">What Will You Actually Pay?</h2>
+    <p class="section-subtitle">Drag the sliders to match your usage. Costs are estimates based on average conversation length and API pricing.</p>
+
+    <div class="estimator" role="region" aria-label="Interactive cost estimator">
+      <h3>Monthly Cost Estimator</h3>
+      <p>Adjust sliders to match your typical usage. Estimates assume ~400 tokens/message average.</p>
+
+      <div class="est-row">
+        <div>
+          <div class="est-label">Messages per day</div>
+          <div class="est-sublabel">How many times you send a message to your agent</div>
+        </div>
+        <div class="est-input">
+          <input type="range" id="msgs" min="5" max="200" value="30" step="5" aria-label="Messages per day" oninput="calcCost()">
+          <span class="est-val" id="msgs-val" aria-live="polite">30</span>
+        </div>
+      </div>
+
+      <div class="est-row">
+        <div>
+          <div class="est-label">Automations per day</div>
+          <div class="est-sublabel">HEARTBEAT tasks and background runs (typically 500–2000 tokens each)</div>
+        </div>
+        <div class="est-input">
+          <input type="range" id="autos" min="0" max="50" value="5" step="1" aria-label="Automations per day" oninput="calcCost()">
+          <span class="est-val" id="autos-val" aria-live="polite">5</span>
+        </div>
+      </div>
+
+      <div class="est-row">
+        <div>
+          <div class="est-label">Model</div>
+          <div class="est-sublabel">Higher quality = higher cost</div>
+        </div>
+        <div class="est-input">
+          <select id="model-sel" class="est-select" aria-label="LLM model selection" onchange="calcCost()">
+            <option value="0">Local model (free)</option>
+            <option value="0.00015">GPT-4o-mini ($0.15/M)</option>
+            <option value="0.0001">Gemini 2.0 Flash ($0.10/M)</option>
+            <option value="0.0008" selected>Claude Haiku 4 ($0.80/M)</option>
+            <option value="0.00125">Gemini 1.5 Pro ($1.25/M)</option>
+            <option value="0.0025">GPT-4o ($2.50/M)</option>
+            <option value="0.003">Claude Sonnet 4 ($3/M)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="est-result" role="status" aria-live="polite" aria-label="Estimated monthly cost">
+        <div>
+          <div class="est-result-label">Estimated monthly cost</div>
+          <div class="est-result-note" id="est-note">Based on 400 tokens/message avg, 30-day month</div>
+        </div>
+        <div class="est-result-price" id="est-price">$3.84</div>
+      </div>
+    </div>
+
+    <div class="alert alert--green">
+      <div class="alert-icon">🎉</div>
+      <p><strong>Most users land between $3–15/month.</strong> Even heavy users running dozens of automations daily rarely exceed $30 with a mid-tier model. The only way to rack up large bills is running many long document processing tasks or extremely high-volume automations without caching.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Hosted cloud plans -->
+<section class="section section--alt" id="cloud">
+  <div class="container">
+    <div class="section-label">Hosted Plans</div>
+    <h2 class="section-title">OpenClaw Cloud Plans</h2>
+    <p class="section-subtitle">Don't want to manage a server? The hosted cloud option bundles OpenClaw + LLM access + automatic updates into a single flat monthly fee.</p>
+
+    <div class="plans-grid">
+
+      <div class="plan-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$14<span>/mo</span></div>
+        <div class="plan-tagline">Perfect for individuals getting started</div>
+        <ul class="plan-features" aria-label="Starter plan features">
+          <li>1 agent instance</li>
+          <li>Claude Haiku 4 included</li>
+          <li>50 automations/day</li>
+          <li>1 GB memory storage</li>
+          <li>WhatsApp + Telegram channels</li>
+          <li>5 MCP server connections</li>
+          <li class="no">Voice Mode</li>
+          <li class="no">Custom SOUL.md branding</li>
+          <li class="no">Priority support</li>
+        </ul>
+        <a href="gettingstarted.html" class="plan-cta plan-cta--outline">Get Started Free →</a>
+      </div>
+
+      <div class="plan-card plan--featured">
+        <div class="plan-badge">Most popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$29<span>/mo</span></div>
+        <div class="plan-tagline">For power users who want everything</div>
+        <ul class="plan-features" aria-label="Pro plan features">
+          <li>1 agent instance</li>
+          <li>Claude Sonnet 4 included</li>
+          <li>Unlimited automations</li>
+          <li>10 GB memory storage</li>
+          <li>All channels (WA, TG, Slack, Discord)</li>
+          <li>Unlimited MCP connections</li>
+          <li>Voice Mode (Whisper + ElevenLabs)</li>
+          <li>Custom SOUL.md</li>
+          <li class="no">Multi-agent teams</li>
+          <li class="no">Team seats</li>
+        </ul>
+        <a href="gettingstarted.html" class="plan-cta plan-cta--amber">Start Pro Trial →</a>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-name">Team</div>
+        <div class="plan-price">$59<span>/mo</span></div>
+        <div class="plan-tagline">Multiple agents, multiple people</div>
+        <ul class="plan-features" aria-label="Team plan features">
+          <li>Up to 5 agent instances</li>
+          <li>Claude Sonnet 4 included</li>
+          <li>Unlimited automations</li>
+          <li>50 GB shared memory</li>
+          <li>All channels + custom webhooks</li>
+          <li>Unlimited MCP connections</li>
+          <li>Voice Mode for all agents</li>
+          <li>Multi-agent orchestration</li>
+          <li>3 team seats included</li>
+          <li>Priority support + onboarding call</li>
+        </ul>
+        <a href="gettingstarted.html" class="plan-cta plan-cta--outline">Contact Sales →</a>
+      </div>
+
+    </div>
+
+    <div class="alert alert--amber">
+      <div class="alert-icon">🤔</div>
+      <p><strong>Self-hosted vs cloud?</strong> If you're technical and have a spare machine (or a $5/mo VPS), self-hosted + your own API key will almost always be cheaper than cloud. Cloud plans make sense when you want zero maintenance, automatic updates, or bundled support.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Free / Local models -->
+<section class="section" id="free">
+  <div class="container">
+    <div class="section-label">Run It Free</div>
+    <h2 class="section-title">$0/Month with Local Models</h2>
+    <p class="section-subtitle">You can run OpenClaw completely free by using a local language model on your own hardware. No API key, no monthly bill, no data leaving your machine.</p>
+
+    <div class="local-grid">
+      <div class="local-card">
+        <div class="lc-icon">🦙</div>
+        <h3>Ollama</h3>
+        <p>The easiest way to run local models. One-line install, supports Llama, Mistral, Qwen, Gemma, and 50+ models. Works on macOS, Windows, and Linux.</p>
+        <span class="tag tag--free lc-tag">Free · Offline · Private</span>
+      </div>
+      <div class="local-card">
+        <div class="lc-icon">🏠</div>
+        <h3>LM Studio</h3>
+        <p>Desktop GUI for running local models. Great for beginners who want a visual interface to download and manage models. Exposes a local API endpoint compatible with OpenClaw.</p>
+        <span class="tag tag--free lc-tag">Free · GUI · macOS/Windows</span>
+      </div>
+      <div class="local-card">
+        <div class="lc-icon">⚡</div>
+        <h3>Jan.ai</h3>
+        <p>Open-source alternative to ChatGPT you run locally. Includes a built-in API server. Particularly good performance on Apple Silicon Macs via Metal acceleration.</p>
+        <span class="tag tag--free lc-tag">Free · Fast · Apple Silicon</span>
+      </div>
+      <div class="local-card">
+        <div class="lc-icon">🌐</div>
+        <h3>Groq (free tier)</h3>
+        <p>Cloud-hosted inference with a generous free tier (14,400 requests/day). Extremely fast (400+ tokens/sec). Not fully private but costs nothing for typical use.</p>
+        <span class="tag tag--green lc-tag">Free tier · Very fast · API key needed</span>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.1rem;font-weight:800;color:var(--gray-9);margin:32px 0 12px;">Setting up Ollama with OpenClaw</h3>
+
+    <div class="code-block" aria-label="Ollama installation and OpenClaw configuration">
+      <pre><span class="comment"># Step 1: Install Ollama</span>
+curl -fsSL https://ollama.ai/install.sh | sh
+
+<span class="comment"># Step 2: Pull a model (Llama 3.3 recommended for most tasks)</span>
+ollama pull llama3.3
+
+<span class="comment"># Step 3: Configure OpenClaw to use it (~/.openclaw/openclaw.json)</span>
+{
+  <span class="key">"llm"</span>: {
+    <span class="key">"provider"</span>: <span class="str">"ollama"</span>,
+    <span class="key">"model"</span>:    <span class="str">"llama3.3"</span>,
+    <span class="key">"baseUrl"</span>:  <span class="str">"http://localhost:11434"</span>
+  }
+}</pre>
+    </div>
+
+    <div class="alert alert--blue">
+      <div class="alert-icon">💻</div>
+      <p><strong>Hardware requirements:</strong> For a usable local model, you need at least <strong>8 GB RAM</strong> for a 7B model and <strong>16 GB RAM</strong> for a 13B model. Apple Silicon Macs (M1/M2/M3/M4) run local models especially well thanks to unified memory. Local models are noticeably slower and less capable than GPT-4o or Claude Sonnet — but for simple daily tasks, automation scripts, and reminders, they're more than adequate.</p>
+    </div>
+
+    <h3 style="font-size:1.1rem;font-weight:800;color:var(--gray-9);margin:32px 0 12px;">Best free local models for OpenClaw tasks</h3>
+    <div class="table-wrap">
+      <table aria-label="Recommended free local models for OpenClaw">
+        <thead>
+          <tr>
+            <th scope="col">Model</th>
+            <th scope="col">Size</th>
+            <th scope="col">RAM needed</th>
+            <th scope="col">Best for</th>
+            <th scope="col">Speed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Llama 3.3 70B</strong></td>
+            <td>40 GB</td>
+            <td>48 GB+</td>
+            <td>Complex reasoning, coding</td>
+            <td>⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Llama 3.2 8B</strong></td>
+            <td>5 GB</td>
+            <td>8 GB</td>
+            <td>Daily tasks, reminders, email</td>
+            <td>⭐⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Mistral 7B</strong></td>
+            <td>4 GB</td>
+            <td>8 GB</td>
+            <td>Fast responses, summarisation</td>
+            <td>⭐⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Qwen2.5 14B</strong></td>
+            <td>9 GB</td>
+            <td>16 GB</td>
+            <td>Coding, data tasks, multilingual</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+          <tr>
+            <td><strong>Gemma 3 12B</strong></td>
+            <td>8 GB</td>
+            <td>16 GB</td>
+            <td>Balanced quality and speed</td>
+            <td>⭐⭐⭐⭐</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Cost-saving tips -->
+<section class="section section--alt" id="tips">
+  <div class="container">
+    <div class="section-label">Save Money</div>
+    <h2 class="section-title">5 Ways to Lower Your API Bill</h2>
+    <p class="section-subtitle">Even small tweaks can cut your LLM costs by 50–80%.</p>
+
+    <ul class="tips-list" aria-label="Cost reduction tips">
+      <li>
+        <div class="tip-icon">⚡</div>
+        <div class="tip-body">
+          <h4>Use a fast/cheap model for simple tasks</h4>
+          <p>Set your default model to Haiku or GPT-4o-mini. Only switch to Sonnet or GPT-4o when your AGENTS.md explicitly requests a power model for complex work. 80% of daily tasks don't need top-tier reasoning.</p>
+        </div>
+      </li>
+      <li>
+        <div class="tip-icon">📝</div>
+        <div class="tip-body">
+          <h4>Keep your MEMORY.md tight</h4>
+          <p>Every session loads your full MEMORY.md. A bloated 5,000-word memory file costs tokens on every single message. Aim for under 2,000 words and prune quarterly. Use <code>/memory forget</code> to remove outdated entries.</p>
+        </div>
+      </li>
+      <li>
+        <div class="tip-icon">⏱️</div>
+        <div class="tip-body">
+          <h4>Reduce heartbeat frequency for light tasks</h4>
+          <p>The default heartbeat runs every 30 minutes. If your scheduled tasks are light (weather checks, reminders), increase the interval to 60 or 120 minutes. Each heartbeat cycle uses 1,000–3,000 tokens.</p>
+        </div>
+      </li>
+      <li>
+        <div class="tip-icon">🗃️</div>
+        <div class="tip-body">
+          <h4>Enable prompt caching</h4>
+          <p>Anthropic and OpenAI both support prompt caching. With caching enabled, repeated context (like your AGENTS.md, USER.md, and system prompt) is cached and re-billed at 10% of the normal token cost.</p>
+        </div>
+      </li>
+      <li>
+        <div class="tip-icon">🔀</div>
+        <div class="tip-body">
+          <h4>Use local models for automations</h4>
+          <p>Configure a cheap or local model for HEARTBEAT automations and reserve your API model for interactive conversations. Add <code>"heartbeatModel": "llama3.2"</code> to your config to route background tasks to Ollama.</p>
+        </div>
+      </li>
+      <li>
+        <div class="tip-icon">📊</div>
+        <div class="tip-body">
+          <h4>Watch your usage dashboard</h4>
+          <p>Run <code>openclaw stats</code> to see your daily token usage broken down by conversation, automation, and model. Most API providers also have dashboards with spend limits you can set to avoid surprise bills.</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="code-block" aria-label="Routing automations to a cheap local model">
+      <pre><span class="comment"># Route expensive tasks to Sonnet, background tasks to local Llama</span>
+{
+  <span class="key">"llm"</span>: {
+    <span class="key">"default"</span>:         <span class="str">"claude-haiku-4"</span>,
+    <span class="key">"heartbeatModel"</span>:  <span class="str">"ollama/llama3.2"</span>,   <span class="comment">// free for automations</span>
+    <span class="key">"powerModel"</span>:      <span class="str">"claude-sonnet-4"</span>    <span class="comment">// used when agent asks</span>
+  }
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- Full comparison -->
+<section class="section" id="compare">
+  <div class="container">
+    <div class="section-label">Side by Side</div>
+    <h2 class="section-title">Self-Hosted vs Cloud: Full Comparison</h2>
+    <p class="section-subtitle">Which setup is right for you depends on your technical comfort level, privacy requirements, and how much you want to manage.</p>
+
+    <div class="table-wrap">
+      <table class="compare-table" aria-label="Self-hosted vs cloud comparison table">
+        <thead>
+          <tr>
+            <th scope="col">Feature</th>
+            <th scope="col">Self-Hosted + API</th>
+            <th scope="col">Cloud Starter ($14)</th>
+            <th scope="col">Cloud Pro ($29)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monthly cost</td>
+            <td>$5–30 (API only)</td>
+            <td>$14 flat</td>
+            <td>$29 flat</td>
+          </tr>
+          <tr>
+            <td>Setup required</td>
+            <td class="check-part">⚠️ Technical</td>
+            <td class="check-yes">✓ 5-minute signup</td>
+            <td class="check-yes">✓ 5-minute signup</td>
+          </tr>
+          <tr>
+            <td>Server management</td>
+            <td class="check-part">⚠️ Your responsibility</td>
+            <td class="check-yes">✓ Managed for you</td>
+            <td class="check-yes">✓ Managed for you</td>
+          </tr>
+          <tr>
+            <td>Auto updates</td>
+            <td class="check-no">✗ Manual</td>
+            <td class="check-yes">✓ Automatic</td>
+            <td class="check-yes">✓ Automatic</td>
+          </tr>
+          <tr>
+            <td>Custom LLM choice</td>
+            <td class="check-yes">✓ Any provider</td>
+            <td class="check-part">⚠️ Haiku only</td>
+            <td class="check-part">⚠️ Sonnet only</td>
+          </tr>
+          <tr>
+            <td>Data privacy</td>
+            <td class="check-yes">✓ Your machine</td>
+            <td class="check-part">⚠️ Hosted servers</td>
+            <td class="check-part">⚠️ Hosted servers</td>
+          </tr>
+          <tr>
+            <td>Local model support</td>
+            <td class="check-yes">✓ Full Ollama support</td>
+            <td class="check-no">✗ Cloud only</td>
+            <td class="check-no">✗ Cloud only</td>
+          </tr>
+          <tr>
+            <td>Voice Mode</td>
+            <td class="check-yes">✓ Bring own API keys</td>
+            <td class="check-no">✗ Not included</td>
+            <td class="check-yes">✓ Bundled</td>
+          </tr>
+          <tr>
+            <td>MCP integrations</td>
+            <td class="check-yes">✓ Unlimited</td>
+            <td class="check-part">⚠️ 5 servers</td>
+            <td class="check-yes">✓ Unlimited</td>
+          </tr>
+          <tr>
+            <td>Uptime guarantee</td>
+            <td class="check-no">✗ DIY</td>
+            <td class="check-part">⚠️ 99.5% SLA</td>
+            <td class="check-yes">✓ 99.9% SLA</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section--alt" id="faq">
+  <div class="container">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Pricing Questions Answered</h2>
+
+    <div class="faq-list" role="list">
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq1">
+          Is OpenClaw really free? What's the catch?
+          <span class="faq-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq1" role="region">
+          OpenClaw the software is genuinely free and open-source (MIT licence). You can download it, modify it, and self-host it at no cost. The only cost you'll encounter is whatever LLM API you connect to it — which you'd be paying regardless of what AI tool you use. There's no hidden subscription, no feature gating, and no ads.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq2">
+          Can I really run it for $0 per month?
+          <span class="faq-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq2" role="region">
+          Yes, fully. Install <a href="#free">Ollama</a> on your computer, pull a free model like Llama 3.2, and point OpenClaw at your local Ollama endpoint. No API key, no credit card, no ongoing costs. The tradeoff is that local models are slower and less capable than Claude or GPT-4o — but for personal productivity tasks, reminders, and simple automation, they're very usable.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq3">
+          What API key do I need to get started?
+          <span class="faq-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq3" role="region">
+          You can start with any of: an <strong>Anthropic API key</strong> (console.anthropic.com), an <strong>OpenAI API key</strong> (platform.openai.com), or a <strong>Google AI Studio key</strong> (aistudio.google.com). All three have free trial credits when you sign up. For the best experience, start with Claude Haiku or GPT-4o-mini — both are inexpensive and widely tested with OpenClaw.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq4">
+          Will I get a surprise bill?
+          <span class="faq-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq4" role="region">
+          This is very unlikely with normal usage, but you can protect yourself by setting a spend limit on your API account. Both Anthropic and OpenAI let you set a hard monthly cap. We also recommend starting with a $5 prepaid credit top-up rather than attaching a card directly. With Claude Haiku or GPT-4o-mini, $5 covers roughly 2–3 months of normal personal use.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq5">
+          Does Voice Mode cost extra?
+          <span class="faq-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq5" role="region">
+          Voice Mode uses two optional third-party services: <strong>OpenAI Whisper</strong> for speech-to-text (~$0.006/minute, or about $0.36/hour of voice) and <strong>ElevenLabs</strong> for text-to-speech (free tier: 10,000 characters/month; Starter plan: $5/mo for 30,000 characters). Many users find the free ElevenLabs tier more than enough. You can also use the free built-in native TTS on macOS/iOS as an alternative. See the <a href="voice.html#costs">Voice Mode pricing table</a> for details.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq6">
+          Which plan is best for a small business?
+          <span class="faq-arrow" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq6" role="region">
+          For a small business, we recommend starting with the self-hosted + API approach unless you have zero technical capacity. A $5/mo VPS (like a Hetzner CX11 or DigitalOcean Droplet) running OpenClaw + Claude Haiku typically costs less than $15/month total, gives you full control, and scales easily. If you need multiple agents or team access, the Team cloud plan at $59/mo is the cleanest option.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="background:linear-gradient(135deg,#fffbeb,#fef3c7);text-align:center;" aria-label="Get started section">
+  <div class="container">
+    <div style="font-size:3rem;margin-bottom:16px;" aria-hidden="true">🚀</div>
+    <h2 style="font-size:2rem;font-weight:900;color:var(--gray-9);margin-bottom:12px;">Start for Free Today</h2>
+    <p style="font-size:1.05rem;color:var(--gray-7);max-width:540px;margin:0 auto 28px;">Install OpenClaw in 5 minutes, connect a free Ollama model, and see what your agent can do — before spending a cent.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="gettingstarted.html" class="btn btn--amber">Get Started Free →</a>
+      <a href="compare.html" class="btn btn--ghost">Compare to Alternatives</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get OpenClaw tips and updates in your inbox</p>
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank" aria-label="Newsletter signup">
+      <input type="email" name="email_address" placeholder="you@example.com" aria-label="Email address for newsletter" required />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="gettingstarted.html">Get Started</a>
+    <a href="pricing.html" aria-current="page">Pricing</a>
+    <a href="faq.html">FAQ</a>
+    <a href="compare.html">Compare</a>
+    <a href="cheatsheet.html">Cheat Sheet</a>
+    <a href="glossary.html">Glossary</a>
+  </div>
+  <p>© 2026 learnopenclaw.org — Independent learning resource. Not affiliated with the OpenClaw project.</p>
+</footer>
+
+<script>
+  // Hamburger nav
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      // Close all
+      document.querySelectorAll('.faq-q').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
+      });
+      // Open clicked if it was closed
+      if (!isOpen) {
+        btn.setAttribute('aria-expanded', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('open');
+      }
+    });
+  });
+
+  // Cost estimator
+  function calcCost() {
+    const msgs    = parseInt(document.getElementById('msgs').value);
+    const autos   = parseInt(document.getElementById('autos').value);
+    const rate    = parseFloat(document.getElementById('model-sel').value);
+
+    document.getElementById('msgs-val').textContent  = msgs;
+    document.getElementById('autos-val').textContent = autos;
+
+    if (rate === 0) {
+      document.getElementById('est-price').textContent = '$0.00';
+      document.getElementById('est-note').textContent  = 'Local model — no API cost';
+      return;
+    }
+
+    // Avg tokens: messages = 400 in + 600 out; automations = 800 in + 1200 out
+    const msgTokensIn    = msgs * 400 * 30;
+    const msgTokensOut   = msgs * 600 * 30;
+    const autoTokensIn   = autos * 800 * 30;
+    const autoTokensOut  = autos * 1200 * 30;
+
+    // Rough assumption: output ~4x input cost; use blended rate
+    const blendedRate = rate * 2.5; // approximate mid-point between in/out
+    const totalTokens = msgTokensIn + msgTokensOut + autoTokensIn + autoTokensOut;
+    const cost = (totalTokens / 1_000_000) * blendedRate * 1000;
+
+    document.getElementById('est-price').textContent = '$' + cost.toFixed(2);
+    document.getElementById('est-note').textContent  =
+      `~${Math.round(totalTokens/1000)}K tokens/month · 30-day estimate`;
+  }
+
+  // Init sliders display
+  document.getElementById('msgs-val').textContent  = document.getElementById('msgs').value;
+  document.getElementById('autos-val').textContent = document.getElementById('autos').value;
+  calcCost();
+</script>
+
+</body>
+</html>
