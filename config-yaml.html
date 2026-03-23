@@ -3,1671 +3,599 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>config.yaml Reference — Complete OpenClaw YAML Config Field Guide | learnopenclaw.org</title>
-  <meta name="description" content="Complete field reference for OpenClaw's config.yaml — every key documented with type, default, and YAML examples. LLM, gateway, memory, tools, voice, and more.">
+  <title>config.yaml Explained — OpenClaw YAML Config Guide</title>
+  <meta name="description" content="Learn what config.yaml is, how it differs from openclaw.json, and how to configure your OpenClaw agent using YAML — with beginner-friendly examples.">
   <link rel="canonical" href="https://learnopenclaw.org/config-yaml.html">
-  <meta property="og:title" content="config.yaml Reference — Complete OpenClaw YAML Config Field Guide">
-  <meta property="og:description" content="Complete field reference for OpenClaw's config.yaml — every key documented with type, default, and YAML examples.">
+  <meta property="og:title" content="config.yaml Explained — OpenClaw YAML Config Guide">
+  <meta property="og:description" content="Learn what config.yaml is, how it differs from openclaw.json, and how to configure your OpenClaw agent using YAML — with beginner-friendly examples.">
   <meta property="og:url" content="https://learnopenclaw.org/config-yaml.html">
   <meta property="og:type" content="article">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="config.yaml Reference — Complete OpenClaw YAML Config Field Guide">
-  <meta name="twitter:description" content="Complete field reference for OpenClaw's config.yaml with every field documented.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="config.yaml Explained — OpenClaw YAML Config Guide">
+  <meta name="twitter:description" content="Learn what config.yaml is, how it differs from openclaw.json, and how to configure your OpenClaw agent using YAML — with beginner-friendly examples.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "config.yaml Explained — OpenClaw YAML Config Guide",
+    "description": "A beginner-friendly guide to OpenClaw's YAML configuration file.",
+    "url": "https://learnopenclaw.org/config-yaml.html",
+    "dateModified": "2026-03-22",
+    "author": {"@type": "Organization", "name": "LearnOpenClaw"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "config.yaml", "item": "https://learnopenclaw.org/config-yaml.html"}
+      ]
+    }
+  }
+  </script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --blue: #0369a1;
-      --light-bg: #f0f9ff;
-      --medium: #bae6fd;
-      --dark-blue: #075985;
-      --code-bg: #1f2937;
-      --code-text: #e2e8f0;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-600: #4b5563;
-      --gray-900: #111827;
-      --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      line-height: 1.6;
-      color: var(--gray-900);
-      background: #fff;
-    }
-
-    /* Navigation */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: #fff;
-      border-bottom: 1px solid var(--gray-200);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 64px;
-    }
-
-    .nav-logo {
-      font-size: 16px;
-      font-weight: 700;
-      text-decoration: none;
-      color: var(--gray-900);
-      white-space: nowrap;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2px;
-      flex-direction: column;
-      position: absolute;
-      top: 64px;
-      left: 0;
-      right: 0;
-      background: #fff;
-      border-bottom: 1px solid var(--gray-200);
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-    }
-
-    .nav-links.open {
-      max-height: 800px;
-      overflow-y: auto;
-    }
-
-    .nav-links a,
-    .nav-section-label {
-      display: block;
-      padding: 12px 20px;
-      color: var(--gray-900);
-      text-decoration: none;
-      font-size: 15px;
-      border-bottom: 1px solid var(--gray-100);
-      transition: background 0.2s;
-    }
-
-    .nav-links a:hover {
-      background: var(--light-bg);
-      color: var(--blue);
-    }
-
-    .nav-section {
-      border-top: 1px solid var(--gray-200);
-    }
-
-    .nav-section-label {
-      font-weight: 700;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #7c3aed;
-      padding: 12px 20px;
-    }
-
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-    }
-
-    .hamburger span {
-      width: 24px;
-      height: 2px;
-      background: var(--gray-900);
-      transition: all 0.3s;
-    }
-
-    .skip-nav {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: var(--blue);
-      color: #fff;
-      padding: 8px;
-      z-index: 10000;
-    }
-
-    .skip-nav:focus {
-      top: 0;
-    }
-
-    @media (min-width: 768px) {
-      .nav-links {
-        position: static;
-        flex-direction: row;
-        gap: 0;
-        max-height: none;
-        overflow: visible;
-        background: transparent;
-        border: none;
-      }
-
-      .nav-links a,
-      .nav-section-label {
-        border: none;
-        padding: 8px 12px;
-        font-size: 14px;
-      }
-
-      .nav-section {
-        position: relative;
-        border: none;
-      }
-
-      .hamburger {
-        display: none;
-      }
-    }
-
-    @media (max-width: 767px) {
-      .hamburger {
-        display: flex;
-      }
-    }
-
-    /* Hero */
-    .hero {
-      background: linear-gradient(135deg, var(--light-bg) 0%, #e0f2fe 100%);
-      padding: 60px 20px;
-      text-align: center;
-      border-bottom: 2px solid var(--medium);
-    }
-
-    .hero-content {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .badge {
-      display: inline-block;
-      background: white;
-      border: 1px solid var(--medium);
-      border-radius: 20px;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--blue);
-      margin-bottom: 20px;
-    }
-
-    .hero h1 {
-      font-size: 42px;
-      font-weight: 800;
-      color: var(--dark-blue);
-      margin-bottom: 16px;
-      line-height: 1.2;
-    }
-
-    .hero .subtitle {
-      font-size: 18px;
-      color: var(--gray-600);
-      margin-bottom: 32px;
-      line-height: 1.6;
-    }
-
-    .cta-group {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .cta-btn {
-      display: inline-block;
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      border: none;
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    .cta-btn-primary {
-      background: var(--blue);
-      color: white;
-    }
-
-    .cta-btn-primary:hover {
-      background: var(--dark-blue);
-      transform: translateY(-2px);
-    }
-
-    .cta-btn-secondary {
-      background: white;
-      color: var(--blue);
-      border: 2px solid var(--blue);
-    }
-
-    .cta-btn-secondary:hover {
-      background: var(--light-bg);
-      transform: translateY(-2px);
-    }
-
-    /* Main content */
-    main {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 60px 20px;
-    }
-
-    section {
-      margin-bottom: 80px;
-    }
-
-    h2 {
-      font-size: 32px;
-      font-weight: 800;
-      color: var(--dark-blue);
-      margin-bottom: 24px;
-      padding-top: 20px;
-      border-top: 3px solid var(--medium);
-      scroll-margin-top: 80px;
-    }
-
-    h3 {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--gray-900);
-      margin-bottom: 16px;
-      margin-top: 32px;
-    }
-
-    h4 {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--gray-900);
-      margin: 20px 0 12px;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      letter-spacing: 0.5px;
-    }
-
-    p {
-      margin-bottom: 16px;
-      line-height: 1.8;
-    }
-
-    a {
-      color: var(--blue);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* Code blocks */
-    pre {
-      background: var(--code-bg);
-      color: var(--code-text);
-      padding: 20px;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin-bottom: 24px;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    code {
-      font-family: var(--font-mono);
-      font-size: 13px;
-    }
-
-    /* Tables */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 24px;
-      font-size: 14px;
-    }
-
-    thead {
-      background: var(--light-bg);
-      border-bottom: 2px solid var(--medium);
-    }
-
-    th {
-      padding: 12px 16px;
-      text-align: left;
-      font-weight: 700;
-      color: var(--dark-blue);
-    }
-
-    td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--gray-200);
-    }
-
-    tbody tr:nth-child(even) {
-      background: var(--gray-50);
-    }
-
-    tbody tr:hover {
-      background: var(--light-bg);
-    }
-
-    td code {
-      background: var(--code-bg);
-      color: var(--code-text);
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-size: 12px;
-    }
-
-    /* Comparison section */
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-
-    @media (max-width: 768px) {
-      .comparison-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .comparison-card {
-      background: var(--gray-50);
-      border: 1px solid var(--gray-200);
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    .comparison-card h4 {
-      color: var(--blue);
-      margin-top: 0;
-    }
-
-    .comparison-card ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .comparison-card li {
-      padding: 8px 0;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .comparison-card li::before {
-      content: '✓';
-      color: #10b981;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-
-    /* Tips grid */
-    .tips-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      margin-bottom: 40px;
-    }
-
-    .tip-card {
-      background: var(--light-bg);
-      border: 2px solid var(--medium);
-      border-radius: 8px;
-      padding: 24px;
-    }
-
-    .tip-card h4 {
-      color: var(--blue);
-      margin-top: 0;
-      font-size: 14px;
-    }
-
-    .tip-card p {
-      margin-bottom: 0;
-      font-size: 14px;
-    }
-
-    /* Alert box */
-    .alert {
-      background: #fef3c7;
-      border-left: 4px solid #f59e0b;
-      padding: 16px;
-      border-radius: 4px;
-      margin: 32px 0;
-    }
-
-    .alert p {
-      margin-bottom: 0;
-    }
-
-    .alert a {
-      color: var(--dark-blue);
-      font-weight: 700;
-    }
-
-    /* Section bg */
-    .section-alt {
-      background: var(--gray-50);
-      padding: 32px;
-      border-radius: 8px;
-      margin-bottom: 32px;
-    }
-
-    /* Footer */
-    footer {
-      background: var(--gray-900);
-      color: var(--gray-50);
-      padding: 40px 20px;
-      text-align: center;
-      font-size: 14px;
-      margin-top: 80px;
-    }
-
-    footer a {
-      color: var(--medium);
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Responsive */
-    @media (max-width: 640px) {
-      .hero h1 {
-        font-size: 28px;
-      }
-
-      .hero .subtitle {
-        font-size: 16px;
-      }
-
-      h2 {
-        font-size: 24px;
-      }
-
-      table {
-        font-size: 13px;
-      }
-
-      th, td {
-        padding: 10px 12px;
-      }
-
-      pre {
-        padding: 16px;
-        font-size: 12px;
-      }
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+    a { color: #0369a1; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Skip nav ── */
+    .skip-nav { position: absolute; top: -40px; left: 0; background: #0369a1; color: #fff; padding: 8px 16px; border-radius: 0 0 4px 0; font-size: .875rem; transition: top .2s; z-index: 9999; }
+    .skip-nav:focus { top: 0; }
+
+    /* ── Header / Nav ── */
+    header { background: #0c1a2e; padding: 0 1rem; position: sticky; top: 0; z-index: 100; }
+    nav { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .logo { font-size: 1.25rem; font-weight: 800; color: #7dd3fc; letter-spacing: -.5px; text-decoration: none; }
+    .logo span { color: #fff; }
+
+    /* hamburger button */
+    .hamburger { background: none; border: none; cursor: pointer; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #e2e8f0; border-radius: 2px; transition: all .25s; }
+
+    /* dropdown nav */
+    .nav-links { display: none; flex-direction: column; gap: 0; position: absolute; top: 56px; left: 0; right: 0; background: #0c1a2e; padding: 12px 0; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: #cbd5e1; font-size: .95rem; font-weight: 500; padding: 10px 24px; border-left: 3px solid transparent; transition: background .15s, color .15s; }
+    .nav-links a:hover, .nav-links a:focus { background: rgba(125,211,252,.08); color: #7dd3fc; text-decoration: none; }
+    .nav-links a[aria-current="page"] { color: #7dd3fc; border-left-color: #7dd3fc; background: rgba(125,211,252,.1); }
+
+    /* ── Main content ── */
+    main { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+    /* hero — teal/green for YAML to differentiate from JSON */
+    .hero { background: linear-gradient(135deg, #0d7a5f 0%, #064e3b 100%); color: #fff; border-radius: 12px; padding: 2.5rem 2rem; margin-bottom: 2.5rem; }
+    .hero-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #6ee7b7; margin-bottom: .5rem; }
+    .hero h1 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 800; line-height: 1.2; margin-bottom: .75rem; }
+    .hero p { font-size: 1.05rem; color: #a7f3d0; max-width: 560px; }
+
+    /* callout boxes */
+    .callout { border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; }
+    .callout-blue { background: #eff6ff; border-left: 4px solid #0369a1; }
+    .callout-green { background: #f0fdf4; border-left: 4px solid #16a34a; }
+    .callout-amber { background: #fffbeb; border-left: 4px solid #d97706; }
+    .callout-teal { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .callout h3 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+    .callout p { font-size: .95rem; color: #334155; }
+
+    /* section headings */
+    .section-title { font-size: 1.4rem; font-weight: 800; color: #0c1a2e; margin: 2.5rem 0 .75rem; padding-bottom: .4rem; border-bottom: 2px solid #e2e8f0; }
+
+    /* prose */
+    .prose p { margin-bottom: 1rem; color: #334155; font-size: .97rem; }
+    .prose ul { margin: .5rem 0 1rem 1.5rem; }
+    .prose li { margin-bottom: .35rem; color: #334155; font-size: .95rem; }
+
+    /* steps */
+    .steps { counter-reset: step; }
+    .step { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; }
+    .step-num { counter-increment: step; background: #0d7a5f; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: .8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .step-num::before { content: counter(step); }
+    .step-body { flex: 1; }
+    .step-body strong { display: block; font-size: .97rem; margin-bottom: .2rem; }
+    .step-body p, .step-body code { font-size: .9rem; color: #475569; }
+
+    /* comparison table */
+    .compare-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: .92rem; }
+    .compare-table th { background: #f1f5f9; text-align: left; padding: .6rem .75rem; font-weight: 700; color: #475569; }
+    .compare-table td { padding: .65rem .75rem; border-top: 1px solid #f1f5f9; vertical-align: top; }
+    .compare-table tr:hover td { background: #fafafa; }
+
+    /* side-by-side code blocks */
+    .side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .side-by-side .block-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #64748b; margin-bottom: .35rem; }
+    @media (max-width: 640px) { .side-by-side { grid-template-columns: 1fr; } }
+
+    /* code blocks */
+    pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 1.25rem 1.5rem; overflow-x: auto; font-size: .88rem; line-height: 1.7; margin-bottom: 1.5rem; }
+    pre code { font-family: 'SF Mono', 'Fira Code', Consolas, monospace; }
+    code { font-family: 'SF Mono', 'Fira Code', Consolas, monospace; font-size: .88em; background: #f1f5f9; color: #0369a1; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+    .comment { color: #94a3b8; }
+    .key { color: #7dd3fc; }
+    .val { color: #86efac; }
+    .str { color: #fca5a5; }
+    .num { color: #fdba74; }
+    .yaml-key { color: #93c5fd; }
+    .yaml-val { color: #86efac; }
+    .yaml-str { color: #fca5a5; }
+    .yaml-comment { color: #64748b; font-style: italic; }
+    .yaml-bool { color: #fdba74; }
+
+    /* accordion */
+    details { border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: .75rem; }
+    details summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 700; font-size: .97rem; color: #0c1a2e; display: flex; align-items: center; gap: .5rem; list-style: none; user-select: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before { content: '▶'; font-size: .7rem; color: #0d7a5f; transition: transform .2s; }
+    details[open] summary::before { transform: rotate(90deg); }
+    details summary:hover { background: #f8fafc; border-radius: 10px; }
+    details[open] summary { border-bottom: 1px solid #e2e8f0; border-radius: 10px 10px 0 0; }
+    .details-body { padding: 1rem 1.25rem 1.25rem; }
+
+    /* field table */
+    .field-table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: .75rem; }
+    .field-table th { background: #f1f5f9; font-weight: 700; text-align: left; padding: .6rem .75rem; color: #475569; }
+    .field-table td { padding: .6rem .75rem; border-top: 1px solid #f1f5f9; vertical-align: top; }
+    .field-table tr:hover td { background: #fafafa; }
+    .field-table code { font-size: .83rem; }
+    .badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 7px; border-radius: 20px; }
+    .badge-req { background: #fef3c7; color: #92400e; }
+    .badge-opt { background: #f0fdf4; color: #166534; }
+
+    /* sibling cards */
+    .sibling-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .sibling-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; transition: box-shadow .2s, border-color .2s; }
+    .sibling-card:hover { box-shadow: 0 4px 16px rgba(13,122,95,.1); border-color: #0d7a5f; text-decoration: none; }
+    .sibling-card .card-icon { font-size: 1.5rem; margin-bottom: .4rem; }
+    .sibling-card .card-title { font-weight: 700; color: #0c1a2e; font-size: .97rem; }
+    .sibling-card .card-desc { font-size: .85rem; color: #64748b; margin-top: .25rem; }
+
+    /* footer */
+    footer { background: #0c1a2e; color: #94a3b8; text-align: center; padding: 2rem 1rem; font-size: .875rem; }
+    footer a { color: #7dd3fc; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 1.75rem 1.25rem; }
+      pre { font-size: .8rem; padding: 1rem; }
     }
   </style>
 </head>
 <body>
-  <a class="skip-nav" href="#main-content">Skip to main content</a>
-  <nav role="navigation" aria-label="Main navigation">
-    <div class="nav-inner">
-      <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
-      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <header>
+    <nav role="navigation" aria-label="Main navigation">
+      <a href="index.html" class="logo">open<span>claw</span></a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links" id="hamburger-btn">
         <span></span><span></span><span></span>
       </button>
-      <div class="nav-links" id="nav-links">
-      <a href="index.html">Home</a>
-      <a href="blog.html">Blog</a>
-      <a href="learn.html">Learn</a>
-      <a href="faq.html">FAQ</a>
-    </div>
-    </div>
-  </nav>
-
-  <div class="hero">
-    <div class="hero-content">
-      <div class="badge">⚙️ Config Reference</div>
-      <h1>config.yaml — Complete Field Reference</h1>
-      <p class="subtitle">Prefer YAML over JSON? OpenClaw supports config.yaml with identical settings — cleaner syntax, native comments, and easier to read. Every field documented here.</p>
-      <div class="cta-group">
-        <a href="#full-example" class="cta-btn cta-btn-primary">View full example →</a>
-        <a href="#vs-json" class="cta-btn cta-btn-secondary">YAML vs JSON →</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
       </div>
-    </div>
-  </div>
+    </nav>
+  </header>
 
   <main id="main-content">
-    <!-- YAML vs JSON -->
-    <section id="vs-json">
-      <h2>YAML vs JSON — Why Use config.yaml?</h2>
-      <p>Both config.yaml and openclaw.json support identical fields and functionality. Choose based on your preference:</p>
 
-      <div class="comparison-grid">
-        <div class="comparison-card">
-          <h4>Why YAML?</h4>
-          <ul>
-            <li>Native comments with <code>#</code></li>
-            <li>No trailing comma issues</li>
-            <li>More readable nested structure</li>
-            <li>Multi-line strings without escaping</li>
-            <li>Cleaner, less verbose syntax</li>
-          </ul>
-        </div>
-        <div class="comparison-card">
-          <h4>Why JSON?</h4>
-          <ul>
-            <li>Stricter validation</li>
-            <li>No indentation sensitivity</li>
-            <li>Better IDE tooling support</li>
-            <li>Easier to parse programmatically</li>
-            <li>Industry standard for configs</li>
-          </ul>
-        </div>
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-label">Config Reference</div>
+      <h1 id="hero-heading">config.yaml — The Human-Friendly Config File</h1>
+      <p>config.yaml does everything openclaw.json does, but it's easier to read, supports comments, and is friendlier to hand-edit. This guide explains what it is, when to use it, and how every setting works.</p>
+    </section>
+
+    <!-- What is it -->
+    <h2 class="section-title" id="what-is-it">What is config.yaml?</h2>
+    <div class="prose">
+      <p><code>config.yaml</code> is an <strong>alternative configuration file</strong> for OpenClaw that uses the YAML format instead of JSON. It contains the exact same settings as <code>openclaw.json</code> — just written in a different syntax.</p>
+      <p>Think of it like choosing between filling out a form <strong>in a cramped box</strong> (JSON) versus writing things out <strong>line by line in a notebook</strong> (YAML). The information is the same — but YAML gives you more room to breathe, and you can leave yourself notes (comments) in the margins.</p>
+    </div>
+
+    <div class="callout callout-teal">
+      <h3>📋 What is YAML?</h3>
+      <p>YAML (YAML Ain't Markup Language) is a text format that uses <strong>indentation and colons</strong> instead of curly braces and quotes. It's widely used for config files because it's very clean to read. One important rule: <strong>indentation matters</strong> — use spaces, not tabs.</p>
+    </div>
+
+    <!-- JSON vs YAML side by side -->
+    <h2 class="section-title" id="json-vs-yaml">JSON vs YAML — Same Thing, Different Look</h2>
+    <div class="prose">
+      <p>Here's the exact same config written in both formats, so you can see the difference:</p>
+    </div>
+    <div class="side-by-side">
+      <div>
+        <div class="block-label">📄 openclaw.json</div>
+<pre><code>{
+  <span class="key">"llm"</span>: {
+    <span class="key">"provider"</span>: <span class="str">"anthropic"</span>,
+    <span class="key">"model"</span>: <span class="str">"claude-sonnet-4-6"</span>,
+    <span class="key">"apiKey"</span>: <span class="str">"$ANTHROPIC_API_KEY"</span>
+  },
+  <span class="key">"gateway"</span>: {
+    <span class="key">"port"</span>: <span class="num">8080</span>
+  }
+}</code></pre>
       </div>
+      <div>
+        <div class="block-label">📋 config.yaml</div>
+<pre><code><span class="yaml-comment"># config.yaml — you can write comments!</span>
+<span class="yaml-key">llm</span>:
+  <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>
+  <span class="yaml-key">model</span>: <span class="yaml-val">claude-sonnet-4-6</span>
+  <span class="yaml-key">apiKey</span>: <span class="yaml-str">$ANTHROPIC_API_KEY</span>
 
-      <p><strong>Key tip:</strong> OpenClaw auto-detects your format based on file extension. YAML is indentation-sensitive — use 2 spaces, never tabs. Always validate with <code>openclaw config validate</code> before restarting.</p>
-    </section>
-
-    <!-- Where is the file? -->
-    <section>
-      <h2>Where Is config.yaml?</h2>
-      <p><strong>Default location:</strong> <code>~/.openclaw/config.yaml</code></p>
-      <p><strong>Override with environment variable:</strong></p>
-      <pre>export OPENCLAW_CONFIG=/path/to/config.yaml
-openclaw start</pre>
-      <p><strong>Quick commands:</strong></p>
-      <ul>
-        <li><code>openclaw config edit</code> — Open config in your default editor</li>
-        <li><code>openclaw config validate</code> — Validate YAML syntax and required fields</li>
-        <li><code>openclaw config reload</code> — Reload config without restarting</li>
-        <li><code>openclaw config show</code> — Print current config (redacts secrets)</li>
-      </ul>
-    </section>
-
-    <!-- Full working example -->
-    <section id="full-example">
-      <h2>Full Working Example</h2>
-      <p>A complete, production-ready config.yaml with all sections:</p>
-      <pre>llm:
-  provider: anthropic              # "anthropic" | "openai" | "google" | "ollama"
-  model: claude-3-5-sonnet         # Model name from provider
-  apiKey: ${ANTHROPIC_API_KEY}     # Use env var — never hardcode
-  temperature: 0.7                 # 0.0–2.0. Higher = more creative
-  maxTokens: 4096
-  timeout: 60
-  retries: 3
-  cache: true                      # Enable prompt caching (saves money)
-  heartbeatModel: claude-haiku-4   # Lightweight model for health checks
-  powerModel: claude-3-5-sonnet    # For complex reasoning tasks
-
-gateway:
-  telegram:
-    enabled: true
-    token: ${TELEGRAM_BOT_TOKEN}
-    allowedUsers:
-      - 123456789
-      - 987654321
-
-  slack:
-    enabled: true
-    botToken: ${SLACK_BOT_TOKEN}
-    appToken: ${SLACK_APP_TOKEN}
-    allowedChannels:
-      - general
-      - automations
-
-  discord:
-    enabled: false
-    token: ${DISCORD_TOKEN}
-    allowedGuilds:
-      - "123456789"
-
-  web:
-    enabled: true
-    port: 8000
-    host: 0.0.0.0
-
-memory:
-  directory: ~/.openclaw/memory
-  memoryFile: memory.json
-  dailyNotes: true
-  retentionDays: 90
-  maxMemoryWords: 10000
-  autoSummarise: true
-  search:
-    enabled: true
-    fuzzy: true
-    maxResults: 5
-
-tools:
-  shell:
-    enabled: true
-    timeout: 30
-
-  fileRead:
-    enabled: true
-
-  fileWrite:
-    enabled: true
-
-  browser:
-    enabled: true
-
-  email:
-    enabled: false
-
-  calendar:
-    enabled: false
-
-  http:
-    enabled: true
-
-  code:
-    enabled: true
-
-  allowedPaths:
-    - /home/user/projects
-    - /tmp
-
-  blockedDomains:
-    - facebook.com
-    - tiktok.com
-
-voice:
-  stt:
-    enabled: true
-    provider: openai              # "openai" | "google" | "deepgram"
-    apiKey: ${OPENAI_API_KEY}
-    language: en-US
-
-  tts:
-    enabled: true
-    provider: openai              # "openai" | "google" | "elevenlabs"
-    apiKey: ${OPENAI_API_KEY}
-    voiceId: alloy
-    model: tts-1
-
-  wakeWord:
-    enabled: true
-    phrases:
-      - "hey openclaw"
-      - "openclaw"
-
-  silenceTimeoutMs: 3000
-  interruptOnSpeech: true
-  quietHours:
-    start: "22:00"
-    end: "08:00"
-
-heartbeat:
-  enabled: true
-  interval: 300                   # Seconds (5 minutes)
-  quietHours:
-    start: "22:00"
-    end: "08:00"
-
-mcp:
-  mcpServers:
-    brave:
-      command: npx
-      args:
-        - "@modelcontextprotocol/server-brave"
-      env:
-        BRAVE_API_KEY: ${BRAVE_API_KEY}
-
-    postgres:
-      command: /usr/local/bin/mcp-postgres
-      args:
-        - --database
-        - mydb
-      env:
-        DATABASE_URL: ${DATABASE_URL}
-
-logging:
-  level: info                     # "debug" | "info" | "warn" | "error"
-  file: ~/.openclaw/openclaw.log
-  maxSizeMb: 100
-  rotate: true</pre>
-    </section>
-
-    <!-- LLM Section -->
-    <section>
-      <h2>LLM Configuration</h2>
-      <p>Configure your language model provider and behavior:</p>
-
-      <div class="section-alt">
-        <pre>llm:
-  provider: anthropic              # "anthropic" | "openai" | "google" | "ollama"
-  model: claude-3-5-sonnet         # Model name from selected provider
-  apiKey: ${ANTHROPIC_API_KEY}     # Always use env vars for secrets
-  baseUrl: ""                      # Custom endpoint (optional, for self-hosted)
-  temperature: 0.7                 # 0.0–2.0. Higher = more creative
-  maxTokens: 4096                  # Maximum response length
-  timeout: 60                      # Seconds
-  retries: 3                       # Retry failed requests
-  cache: true                      # Prompt caching (reduces cost)
-  heartbeatModel: claude-haiku-4   # Lightweight model for health checks
-  powerModel: claude-3-5-sonnet    # Complex reasoning tasks</pre>
+<span class="yaml-key">gateway</span>:
+  <span class="yaml-key">port</span>: <span class="num">8080</span></code></pre>
       </div>
+    </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>provider</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓</td>
-            <td>LLM provider: <code>anthropic</code>, <code>openai</code>, <code>google</code>, or <code>ollama</code></td>
-          </tr>
-          <tr>
-            <td><code>model</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓</td>
-            <td>Model ID from provider. E.g. <code>claude-3-5-sonnet</code>, <code>gpt-4-turbo</code></td>
-          </tr>
-          <tr>
-            <td><code>apiKey</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓</td>
-            <td>API key. Use <code>${ENV_VAR}</code> syntax for environment variables</td>
-          </tr>
-          <tr>
-            <td><code>baseUrl</code></td>
-            <td>string</td>
-            <td>""</td>
-            <td></td>
-            <td>Custom API endpoint. Required for self-hosted or proxy setups</td>
-          </tr>
-          <tr>
-            <td><code>temperature</code></td>
-            <td>number</td>
-            <td>0.7</td>
-            <td></td>
-            <td>Sampling temperature 0.0–2.0. Higher = more creative, lower = deterministic</td>
-          </tr>
-          <tr>
-            <td><code>maxTokens</code></td>
-            <td>number</td>
-            <td>4096</td>
-            <td></td>
-            <td>Maximum tokens in response</td>
-          </tr>
-          <tr>
-            <td><code>timeout</code></td>
-            <td>number</td>
-            <td>60</td>
-            <td></td>
-            <td>Request timeout in seconds</td>
-          </tr>
-          <tr>
-            <td><code>retries</code></td>
-            <td>number</td>
-            <td>3</td>
-            <td></td>
-            <td>Retry count for failed requests</td>
-          </tr>
-          <tr>
-            <td><code>cache</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Enable prompt caching. Reduces token usage and cost</td>
-          </tr>
-          <tr>
-            <td><code>heartbeatModel</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td></td>
-            <td>Lightweight model for periodic health checks (saves cost)</td>
-          </tr>
-          <tr>
-            <td><code>powerModel</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td></td>
-            <td>Stronger model for complex reasoning. Falls back to <code>model</code> if not set</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <table class="compare-table" aria-label="JSON vs YAML comparison">
+      <thead>
+        <tr><th>Feature</th><th>openclaw.json</th><th>config.yaml</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Comments allowed?</td><td>❌ No</td><td>✅ Yes — use <code>#</code></td></tr>
+        <tr><td>Quotes needed on keys?</td><td>✅ Always</td><td>❌ Not usually</td></tr>
+        <tr><td>Curly braces?</td><td>✅ Required for objects</td><td>❌ Just use indentation</td></tr>
+        <tr><td>Good for beginners?</td><td>Medium</td><td>✅ Usually easier to read</td></tr>
+        <tr><td>Indentation matters?</td><td>❌ (cosmetic only)</td><td>✅ Critical — use spaces</td></tr>
+        <tr><td>Supported by OpenClaw?</td><td>✅ Default format</td><td>✅ Fully supported</td></tr>
+      </tbody>
+    </table>
 
-    <!-- Gateway Section -->
-    <section>
-      <h2>Gateway Configuration</h2>
-      <p>Connect OpenClaw to messaging platforms and APIs:</p>
-
-      <div class="section-alt">
-        <pre>gateway:
-  telegram:
-    enabled: true
-    token: ${TELEGRAM_BOT_TOKEN}
-    allowedUsers:
-      - 123456789
-      - 987654321
-
-  slack:
-    enabled: true
-    botToken: ${SLACK_BOT_TOKEN}
-    appToken: ${SLACK_APP_TOKEN}
-    allowedChannels:
-      - general
-      - automations
-
-  discord:
-    enabled: true
-    token: ${DISCORD_TOKEN}
-    allowedGuilds:
-      - "123456789"
-
-  web:
-    enabled: true
-    port: 8000
-    host: 0.0.0.0</pre>
-      </div>
-
-      <h3>Telegram</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>telegram.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Enable Telegram gateway</td>
-          </tr>
-          <tr>
-            <td><code>telegram.token</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓*</td>
-            <td>Telegram Bot API token from BotFather</td>
-          </tr>
-          <tr>
-            <td><code>telegram.allowedUsers</code></td>
-            <td>array</td>
-            <td>[]</td>
-            <td></td>
-            <td>List of allowed Telegram user IDs. Empty = all users allowed</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Slack</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>slack.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Enable Slack gateway</td>
-          </tr>
-          <tr>
-            <td><code>slack.botToken</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓*</td>
-            <td>Slack bot user token (xoxb-...)</td>
-          </tr>
-          <tr>
-            <td><code>slack.appToken</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓*</td>
-            <td>Slack app token (xapp-...) for WebSocket connection</td>
-          </tr>
-          <tr>
-            <td><code>slack.allowedChannels</code></td>
-            <td>array</td>
-            <td>[]</td>
-            <td></td>
-            <td>Allowed channel names. Empty = all channels</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Discord</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>discord.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Enable Discord gateway</td>
-          </tr>
-          <tr>
-            <td><code>discord.token</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓*</td>
-            <td>Discord bot token</td>
-          </tr>
-          <tr>
-            <td><code>discord.allowedGuilds</code></td>
-            <td>array</td>
-            <td>[]</td>
-            <td></td>
-            <td>Allowed server IDs. Empty = all guilds</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Web</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>web.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Enable HTTP webhook gateway</td>
-          </tr>
-          <tr>
-            <td><code>web.port</code></td>
-            <td>number</td>
-            <td>8000</td>
-            <td></td>
-            <td>Port to listen on</td>
-          </tr>
-          <tr>
-            <td><code>web.host</code></td>
-            <td>string</td>
-            <td>0.0.0.0</td>
-            <td></td>
-            <td>Host to bind to. Use 127.0.0.1 for localhost only</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Memory Section -->
-    <section>
-      <h2>Memory Configuration</h2>
-      <p>Configure OpenClaw's persistent memory system:</p>
-
-      <div class="section-alt">
-        <pre>memory:
-  directory: ~/.openclaw/memory     # Where memory files are stored
-  memoryFile: memory.json           # Main memory file
-  dailyNotes: true                  # Summarize daily activity
-  retentionDays: 90                 # Delete old memories
-  maxMemoryWords: 10000             # Prune when exceeds limit
-  autoSummarise: true               # Auto-compress old memories
-  search:
-    enabled: true                   # Enable memory search
-    fuzzy: true                      # Fuzzy matching
-    maxResults: 5                    # Results per search</pre>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>directory</code></td>
-            <td>string</td>
-            <td>~/.openclaw/memory</td>
-            <td></td>
-            <td>Directory where memory files are stored</td>
-          </tr>
-          <tr>
-            <td><code>memoryFile</code></td>
-            <td>string</td>
-            <td>memory.json</td>
-            <td></td>
-            <td>Filename for core memory (within directory)</td>
-          </tr>
-          <tr>
-            <td><code>dailyNotes</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Create daily summaries of conversations and learnings</td>
-          </tr>
-          <tr>
-            <td><code>retentionDays</code></td>
-            <td>number</td>
-            <td>90</td>
-            <td></td>
-            <td>Days to keep memory entries. 0 = infinite</td>
-          </tr>
-          <tr>
-            <td><code>maxMemoryWords</code></td>
-            <td>number</td>
-            <td>10000</td>
-            <td></td>
-            <td>Prune memory when word count exceeds this</td>
-          </tr>
-          <tr>
-            <td><code>autoSummarise</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Auto-compress old memories to save tokens</td>
-          </tr>
-          <tr>
-            <td><code>search.enabled</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Enable searching memory for past conversations</td>
-          </tr>
-          <tr>
-            <td><code>search.fuzzy</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Use fuzzy matching for typos and variations</td>
-          </tr>
-          <tr>
-            <td><code>search.maxResults</code></td>
-            <td>number</td>
-            <td>5</td>
-            <td></td>
-            <td>Maximum memory entries returned per search</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Tools Section -->
-    <section>
-      <h2>Tools Configuration</h2>
-      <p>Enable/disable specific tools and set safety constraints:</p>
-
-      <div class="section-alt">
-        <pre>tools:
-  shell:
-    enabled: true
-    timeout: 30                     # Max seconds per shell command
-
-  fileRead:
-    enabled: true
-
-  fileWrite:
-    enabled: true
-
-  browser:
-    enabled: true
-
-  email:
-    enabled: false
-
-  calendar:
-    enabled: false
-
-  http:
-    enabled: true
-
-  code:
-    enabled: true
-
-  allowedPaths:
-    - /home/user/projects
-    - /tmp
-
-  blockedDomains:
-    - facebook.com
-    - tiktok.com</pre>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>shell.enabled</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Allow shell command execution</td>
-          </tr>
-          <tr>
-            <td><code>shell.timeout</code></td>
-            <td>number</td>
-            <td>30</td>
-            <td></td>
-            <td>Max seconds per shell command</td>
-          </tr>
-          <tr>
-            <td><code>fileRead.enabled</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Allow reading files</td>
-          </tr>
-          <tr>
-            <td><code>fileWrite.enabled</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Allow writing files</td>
-          </tr>
-          <tr>
-            <td><code>browser.enabled</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Allow browser automation</td>
-          </tr>
-          <tr>
-            <td><code>email.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Allow sending/reading emails</td>
-          </tr>
-          <tr>
-            <td><code>calendar.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Allow calendar access</td>
-          </tr>
-          <tr>
-            <td><code>http.enabled</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Allow HTTP requests</td>
-          </tr>
-          <tr>
-            <td><code>code.enabled</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Allow code execution</td>
-          </tr>
-          <tr>
-            <td><code>allowedPaths</code></td>
-            <td>array</td>
-            <td>[]</td>
-            <td></td>
-            <td>Paths where file operations are allowed. Empty = all paths</td>
-          </tr>
-          <tr>
-            <td><code>blockedDomains</code></td>
-            <td>array</td>
-            <td>[]</td>
-            <td></td>
-            <td>Domains blocked from HTTP requests</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Voice Section -->
-    <section>
-      <h2>Voice Configuration</h2>
-      <p>Enable speech-to-text and text-to-speech:</p>
-
-      <div class="section-alt">
-        <pre>voice:
-  stt:
-    enabled: true
-    provider: openai                # "openai" | "google" | "deepgram"
-    apiKey: ${OPENAI_API_KEY}
-    language: en-US
-
-  tts:
-    enabled: true
-    provider: openai                # "openai" | "google" | "elevenlabs"
-    apiKey: ${OPENAI_API_KEY}
-    voiceId: alloy                  # Provider-specific voice
-    model: tts-1                    # Model variant
-
-  wakeWord:
-    enabled: true
-    phrases:
-      - "hey openclaw"
-      - "openclaw"
-
-  silenceTimeoutMs: 3000            # Stop listening after silence
-  interruptOnSpeech: true           # Stop responding when user speaks
-  quietHours:
-    start: "22:00"
-    end: "08:00"</pre>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>stt.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Enable speech-to-text</td>
-          </tr>
-          <tr>
-            <td><code>stt.provider</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓*</td>
-            <td>STT provider: <code>openai</code>, <code>google</code>, <code>deepgram</code></td>
-          </tr>
-          <tr>
-            <td><code>stt.apiKey</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓*</td>
-            <td>API key for STT provider</td>
-          </tr>
-          <tr>
-            <td><code>stt.language</code></td>
-            <td>string</td>
-            <td>en-US</td>
-            <td></td>
-            <td>Language code (e.g., <code>en-US</code>, <code>fr-FR</code>)</td>
-          </tr>
-          <tr>
-            <td><code>tts.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Enable text-to-speech</td>
-          </tr>
-          <tr>
-            <td><code>tts.provider</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓*</td>
-            <td>TTS provider: <code>openai</code>, <code>google</code>, <code>elevenlabs</code></td>
-          </tr>
-          <tr>
-            <td><code>tts.apiKey</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓*</td>
-            <td>API key for TTS provider</td>
-          </tr>
-          <tr>
-            <td><code>tts.voiceId</code></td>
-            <td>string</td>
-            <td>alloy</td>
-            <td></td>
-            <td>Voice ID. Provider-specific (e.g., <code>alloy</code>, <code>nova</code> for OpenAI)</td>
-          </tr>
-          <tr>
-            <td><code>tts.model</code></td>
-            <td>string</td>
-            <td>tts-1</td>
-            <td></td>
-            <td>Model variant (e.g., <code>tts-1</code>, <code>tts-1-hd</code> for OpenAI)</td>
-          </tr>
-          <tr>
-            <td><code>wakeWord.enabled</code></td>
-            <td>boolean</td>
-            <td>false</td>
-            <td></td>
-            <td>Require wake word before STT activation</td>
-          </tr>
-          <tr>
-            <td><code>wakeWord.phrases</code></td>
-            <td>array</td>
-            <td>[]</td>
-            <td></td>
-            <td>List of wake word phrases (case-insensitive)</td>
-          </tr>
-          <tr>
-            <td><code>silenceTimeoutMs</code></td>
-            <td>number</td>
-            <td>3000</td>
-            <td></td>
-            <td>Milliseconds of silence before stopping audio capture</td>
-          </tr>
-          <tr>
-            <td><code>interruptOnSpeech</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Stop TTS when user starts speaking</td>
-          </tr>
-          <tr>
-            <td><code>quietHours.start</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td></td>
-            <td>Start of quiet hours (HH:MM format, 24-hour)</td>
-          </tr>
-          <tr>
-            <td><code>quietHours.end</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td></td>
-            <td>End of quiet hours (HH:MM format, 24-hour)</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Heartbeat Section -->
-    <section>
-      <h2>Heartbeat Configuration</h2>
-      <p>Configure periodic health checks and background tasks:</p>
-
-      <div class="section-alt">
-        <pre>heartbeat:
-  enabled: true
-  interval: 300                     # Seconds (5 minutes)
-  quietHours:
-    start: "22:00"
-    end: "08:00"</pre>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>enabled</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Enable periodic heartbeat/health checks</td>
-          </tr>
-          <tr>
-            <td><code>interval</code></td>
-            <td>number</td>
-            <td>300</td>
-            <td></td>
-            <td>Interval between heartbeats in seconds</td>
-          </tr>
-          <tr>
-            <td><code>quietHours.start</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td></td>
-            <td>Start of quiet hours (HH:MM format, 24-hour). Skips heartbeat during this window</td>
-          </tr>
-          <tr>
-            <td><code>quietHours.end</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td></td>
-            <td>End of quiet hours (HH:MM format, 24-hour)</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- MCP Section -->
-    <section>
-      <h2>MCP Configuration</h2>
-      <p>Connect Model Context Protocol servers for extended capabilities:</p>
-
-      <div class="section-alt">
-        <pre>mcp:
-  mcpServers:
-    brave:
-      command: npx
-      args:
-        - "@modelcontextprotocol/server-brave"
-      env:
-        BRAVE_API_KEY: ${BRAVE_API_KEY}
-
-    postgres:
-      command: /usr/local/bin/mcp-postgres
-      args:
-        - --database
-        - mydb
-      env:
-        DATABASE_URL: ${DATABASE_URL}</pre>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>mcpServers</code></td>
-            <td>object</td>
-            <td>{}</td>
-            <td></td>
-            <td>Map of MCP server names to configuration</td>
-          </tr>
-          <tr>
-            <td><code>mcpServers.{name}.command</code></td>
-            <td>string</td>
-            <td>—</td>
-            <td>✓</td>
-            <td>Command to start the server (e.g., <code>npx</code>, <code>/path/to/binary</code>)</td>
-          </tr>
-          <tr>
-            <td><code>mcpServers.{name}.args</code></td>
-            <td>array</td>
-            <td>[]</td>
-            <td></td>
-            <td>Command-line arguments</td>
-          </tr>
-          <tr>
-            <td><code>mcpServers.{name}.env</code></td>
-            <td>object</td>
-            <td>{}</td>
-            <td></td>
-            <td>Environment variables. Use <code>${VAR}</code> syntax for secrets</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Logging Section -->
-    <section>
-      <h2>Logging Configuration</h2>
-      <p>Control OpenClaw's logging behavior:</p>
-
-      <div class="section-alt">
-        <pre>logging:
-  level: info                       # "debug" | "info" | "warn" | "error"
-  file: ~/.openclaw/openclaw.log    # Log file path
-  maxSizeMb: 100                    # Rotate when file exceeds size
-  rotate: true                      # Enable log rotation</pre>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th>Type</th>
-            <th>Default</th>
-            <th>Required</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>level</code></td>
-            <td>string</td>
-            <td>info</td>
-            <td></td>
-            <td>Log level: <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code></td>
-          </tr>
-          <tr>
-            <td><code>file</code></td>
-            <td>string</td>
-            <td>~/.openclaw/openclaw.log</td>
-            <td></td>
-            <td>Path to log file</td>
-          </tr>
-          <tr>
-            <td><code>maxSizeMb</code></td>
-            <td>number</td>
-            <td>100</td>
-            <td></td>
-            <td>Max file size (MB) before rotation</td>
-          </tr>
-          <tr>
-            <td><code>rotate</code></td>
-            <td>boolean</td>
-            <td>true</td>
-            <td></td>
-            <td>Enable automatic log rotation</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- YAML Tips -->
-    <section>
-      <h2>YAML Tips & Best Practices</h2>
-      <div class="tips-grid">
-        <div class="tip-card">
-          <h4>Quote values with special characters</h4>
-          <p>Always quote strings containing colons, hashes, or other special chars: <code>"http://localhost:8000"</code>, <code>"#comment"</code></p>
-        </div>
-        <div class="tip-card">
-          <h4>Use environment variables for secrets</h4>
-          <p>Reference env vars with <code>${VAR_NAME}</code> syntax. Never hardcode API keys: <code>apiKey: ${ANTHROPIC_API_KEY}</code></p>
-        </div>
-        <div class="tip-card">
-          <h4>Indentation is critical</h4>
-          <p>Use exactly 2 spaces per indentation level. Never use tabs. Inconsistent indentation causes parse errors.</p>
-        </div>
-        <div class="tip-card">
-          <h4>Validate before restarting</h4>
-          <p>Always run <code>openclaw config validate</code> after editing to catch syntax errors early.</p>
+    <!-- Where does it live -->
+    <h2 class="section-title" id="where">Where Does config.yaml Live?</h2>
+    <div class="prose steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Same place as openclaw.json</strong>
+          <p>Put <code>config.yaml</code> in your project's root folder — the same directory where you run <code>openclaw start</code>.</p>
         </div>
       </div>
-    </section>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Don't use both at once</strong>
+          <p>If both <code>openclaw.json</code> and <code>config.yaml</code> exist in the same folder, OpenClaw will use <code>openclaw.json</code> and ignore the YAML file. Pick one format per project.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Global fallback works here too</strong>
+          <p>You can place a <code>config.yaml</code> at <code>~/.openclaw/config.yaml</code> as a global default, just like with JSON.</p>
+        </div>
+      </div>
+    </div>
 
-    <!-- JSON comparison alert -->
-    <div class="alert">
-      <p><strong>Prefer JSON?</strong> The <code>openclaw.json</code> format supports identical fields and full backwards compatibility. <a href="config-json.html">View the openclaw.json reference →</a></p>
+    <!-- Minimal starter -->
+    <h2 class="section-title" id="starter">Minimal Starter Config</h2>
+    <div class="prose">
+      <p>Here's the smallest valid <code>config.yaml</code> to get your agent running — only the essentials:</p>
+    </div>
+<pre><code><span class="yaml-comment"># The only required section is llm</span>
+<span class="yaml-key">llm</span>:
+  <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>
+  <span class="yaml-key">model</span>: <span class="yaml-val">claude-haiku-4-5-20251001</span>
+  <span class="yaml-key">apiKey</span>: <span class="yaml-str">$ANTHROPIC_API_KEY</span></code></pre>
+    <div class="callout callout-amber">
+      <h3>⚠️ Never hardcode your API key</h3>
+      <p>Use <code>$ANTHROPIC_API_KEY</code> instead of the actual key value — OpenClaw will read it from your environment. Add <code>config.yaml</code> to your <code>.gitignore</code> as a safety net too.</p>
+    </div>
+
+    <!-- Full annotated example -->
+    <h2 class="section-title" id="full-example">Full Annotated Example</h2>
+    <div class="prose">
+      <p>Here's a complete <code>config.yaml</code> with every common section and comments explaining each field:</p>
+    </div>
+<pre><code><span class="yaml-comment"># ────────────────────────────────────────────────
+# OpenClaw config.yaml
+# All values with $ prefix are read from env vars
+# ────────────────────────────────────────────────</span>
+
+<span class="yaml-key">llm</span>:
+  <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>         <span class="yaml-comment"># anthropic | openai | ollama | groq</span>
+  <span class="yaml-key">model</span>: <span class="yaml-val">claude-sonnet-4-6</span>   <span class="yaml-comment"># model name from your provider</span>
+  <span class="yaml-key">apiKey</span>: <span class="yaml-str">$ANTHROPIC_API_KEY</span>  <span class="yaml-comment"># reads from environment variable</span>
+  <span class="yaml-key">maxTokens</span>: <span class="num">4096</span>            <span class="yaml-comment"># max response length</span>
+  <span class="yaml-key">temperature</span>: <span class="num">0.7</span>           <span class="yaml-comment"># 0 = precise, 1 = creative</span>
+  <span class="yaml-comment"># systemPrompt: "You are a helpful assistant."  # optional persona</span>
+
+<span class="yaml-key">gateway</span>:
+  <span class="yaml-key">port</span>: <span class="num">8080</span>                  <span class="yaml-comment"># port OpenClaw listens on</span>
+  <span class="yaml-key">host</span>: <span class="yaml-val">127.0.0.1</span>            <span class="yaml-comment"># use 0.0.0.0 to allow LAN access</span>
+  <span class="yaml-key">timeout</span>: <span class="num">30000</span>             <span class="yaml-comment"># request timeout in ms</span>
+  <span class="yaml-key">cors</span>: <span class="yaml-bool">false</span>                <span class="yaml-comment"># set true for browser clients</span>
+
+<span class="yaml-key">memory</span>:
+  <span class="yaml-key">type</span>: <span class="yaml-val">sqlite</span>               <span class="yaml-comment"># memory | sqlite | postgres</span>
+  <span class="yaml-key">path</span>: <span class="yaml-str">./agent.db</span>           <span class="yaml-comment"># path to SQLite file</span>
+  <span class="yaml-key">maxEntries</span>: <span class="num">10000</span>          <span class="yaml-comment"># max items stored</span>
+  <span class="yaml-comment"># ttlSeconds: 86400           # auto-expire after 24h (optional)</span>
+
+<span class="yaml-key">tools</span>:
+  <span class="yaml-key">enabled</span>:                   <span class="yaml-comment"># list of tools to activate</span>
+    - <span class="yaml-val">web_search</span>
+    - <span class="yaml-val">file_read</span>
+    - <span class="yaml-val">code_run</span>
+  <span class="yaml-key">webSearch</span>:
+    <span class="yaml-key">provider</span>: <span class="yaml-val">brave</span>
+    <span class="yaml-key">apiKey</span>: <span class="yaml-str">$BRAVE_API_KEY</span>
+  <span class="yaml-key">maxConcurrent</span>: <span class="num">3</span>           <span class="yaml-comment"># max parallel tool calls</span>
+
+<span class="yaml-key">heartbeat</span>:
+  <span class="yaml-key">enabled</span>: <span class="yaml-bool">true</span>              <span class="yaml-comment"># keep agent alive between requests</span>
+  <span class="yaml-key">intervalMs</span>: <span class="num">60000</span>          <span class="yaml-comment"># ping every 60 seconds</span>
+  <span class="yaml-key">onIdle</span>: <span class="yaml-val">keep</span>               <span class="yaml-comment"># keep | suspend | shutdown</span>
+
+<span class="yaml-key">voice</span>:
+  <span class="yaml-key">enabled</span>: <span class="yaml-bool">false</span>             <span class="yaml-comment"># set true to enable voice mode</span>
+  <span class="yaml-key">provider</span>: <span class="yaml-val">elevenlabs</span>       <span class="yaml-comment"># elevenlabs | openai | piper</span>
+  <span class="yaml-key">apiKey</span>: <span class="yaml-str">$ELEVENLABS_KEY</span>
+  <span class="yaml-comment"># voiceId: "Rachel"           # specific voice (provider-specific)</span>
+  <span class="yaml-comment"># sttProvider: whisper        # speech-to-text provider</span>
+
+<span class="yaml-key">mcpServers</span>:
+  <span class="yaml-key">filesystem</span>:
+    <span class="yaml-key">command</span>: <span class="yaml-val">npx</span>
+    <span class="yaml-key">args</span>:
+      - <span class="yaml-str">-y</span>
+      - <span class="yaml-str">@modelcontextprotocol/server-filesystem</span>
+      - <span class="yaml-str">/Users/you/docs</span>
+  <span class="yaml-key">github</span>:
+    <span class="yaml-key">command</span>: <span class="yaml-val">npx</span>
+    <span class="yaml-key">args</span>:
+      - <span class="yaml-str">-y</span>
+      - <span class="yaml-str">@modelcontextprotocol/server-github</span>
+    <span class="yaml-key">env</span>:
+      <span class="yaml-key">GITHUB_TOKEN</span>: <span class="yaml-str">$GITHUB_TOKEN</span></code></pre>
+
+    <!-- YAML tips -->
+    <h2 class="section-title" id="yaml-tips">YAML Tips for Beginners</h2>
+
+    <details open>
+      <summary>💡 Indentation rules — most important thing</summary>
+      <div class="details-body">
+        <div class="prose">
+          <p>In YAML, <strong>indentation defines structure</strong>. Child settings must be indented under their parent with consistent spaces. OpenClaw expects 2 spaces per level.</p>
+        </div>
+<pre><code><span class="yaml-comment"># ✅ Correct — 2 spaces per level</span>
+<span class="yaml-key">llm</span>:
+  <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>
+  <span class="yaml-key">model</span>: <span class="yaml-val">claude-sonnet-4-6</span>
+
+<span class="yaml-comment"># ❌ Wrong — tab character used</span>
+<span class="yaml-key">llm</span>:
+	<span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>   <span class="yaml-comment"># tab = error!</span></code></pre>
+      </div>
+    </details>
+
+    <details>
+      <summary>💬 How to write comments</summary>
+      <div class="details-body">
+        <div class="prose">
+          <p>Use <code>#</code> to write comments. Everything after <code>#</code> on a line is ignored by OpenClaw. Use comments to explain settings or temporarily disable a line.</p>
+        </div>
+<pre><code><span class="yaml-key">llm</span>:
+  <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>      <span class="yaml-comment"># inline comment — works great</span>
+  <span class="yaml-comment"># model: claude-opus-4-6     # commented out = disabled</span>
+  <span class="yaml-key">model</span>: <span class="yaml-val">claude-haiku-4-5-20251001</span></code></pre>
+      </div>
+    </details>
+
+    <details>
+      <summary>📝 Strings — when do you need quotes?</summary>
+      <div class="details-body">
+        <div class="prose">
+          <p>Most string values don't need quotes in YAML. But use quotes when your value contains special characters like <code>:</code>, <code>#</code>, or <code>{</code>, or when you want to be safe with values that look like numbers or booleans.</p>
+        </div>
+<pre><code><span class="yaml-key">llm</span>:
+  <span class="yaml-key">model</span>: <span class="yaml-val">claude-sonnet-4-6</span>     <span class="yaml-comment"># no quotes needed</span>
+  <span class="yaml-key">systemPrompt</span>: <span class="yaml-str">"You are helpful: always."</span>  <span class="yaml-comment"># colon = use quotes</span>
+  <span class="yaml-key">version</span>: <span class="yaml-str">"1.0"</span>                  <span class="yaml-comment"># prevent YAML treating as number</span></code></pre>
+      </div>
+    </details>
+
+    <details>
+      <summary>📋 Lists — how to write arrays</summary>
+      <div class="details-body">
+        <div class="prose">
+          <p>Lists use a dash <code>-</code> for each item. You can also write short lists on one line with square brackets.</p>
+        </div>
+<pre><code><span class="yaml-comment"># Multi-line list (preferred — easier to read)</span>
+<span class="yaml-key">tools</span>:
+  <span class="yaml-key">enabled</span>:
+    - <span class="yaml-val">web_search</span>
+    - <span class="yaml-val">file_read</span>
+    - <span class="yaml-val">code_run</span>
+
+<span class="yaml-comment"># Inline list (works too)</span>
+<span class="yaml-key">tools</span>:
+  <span class="yaml-key">enabled</span>: [<span class="yaml-val">web_search</span>, <span class="yaml-val">file_read</span>]</code></pre>
+      </div>
+    </details>
+
+    <!-- Field reference accordion -->
+    <h2 class="section-title" id="field-reference">Field Reference</h2>
+    <div class="prose">
+      <p>All fields are identical to <code>openclaw.json</code>. Click any section to see what each field does.</p>
+    </div>
+
+    <details>
+      <summary>🤖 llm — Language Model Settings</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls which AI model powers your agent.</p>
+        <table class="field-table" aria-label="LLM configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>provider</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> AI provider: <code>anthropic</code>, <code>openai</code>, <code>ollama</code>, <code>groq</code></td></tr>
+            <tr><td><code>model</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> Model name, e.g. <code>claude-sonnet-4-6</code> or <code>gpt-4o</code></td></tr>
+            <tr><td><code>apiKey</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> Your API key or an env var reference like <code>$ANTHROPIC_API_KEY</code></td></tr>
+            <tr><td><code>maxTokens</code></td><td>number</td><td>4096</td><td><span class="badge badge-opt">optional</span> Max tokens per response</td></tr>
+            <tr><td><code>temperature</code></td><td>number</td><td>0.7</td><td><span class="badge badge-opt">optional</span> 0 = deterministic, 1 = creative</td></tr>
+            <tr><td><code>systemPrompt</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Custom system prompt — quote if it contains colons or special chars</td></tr>
+            <tr><td><code>baseUrl</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Override the API endpoint URL</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🌐 gateway — Server &amp; Port Settings</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls how OpenClaw exposes its HTTP gateway.</p>
+        <table class="field-table" aria-label="Gateway configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>port</code></td><td>number</td><td>8080</td><td><span class="badge badge-opt">optional</span> Port to listen on</td></tr>
+            <tr><td><code>host</code></td><td>string</td><td>127.0.0.1</td><td><span class="badge badge-opt">optional</span> Host to bind to — use <code>0.0.0.0</code> for LAN access</td></tr>
+            <tr><td><code>timeout</code></td><td>number</td><td>30000</td><td><span class="badge badge-opt">optional</span> Request timeout in milliseconds</td></tr>
+            <tr><td><code>cors</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Enable CORS headers for browser clients</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🧠 memory — Storage &amp; Persistence</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls how your agent remembers things between conversations.</p>
+        <table class="field-table" aria-label="Memory configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>type</code></td><td>string</td><td>memory</td><td><span class="badge badge-opt">optional</span> Storage backend: <code>memory</code>, <code>sqlite</code>, <code>postgres</code></td></tr>
+            <tr><td><code>path</code></td><td>string</td><td>./agent.db</td><td><span class="badge badge-opt">optional</span> File path for SQLite database</td></tr>
+            <tr><td><code>connectionString</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Database URL for Postgres</td></tr>
+            <tr><td><code>maxEntries</code></td><td>number</td><td>10000</td><td><span class="badge badge-opt">optional</span> Max items stored in memory</td></tr>
+            <tr><td><code>ttlSeconds</code></td><td>number</td><td>—</td><td><span class="badge badge-opt">optional</span> Auto-expire memories after N seconds</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🔧 tools — Capabilities &amp; Integrations</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls which tools your agent can use.</p>
+        <table class="field-table" aria-label="Tools configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>enabled</code></td><td>list</td><td>[]</td><td><span class="badge badge-opt">optional</span> Tool names to activate: <code>web_search</code>, <code>file_read</code>, <code>file_write</code>, <code>code_run</code>, <code>browser</code></td></tr>
+            <tr><td><code>webSearch</code></td><td>object</td><td>—</td><td><span class="badge badge-opt">optional</span> Web search config — needs <code>provider</code> and <code>apiKey</code></td></tr>
+            <tr><td><code>codeRun</code></td><td>object</td><td>—</td><td><span class="badge badge-opt">optional</span> Code execution sandbox settings</td></tr>
+            <tr><td><code>maxConcurrent</code></td><td>number</td><td>3</td><td><span class="badge badge-opt">optional</span> Max parallel tool calls</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>💓 heartbeat — Keep-Alive Settings</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Keeps your agent active between requests.</p>
+        <table class="field-table" aria-label="Heartbeat configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>enabled</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Turn keep-alive on or off</td></tr>
+            <tr><td><code>intervalMs</code></td><td>number</td><td>60000</td><td><span class="badge badge-opt">optional</span> How often to ping in milliseconds</td></tr>
+            <tr><td><code>onIdle</code></td><td>string</td><td>keep</td><td><span class="badge badge-opt">optional</span> Idle behavior: <code>keep</code>, <code>suspend</code>, <code>shutdown</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🎙️ voice — Voice Mode Settings</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Enables spoken interaction. See the <a href="voice.html">Voice Mode guide</a>.</p>
+        <table class="field-table" aria-label="Voice configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>enabled</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Enable voice input/output</td></tr>
+            <tr><td><code>provider</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> TTS provider: <code>elevenlabs</code>, <code>openai</code>, <code>piper</code></td></tr>
+            <tr><td><code>apiKey</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> API key for cloud TTS provider</td></tr>
+            <tr><td><code>voiceId</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Voice name or ID (provider-specific)</td></tr>
+            <tr><td><code>sttProvider</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Speech-to-text: <code>whisper</code>, <code>deepgram</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🔌 mcpServers — MCP Tool Connections</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Connect your agent to external tools via Model Context Protocol. See the <a href="mcp.html">MCP guide</a>.</p>
+<pre style="margin-top:.5rem;"><code><span class="yaml-key">mcpServers</span>:
+  <span class="yaml-key">myServer</span>:              <span class="yaml-comment"># give it any name</span>
+    <span class="yaml-key">command</span>: <span class="yaml-val">npx</span>
+    <span class="yaml-key">args</span>:
+      - <span class="yaml-str">-y</span>
+      - <span class="yaml-str">@modelcontextprotocol/server-filesystem</span>
+      - <span class="yaml-str">/Users/you/docs</span>
+    <span class="yaml-key">env</span>:
+      <span class="yaml-key">MY_TOKEN</span>: <span class="yaml-str">$MY_TOKEN</span></code></pre>
+        <table class="field-table" aria-label="MCP server fields">
+          <thead><tr><th>Field</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>command</code></td><td>Executable to launch the server (e.g. <code>npx</code>, <code>python</code>)</td></tr>
+            <tr><td><code>args</code></td><td>List of arguments passed to the command</td></tr>
+            <tr><td><code>env</code></td><td>Environment variables to inject into the server process</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <!-- Related pages -->
+    <h2 class="section-title" id="related">Related Pages</h2>
+    <div class="sibling-cards">
+      <a href="config-json.html" class="sibling-card">
+        <div class="card-icon">📄</div>
+        <div class="card-title">openclaw.json</div>
+        <div class="card-desc">Same settings in JSON format — the default config file</div>
+      </a>
+      <a href="mcp.html" class="sibling-card">
+        <div class="card-icon">🔌</div>
+        <div class="card-title">MCP Servers</div>
+        <div class="card-desc">Connect external tools via Model Context Protocol</div>
+      </a>
+      <a href="voice.html" class="sibling-card">
+        <div class="card-icon">🎙️</div>
+        <div class="card-title">Voice Mode</div>
+        <div class="card-desc">Set up spoken interaction with your agent</div>
+      </a>
+      <a href="gettingstarted.html" class="sibling-card">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Getting Started</div>
+        <div class="card-desc">New to OpenClaw? Start here</div>
+      </a>
     </div>
 
   </main>
 
   <footer role="contentinfo">
-    <p>&copy; 2026 learnopenclaw.org. <a href="#">Privacy</a> &middot; <a href="#">Terms</a> &middot; <a href="#">Contribute</a></p>
+    <p>LearnOpenClaw is an independent learning resource, not affiliated with the OpenClaw project. &bull; <a href="faq.html">FAQ</a> &bull; <a href="blog.html">Blog</a></p>
   </footer>
 
   <script>
-    // Hamburger menu toggle
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.getElementById('nav-links');
-
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-      const isOpen = navLinks.classList.contains('open');
-      hamburger.setAttribute('aria-expanded', isOpen);
+    const btn = document.getElementById('hamburger-btn');
+    const nav = document.getElementById('nav-links');
+    btn.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
     });
-
-    // Close menu on Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && navLinks.classList.contains('open')) {
-        navLinks.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', false);
+    document.addEventListener('click', (e) => {
+      if (!btn.contains(e.target) && !nav.contains(e.target)) {
+        nav.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
       }
     });
-
-    // Close menu on click outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('nav') && navLinks.classList.contains('open')) {
-        navLinks.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', false);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        nav.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
       }
     });
   </script>

@@ -3,1705 +3,471 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>openclaw.json Config Reference — Complete Field Guide | learnopenclaw.org</title>
-  <meta name="description" content="Complete field reference for openclaw.json — every key documented with type, default, and examples. LLM, gateway, memory, tools, voice, heartbeat, and MCP.">
+  <title>openclaw.json Config File Explained | OpenClaw</title>
+  <meta name="description" content="Learn what openclaw.json is, why it exists, and how to configure it — a beginner-friendly guide to OpenClaw's main configuration file.">
   <link rel="canonical" href="https://learnopenclaw.org/config-json.html">
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="openclaw.json Config Reference — Complete Field Guide">
-  <meta property="og:description" content="Complete field reference for openclaw.json — every key documented with type, default, and examples. LLM, gateway, memory, tools, voice, heartbeat, and MCP.">
+  <meta property="og:title" content="openclaw.json Config File Explained | OpenClaw">
+  <meta property="og:description" content="Learn what openclaw.json is, why it exists, and how to configure it — a beginner-friendly guide to OpenClaw's main configuration file.">
   <meta property="og:url" content="https://learnopenclaw.org/config-json.html">
-  <meta property="og:site_name" content="learnopenclaw.org">
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="openclaw.json Config Reference">
-  <meta name="twitter:description" content="Complete field reference for openclaw.json — every key documented with type, default, and examples.">
-
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="openclaw.json Config File Explained | OpenClaw">
+  <meta name="twitter:description" content="Learn what openclaw.json is, why it exists, and how to configure it — a beginner-friendly guide to OpenClaw's main configuration file.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "openclaw.json Config File Explained",
+    "description": "A beginner-friendly guide to OpenClaw's main JSON configuration file.",
+    "url": "https://learnopenclaw.org/config-json.html",
+    "dateModified": "2026-03-22",
+    "author": {"@type": "Organization", "name": "LearnOpenClaw"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "openclaw.json", "item": "https://learnopenclaw.org/config-json.html"}
+      ]
+    }
+  }
+  </script>
   <style>
-    :root {
-      --blue: #0369a1;
-      --blue-lt: #f0f9ff;
-      --blue-md: #bae6fd;
-      --blue-dk: #075985;
-      --gray-0: #f9fafb;
-      --gray-1: #f3f4f6;
-      --gray-2: #e5e7eb;
-      --gray-3: #d1d5db;
-      --gray-4: #9ca3af;
-      --gray-5: #6b7280;
-      --gray-6: #374151;
-      --gray-7: #1f2937;
-      --code-bg: #1f2937;
-      --code-text: #e2e8f0;
-      --radius: 8px;
-      --transition: all 0.3s ease;
-    }
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+    a { color: #0369a1; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Skip nav ── */
+    .skip-nav { position: absolute; top: -40px; left: 0; background: #0369a1; color: #fff; padding: 8px 16px; border-radius: 0 0 4px 0; font-size: .875rem; transition: top .2s; z-index: 9999; }
+    .skip-nav:focus { top: 0; }
+
+    /* ── Header / Nav ── */
+    header { background: #0c1a2e; padding: 0 1rem; position: sticky; top: 0; z-index: 100; }
+    nav { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .logo { font-size: 1.25rem; font-weight: 800; color: #7dd3fc; letter-spacing: -.5px; text-decoration: none; }
+    .logo span { color: #fff; }
+
+    /* hamburger button */
+    .hamburger { background: none; border: none; cursor: pointer; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: #e2e8f0; border-radius: 2px; transition: all .25s; }
+
+    /* dropdown nav */
+    .nav-links { display: none; flex-direction: column; gap: 0; position: absolute; top: 56px; left: 0; right: 0; background: #0c1a2e; padding: 12px 0; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: #cbd5e1; font-size: .95rem; font-weight: 500; padding: 10px 24px; border-left: 3px solid transparent; transition: background .15s, color .15s; }
+    .nav-links a:hover, .nav-links a:focus { background: rgba(125,211,252,.08); color: #7dd3fc; text-decoration: none; }
+    .nav-links a[aria-current="page"] { color: #7dd3fc; border-left-color: #7dd3fc; background: rgba(125,211,252,.1); }
+
+    /* ── Main content ── */
+    main { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+    /* hero */
+    .hero { background: linear-gradient(135deg, #0369a1 0%, #0c4a6e 100%); color: #fff; border-radius: 12px; padding: 2.5rem 2rem; margin-bottom: 2.5rem; }
+    .hero-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #7dd3fc; margin-bottom: .5rem; }
+    .hero h1 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 800; line-height: 1.2; margin-bottom: .75rem; }
+    .hero p { font-size: 1.05rem; color: #bae6fd; max-width: 560px; }
+
+    /* callout boxes */
+    .callout { border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; }
+    .callout-blue { background: #eff6ff; border-left: 4px solid #0369a1; }
+    .callout-green { background: #f0fdf4; border-left: 4px solid #16a34a; }
+    .callout-amber { background: #fffbeb; border-left: 4px solid #d97706; }
+    .callout h3 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+    .callout p { font-size: .95rem; color: #334155; }
+
+    /* section headings */
+    .section-title { font-size: 1.4rem; font-weight: 800; color: #0c1a2e; margin: 2.5rem 0 .75rem; padding-bottom: .4rem; border-bottom: 2px solid #e2e8f0; }
+    .section-sub { font-size: 1.05rem; font-weight: 700; color: #0369a1; margin: 1.5rem 0 .4rem; }
+
+    /* prose */
+    .prose p { margin-bottom: 1rem; color: #334155; font-size: .97rem; }
+    .prose ul { margin: .5rem 0 1rem 1.5rem; }
+    .prose li { margin-bottom: .35rem; color: #334155; font-size: .95rem; }
+
+    /* steps */
+    .steps { counter-reset: step; }
+    .step { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; }
+    .step-num { counter-increment: step; background: #0369a1; color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: .8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .step-num::before { content: counter(step); }
+    .step-body { flex: 1; }
+    .step-body strong { display: block; font-size: .97rem; margin-bottom: .2rem; }
+    .step-body p, .step-body code { font-size: .9rem; color: #475569; }
+
+    /* code blocks */
+    pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 1.25rem 1.5rem; overflow-x: auto; font-size: .88rem; line-height: 1.7; margin-bottom: 1.5rem; }
+    pre code { font-family: 'SF Mono', 'Fira Code', Consolas, monospace; }
+    code { font-family: 'SF Mono', 'Fira Code', Consolas, monospace; font-size: .88em; background: #f1f5f9; color: #0369a1; padding: 2px 6px; border-radius: 4px; }
+    pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+    .comment { color: #94a3b8; }
+    .key { color: #7dd3fc; }
+    .val { color: #86efac; }
+    .str { color: #fca5a5; }
+    .num { color: #fdba74; }
+
+    /* accordion */
+    details { border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: .75rem; }
+    details summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 700; font-size: .97rem; color: #0c1a2e; display: flex; align-items: center; gap: .5rem; list-style: none; user-select: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::before { content: '▶'; font-size: .7rem; color: #0369a1; transition: transform .2s; }
+    details[open] summary::before { transform: rotate(90deg); }
+    details summary:hover { background: #f8fafc; border-radius: 10px; }
+    details[open] summary { border-bottom: 1px solid #e2e8f0; border-radius: 10px 10px 0 0; }
+    .details-body { padding: 1rem 1.25rem 1.25rem; }
+
+    /* field table */
+    .field-table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: .75rem; }
+    .field-table th { background: #f1f5f9; font-weight: 700; text-align: left; padding: .6rem .75rem; color: #475569; }
+    .field-table td { padding: .6rem .75rem; border-top: 1px solid #f1f5f9; vertical-align: top; }
+    .field-table tr:hover td { background: #fafafa; }
+    .field-table code { font-size: .83rem; }
+    .badge { display: inline-block; font-size: .7rem; font-weight: 700; padding: 2px 7px; border-radius: 20px; }
+    .badge-req { background: #fef3c7; color: #92400e; }
+    .badge-opt { background: #f0fdf4; color: #166534; }
+
+    /* sibling cards */
+    .sibling-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .sibling-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; transition: box-shadow .2s, border-color .2s; }
+    .sibling-card:hover { box-shadow: 0 4px 16px rgba(3,105,161,.1); border-color: #0369a1; text-decoration: none; }
+    .sibling-card .card-icon { font-size: 1.5rem; margin-bottom: .4rem; }
+    .sibling-card .card-title { font-weight: 700; color: #0c1a2e; font-size: .97rem; }
+    .sibling-card .card-desc { font-size: .85rem; color: #64748b; margin-top: .25rem; }
+
+    /* footer */
+    footer { background: #0c1a2e; color: #94a3b8; text-align: center; padding: 2rem 1rem; font-size: .875rem; }
+    footer a { color: #7dd3fc; }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      color: var(--gray-6);
-      background: white;
-    }
-
-    /* Skip Nav */
-    .skip-nav {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: var(--blue);
-      color: white;
-      padding: 8px 16px;
-      text-decoration: none;
-      z-index: 100;
-      border-radius: 0 0 var(--radius) 0;
-      font-weight: 600;
-    }
-
-    .skip-nav:focus {
-      top: 0;
-    }
-
-    /* Navigation */
-    nav {
-      position: sticky;
-      top: 0;
-      background: white;
-      border-bottom: 1px solid var(--gray-2);
-      z-index: 50;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .nav-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 64px;
-    }
-
-    .nav-logo {
-      font-size: 1.125rem;
-      font-weight: 700;
-      text-decoration: none;
-      color: var(--gray-7);
-      white-space: nowrap;
-      transition: var(--transition);
-    }
-
-    .nav-logo:hover {
-      color: var(--blue);
-    }
-
-    .nav-logo:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 4px;
-    }
-
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      background: none;
-      border: none;
-      cursor: pointer;
-      gap: 6px;
-      padding: 8px;
-      margin-right: -8px;
-    }
-
-    .hamburger span {
-      width: 24px;
-      height: 2px;
-      background: var(--gray-7);
-      transition: var(--transition);
-      border-radius: 2px;
-    }
-
-    .hamburger:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 4px;
-    }
-
-    .hamburger.open span:nth-child(1) {
-      transform: rotate(45deg) translate(10px, 10px);
-    }
-
-    .hamburger.open span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.open span:nth-child(3) {
-      transform: rotate(-45deg) translate(7px, -7px);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 32px;
-      align-items: center;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--gray-6);
-      font-weight: 500;
-      transition: var(--transition);
-      font-size: 0.95rem;
-    }
-
-    .nav-links a:hover {
-      color: var(--blue);
-    }
-
-    .nav-links a:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 4px;
-    }
-
-    .nav-links a[aria-current="page"] {
-      color: var(--blue);
-      font-weight: 700;
-    }
-
-    .nav-section {
-      position: relative;
-    }
-
-    .nav-section-label {
-      display: none;
-    }
-
-    @media (max-width: 768px) {
-      .hamburger {
-        display: flex;
-      }
-
-      .nav-links {
-        position: absolute;
-        top: 64px;
-        left: 0;
-        right: 0;
-        background: white;
-        flex-direction: column;
-        gap: 0;
-        align-items: flex-start;
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--gray-2);
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
-      }
-
-      .nav-links.open {
-        max-height: 1000px;
-      }
-
-      .nav-links a {
-        padding: 12px 0;
-        width: 100%;
-      }
-
-      .nav-section {
-        width: 100%;
-      }
-
-      .nav-section-label {
-        display: block;
-        font-size: 0.625rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #7c3aed;
-        padding: 16px 0 8px;
-        border-top: 1px solid var(--gray-2);
-      }
-
-      .nav-section:first-of-type .nav-section-label {
-        border-top: none;
-        padding-top: 0;
-      }
-    }
-
-    /* Main Content */
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* Hero */
-    .hero {
-      padding: 80px 0;
-      background: linear-gradient(135deg, var(--blue-lt) 0%, rgba(3, 105, 161, 0.05) 100%);
-      border-bottom: 1px solid var(--blue-md);
-      text-align: center;
-    }
-
-    .badge {
-      display: inline-block;
-      background: var(--blue-lt);
-      color: var(--blue);
-      padding: 6px 16px;
-      border-radius: 24px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      border: 1px solid var(--blue-md);
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      color: var(--blue-dk);
-      margin-bottom: 16px;
-      line-height: 1.2;
-    }
-
-    .subtitle {
-      font-size: 1.125rem;
-      color: var(--gray-5);
-      max-width: 600px;
-      margin: 0 auto 40px;
-      line-height: 1.6;
-    }
-
-    .cta-group {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .cta-btn {
-      display: inline-block;
-      padding: 12px 24px;
-      border-radius: var(--radius);
-      text-decoration: none;
-      font-weight: 600;
-      transition: var(--transition);
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    .cta-btn.primary {
-      background: var(--blue);
-      color: white;
-    }
-
-    .cta-btn.primary:hover {
-      background: var(--blue-dk);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.3);
-    }
-
-    .cta-btn.secondary {
-      background: white;
-      color: var(--blue);
-      border: 2px solid var(--blue);
-    }
-
-    .cta-btn.secondary:hover {
-      background: var(--blue-lt);
-    }
-
-    .cta-btn:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 4px;
-    }
-
-    /* Sections */
-    section {
-      padding: 60px 0;
-    }
-
-    section:nth-child(odd) {
-      background: var(--gray-0);
-    }
-
-    section h2 {
-      font-size: 1.75rem;
-      color: var(--blue-dk);
-      margin-bottom: 32px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid var(--blue-md);
-    }
-
-    section h3 {
-      font-size: 1.25rem;
-      color: var(--gray-7);
-      margin: 32px 0 16px;
-    }
-
-    section p {
-      margin-bottom: 16px;
-      color: var(--gray-5);
-      line-height: 1.8;
-    }
-
-    /* Code blocks */
-    pre {
-      background: var(--code-bg);
-      color: var(--code-text);
-      padding: 20px;
-      border-radius: var(--radius);
-      overflow-x: auto;
-      margin: 24px 0;
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
-      font-size: 0.875rem;
-      line-height: 1.6;
-      border: 1px solid rgba(226, 232, 240, 0.1);
-    }
-
-    code {
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
-    }
-
-    /* Tables */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 24px 0;
-      font-size: 0.95rem;
-    }
-
-    thead {
-      background: var(--gray-7);
-      color: white;
-    }
-
-    th {
-      padding: 16px;
-      text-align: left;
-      font-weight: 600;
-      border: 1px solid var(--gray-2);
-    }
-
-    td {
-      padding: 14px 16px;
-      border: 1px solid var(--gray-2);
-    }
-
-    tbody tr:nth-child(even) {
-      background: rgba(3, 105, 161, 0.02);
-    }
-
-    tbody tr:hover {
-      background: rgba(3, 105, 161, 0.05);
-    }
-
-    .key-cell {
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
-      font-weight: 600;
-      color: var(--blue);
-      font-size: 0.875rem;
-    }
-
-    .type-cell {
-      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
-      font-size: 0.85rem;
-      color: var(--gray-5);
-    }
-
-    .required-yes {
-      background: rgba(34, 197, 94, 0.1);
-      color: #16a34a;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 0.8rem;
-    }
-
-    .required-no {
-      color: var(--gray-4);
-      font-size: 0.85rem;
-    }
-
-    /* Tips Grid */
-    .tips-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 24px;
-      margin: 32px 0;
-    }
-
-    .tip-card {
-      background: white;
-      border: 2px solid var(--blue-md);
-      border-radius: var(--radius);
-      padding: 24px;
-      transition: var(--transition);
-    }
-
-    .tip-card:hover {
-      border-color: var(--blue);
-      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.1);
-    }
-
-    .tip-card h4 {
-      color: var(--blue-dk);
-      margin-bottom: 12px;
-      font-size: 1rem;
-    }
-
-    .tip-card p {
-      font-size: 0.95rem;
-      color: var(--gray-5);
-      margin-bottom: 0;
-    }
-
-    /* Alert Box */
-    .alert {
-      background: var(--blue-lt);
-      border-left: 4px solid var(--blue);
-      padding: 20px;
-      border-radius: var(--radius);
-      margin: 32px 0;
-    }
-
-    .alert p {
-      margin-bottom: 0;
-      color: var(--blue-dk);
-    }
-
-    .alert a {
-      color: var(--blue);
-      font-weight: 600;
-      text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .alert a:hover {
-      text-decoration: underline;
-    }
-
-    .alert a:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 4px;
-    }
-
-    /* Footer */
-    footer {
-      background: var(--gray-7);
-      color: var(--gray-2);
-      padding: 60px 20px;
-      margin-top: 60px;
-    }
-
-    .footer-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-
-    .footer-section h4 {
-      color: white;
-      margin-bottom: 16px;
-      font-size: 1rem;
-    }
-
-    .footer-section a {
-      display: block;
-      color: var(--gray-2);
-      text-decoration: none;
-      margin-bottom: 12px;
-      transition: var(--transition);
-      font-size: 0.95rem;
-    }
-
-    .footer-section a:hover {
-      color: var(--blue-md);
-    }
-
-    .footer-section a:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 4px;
-    }
-
-    .newsletter {
-      background: rgba(3, 105, 161, 0.1);
-      border: 1px solid rgba(3, 105, 161, 0.2);
-      padding: 20px;
-      border-radius: var(--radius);
-      margin-top: 40px;
-    }
-
-    .newsletter h4 {
-      color: white;
-      margin-bottom: 12px;
-    }
-
-    .newsletter input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--gray-3);
-      border-radius: 4px;
-      margin-bottom: 10px;
-      font-size: 0.95rem;
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
-    }
-
-    .newsletter input::placeholder {
-      color: var(--gray-4);
-    }
-
-    .newsletter input:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 2px;
-    }
-
-    .newsletter button {
-      width: 100%;
-      padding: 10px;
-      background: var(--blue);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .newsletter button:hover {
-      background: var(--blue-dk);
-    }
-
-    .newsletter button:focus {
-      outline: 2px solid var(--blue);
-      outline-offset: 2px;
-    }
-
-    .footer-bottom {
-      border-top: 1px solid var(--gray-6);
-      padding-top: 24px;
-      text-align: center;
-      color: var(--gray-4);
-      font-size: 0.9rem;
-    }
-
-    .footer-bottom a {
-      color: var(--blue-md);
-      text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .footer-bottom a:hover {
-      text-decoration: underline;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 1.75rem;
-      }
-
-      .subtitle {
-        font-size: 1rem;
-      }
-
-      section {
-        padding: 40px 0;
-      }
-
-      section h2 {
-        font-size: 1.5rem;
-        margin-bottom: 24px;
-      }
-
-      .tips-grid {
-        grid-template-columns: 1fr;
-      }
-
-      table {
-        font-size: 0.85rem;
-      }
-
-      th, td {
-        padding: 12px;
-      }
-
-      pre {
-        font-size: 0.75rem;
-        padding: 16px;
-      }
+    @media (max-width: 600px) {
+      .hero { padding: 1.75rem 1.25rem; }
+      pre { font-size: .8rem; padding: 1rem; }
     }
   </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <header>
+    <nav role="navigation" aria-label="Main navigation">
+      <a href="index.html" class="logo">open<span>claw</span></a>
+      <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links" id="hamburger-btn">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-label">Config Reference</div>
+      <h1 id="hero-heading">openclaw.json — Your Agent's Settings File</h1>
+      <p>Everything OpenClaw needs to know about your setup lives in one JSON file. This guide explains exactly what it is, where it goes, and how to configure it — even if you've never touched JSON before.</p>
+    </section>
+
+    <!-- What is it -->
+    <h2 class="section-title" id="what-is-it">What is openclaw.json?</h2>
+    <div class="prose">
+      <p><code>openclaw.json</code> is the <strong>main configuration file</strong> for your OpenClaw agent. It tells OpenClaw which AI model to use, how to connect to the internet, which tools are available, and dozens of other settings.</p>
+      <p>Think of it like the <strong>settings panel on a TV remote</strong> — the remote (OpenClaw) works the same way no matter what, but the settings panel lets you control what channel it starts on, how loud the volume is, and which inputs are active.</p>
+    </div>
+
+    <div class="callout callout-blue">
+      <h3>📄 Why JSON?</h3>
+      <p>JSON (JavaScript Object Notation) is a simple text format that's easy for both computers and humans to read. It uses curly braces <code>{ }</code>, keys in quotes, and values separated by colons. OpenClaw uses JSON as the default config format because it's widely supported and works in every code editor.</p>
+    </div>
+
+    <!-- Where does it live -->
+    <h2 class="section-title" id="where">Where Does the File Live?</h2>
+    <div class="prose steps">
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Your project folder</strong>
+          <p>Place <code>openclaw.json</code> in the root of your project — the same folder where you'd run <code>openclaw start</code>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Global fallback (optional)</strong>
+          <p>You can also put a config in <code>~/.openclaw/openclaw.json</code> to use as a default across all projects.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <strong>Project config wins</strong>
+          <p>If a project-level file exists, it takes priority over the global one. Great for testing different setups per project.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Minimal starter -->
+    <h2 class="section-title" id="starter">Minimal Starter Config</h2>
+    <div class="prose">
+      <p>You don't need every setting from day one. Here's the smallest valid <code>openclaw.json</code> to get your agent running:</p>
+    </div>
+<pre><code>{
+  <span class="key">"llm"</span>: {
+    <span class="key">"provider"</span>: <span class="str">"anthropic"</span>,
+    <span class="key">"model"</span>: <span class="str">"claude-haiku-4-5-20251001"</span>,
+    <span class="key">"apiKey"</span>: <span class="str">"sk-ant-..."</span>
+  }
+}</code></pre>
+    <div class="callout callout-amber">
+      <h3>⚠️ Keep your API key safe</h3>
+      <p>Never commit your API key to GitHub. Add <code>openclaw.json</code> to your <code>.gitignore</code> file, or use an environment variable like <code>"apiKey": "$ANTHROPIC_API_KEY"</code> — OpenClaw will substitute it automatically.</p>
+    </div>
+
+    <!-- Full annotated example -->
+    <h2 class="section-title" id="full-example">Full Annotated Example</h2>
+    <div class="prose">
+      <p>Here's a more complete config showing the most common settings. Every line is explained:</p>
+    </div>
+<pre><code>{
+  <span class="key">"llm"</span>: {
+    <span class="key">"provider"</span>: <span class="str">"anthropic"</span>,       <span class="comment">// AI provider: "anthropic", "openai", "ollama"</span>
+    <span class="key">"model"</span>: <span class="str">"claude-sonnet-4-6"</span>, <span class="comment">// Which model to use</span>
+    <span class="key">"apiKey"</span>: <span class="str">"$ANTHROPIC_API_KEY"</span>, <span class="comment">// Reads from environment variable</span>
+    <span class="key">"maxTokens"</span>: <span class="num">4096</span>,          <span class="comment">// Max tokens per response</span>
+    <span class="key">"temperature"</span>: <span class="num">0.7</span>          <span class="comment">// 0 = focused, 1 = creative</span>
+  },
+
+  <span class="key">"gateway"</span>: {
+    <span class="key">"port"</span>: <span class="num">8080</span>,               <span class="comment">// Port OpenClaw listens on</span>
+    <span class="key">"host"</span>: <span class="str">"127.0.0.1"</span>,        <span class="comment">// localhost only (most secure)</span>
+    <span class="key">"timeout"</span>: <span class="num">30000</span>            <span class="comment">// Request timeout in milliseconds</span>
+  },
+
+  <span class="key">"memory"</span>: {
+    <span class="key">"type"</span>: <span class="str">"sqlite"</span>,           <span class="comment">// Storage: "sqlite", "postgres", "memory"</span>
+    <span class="key">"path"</span>: <span class="str">"./agent.db"</span>,       <span class="comment">// Where the database file is saved</span>
+    <span class="key">"maxEntries"</span>: <span class="num">10000</span>         <span class="comment">// Max remembered items</span>
+  },
+
+  <span class="key">"tools"</span>: {
+    <span class="key">"enabled"</span>: [<span class="str">"web_search"</span>, <span class="str">"file_read"</span>, <span class="str">"code_run"</span>],
+    <span class="key">"webSearch"</span>: {
+      <span class="key">"provider"</span>: <span class="str">"brave"</span>,
+      <span class="key">"apiKey"</span>: <span class="str">"$BRAVE_API_KEY"</span>
+    }
+  },
+
+  <span class="key">"heartbeat"</span>: {
+    <span class="key">"enabled"</span>: <span class="str">true</span>,             <span class="comment">// Keep agent alive between requests</span>
+    <span class="key">"intervalMs"</span>: <span class="num">60000</span>          <span class="comment">// Ping every 60 seconds</span>
+  },
+
+  <span class="key">"voice"</span>: {
+    <span class="key">"enabled"</span>: <span class="str">false</span>,            <span class="comment">// Enable voice input/output</span>
+    <span class="key">"provider"</span>: <span class="str">"elevenlabs"</span>,    <span class="comment">// TTS provider</span>
+    <span class="key">"apiKey"</span>: <span class="str">"$ELEVENLABS_KEY"</span>
+  }
+}</code></pre>
+
+    <!-- Field reference accordion -->
+    <h2 class="section-title" id="field-reference">Field Reference</h2>
+    <div class="prose">
+      <p>Click any section below to see all available fields and what they do.</p>
+    </div>
+
+    <details>
+      <summary>🤖 llm — Language Model Settings</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls which AI model powers your agent.</p>
+        <table class="field-table" aria-label="LLM configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>provider</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> AI provider: <code>"anthropic"</code>, <code>"openai"</code>, <code>"ollama"</code>, <code>"groq"</code></td></tr>
+            <tr><td><code>model</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> Model name, e.g. <code>"claude-sonnet-4-6"</code> or <code>"gpt-4o"</code></td></tr>
+            <tr><td><code>apiKey</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> Your API key or an env var reference like <code>"$ANTHROPIC_API_KEY"</code></td></tr>
+            <tr><td><code>maxTokens</code></td><td>number</td><td>4096</td><td><span class="badge badge-opt">optional</span> Max tokens per response</td></tr>
+            <tr><td><code>temperature</code></td><td>number</td><td>0.7</td><td><span class="badge badge-opt">optional</span> 0 = deterministic, 1 = creative</td></tr>
+            <tr><td><code>systemPrompt</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Custom system prompt to give your agent a specific persona or instructions</td></tr>
+            <tr><td><code>baseUrl</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Override the API endpoint (useful for local or proxy setups)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🌐 gateway — Server &amp; Port Settings</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls how OpenClaw exposes its HTTP gateway for apps and tools to connect to.</p>
+        <table class="field-table" aria-label="Gateway configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>port</code></td><td>number</td><td>8080</td><td><span class="badge badge-opt">optional</span> Port to listen on</td></tr>
+            <tr><td><code>host</code></td><td>string</td><td>127.0.0.1</td><td><span class="badge badge-opt">optional</span> Host to bind to. Use <code>"0.0.0.0"</code> to accept connections from other devices on your network</td></tr>
+            <tr><td><code>timeout</code></td><td>number</td><td>30000</td><td><span class="badge badge-opt">optional</span> Request timeout in milliseconds</td></tr>
+            <tr><td><code>cors</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Enable CORS headers (needed for browser-based clients)</td></tr>
+            <tr><td><code>auth</code></td><td>object</td><td>—</td><td><span class="badge badge-opt">optional</span> Authentication config — see <a href="security.html">Security guide</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🧠 memory — Storage &amp; Persistence</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls how your agent remembers things between conversations.</p>
+        <table class="field-table" aria-label="Memory configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>type</code></td><td>string</td><td>memory</td><td><span class="badge badge-opt">optional</span> Storage backend: <code>"memory"</code> (no persistence), <code>"sqlite"</code>, <code>"postgres"</code></td></tr>
+            <tr><td><code>path</code></td><td>string</td><td>./agent.db</td><td><span class="badge badge-opt">optional</span> File path for SQLite database</td></tr>
+            <tr><td><code>connectionString</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Database URL for Postgres</td></tr>
+            <tr><td><code>maxEntries</code></td><td>number</td><td>10000</td><td><span class="badge badge-opt">optional</span> Max items stored in memory</td></tr>
+            <tr><td><code>ttlSeconds</code></td><td>number</td><td>—</td><td><span class="badge badge-opt">optional</span> Auto-expire memories after N seconds</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🔧 tools — Capabilities &amp; Integrations</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls which tools your agent can use — web search, file access, code execution, etc.</p>
+        <table class="field-table" aria-label="Tools configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>enabled</code></td><td>array</td><td>[]</td><td><span class="badge badge-opt">optional</span> List of tool names to activate: <code>"web_search"</code>, <code>"file_read"</code>, <code>"file_write"</code>, <code>"code_run"</code>, <code>"browser"</code></td></tr>
+            <tr><td><code>webSearch</code></td><td>object</td><td>—</td><td><span class="badge badge-opt">optional</span> Web search config — requires <code>provider</code> and <code>apiKey</code></td></tr>
+            <tr><td><code>codeRun</code></td><td>object</td><td>—</td><td><span class="badge badge-opt">optional</span> Code execution sandbox settings</td></tr>
+            <tr><td><code>maxConcurrent</code></td><td>number</td><td>3</td><td><span class="badge badge-opt">optional</span> Max number of tool calls running at the same time</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>💓 heartbeat — Keep-Alive Settings</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Keeps your agent active between requests so it's always ready to respond quickly.</p>
+        <table class="field-table" aria-label="Heartbeat configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>enabled</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Turn keep-alive on or off</td></tr>
+            <tr><td><code>intervalMs</code></td><td>number</td><td>60000</td><td><span class="badge badge-opt">optional</span> How often to ping in milliseconds</td></tr>
+            <tr><td><code>onIdle</code></td><td>string</td><td>keep</td><td><span class="badge badge-opt">optional</span> What to do when idle: <code>"keep"</code>, <code>"suspend"</code>, <code>"shutdown"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🎙️ voice — Voice Mode Settings</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Enables spoken interaction with your agent. See the <a href="voice.html">Voice Mode guide</a> for setup details.</p>
+        <table class="field-table" aria-label="Voice configuration fields">
+          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>enabled</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Enable voice input/output</td></tr>
+            <tr><td><code>provider</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> TTS provider: <code>"elevenlabs"</code>, <code>"openai"</code>, <code>"piper"</code> (local)</td></tr>
+            <tr><td><code>apiKey</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> API key for cloud TTS provider</td></tr>
+            <tr><td><code>voiceId</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Specific voice to use (provider-specific)</td></tr>
+            <tr><td><code>sttProvider</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Speech-to-text provider: <code>"whisper"</code>, <code>"deepgram"</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <details>
+      <summary>🔌 mcpServers — MCP Tool Connections</summary>
+      <div class="details-body">
+        <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Connect your agent to external tools via the Model Context Protocol (MCP). Each entry registers one MCP server. See the <a href="mcp.html">MCP guide</a> for full details.</p>
+<pre style="margin-top:.5rem;"><code>{
+  <span class="key">"mcpServers"</span>: {
+    <span class="key">"filesystem"</span>: {
+      <span class="key">"command"</span>: <span class="str">"npx"</span>,
+      <span class="key">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@modelcontextprotocol/server-filesystem"</span>, <span class="str">"/Users/you/docs"</span>]
+    },
+    <span class="key">"github"</span>: {
+      <span class="key">"command"</span>: <span class="str">"npx"</span>,
+      <span class="key">"args"</span>: [<span class="str">"-y"</span>, <span class="str">"@modelcontextprotocol/server-github"</span>],
+      <span class="key">"env"</span>: { <span class="key">"GITHUB_TOKEN"</span>: <span class="str">"$GITHUB_TOKEN"</span> }
+    }
+  }
+}</code></pre>
+        <table class="field-table" aria-label="MCP server fields">
+          <thead><tr><th>Field</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>command</code></td><td>Executable to launch the server (e.g. <code>"npx"</code>, <code>"python"</code>, <code>"node"</code>)</td></tr>
+            <tr><td><code>args</code></td><td>Array of arguments passed to the command</td></tr>
+            <tr><td><code>env</code></td><td>Environment variables to inject into the server process</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <!-- JSON vs YAML -->
+    <h2 class="section-title" id="json-vs-yaml">JSON vs YAML — Which Should You Use?</h2>
+    <div class="callout callout-green">
+      <h3>✅ Use openclaw.json if…</h3>
+      <p>You're comfortable with JSON, your setup is simple, or you're generating the config programmatically. JSON is the default and works everywhere without extra dependencies.</p>
+    </div>
+    <div class="callout callout-blue">
+      <h3>📝 Use config.yaml if…</h3>
+      <p>You want to add comments to explain your settings, prefer a cleaner look without all the quotes and curly braces, or you're managing a more complex multi-environment setup. See the <a href="config-yaml.html">config.yaml guide →</a></p>
+    </div>
+
+    <!-- Related pages -->
+    <h2 class="section-title" id="related">Related Pages</h2>
+    <div class="sibling-cards">
+      <a href="config-yaml.html" class="sibling-card">
+        <div class="card-icon">📋</div>
+        <div class="card-title">config.yaml</div>
+        <div class="card-desc">Same settings in YAML format — easier to read and comment</div>
+      </a>
+      <a href="mcp.html" class="sibling-card">
+        <div class="card-icon">🔌</div>
+        <div class="card-title">MCP Servers</div>
+        <div class="card-desc">Connect external tools via Model Context Protocol</div>
+      </a>
+      <a href="security.html" class="sibling-card">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Security</div>
+        <div class="card-desc">Safely manage API keys and authentication</div>
+      </a>
+      <a href="gettingstarted.html" class="sibling-card">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Getting Started</div>
+        <div class="card-desc">New to OpenClaw? Start here</div>
+      </a>
+    </div>
+
+  </main>
+
+  <footer role="contentinfo">
+    <p>LearnOpenClaw is an independent learning resource, not affiliated with the OpenClaw project. &bull; <a href="faq.html">FAQ</a> &bull; <a href="blog.html">Blog</a></p>
+  </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const hamburger = document.querySelector('.hamburger');
-      const navLinks = document.getElementById('nav-links');
-
-      if (hamburger) {
-        hamburger.addEventListener('click', function() {
-          hamburger.classList.toggle('open');
-          navLinks.classList.toggle('open');
-          hamburger.setAttribute('aria-expanded', hamburger.classList.contains('open'));
-        });
-
-        // Close on Escape
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape' && navLinks.classList.contains('open')) {
-            hamburger.classList.remove('open');
-            navLinks.classList.remove('open');
-            hamburger.setAttribute('aria-expanded', false);
-          }
-        });
-
-        // Close on click outside
-        document.addEventListener('click', function(e) {
-          if (!e.target.closest('nav') && navLinks.classList.contains('open')) {
-            hamburger.classList.remove('open');
-            navLinks.classList.remove('open');
-            hamburger.setAttribute('aria-expanded', false);
-          }
-        });
+    const btn = document.getElementById('hamburger-btn');
+    const nav = document.getElementById('nav-links');
+    btn.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', (e) => {
+      if (!btn.contains(e.target) && !nav.contains(e.target)) {
+        nav.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        nav.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
       }
     });
   </script>
-</head>
-<body>
-
-<a class="skip-nav" href="#main-content">Skip to main content</a>
-<nav role="navigation" aria-label="Main navigation">
-  <div class="nav-inner">
-    <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
-    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="nav-links" id="nav-links">
-      <a href="index.html">Home</a>
-      <a href="blog.html">Blog</a>
-      <a href="learn.html">Learn</a>
-      <a href="faq.html">FAQ</a>
-    </div>
-  </div>
-</nav>
-
-<main id="main-content">
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="badge">⚙️ Config Reference</div>
-    <h1>openclaw.json — Complete Field Reference</h1>
-    <p class="subtitle">Every key your agent understands, documented in one place. Find your config file, understand each setting, and copy ready-to-use snippets.</p>
-    <div class="cta-group">
-      <a href="#full-example" class="cta-btn primary">View full example →</a>
-      <a href="#sections" class="cta-btn secondary">Jump to a section →</a>
-    </div>
-  </section>
-
-  <!-- Where is the file -->
-  <section>
-    <h2>Where is the File?</h2>
-    <p>By default, OpenClaw looks for <code>openclaw.json</code> in your home directory at <code>~/.openclaw/openclaw.json</code>.</p>
-    <p><strong>Override the location:</strong> Set the <code>OPENCLAW_CONFIG</code> environment variable to point to a different path:</p>
-    <pre>export OPENCLAW_CONFIG=/path/to/config.json
-openclaw</pre>
-    <p><strong>Quick commands:</strong></p>
-    <ul style="margin: 16px 0 0 20px; color: var(--gray-5);">
-      <li><code>openclaw config edit</code> — Open your config in your default editor</li>
-      <li><code>openclaw config validate</code> — Check your config for errors before restarting</li>
-      <li><code>openclaw config reload</code> — Reload without restarting (for quick changes)</li>
-    </ul>
-  </section>
-
-  <!-- Full Working Example -->
-  <section id="full-example">
-    <h2>Full Working Example</h2>
-    <p>Here's a complete, production-ready <code>openclaw.json</code> with all major sections. Copy this and fill in your own values:</p>
-    <pre>{
-  "llm": {
-    "provider": "anthropic",
-    "model": "claude-3-5-sonnet-20241022",
-    "apiKey": "${ANTHROPIC_API_KEY}",
-    "temperature": 0.7,
-    "maxTokens": 4096,
-    "timeout": 30000,
-    "retries": 2,
-    "cache": true,
-    "heartbeatModel": "claude-3-5-haiku-20241022",
-    "powerModel": "claude-3-5-sonnet-20241022"
-  },
-  "gateway": {
-    "web": true,
-    "webPort": 7799,
-    "webHost": "localhost",
-    "telegram": false,
-    "whatsapp": false,
-    "slack": false,
-    "discord": false
-  },
-  "memory": {
-    "directory": "~/.openclaw/memory",
-    "memoryFile": "MEMORY.md",
-    "dailyNotes": true,
-    "retentionDays": 90,
-    "maxMemoryWords": 2000,
-    "autoSummarise": false,
-    "search": {
-      "enabled": true,
-      "fuzzy": true,
-      "maxResults": 10
-    }
-  },
-  "tools": {
-    "shell": "confirm",
-    "fileRead": "auto",
-    "fileWrite": "confirm",
-    "browser": "confirm",
-    "email": "confirm",
-    "calendar": "confirm",
-    "http": "confirm",
-    "code": "confirm",
-    "allowedPaths": [
-      "${HOME}/projects",
-      "/tmp"
-    ],
-    "blockedDomains": [
-      "malicious.com",
-      "phishing.net"
-    ]
-  },
-  "voice": {
-    "stt": {
-      "enabled": false,
-      "provider": "openai",
-      "apiKey": "${OPENAI_API_KEY}",
-      "language": "en"
-    },
-    "tts": {
-      "enabled": false,
-      "provider": "elevenlabs",
-      "apiKey": "${ELEVENLABS_API_KEY}",
-      "voiceId": "default",
-      "model": "eleven_monolingual_v1"
-    },
-    "wakeWord": {
-      "enabled": false,
-      "phrases": ["hey openclaw"]
-    },
-    "silenceTimeoutMs": 1500,
-    "interruptOnSpeech": true,
-    "quietHours": {
-      "start": "22:00",
-      "end": "08:00"
-    }
-  },
-  "heartbeat": {
-    "enabled": true,
-    "interval": 1800,
-    "quietHours": {
-      "start": "22:00",
-      "end": "08:00"
-    }
-  },
-  "mcp": {
-    "mcpServers": {
-      "filesystem": {
-        "command": "node",
-        "args": ["mcp-server-filesystem.js"],
-        "env": {
-          "DEBUG": "false"
-        }
-      }
-    }
-  },
-  "logging": {
-    "level": "info",
-    "file": "~/.openclaw/logs/openclaw.log",
-    "maxSizeMb": 10,
-    "rotate": true
-  }
-}</pre>
-  </section>
-
-  <!-- Field Reference -->
-  <section id="sections">
-    <h2>Field Reference by Section</h2>
-
-    <!-- LLM Section -->
-    <h3>llm — Language Model Configuration</h3>
-    <p>The LLM section defines which AI model powers your agent and how it behaves.</p>
-    <pre>{
-  "llm": {
-    "provider": "anthropic",          // Required: "anthropic" | "openai" | "google" | "ollama"
-    "model": "claude-3-5-sonnet-20241022",  // Required: model ID
-    "apiKey": "${ANTHROPIC_API_KEY}", // Required (unless using local Ollama)
-    "baseUrl": "https://api.anthropic.com", // Optional: override endpoint
-    "temperature": 0.7,               // 0.0–2.0, lower = more focused, default 0.7
-    "maxTokens": 4096,                // Max tokens in response, default 4096
-    "timeout": 30000,                 // Request timeout in ms, default 30000
-    "retries": 2,                     // Retry failed requests, default 2
-    "cache": true,                    // Enable prompt caching, default true
-    "heartbeatModel": "claude-3-5-haiku-20241022",  // Optional: lightweight model for heartbeat checks
-    "powerModel": "claude-3-5-sonnet-20241022"      // Optional: more capable model for complex tasks
-  }
-}</pre>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Required</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="key-cell">provider</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-yes">Yes</span></td>
-          <td>AI provider: "anthropic", "openai", "google", or "ollama"</td>
-        </tr>
-        <tr>
-          <td class="key-cell">model</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-yes">Yes</span></td>
-          <td>Model ID (e.g. "claude-3-5-sonnet-20241022" for Anthropic)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">apiKey</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-yes">Yes*</span></td>
-          <td>API key. Use "${VAR}" syntax for environment variables. Not needed for local Ollama</td>
-        </tr>
-        <tr>
-          <td class="key-cell">baseUrl</td>
-          <td class="type-cell">string</td>
-          <td>Provider default</td>
-          <td><span class="required-no">No</span></td>
-          <td>Override API endpoint (e.g., for Ollama on localhost:11434)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">temperature</td>
-          <td class="type-cell">number</td>
-          <td>0.7</td>
-          <td><span class="required-no">No</span></td>
-          <td>Randomness: 0 = deterministic, 2.0 = creative</td>
-        </tr>
-        <tr>
-          <td class="key-cell">maxTokens</td>
-          <td class="type-cell">number</td>
-          <td>4096</td>
-          <td><span class="required-no">No</span></td>
-          <td>Maximum tokens per response</td>
-        </tr>
-        <tr>
-          <td class="key-cell">timeout</td>
-          <td class="type-cell">number</td>
-          <td>30000</td>
-          <td><span class="required-no">No</span></td>
-          <td>Request timeout in milliseconds</td>
-        </tr>
-        <tr>
-          <td class="key-cell">retries</td>
-          <td class="type-cell">number</td>
-          <td>2</td>
-          <td><span class="required-no">No</span></td>
-          <td>Number of retries on failure</td>
-        </tr>
-        <tr>
-          <td class="key-cell">cache</td>
-          <td class="type-cell">boolean</td>
-          <td>true</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable prompt caching (saves API cost)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">heartbeatModel</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">No</span></td>
-          <td>Lightweight model for periodic checks. Uses "model" if omitted</td>
-        </tr>
-        <tr>
-          <td class="key-cell">powerModel</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">No</span></td>
-          <td>More capable model for complex reasoning. Uses "model" if omitted</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Gateway Section -->
-    <h3>gateway — Integration Channels</h3>
-    <p>Enable integrations with chat platforms (Slack, Discord, Telegram, WhatsApp) and web interface.</p>
-    <pre>{
-  "gateway": {
-    "web": true,                      // Enable web UI, default true
-    "webPort": 7799,                  // Port for web interface, default 7799
-    "webHost": "localhost",           // Host binding, default "localhost"
-    "telegram": false,                // Enable Telegram, default false
-    "telegramToken": "${TELEGRAM_TOKEN}",
-    "telegramAllowedUsers": [123456789, 987654321],
-    "whatsapp": false,                // Enable WhatsApp, default false
-    "whatsappToken": "${WHATSAPP_TOKEN}",
-    "whatsappPhoneId": "1234567890",
-    "whatsappWebhookSecret": "${WHATSAPP_SECRET}",
-    "slack": false,                   // Enable Slack, default false
-    "slackBotToken": "${SLACK_BOT_TOKEN}",
-    "slackAppToken": "${SLACK_APP_TOKEN}",
-    "slackAllowedChannels": ["general", "dev"],
-    "discord": false,                 // Enable Discord, default false
-    "discordToken": "${DISCORD_TOKEN}",
-    "discordAllowedGuilds": [9876543210, 1234567890]
-  }
-}</pre>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Required</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="key-cell">web</td>
-          <td class="type-cell">boolean</td>
-          <td>true</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable web interface at localhost:webPort</td>
-        </tr>
-        <tr>
-          <td class="key-cell">webPort</td>
-          <td class="type-cell">number</td>
-          <td>7799</td>
-          <td><span class="required-no">No</span></td>
-          <td>Port for web server</td>
-        </tr>
-        <tr>
-          <td class="key-cell">webHost</td>
-          <td class="type-cell">string</td>
-          <td>localhost</td>
-          <td><span class="required-no">No</span></td>
-          <td>Host to bind to (use "0.0.0.0" for remote access)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">telegram</td>
-          <td class="type-cell">boolean</td>
-          <td>false</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable Telegram integration</td>
-        </tr>
-        <tr>
-          <td class="key-cell">telegramToken</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If telegram=true</span></td>
-          <td>Telegram bot token from BotFather</td>
-        </tr>
-        <tr>
-          <td class="key-cell">telegramAllowedUsers</td>
-          <td class="type-cell">number[]</td>
-          <td>[]</td>
-          <td><span class="required-no">No</span></td>
-          <td>Array of user IDs permitted to message the bot</td>
-        </tr>
-        <tr>
-          <td class="key-cell">whatsapp</td>
-          <td class="type-cell">boolean</td>
-          <td>false</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable WhatsApp integration</td>
-        </tr>
-        <tr>
-          <td class="key-cell">whatsappToken</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If whatsapp=true</span></td>
-          <td>WhatsApp API token</td>
-        </tr>
-        <tr>
-          <td class="key-cell">whatsappPhoneId</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If whatsapp=true</span></td>
-          <td>Your WhatsApp Business phone ID</td>
-        </tr>
-        <tr>
-          <td class="key-cell">whatsappWebhookSecret</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If whatsapp=true</span></td>
-          <td>Webhook secret for incoming WhatsApp messages</td>
-        </tr>
-        <tr>
-          <td class="key-cell">slack</td>
-          <td class="type-cell">boolean</td>
-          <td>false</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable Slack integration</td>
-        </tr>
-        <tr>
-          <td class="key-cell">slackBotToken</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If slack=true</span></td>
-          <td>Bot token (xoxb-...)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">slackAppToken</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If slack=true</span></td>
-          <td>App-level token (xapp-...)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">slackAllowedChannels</td>
-          <td class="type-cell">string[]</td>
-          <td>[]</td>
-          <td><span class="required-no">No</span></td>
-          <td>Channel names permitted to message the bot</td>
-        </tr>
-        <tr>
-          <td class="key-cell">discord</td>
-          <td class="type-cell">boolean</td>
-          <td>false</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable Discord integration</td>
-        </tr>
-        <tr>
-          <td class="key-cell">discordToken</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If discord=true</span></td>
-          <td>Discord bot token</td>
-        </tr>
-        <tr>
-          <td class="key-cell">discordAllowedGuilds</td>
-          <td class="type-cell">number[]</td>
-          <td>[]</td>
-          <td><span class="required-no">No</span></td>
-          <td>Guild IDs permitted to use the bot</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Memory Section -->
-    <h3>memory — Persistent Memory & Knowledge</h3>
-    <p>Configure where and how your agent remembers conversations and learns from past interactions.</p>
-    <pre>{
-  "memory": {
-    "directory": "~/.openclaw/memory",   // Location of memory files, default "~/.openclaw/memory"
-    "memoryFile": "MEMORY.md",           // Filename for persistent memory, default "MEMORY.md"
-    "dailyNotes": true,                  // Create daily summary notes, default true
-    "retentionDays": 90,                 // Keep memory for N days (0 = forever), default 90
-    "maxMemoryWords": 2000,              // Max words in active memory, default 2000
-    "autoSummarise": false,              // Auto-compress old memories, default false
-    "search": {
-      "enabled": true,                   // Enable memory search, default true
-      "fuzzy": true,                     // Fuzzy matching on queries, default true
-      "maxResults": 10                   // Max search results, default 10
-    }
-  }
-}</pre>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Required</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="key-cell">directory</td>
-          <td class="type-cell">string</td>
-          <td>~/.openclaw/memory</td>
-          <td><span class="required-no">No</span></td>
-          <td>Directory to store memory files (~ expands to home)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">memoryFile</td>
-          <td class="type-cell">string</td>
-          <td>MEMORY.md</td>
-          <td><span class="required-no">No</span></td>
-          <td>Main memory file name</td>
-        </tr>
-        <tr>
-          <td class="key-cell">dailyNotes</td>
-          <td class="type-cell">boolean</td>
-          <td>true</td>
-          <td><span class="required-no">No</span></td>
-          <td>Create dated summary files (YYYY-MM-DD.md)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">retentionDays</td>
-          <td class="type-cell">number</td>
-          <td>90</td>
-          <td><span class="required-no">No</span></td>
-          <td>Auto-delete memories older than N days. Set to 0 to keep forever</td>
-        </tr>
-        <tr>
-          <td class="key-cell">maxMemoryWords</td>
-          <td class="type-cell">number</td>
-          <td>2000</td>
-          <td><span class="required-no">No</span></td>
-          <td>Soft limit on active memory context size</td>
-        </tr>
-        <tr>
-          <td class="key-cell">autoSummarise</td>
-          <td class="type-cell">boolean</td>
-          <td>false</td>
-          <td><span class="required-no">No</span></td>
-          <td>Automatically compress and summarize old memories</td>
-        </tr>
-        <tr>
-          <td class="key-cell">search.enabled</td>
-          <td class="type-cell">boolean</td>
-          <td>true</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable keyword search across memory</td>
-        </tr>
-        <tr>
-          <td class="key-cell">search.fuzzy</td>
-          <td class="type-cell">boolean</td>
-          <td>true</td>
-          <td><span class="required-no">No</span></td>
-          <td>Allow typo-tolerant fuzzy search</td>
-        </tr>
-        <tr>
-          <td class="key-cell">search.maxResults</td>
-          <td class="type-cell">number</td>
-          <td>10</td>
-          <td><span class="required-no">No</span></td>
-          <td>Return top N matching memories</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Tools Section -->
-    <h3>tools — Permission & Security Controls</h3>
-    <p>Define which tools your agent can use and under what conditions. Restrict file access and block dangerous domains.</p>
-    <pre>{
-  "tools": {
-    "shell": "confirm",               // "auto"|"confirm"|"disabled"
-    "fileRead": "auto",               // Read files without prompting
-    "fileWrite": "confirm",           // Always ask before writing
-    "browser": "confirm",             // Open browser / visit URLs
-    "email": "confirm",               // Send emails
-    "calendar": "confirm",            // Access calendar
-    "http": "confirm",                // Make HTTP requests
-    "code": "confirm",                // Execute code
-    "allowedPaths": [
-      "${HOME}/projects",
-      "/tmp"
-    ],
-    "blockedDomains": [
-      "malicious.com",
-      "phishing.net"
-    ]
-  }
-}</pre>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Required</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="key-cell">shell</td>
-          <td class="type-cell">string</td>
-          <td>confirm</td>
-          <td><span class="required-no">No</span></td>
-          <td>"auto" = run shell commands without asking, "confirm" = ask first, "disabled" = never run</td>
-        </tr>
-        <tr>
-          <td class="key-cell">fileRead</td>
-          <td class="type-cell">string</td>
-          <td>auto</td>
-          <td><span class="required-no">No</span></td>
-          <td>Permission level for reading files</td>
-        </tr>
-        <tr>
-          <td class="key-cell">fileWrite</td>
-          <td class="type-cell">string</td>
-          <td>confirm</td>
-          <td><span class="required-no">No</span></td>
-          <td>Permission level for writing/modifying files</td>
-        </tr>
-        <tr>
-          <td class="key-cell">browser</td>
-          <td class="type-cell">string</td>
-          <td>confirm</td>
-          <td><span class="required-no">No</span></td>
-          <td>Permission to open browser and visit URLs</td>
-        </tr>
-        <tr>
-          <td class="key-cell">email</td>
-          <td class="type-cell">string</td>
-          <td>confirm</td>
-          <td><span class="required-no">No</span></td>
-          <td>Permission to send emails</td>
-        </tr>
-        <tr>
-          <td class="key-cell">calendar</td>
-          <td class="type-cell">string</td>
-          <td>confirm</td>
-          <td><span class="required-no">No</span></td>
-          <td>Permission to access calendar</td>
-        </tr>
-        <tr>
-          <td class="key-cell">http</td>
-          <td class="type-cell">string</td>
-          <td>confirm</td>
-          <td><span class="required-no">No</span></td>
-          <td>Permission to make HTTP/API requests</td>
-        </tr>
-        <tr>
-          <td class="key-cell">code</td>
-          <td class="type-cell">string</td>
-          <td>confirm</td>
-          <td><span class="required-no">No</span></td>
-          <td>Permission to execute code (Python, Node, etc.)</td>
-        </tr>
-        <tr>
-          <td class="key-cell">allowedPaths</td>
-          <td class="type-cell">string[]</td>
-          <td>[]</td>
-          <td><span class="required-no">No</span></td>
-          <td>Whitelist of directories agent can access. Empty = all allowed</td>
-        </tr>
-        <tr>
-          <td class="key-cell">blockedDomains</td>
-          <td class="type-cell">string[]</td>
-          <td>[]</td>
-          <td><span class="required-no">No</span></td>
-          <td>Domains to block from HTTP requests</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Voice Section -->
-    <h3>voice — Speech & Audio Configuration</h3>
-    <p>Enable voice interaction with speech-to-text (STT) and text-to-speech (TTS).</p>
-    <pre>{
-  "voice": {
-    "stt": {
-      "enabled": false,               // Enable speech-to-text
-      "provider": "openai",           // "openai" | "google" | "azure"
-      "apiKey": "${OPENAI_API_KEY}",
-      "language": "en"                // Language code, default "en"
-    },
-    "tts": {
-      "enabled": false,               // Enable text-to-speech
-      "provider": "elevenlabs",       // "elevenlabs" | "native" | "google"
-      "apiKey": "${ELEVENLABS_API_KEY}",
-      "voiceId": "default",           // Voice ID from provider
-      "model": "eleven_monolingual_v1"
-    },
-    "wakeWord": {
-      "enabled": false,               // Activate on wake phrase
-      "phrases": ["hey openclaw"]      // List of wake phrases
-    },
-    "silenceTimeoutMs": 1500,         // Stop listening after 1.5s silence
-    "interruptOnSpeech": true,        // Stop playing TTS if user speaks
-    "quietHours": {
-      "start": "22:00",               // No voice alerts after 10 PM
-      "end": "08:00"                  // Resume at 8 AM
-    }
-  }
-}</pre>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Required</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="key-cell">stt.enabled</td>
-          <td class="type-cell">boolean</td>
-          <td>false</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable speech recognition</td>
-        </tr>
-        <tr>
-          <td class="key-cell">stt.provider</td>
-          <td class="type-cell">string</td>
-          <td>openai</td>
-          <td><span class="required-no">No</span></td>
-          <td>STT service provider</td>
-        </tr>
-        <tr>
-          <td class="key-cell">stt.apiKey</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If stt.enabled=true</span></td>
-          <td>API key for STT provider</td>
-        </tr>
-        <tr>
-          <td class="key-cell">stt.language</td>
-          <td class="type-cell">string</td>
-          <td>en</td>
-          <td><span class="required-no">No</span></td>
-          <td>Language code (e.g., "en", "es", "fr")</td>
-        </tr>
-        <tr>
-          <td class="key-cell">tts.enabled</td>
-          <td class="type-cell">boolean</td>
-          <td>false</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable text-to-speech output</td>
-        </tr>
-        <tr>
-          <td class="key-cell">tts.provider</td>
-          <td class="type-cell">string</td>
-          <td>elevenlabs</td>
-          <td><span class="required-no">No</span></td>
-          <td>TTS service: "elevenlabs", "native", or "google"</td>
-        </tr>
-        <tr>
-          <td class="key-cell">tts.apiKey</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">If tts.enabled=true</span></td>
-          <td>API key for TTS provider</td>
-        </tr>
-        <tr>
-          <td class="key-cell">tts.voiceId</td>
-          <td class="type-cell">string</td>
-          <td>default</td>
-          <td><span class="required-no">No</span></td>
-          <td>Voice ID from TTS provider</td>
-        </tr>
-        <tr>
-          <td class="key-cell">tts.model</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">No</span></td>
-          <td>TTS model name (e.g., "eleven_monolingual_v1")</td>
-        </tr>
-        <tr>
-          <td class="key-cell">wakeWord.enabled</td>
-          <td class="type-cell">boolean</td>
-          <td>false</td>
-          <td><span class="required-no">No</span></td>
-          <td>Activate only on wake phrase</td>
-        </tr>
-        <tr>
-          <td class="key-cell">wakeWord.phrases</td>
-          <td class="type-cell">string[]</td>
-          <td>[]</td>
-          <td><span class="required-no">No</span></td>
-          <td>Wake phrases to listen for</td>
-        </tr>
-        <tr>
-          <td class="key-cell">silenceTimeoutMs</td>
-          <td class="type-cell">number</td>
-          <td>1500</td>
-          <td><span class="required-no">No</span></td>
-          <td>Milliseconds of silence before stopping listening</td>
-        </tr>
-        <tr>
-          <td class="key-cell">interruptOnSpeech</td>
-          <td class="type-cell">boolean</td>
-          <td>true</td>
-          <td><span class="required-no">No</span></td>
-          <td>Stop TTS output when user speaks</td>
-        </tr>
-        <tr>
-          <td class="key-cell">quietHours.start</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">No</span></td>
-          <td>Time in HH:MM format (24-hour) to stop voice alerts</td>
-        </tr>
-        <tr>
-          <td class="key-cell">quietHours.end</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">No</span></td>
-          <td>Time in HH:MM format (24-hour) to resume voice alerts</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Heartbeat Section -->
-    <h3>heartbeat — Periodic Check-ins</h3>
-    <p>Configure how often your agent checks for new tasks and proactively reaches out.</p>
-    <pre>{
-  "heartbeat": {
-    "enabled": true,                  // Enable periodic check-ins, default true
-    "interval": 1800,                 // Check every 1800 seconds (30 min), default 1800
-    "quietHours": {
-      "start": "22:00",               // Don't check after 10 PM
-      "end": "08:00"                  // Resume at 8 AM
-    }
-  }
-}</pre>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Required</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="key-cell">enabled</td>
-          <td class="type-cell">boolean</td>
-          <td>true</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable periodic check-ins</td>
-        </tr>
-        <tr>
-          <td class="key-cell">interval</td>
-          <td class="type-cell">number</td>
-          <td>1800</td>
-          <td><span class="required-no">No</span></td>
-          <td>Seconds between checks</td>
-        </tr>
-        <tr>
-          <td class="key-cell">quietHours.start</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">No</span></td>
-          <td>Time in HH:MM to start quiet period</td>
-        </tr>
-        <tr>
-          <td class="key-cell">quietHours.end</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">No</span></td>
-          <td>Time in HH:MM to end quiet period</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- MCP Section -->
-    <h3>mcp — Model Context Protocol Servers</h3>
-    <p>Connect external tools and data sources via MCP servers.</p>
-    <pre>{
-  "mcp": {
-    "mcpServers": {
-      "filesystem": {                 // Server name (any label)
-        "command": "node",            // Command to start server
-        "args": [                     // Arguments to pass
-          "mcp-server-filesystem.js"
-        ],
-        "env": {                      // Optional environment variables
-          "DEBUG": "false"
-        }
-      },
-      "postgresql": {
-        "command": "python",
-        "args": ["-m", "mcp_server_postgres"],
-        "env": {
-          "DATABASE_URL": "${DATABASE_URL}"
-        }
-      }
-    }
-  }
-}</pre>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Required</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="key-cell">mcpServers</td>
-          <td class="type-cell">object</td>
-          <td>{}</td>
-          <td><span class="required-no">No</span></td>
-          <td>Object mapping server names to configuration</td>
-        </tr>
-        <tr>
-          <td class="key-cell">mcpServers[name].command</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-yes">Yes</span></td>
-          <td>Executable to run (e.g., "node", "python", "bash")</td>
-        </tr>
-        <tr>
-          <td class="key-cell">mcpServers[name].args</td>
-          <td class="type-cell">string[]</td>
-          <td>[]</td>
-          <td><span class="required-no">No</span></td>
-          <td>Arguments passed to the command</td>
-        </tr>
-        <tr>
-          <td class="key-cell">mcpServers[name].env</td>
-          <td class="type-cell">object</td>
-          <td>{}</td>
-          <td><span class="required-no">No</span></td>
-          <td>Environment variables for the server (supports ${VAR} substitution)</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- Logging Section -->
-    <h3>logging — Debug & Diagnostics</h3>
-    <p>Configure logging level and output for troubleshooting.</p>
-    <pre>{
-  "logging": {
-    "level": "info",                  // "debug"|"info"|"warn"|"error", default "info"
-    "file": "~/.openclaw/logs/openclaw.log",  // Optional: write logs to file
-    "maxSizeMb": 10,                  // Rotate log file at 10 MB, default 10
-    "rotate": true                    // Enable log rotation, default true
-  }
-}</pre>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Required</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="key-cell">level</td>
-          <td class="type-cell">string</td>
-          <td>info</td>
-          <td><span class="required-no">No</span></td>
-          <td>"debug" = verbose, "info" = normal, "warn" = warnings only, "error" = errors only</td>
-        </tr>
-        <tr>
-          <td class="key-cell">file</td>
-          <td class="type-cell">string</td>
-          <td>—</td>
-          <td><span class="required-no">No</span></td>
-          <td>Path to log file. If omitted, logs to console only</td>
-        </tr>
-        <tr>
-          <td class="key-cell">maxSizeMb</td>
-          <td class="type-cell">number</td>
-          <td>10</td>
-          <td><span class="required-no">No</span></td>
-          <td>Max log file size before rotation</td>
-        </tr>
-        <tr>
-          <td class="key-cell">rotate</td>
-          <td class="type-cell">boolean</td>
-          <td>true</td>
-          <td><span class="required-no">No</span></td>
-          <td>Enable automatic log rotation</td>
-        </tr>
-      </tbody>
-    </table>
-
-  </section>
-
-  <!-- Tips -->
-  <section>
-    <h2>Pro Tips</h2>
-    <div class="tips-grid">
-      <div class="tip-card">
-        <h4>💾 Use Environment Variables</h4>
-        <p>Never hardcode secrets. Use <code>"${VAR_NAME}"</code> syntax to reference environment variables, and OpenClaw will substitute them at startup.</p>
-      </div>
-      <div class="tip-card">
-        <h4>✅ Validate Before Restarting</h4>
-        <p>Run <code>openclaw config validate</code> to catch syntax errors and missing required fields before you restart your agent.</p>
-      </div>
-      <div class="tip-card">
-        <h4>📝 JSON Doesn't Support Comments</h4>
-        <p>Add <code>"_comment": "your note here"</code> keys instead, or use a JSON with comments (JSONC) editor. Strip comments before deployment.</p>
-      </div>
-      <div class="tip-card">
-        <h4>🚀 Start Minimal</h4>
-        <p>Only <code>llm</code> is required. Add other sections (gateway, voice, mcp) as you need them. Start simple and expand.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- YAML Link -->
-  <section>
-    <div class="alert">
-      <p><strong>Prefer YAML?</strong> Everything on this page applies to <code>config.yaml</code> too — just in YAML syntax instead of JSON. <a href="config-yaml.html">View the config.yaml reference →</a></p>
-    </div>
-  </section>
-
-</main>
-
-<footer role="contentinfo">
-  <div class="footer-inner">
-    <div class="footer-section">
-      <h4>Learn</h4>
-      <a href="gettingstarted.html">Get Started</a>
-      <a href="usecases.html">Use Cases</a>
-      <a href="automation.html">Automation</a>
-      <a href="architecture.html">Architecture</a>
-      <a href="multiagent.html">Multi-Agent</a>
-      <a href="voice.html">Voice Mode</a>
-    </div>
-    <div class="footer-section">
-      <h4>Configuration</h4>
-      <a href="config-json.html">openclaw.json</a>
-      <a href="config-yaml.html">config.yaml</a>
-      <a href="workspace-user.html">USER.md</a>
-      <a href="workspace-agents.html">AGENTS.md</a>
-      <a href="workspace-memory.html">MEMORY.md</a>
-      <a href="workspace-heartbeat.html">HEARTBEAT.md</a>
-    </div>
-    <div class="footer-section">
-      <h4>Integration</h4>
-      <a href="mcp.html">MCP Protocol</a>
-      <a href="agentchannels.html">Agent Channels</a>
-      <a href="marketplace.html">Marketplace</a>
-      <a href="security.html">Security</a>
-      <a href="compare.html">Compare</a>
-    </div>
-    <div class="footer-section">
-      <div class="newsletter">
-        <h4>Stay Updated</h4>
-        <input type="email" placeholder="you@example.com" aria-label="Email for newsletter">
-        <button>Subscribe</button>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>&copy; 2026 learnopenclaw.org. All rights reserved. | <a href="https://openclaw.io">OpenClaw</a> | <a href="pricing.html">Pricing</a> | <a href="faq.html">FAQ</a></p>
-  </div>
-</footer>
-
 </body>
 </html>
