@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Run OpenClaw in Docker — Sandboxing Guide for Beginners 2026</title>
+  <meta name="description" content="Learn how to run OpenClaw safely in a Docker container. Beginner-friendly guide covering what Docker is, how to install it, Dockerfile setup, Docker Compose, volumes, and environment variables." />
+  <meta name="keywords" content="OpenClaw Docker, OpenClaw sandbox, Docker container OpenClaw, run OpenClaw Docker, OpenClaw Dockerfile, OpenClaw Docker Compose, sandbox AI agent" />
+  <link rel="canonical" href="https://learnopenclaw.org/docker.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Run OpenClaw in Docker — Sandboxing Guide for Beginners 2026" />
+  <meta property="og:description" content="Step-by-step guide to running OpenClaw in a Docker container. Covers what Docker is, installation, Dockerfile, Docker Compose, volumes, and env variables — beginner-friendly." />
+  <meta property="og:url" content="https://learnopenclaw.org/docker.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Run OpenClaw in Docker — Sandboxing Guide for Beginners" />
+  <meta name="twitter:description" content="Run OpenClaw safely in a Docker container. Beginner-friendly setup guide with Dockerfile and Docker Compose examples." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Run OpenClaw in Docker — Sandboxing Guide for Beginners",
+    "description": "Complete beginner-friendly guide to sandboxing OpenClaw with Docker. Covers installation, Dockerfile, Docker Compose, volumes, networking, and environment variables.",
+    "url": "https://learnopenclaw.org/docker.html",
+    "dateModified": "2026-03-22",
+    "author": { "@type": "Organization", "name": "LearnOpenClaw" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home",         "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn",        "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "Docker",       "item": "https://learnopenclaw.org/docker.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --docker:     #0db7ed;
+      --docker-dk:  #086ea8;
+      --docker-lt:  #e0f7fe;
+      --docker-md:  #b3ecfb;
+      --green:      #16a34a;
+      --green-lt:   #f0fdf4;
+      --green-md:   #bbf7d0;
+      --amber:      #d97706;
+      --amber-lt:   #fffbeb;
+      --red:        #dc2626;
+      --red-lt:     #fef2f2;
+      --blue:       #2563eb;
+      --blue-lt:    #eff6ff;
+      --gray-1:     #f9fafb;
+      --gray-2:     #f3f4f6;
+      --gray-3:     #e5e7eb;
+      --gray-5:     #6b7280;
+      --gray-7:     #374151;
+      --gray-8:     #1f2937;
+      --white:      #ffffff;
+      --radius:     12px;
+      --shadow:     0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── ADA: Skip nav ── */
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .claw { font-size: 1.4rem; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-links a[aria-current="page"] { color: var(--docker-dk); font-weight: 700; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #023e5c 0%, #0369a1 50%, #0db7ed 100%);
+      color: var(--white); padding: 72px 24px 60px;
+    }
+    .hero-inner { max-width: 820px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      color: var(--white); font-size: .75rem; font-weight: 700;
+      letter-spacing: .07em; padding: 4px 14px; border-radius: 100px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .hero h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+    .hero h1 em { font-style: normal; color: #bae6fd; }
+    .hero-sub { font-size: 1.05rem; color: #bae6fd; max-width: 620px; margin-bottom: 28px; }
+    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      color: #e0f2fe; font-size: .82rem; font-weight: 600;
+      padding: 5px 14px; border-radius: 100px;
+    }
+
+    /* ── Main content ── */
+    main { padding: 52px 24px 80px; }
+
+    /* ── Section headings ── */
+    .section-title {
+      font-size: 1.45rem; font-weight: 800; color: var(--gray-8);
+      margin: 56px 0 8px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-3);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title:first-of-type { margin-top: 0; }
+    .section-title .icon { font-size: 1.4rem; }
+    .section-lead { font-size: .97rem; color: var(--gray-5); margin-bottom: 24px; max-width: 700px; }
+
+    /* ── Prose ── */
+    .prose p { font-size: .97rem; color: var(--gray-7); margin-bottom: 14px; line-height: 1.7; }
+    .prose strong { color: var(--gray-8); }
+
+    /* ── Analogy box ── */
+    .analogy {
+      background: var(--docker-lt); border: 2px solid var(--docker-md);
+      border-radius: var(--radius); padding: 22px 24px; margin: 20px 0 28px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .analogy-icon { font-size: 2.2rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .analogy-body { flex: 1; }
+    .analogy-body strong { font-size: 1rem; font-weight: 800; color: var(--docker-dk); display: block; margin-bottom: 6px; }
+    .analogy-body p { font-size: .93rem; color: var(--gray-7); margin: 0; line-height: 1.6; }
+
+    /* ── Why cards ── */
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0 32px; }
+    .why-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow); background: var(--white);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .why-card:hover { border-color: var(--docker-md); box-shadow: 0 4px 16px rgba(13,183,237,.1); }
+    .why-card .wc-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .why-card h3 { font-size: .95rem; font-weight: 800; color: var(--gray-8); margin-bottom: 6px; }
+    .why-card p { font-size: .85rem; color: var(--gray-5); line-height: 1.5; }
+
+    /* ── OS install tabs ── */
+    .tab-bar { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 2px solid var(--gray-3); margin-bottom: 0; }
+    .tab-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: .88rem; font-weight: 600;
+      color: var(--gray-5); padding: 9px 18px;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover { color: var(--docker); }
+    .tab-btn.active { color: var(--docker-dk); border-bottom-color: var(--docker); }
+    .tab-panel { display: none; padding: 24px 0; }
+    .tab-panel.active { display: block; }
+
+    /* ── Steps ── */
+    .steps { list-style: none; counter-reset: step-ctr; padding: 0; margin: 16px 0 8px; }
+    .step-item { counter-increment: step-ctr; display: flex; gap: 16px; align-items: flex-start; margin-bottom: 22px; }
+    .step-num {
+      flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+      background: var(--docker); color: var(--white);
+      font-size: .85rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-num::before { content: counter(step-ctr); }
+    .step-content { flex: 1; padding-top: 4px; }
+    .step-content strong { display: block; font-size: .97rem; font-weight: 700; color: var(--gray-8); margin-bottom: 5px; }
+    .step-content p { font-size: .93rem; color: var(--gray-7); margin-bottom: 6px; }
+    .step-content ul { margin-left: 1.2rem; margin-top: 6px; font-size: .92rem; color: var(--gray-7); }
+    .step-content li { margin-bottom: 4px; }
+
+    /* ── Code blocks ── */
+    code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .85em; background: var(--gray-2);
+      color: var(--gray-8); padding: 2px 6px; border-radius: 4px;
+    }
+    .code-block {
+      background: #0d1117; border-radius: 10px;
+      margin: 10px 0 20px; overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #161b22; padding: 8px 16px;
+      border-bottom: 1px solid #30363d;
+    }
+    .code-filename { font-size: .78rem; font-weight: 700; color: #8b949e; font-family: 'SF Mono', Consolas, monospace; }
+    .copy-btn {
+      background: #21262d; border: 1px solid #30363d; border-radius: 6px;
+      color: #8b949e; font-size: .72rem; font-weight: 600; padding: 3px 10px;
+      cursor: pointer; font-family: inherit; transition: background .15s, color .15s;
+    }
+    .copy-btn:hover { background: #30363d; color: #e6edf3; }
+    .copy-btn.copied { color: #3fb950; border-color: #3fb950; }
+    pre {
+      background: #0d1117; color: #e6edf3;
+      padding: 16px 20px; overflow-x: auto;
+      font-size: .86rem; line-height: 1.7; margin: 0;
+    }
+    pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+    .c-comment  { color: #8b949e; font-style: italic; }
+    .c-key      { color: #79c0ff; }
+    .c-str      { color: #a5d6ff; }
+    .c-val      { color: #7ee787; }
+    .c-cmd      { color: #e6edf3; }
+    .c-prompt   { color: #58a6ff; user-select: none; }
+    .c-keyword  { color: #ff7b72; }
+    .c-num      { color: #f2cc60; }
+
+    /* ── Callouts ── */
+    .callout { border-radius: 10px; padding: 15px 20px; margin: 16px 0; font-size: .93rem; }
+    .callout-green  { background: var(--green-lt);  border-left: 4px solid var(--green); }
+    .callout-amber  { background: var(--amber-lt);  border-left: 4px solid var(--amber); }
+    .callout-docker { background: var(--docker-lt); border-left: 4px solid var(--docker); }
+    .callout-red    { background: var(--red-lt);    border-left: 4px solid var(--red); }
+    .callout strong { font-weight: 700; color: var(--gray-8); display: block; margin-bottom: 4px; }
+    .callout p, .callout li { color: var(--gray-7); line-height: 1.6; }
+    .callout ul { margin-left: 1.2rem; margin-top: 6px; }
+    .callout li { margin-bottom: 3px; }
+
+    /* ── Comparison table ── */
+    .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--gray-3); margin: 16px 0 28px; }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    thead th { background: var(--docker); color: var(--white); text-align: left; padding: 10px 14px; font-weight: 700; white-space: nowrap; }
+    thead th:first-child { border-radius: 10px 0 0 0; }
+    thead th:last-child  { border-radius: 0 10px 0 0; }
+    tbody tr:nth-child(even) { background: var(--gray-1); }
+    tbody td { padding: 10px 14px; border-top: 1px solid var(--gray-2); vertical-align: top; color: var(--gray-7); }
+    tbody td:first-child { font-weight: 700; color: var(--gray-8); }
+    .check { color: var(--green);  font-weight: 700; }
+    .cross { color: var(--red);    font-weight: 700; }
+    .maybe { color: var(--amber);  font-weight: 700; }
+
+    /* ── Quick-ref command table ── */
+    .cmd-table tbody td:first-child { font-family: 'SF Mono', Consolas, monospace; font-size: .82rem; background: var(--gray-2); color: var(--docker-dk); }
+
+    /* ── Volume / networking diagram ── */
+    .diagram {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 24px; background: var(--gray-1); margin: 16px 0 28px;
+      font-size: .88rem; color: var(--gray-7);
+    }
+    .diagram-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .diagram-row:last-child { margin-bottom: 0; }
+    .diagram-box {
+      border-radius: 8px; padding: 8px 14px;
+      font-weight: 700; font-size: .82rem; text-align: center; white-space: nowrap;
+    }
+    .box-host    { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+    .box-docker  { background: var(--docker-lt); color: var(--docker-dk); border: 1px solid var(--docker-md); }
+    .box-volume  { background: var(--green-lt);  color: var(--green);     border: 1px solid var(--green-md); }
+    .box-net     { background: var(--amber-lt);  color: var(--amber);     border: 1px solid #fde68a; }
+    .arrow { color: var(--gray-5); font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Related ── */
+    .related { background: var(--gray-1); border-radius: var(--radius); padding: 28px; margin-top: 52px; }
+    .related h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; }
+    .related-links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .related-link {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 16px; border-radius: 8px;
+      background: var(--white); border: 1px solid var(--gray-3);
+      font-size: .88rem; font-weight: 600; color: var(--gray-7);
+      text-decoration: none; transition: border-color .15s, color .15s;
+    }
+    .related-link:hover { border-color: var(--docker-md); color: var(--docker-dk); text-decoration: none; }
+
+    /* ── Footer ── */
+    footer { background: var(--gray-8); color: #9ca3af; padding: 32px 24px; text-align: center; font-size: .875rem; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; margin-bottom: 16px; }
+    .footer-links a { color: #9ca3af; }
+    .footer-links a:hover { color: var(--white); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 48px 20px 44px; }
+      .analogy { flex-direction: column; }
+      .why-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="learn.html">Learn</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero" role="banner">
+    <div class="hero-inner">
+      <div class="hero-badge"><span aria-hidden="true">🐳</span> Docker Sandboxing</div>
+      <h1>Run OpenClaw in <em>Docker</em><br>— Safe, Isolated, Reproducible</h1>
+      <p class="hero-sub">Docker lets you run OpenClaw in a sealed container that can't break your system, can't be broken by your system, and behaves the same way on every machine. This guide walks you through everything from scratch.</p>
+      <div class="hero-pills" role="list" aria-label="Key benefits">
+        <span class="pill" role="listitem"><span aria-hidden="true">🔒</span> Sandboxed &amp; isolated</span>
+        <span class="pill" role="listitem"><span aria-hidden="true">📦</span> Works the same everywhere</span>
+        <span class="pill" role="listitem"><span aria-hidden="true">🗑️</span> Delete it without a trace</span>
+        <span class="pill" role="listitem"><span aria-hidden="true">🔄</span> Easy to update</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- What is Docker? -->
+      <h2 class="section-title" id="what-is-docker">
+        <span class="icon" aria-hidden="true">💡</span> What Is Docker? What Is Sandboxing?
+      </h2>
+      <p class="section-lead">New to Docker? No problem. Here's what you need to know in plain English.</p>
+
+      <div class="prose">
+        <p>When you install software normally, it puts files all over your computer — in your system folders, your home directory, your startup scripts. If something goes wrong, it can be messy to clean up. And if the software has a bug or does something unexpected, it can affect other programs on your machine.</p>
+        <p><strong>Docker solves this by creating a container</strong> — a self-contained, isolated box where your software runs. The software inside the container can't see or touch anything on your computer that you haven't explicitly shared with it.</p>
+      </div>
+
+      <div class="analogy" role="region" aria-label="Docker analogy">
+        <div class="analogy-icon" aria-hidden="true">🚢</div>
+        <div class="analogy-body">
+          <strong>Think of it like a shipping container on a cargo ship</strong>
+          <p>A shipping container is a sealed, standardized box. You can put anything inside it — furniture, electronics, food — and it loads onto any ship the same way, travels safely, and gets unloaded cleanly. The contents don't mix with other cargo, and if something leaks inside the container, it stays inside the container. Docker containers work exactly like this for software.</p>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p><strong>Sandboxing</strong> is the practice of running software in an isolated environment — a "sandbox" where it can only play with what you give it. For an AI agent like OpenClaw that can browse the web, read files, and run automations, sandboxing adds an important safety layer: even if something goes wrong, the damage is contained.</p>
+      </div>
+
+      <!-- Why sandbox OpenClaw? -->
+      <h2 class="section-title" id="why-docker">
+        <span class="icon" aria-hidden="true">🛡️</span> Why Run OpenClaw in Docker?
+      </h2>
+      <p class="section-lead">Docker isn't just for developers. Here are real benefits for any OpenClaw user.</p>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="wc-icon" aria-hidden="true">🔒</div>
+          <h3>Safer automation</h3>
+          <p>OpenClaw can execute code and access files. Running it in Docker means it can only access the folders you explicitly share — nothing else on your system is reachable.</p>
+        </div>
+        <div class="why-card">
+          <div class="wc-icon" aria-hidden="true">📦</div>
+          <h3>Clean install, clean uninstall</h3>
+          <p>No scattered files across your system. To completely remove OpenClaw and all its data, you delete one container and one image. Done.</p>
+        </div>
+        <div class="why-card">
+          <div class="wc-icon" aria-hidden="true">🔄</div>
+          <h3>Easy updates</h3>
+          <p>Update OpenClaw by pulling the new image and restarting the container. No dependency conflicts, no leftover files from the old version.</p>
+        </div>
+        <div class="why-card">
+          <div class="wc-icon" aria-hidden="true">💻</div>
+          <h3>Works on any machine</h3>
+          <p>Your Docker setup runs identically on Mac, Windows, and Linux. Share your <code>docker-compose.yml</code> with others and they get the exact same environment.</p>
+        </div>
+        <div class="why-card">
+          <div class="wc-icon" aria-hidden="true">🌐</div>
+          <h3>Server deployment ready</h3>
+          <p>When you're ready to run OpenClaw 24/7 on a server or VPS, Docker is the standard way to deploy. The same container you test locally deploys directly.</p>
+        </div>
+        <div class="why-card">
+          <div class="wc-icon" aria-hidden="true">🧪</div>
+          <h3>Safe experimentation</h3>
+          <p>Try experimental configs, new skills, or untrusted code in a container. If anything breaks, destroy the container and start fresh in seconds.</p>
+        </div>
+      </div>
+
+      <!-- Install Docker -->
+      <h2 class="section-title" id="install">
+        <span class="icon" aria-hidden="true">⬇️</span> Step 1 — Install Docker
+      </h2>
+      <p class="section-lead">Choose your operating system below for installation instructions.</p>
+
+      <div role="tablist" aria-label="Install Docker by operating system" class="tab-bar" id="install-tabs">
+        <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="tab-mac"     id="btn-mac">🍎 Mac</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-windows" id="btn-windows">🪟 Windows</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-linux"   id="btn-linux">🐧 Linux</button>
+      </div>
+
+      <!-- Mac install -->
+      <div class="tab-panel active" id="tab-mac" role="tabpanel" aria-labelledby="btn-mac">
+        <ol class="steps" aria-label="Mac Docker install steps">
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Download Docker Desktop for Mac</strong>
+              <p>Go to <a href="https://www.docker.com/products/docker-desktop/" target="_blank" rel="noopener">docker.com/products/docker-desktop</a> and click <strong>Download for Mac</strong>. Make sure to pick the right chip — <strong>Apple Silicon</strong> (M1/M2/M3) or <strong>Intel</strong>. Not sure which? Click the Apple menu → About This Mac.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Install and launch</strong>
+              <p>Open the downloaded <code>.dmg</code> file, drag Docker to your Applications folder, and open it. Docker will ask for your admin password — this is needed to install the system components.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Wait for Docker to start</strong>
+              <p>You'll see a whale icon in your menu bar. When it stops animating (becomes a solid whale), Docker is ready. This usually takes about 30 seconds on first launch.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Verify the install</strong>
+              <p>Open Terminal and run:</p>
+              <div class="code-block">
+                <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker --version</span>
+<span class="c-comment">Docker version 26.1.0, build a96...</span></code></pre>
+              </div>
+              <p>If you see a version number, you're ready.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Windows install -->
+      <div class="tab-panel" id="tab-windows" role="tabpanel" aria-labelledby="btn-windows">
+        <ol class="steps" aria-label="Windows Docker install steps">
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Enable WSL 2 (Windows Subsystem for Linux)</strong>
+              <p>Docker Desktop on Windows uses WSL 2 as its backend. Open PowerShell <strong>as Administrator</strong> and run:</p>
+              <div class="code-block">
+                <pre><code><span class="c-cmd">wsl --install</span></code></pre>
+              </div>
+              <p>Restart your computer when prompted. If you already have WSL, run <code>wsl --update</code> instead.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Download Docker Desktop for Windows</strong>
+              <p>Go to <a href="https://www.docker.com/products/docker-desktop/" target="_blank" rel="noopener">docker.com/products/docker-desktop</a>, download the Windows installer, and run it. Accept the defaults and click Install.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Launch Docker Desktop</strong>
+              <p>Open Docker Desktop from the Start menu. Accept the terms of service. Wait for the engine to start (the whale icon in the system tray will stop animating).</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Verify the install</strong>
+              <p>Open PowerShell or Command Prompt and run:</p>
+              <div class="code-block">
+                <pre><code><span class="c-prompt">> </span><span class="c-cmd">docker --version</span></code></pre>
+              </div>
+            </div>
+          </li>
+        </ol>
+        <div class="callout callout-amber">
+          <strong>⚠️ Windows Home vs Pro</strong>
+          <p>Docker Desktop works on both Windows Home and Pro. Windows Home uses WSL 2 as the backend (which you installed in step 1). Windows Pro can also use Hyper-V, but WSL 2 is recommended for better performance.</p>
+        </div>
+      </div>
+
+      <!-- Linux install -->
+      <div class="tab-panel" id="tab-linux" role="tabpanel" aria-labelledby="btn-linux">
+        <ol class="steps" aria-label="Linux Docker install steps">
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Install Docker Engine using the official script</strong>
+              <p>The quickest way on Ubuntu / Debian:</p>
+              <div class="code-block">
+                <pre><code><span class="c-prompt">$ </span><span class="c-cmd">curl -fsSL https://get.docker.com | sudo sh</span></code></pre>
+              </div>
+              <p>This installs Docker Engine, CLI, and Compose in one go.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Run Docker without sudo (recommended)</strong>
+              <p>Add your user to the <code>docker</code> group so you don't need <code>sudo</code> every time:</p>
+              <div class="code-block">
+                <pre><code><span class="c-prompt">$ </span><span class="c-cmd">sudo usermod -aG docker $USER</span>
+<span class="c-prompt">$ </span><span class="c-cmd">newgrp docker</span></code></pre>
+              </div>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Start Docker and enable on boot</strong>
+              <div class="code-block">
+                <pre><code><span class="c-prompt">$ </span><span class="c-cmd">sudo systemctl enable --now docker</span></code></pre>
+              </div>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Verify</strong>
+              <div class="code-block">
+                <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker run hello-world</span>
+<span class="c-comment">Hello from Docker! ✓</span></code></pre>
+              </div>
+            </div>
+          </li>
+        </ol>
+        <div class="callout callout-docker">
+          <strong>🐳 Optional: Docker Desktop for Linux</strong>
+          <p>There's also a Docker Desktop GUI app for Linux with a visual dashboard. Download it from <a href="https://docs.docker.com/desktop/install/linux-install/" target="_blank" rel="noopener">docs.docker.com/desktop/install/linux-install</a>. It's optional — Docker Engine (CLI only) works great for OpenClaw.</p>
+        </div>
+      </div>
+
+      <!-- Project structure -->
+      <h2 class="section-title" id="structure">
+        <span class="icon" aria-hidden="true">📁</span> Step 2 — Set Up Your Project Folder
+      </h2>
+      <p class="section-lead">Before writing any Docker files, create a clean folder structure for your OpenClaw project.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">Recommended folder layout</span>
+        </div>
+        <pre><code>my-openclaw/
+├── <span class="c-key">openclaw.json</span>       <span class="c-comment"># your OpenClaw config</span>
+├── <span class="c-key">Dockerfile</span>          <span class="c-comment"># tells Docker how to build the image</span>
+├── <span class="c-key">docker-compose.yml</span>  <span class="c-comment"># easier way to manage the container</span>
+├── <span class="c-key">.env</span>                <span class="c-comment"># your API keys (never commit this!)</span>
+├── <span class="c-key">.gitignore</span>          <span class="c-comment"># make sure .env and agent.db aren't committed</span>
+└── <span class="c-key">data/</span>               <span class="c-comment"># persistent storage (memory db, logs)</span></code></pre>
+      </div>
+
+      <div class="callout callout-amber">
+        <strong>⚠️ Always protect your .env file</strong>
+        <p>Your <code>.env</code> file will contain API keys. Add it to <code>.gitignore</code> immediately:</p>
+        <ul>
+          <li>Create a file named <code>.gitignore</code> in your project folder</li>
+          <li>Add these two lines: <code>.env</code> and <code>data/</code></li>
+          <li>Never commit or share your <code>.env</code> file</li>
+        </ul>
+      </div>
+
+      <!-- The Dockerfile -->
+      <h2 class="section-title" id="dockerfile">
+        <span class="icon" aria-hidden="true">🔨</span> Step 3 — Write the Dockerfile
+      </h2>
+      <p class="section-lead">A Dockerfile is a recipe that tells Docker how to build a container image for OpenClaw. Each line is a simple instruction — here's a beginner-friendly version with every line explained.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">Dockerfile</span>
+          <button class="copy-btn" data-target="df-code" aria-label="Copy Dockerfile">Copy</button>
+        </div>
+        <pre id="df-code"><code><span class="c-comment"># Start from the official Node.js 20 image (slim = smaller file size)</span>
+<span class="c-keyword">FROM</span> <span class="c-val">node:20-slim</span>
+
+<span class="c-comment"># Set the working directory inside the container</span>
+<span class="c-keyword">WORKDIR</span> <span class="c-str">/app</span>
+
+<span class="c-comment"># Install OpenClaw globally</span>
+<span class="c-keyword">RUN</span> <span class="c-cmd">npm install -g openclaw</span>
+
+<span class="c-comment"># Copy your config file into the container</span>
+<span class="c-keyword">COPY</span> <span class="c-str">openclaw.json .</span>
+
+<span class="c-comment"># Create a directory for persistent data (memory, logs)</span>
+<span class="c-keyword">RUN</span> <span class="c-cmd">mkdir -p /app/data</span>
+
+<span class="c-comment"># Expose the gateway port so your browser/apps can connect</span>
+<span class="c-keyword">EXPOSE</span> <span class="c-num">8080</span>
+
+<span class="c-comment"># The command that runs when the container starts</span>
+<span class="c-keyword">CMD</span> [<span class="c-str">"openclaw"</span>, <span class="c-str">"start"</span>]</code></pre>
+      </div>
+
+      <div class="callout callout-docker">
+        <strong>🐳 What each instruction does</strong>
+        <ul>
+          <li><code>FROM</code> — picks the base image. We use the official Node.js image so we don't have to install Node ourselves.</li>
+          <li><code>WORKDIR</code> — sets the folder we work in inside the container, like <code>cd /app</code>.</li>
+          <li><code>RUN</code> — executes a shell command during the build step.</li>
+          <li><code>COPY</code> — copies a file from your computer into the container image.</li>
+          <li><code>EXPOSE</code> — documents which port the app listens on (doesn't actually open the port — that's done in docker-compose).</li>
+          <li><code>CMD</code> — the default command to run when the container starts.</li>
+        </ul>
+      </div>
+
+      <!-- docker-compose -->
+      <h2 class="section-title" id="compose">
+        <span class="icon" aria-hidden="true">🎻</span> Step 4 — Docker Compose (Recommended)
+      </h2>
+      <p class="section-lead">Instead of typing long <code>docker run</code> commands every time, Docker Compose lets you define everything in one simple file and start your whole setup with one command.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">docker-compose.yml</span>
+          <button class="copy-btn" data-target="compose-code" aria-label="Copy docker-compose.yml">Copy</button>
+        </div>
+        <pre id="compose-code"><code><span class="c-key">version</span>: <span class="c-str">'3.9'</span>
+
+<span class="c-key">services</span>:
+  <span class="c-key">openclaw</span>:
+    <span class="c-comment"># Build the image from the Dockerfile in this folder</span>
+    <span class="c-key">build</span>: <span class="c-str">.</span>
+
+    <span class="c-comment"># Give the container a friendly name</span>
+    <span class="c-key">container_name</span>: <span class="c-str">openclaw-agent</span>
+
+    <span class="c-comment"># Restart automatically if it crashes or the server reboots</span>
+    <span class="c-key">restart</span>: <span class="c-str">unless-stopped</span>
+
+    <span class="c-comment"># Map host port 8080 to container port 8080</span>
+    <span class="c-comment"># Format: "host_port:container_port"</span>
+    <span class="c-key">ports</span>:
+      - <span class="c-str">"8080:8080"</span>
+
+    <span class="c-comment"># Load environment variables (API keys) from .env file</span>
+    <span class="c-key">env_file</span>:
+      - <span class="c-str">.env</span>
+
+    <span class="c-comment"># Mount the data folder so memory persists between restarts</span>
+    <span class="c-comment"># Format: "host_path:container_path"</span>
+    <span class="c-key">volumes</span>:
+      - <span class="c-str">./data:/app/data</span>
+
+    <span class="c-comment"># Health check: ping the gateway every 30 seconds</span>
+    <span class="c-key">healthcheck</span>:
+      <span class="c-key">test</span>: [<span class="c-str">"CMD"</span>, <span class="c-str">"curl"</span>, <span class="c-str">"-f"</span>, <span class="c-str">"http://localhost:8080/health"</span>]
+      <span class="c-key">interval</span>: <span class="c-str">30s</span>
+      <span class="c-key">timeout</span>: <span class="c-str">10s</span>
+      <span class="c-key">retries</span>: <span class="c-str">3</span></code></pre>
+      </div>
+
+      <!-- .env file -->
+      <h2 class="section-title" id="env">
+        <span class="icon" aria-hidden="true">🔑</span> Step 5 — Environment Variables (.env)
+      </h2>
+      <p class="section-lead">Store all your API keys and secrets in a <code>.env</code> file. Docker Compose reads this file automatically — your keys never get baked into the image.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">.env</span>
+          <button class="copy-btn" data-target="env-code" aria-label="Copy .env example">Copy</button>
+        </div>
+        <pre id="env-code"><code><span class="c-comment"># AI provider API keys</span>
+<span class="c-key">ANTHROPIC_API_KEY</span>=<span class="c-str">sk-ant-your-key-here</span>
+<span class="c-key">OPENAI_API_KEY</span>=<span class="c-str">sk-your-openai-key</span>
+
+<span class="c-comment"># Messaging integrations</span>
+<span class="c-key">TELEGRAM_BOT_TOKEN</span>=<span class="c-str">1234567890:your-bot-token</span>
+<span class="c-key">DISCORD_BOT_TOKEN</span>=<span class="c-str">your-discord-token</span>
+
+<span class="c-comment"># Search tool</span>
+<span class="c-key">BRAVE_API_KEY</span>=<span class="c-str">your-brave-key</span></code></pre>
+      </div>
+
+      <p style="color:var(--gray-7);font-size:.93rem;margin-bottom:24px;">Then reference them in your <code>openclaw.json</code> using the <code>$VARIABLE_NAME</code> syntax — OpenClaw substitutes them automatically at runtime:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">openclaw.json (inside Docker)</span>
+        </div>
+        <pre><code>{
+  <span class="c-key">"llm"</span>: {
+    <span class="c-key">"provider"</span>: <span class="c-str">"anthropic"</span>,
+    <span class="c-key">"model"</span>: <span class="c-str">"claude-sonnet-4-6"</span>,
+    <span class="c-key">"apiKey"</span>: <span class="c-str">"$ANTHROPIC_API_KEY"</span>  <span class="c-comment">// reads from .env</span>
+  },
+  <span class="c-key">"memory"</span>: {
+    <span class="c-key">"type"</span>: <span class="c-str">"sqlite"</span>,
+    <span class="c-key">"path"</span>: <span class="c-str">"/app/data/agent.db"</span>   <span class="c-comment">// inside the mounted volume</span>
+  },
+  <span class="c-key">"gateway"</span>: {
+    <span class="c-key">"host"</span>: <span class="c-str">"0.0.0.0"</span>,             <span class="c-comment">// must be 0.0.0.0 inside Docker</span>
+    <span class="c-key">"port"</span>: <span class="c-num">8080</span>
+  }
+}</code></pre>
+      </div>
+
+      <div class="callout callout-red">
+        <strong>🚨 Important: use host "0.0.0.0" inside Docker</strong>
+        <p>When running in Docker, OpenClaw's gateway must bind to <code>"host": "0.0.0.0"</code> — not <code>127.0.0.1</code>. The default <code>127.0.0.1</code> only allows connections from within the container itself, so your apps outside the container won't be able to reach it. <code>0.0.0.0</code> means "accept connections from anywhere that Docker routes to me."</p>
+      </div>
+
+      <!-- Build and run -->
+      <h2 class="section-title" id="run">
+        <span class="icon" aria-hidden="true">🚀</span> Step 6 — Build and Run
+      </h2>
+      <p class="section-lead">With your files in place, starting OpenClaw in Docker is a single command.</p>
+
+      <ol class="steps" aria-label="Build and run steps">
+        <li class="step-item">
+          <div class="step-num" aria-hidden="true"></div>
+          <div class="step-content">
+            <strong>Navigate to your project folder</strong>
+            <div class="code-block">
+              <pre><code><span class="c-prompt">$ </span><span class="c-cmd">cd my-openclaw</span></code></pre>
+            </div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num" aria-hidden="true"></div>
+          <div class="step-content">
+            <strong>Build the Docker image and start the container</strong>
+            <div class="code-block">
+              <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker compose up --build</span>
+<span class="c-comment"># You'll see the build output, then OpenClaw starting up.
+# Press Ctrl+C to stop.</span></code></pre>
+            </div>
+            <p>The first run takes a minute to download the base image and install OpenClaw. Subsequent starts are instant.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num" aria-hidden="true"></div>
+          <div class="step-content">
+            <strong>Run in the background (detached mode)</strong>
+            <p>Add <code>-d</code> to run the container in the background so it doesn't occupy your terminal:</p>
+            <div class="code-block">
+              <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker compose up -d</span>
+<span class="c-comment">✓ Container openclaw-agent  Started</span></code></pre>
+            </div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num" aria-hidden="true"></div>
+          <div class="step-content">
+            <strong>Verify it's running</strong>
+            <div class="code-block">
+              <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker compose ps</span>
+<span class="c-comment">NAME               STATUS          PORTS
+openclaw-agent     running (healthy)   0.0.0.0:8080->8080/tcp</span></code></pre>
+            </div>
+            <p>Your OpenClaw gateway is now reachable at <code>http://localhost:8080</code>.</p>
+          </div>
+        </li>
+      </ol>
+
+      <!-- How volumes and networking work -->
+      <h2 class="section-title" id="volumes-networking">
+        <span class="icon" aria-hidden="true">🔌</span> How Volumes &amp; Networking Work
+      </h2>
+      <p class="section-lead">Understanding the relationship between your computer and the container makes troubleshooting much easier.</p>
+
+      <div class="diagram" role="region" aria-label="Docker volumes and networking diagram">
+        <p style="font-weight:700;margin-bottom:14px;color:var(--gray-8);">Your machine ↔ Docker container</p>
+
+        <div class="diagram-row">
+          <div class="diagram-box box-host">Your computer<br><small>./data/ folder</small></div>
+          <div class="arrow" aria-label="two-way sync">⇄</div>
+          <div class="diagram-box box-volume">Volume mount<br><small>./data → /app/data</small></div>
+          <div class="arrow" aria-label="maps to">→</div>
+          <div class="diagram-box box-docker">Container<br><small>/app/data/agent.db</small></div>
+        </div>
+
+        <div class="diagram-row" style="margin-top:10px;">
+          <div class="diagram-box box-host">Your browser<br><small>localhost:8080</small></div>
+          <div class="arrow" aria-label="forwards to">→</div>
+          <div class="diagram-box box-net">Port mapping<br><small>8080 → 8080</small></div>
+          <div class="arrow" aria-label="maps to">→</div>
+          <div class="diagram-box box-docker">Container<br><small>0.0.0.0:8080</small></div>
+        </div>
+      </div>
+
+      <div class="prose">
+        <p><strong>Volumes</strong> are shared folders between your machine and the container. Without a volume, everything stored inside the container disappears when you delete it — including your agent's memory. The <code>./data:/app/data</code> volume mount means the container's <code>/app/data</code> folder is actually your local <code>./data</code> folder. Data survives container restarts and deletions.</p>
+        <p><strong>Port mapping</strong> (<code>"8080:8080"</code>) forwards traffic from port 8080 on your machine to port 8080 inside the container. The format is always <code>host_port:container_port</code>. If something else uses port 8080 on your machine, change the left side: <code>"9090:8080"</code> would put OpenClaw at <code>localhost:9090</code>.</p>
+      </div>
+
+      <!-- Common Docker commands -->
+      <h2 class="section-title" id="commands">
+        <span class="icon" aria-hidden="true">⌨️</span> Essential Docker Commands
+      </h2>
+      <p class="section-lead">A quick reference for everything you'll need day to day.</p>
+
+      <div class="table-wrap">
+        <table class="cmd-table" aria-label="Essential Docker commands reference">
+          <thead>
+            <tr>
+              <th scope="col">Command</th>
+              <th scope="col">What it does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>docker compose up -d</td><td>Start all services in the background (detached)</td></tr>
+            <tr><td>docker compose down</td><td>Stop and remove containers (data in volumes is preserved)</td></tr>
+            <tr><td>docker compose restart</td><td>Restart all running containers</td></tr>
+            <tr><td>docker compose logs -f</td><td>Stream live logs from all containers (<code>Ctrl+C</code> to stop)</td></tr>
+            <tr><td>docker compose logs openclaw</td><td>Show logs from the openclaw service only</td></tr>
+            <tr><td>docker compose ps</td><td>Show running containers and their status</td></tr>
+            <tr><td>docker compose up --build -d</td><td>Rebuild the image (use after changing the Dockerfile) then start</td></tr>
+            <tr><td>docker compose pull</td><td>Pull the latest base image versions</td></tr>
+            <tr><td>docker compose exec openclaw sh</td><td>Open a shell <em>inside</em> the running container (for debugging)</td></tr>
+            <tr><td>docker compose down -v</td><td>Stop containers AND delete volumes — ⚠️ this deletes your data</td></tr>
+            <tr><td>docker image prune</td><td>Delete unused images to free up disk space</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Updating OpenClaw -->
+      <h2 class="section-title" id="updating">
+        <span class="icon" aria-hidden="true">🔄</span> Updating OpenClaw in Docker
+      </h2>
+      <p class="section-lead">Keeping OpenClaw up to date is clean and simple with Docker.</p>
+
+      <ol class="steps" aria-label="Update OpenClaw in Docker">
+        <li class="step-item">
+          <div class="step-num" aria-hidden="true"></div>
+          <div class="step-content">
+            <strong>Stop the running container</strong>
+            <div class="code-block">
+              <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker compose down</span></code></pre>
+            </div>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num" aria-hidden="true"></div>
+          <div class="step-content">
+            <strong>Rebuild the image with the latest OpenClaw version</strong>
+            <div class="code-block">
+              <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker compose build --no-cache</span></code></pre>
+            </div>
+            <p>The <code>--no-cache</code> flag forces a fresh install rather than using a cached layer — this ensures you get the latest version of OpenClaw from npm.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num" aria-hidden="true"></div>
+          <div class="step-content">
+            <strong>Start back up</strong>
+            <div class="code-block">
+              <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker compose up -d</span></code></pre>
+            </div>
+            <p>Your data is preserved because it lives in the <code>./data</code> volume on your machine, not inside the container.</p>
+          </div>
+        </li>
+      </ol>
+
+      <!-- Local LLM in Docker -->
+      <h2 class="section-title" id="local-llm">
+        <span class="icon" aria-hidden="true">🦙</span> Using a Local LLM with Docker
+      </h2>
+      <p class="section-lead">Running Ollama alongside OpenClaw? Here's how to wire them together.</p>
+
+      <p style="color:var(--gray-7);font-size:.93rem;margin-bottom:12px;">When both OpenClaw and Ollama run in Docker, they're on the same internal network. Use the service name <code>ollama</code> as the hostname instead of <code>localhost</code>:</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-filename">docker-compose.yml — OpenClaw + Ollama</span>
+          <button class="copy-btn" data-target="ollama-code" aria-label="Copy OpenClaw + Ollama compose file">Copy</button>
+        </div>
+        <pre id="ollama-code"><code><span class="c-key">version</span>: <span class="c-str">'3.9'</span>
+
+<span class="c-key">services</span>:
+  <span class="c-key">ollama</span>:
+    <span class="c-key">image</span>: <span class="c-str">ollama/ollama</span>
+    <span class="c-key">container_name</span>: <span class="c-str">ollama</span>
+    <span class="c-key">restart</span>: <span class="c-str">unless-stopped</span>
+    <span class="c-key">volumes</span>:
+      - <span class="c-str">ollama_data:/root/.ollama</span>   <span class="c-comment"># persists downloaded models</span>
+    <span class="c-comment"># Uncomment below for NVIDIA GPU support:</span>
+    <span class="c-comment"># deploy:</span>
+    <span class="c-comment">#   resources:</span>
+    <span class="c-comment">#     reservations:</span>
+    <span class="c-comment">#       devices:</span>
+    <span class="c-comment">#         - driver: nvidia</span>
+    <span class="c-comment">#           count: all</span>
+    <span class="c-comment">#           capabilities: [gpu]</span>
+
+  <span class="c-key">openclaw</span>:
+    <span class="c-key">build</span>: <span class="c-str">.</span>
+    <span class="c-key">container_name</span>: <span class="c-str">openclaw-agent</span>
+    <span class="c-key">restart</span>: <span class="c-str">unless-stopped</span>
+    <span class="c-key">ports</span>:
+      - <span class="c-str">"8080:8080"</span>
+    <span class="c-key">env_file</span>: <span class="c-str">.env</span>
+    <span class="c-key">volumes</span>:
+      - <span class="c-str">./data:/app/data</span>
+    <span class="c-key">depends_on</span>:
+      - <span class="c-str">ollama</span>               <span class="c-comment"># wait for Ollama to start first</span>
+
+<span class="c-key">volumes</span>:
+  <span class="c-key">ollama_data</span>:</code></pre>
+      </div>
+
+      <p style="color:var(--gray-7);font-size:.93rem;margin-bottom:6px;">Then in your <code>openclaw.json</code>, point to Ollama using the service name:</p>
+      <div class="code-block">
+        <pre><code><span class="c-key">"llm"</span>: {
+  <span class="c-key">"provider"</span>: <span class="c-str">"ollama"</span>,
+  <span class="c-key">"model"</span>: <span class="c-str">"llama3.1:8b"</span>,
+  <span class="c-key">"baseUrl"</span>: <span class="c-str">"http://ollama:11434"</span>  <span class="c-comment">// "ollama" = the service name above</span>
+}</code></pre>
+      </div>
+
+      <p style="color:var(--gray-7);font-size:.93rem;margin:0 0 8px;">After starting with <code>docker compose up -d</code>, pull a model into the running Ollama container:</p>
+      <div class="code-block">
+        <pre><code><span class="c-prompt">$ </span><span class="c-cmd">docker compose exec ollama ollama pull llama3.1:8b</span></code></pre>
+      </div>
+
+      <!-- Troubleshooting -->
+      <h2 class="section-title" id="troubleshooting">
+        <span class="icon" aria-hidden="true">🔧</span> Common Docker Problems &amp; Fixes
+      </h2>
+
+      <div class="callout callout-amber" style="margin-bottom:12px;">
+        <strong>🔌 "Cannot connect to the Docker daemon"</strong>
+        <p>Docker Desktop isn't running. Open the Docker Desktop app and wait for it to fully start before running any commands.</p>
+      </div>
+      <div class="callout callout-amber" style="margin-bottom:12px;">
+        <strong>🚪 "Port is already allocated"</strong>
+        <p>Something else on your machine is using port 8080. Change the host port in <code>docker-compose.yml</code> to something unused: <code>"9090:8080"</code>. Your gateway will then be at <code>localhost:9090</code>.</p>
+      </div>
+      <div class="callout callout-amber" style="margin-bottom:12px;">
+        <strong>📁 "Config file not found" inside the container</strong>
+        <p>Your <code>COPY openclaw.json .</code> line in the Dockerfile only runs at build time. If you change your config after building, you need to rebuild: <code>docker compose up --build -d</code>. Or mount the config as a volume for live updates: add <code>- ./openclaw.json:/app/openclaw.json</code> to the volumes section.</p>
+      </div>
+      <div class="callout callout-amber" style="margin-bottom:12px;">
+        <strong>🔑 "Invalid API key" or env vars not being read</strong>
+        <p>Make sure your <code>.env</code> file is in the same directory as <code>docker-compose.yml</code>, and that it doesn't have any quote marks around the values. Correct: <code>ANTHROPIC_API_KEY=sk-ant-abc123</code>. Wrong: <code>ANTHROPIC_API_KEY="sk-ant-abc123"</code>.</p>
+      </div>
+      <div class="callout callout-amber">
+        <strong>💾 "Memory not persisting between restarts"</strong>
+        <p>Check that the <code>data/</code> directory exists on your machine and the volume mount is correctly set in <code>docker-compose.yml</code>. Also confirm your <code>openclaw.json</code> memory path points to <code>/app/data/agent.db</code> (the container path, not your local path).</p>
+      </div>
+
+      <div class="callout callout-green" style="margin-top:20px;">
+        <strong>💡 Still stuck?</strong>
+        <p>Check the <a href="troubleshooting.html">full Troubleshooting guide</a> or view the container logs for detailed error messages: <code>docker compose logs -f openclaw</code></p>
+      </div>
+
+      <!-- Related -->
+      <aside class="related" aria-labelledby="related-heading">
+        <h2 id="related-heading">Related pages</h2>
+        <div class="related-links">
+          <a href="security.html"        class="related-link"><span aria-hidden="true">🛡️</span> Security</a>
+          <a href="local-llm.html"       class="related-link"><span aria-hidden="true">🦙</span> Local LLM</a>
+          <a href="config-json.html"     class="related-link"><span aria-hidden="true">📄</span> openclaw.json</a>
+          <a href="config-yaml.html"     class="related-link"><span aria-hidden="true">📋</span> config.yaml</a>
+          <a href="troubleshooting.html" class="related-link"><span aria-hidden="true">🔧</span> Troubleshooting</a>
+          <a href="architecture.html"    class="related-link"><span aria-hidden="true">🏗️</span> Architecture</a>
+          <a href="gettingstarted.html"  class="related-link"><span aria-hidden="true">🚀</span> Getting Started</a>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="cheatsheet.html">Cheat Sheet</a>
+    </div>
+    <p>© 2026 learnopenclaw.org — Independent learning resource. Not affiliated with the OpenClaw project.</p>
+  </footer>
+
+  <script>
+    // ── Hamburger ──
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // ── OS install tabs ──
+    const tabBtns   = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('aria-controls');
+        tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+        tabPanels.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(target).classList.add('active');
+      });
+      btn.addEventListener('keydown', e => {
+        const tabs = [...tabBtns];
+        const idx  = tabs.indexOf(btn);
+        if (e.key === 'ArrowRight') { e.preventDefault(); const n = tabs[(idx + 1) % tabs.length]; n.focus(); n.click(); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); const p = tabs[(idx - 1 + tabs.length) % tabs.length]; p.focus(); p.click(); }
+      });
+    });
+
+    // ── Copy buttons ──
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const text = document.getElementById(targetId)?.innerText ?? '';
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
