@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Troubleshooting Guide — Fix Common Errors 2026</title>
+  <meta name="description" content="Fix the most common OpenClaw errors: agent not responding, Telegram bot not working, skills not loading, API key issues, MCP failures, and 15 more with step-by-step solutions." />
+  <meta name="keywords" content="OpenClaw troubleshooting, OpenClaw not working, OpenClaw errors, agent not responding, Telegram bot OpenClaw, skills not loading, OpenClaw fix" />
+  <link rel="canonical" href="https://learnopenclaw.org/troubleshooting.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Troubleshooting Guide — Fix Common Errors 2026" />
+  <meta property="og:description" content="Step-by-step fixes for the 20 most common OpenClaw errors — agent not responding, Telegram not working, skills failing, API errors, and more." />
+  <meta property="og:url" content="https://learnopenclaw.org/troubleshooting.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Troubleshooting Guide — Fix Common Errors 2026" />
+  <meta name="twitter:description" content="Fix the most common OpenClaw errors with step-by-step solutions." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw Troubleshooting Guide — Fix Common Errors",
+    "description": "Step-by-step fixes for the 20 most common OpenClaw errors including agent not responding, Telegram bot issues, skills not loading, and API failures.",
+    "url": "https://learnopenclaw.org/troubleshooting.html",
+    "dateModified": "2026-03-22",
+    "author": {"@type": "Organization", "name": "LearnOpenClaw"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "Troubleshooting", "item": "https://learnopenclaw.org/troubleshooting.html"}
+      ]
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "Why is my OpenClaw agent not responding?", "acceptedAnswer": {"@type": "Answer", "text": "The most common causes are an incorrect API key, the gateway not running on the expected port, or the LLM provider being unreachable. Check that your openclaw.json has a valid apiKey and run openclaw status to verify the agent is running."}},
+        {"@type": "Question", "name": "Why is my Telegram bot not working with OpenClaw?", "acceptedAnswer": {"@type": "Answer", "text": "Verify your TELEGRAM_BOT_TOKEN is correct in your config, ensure the Telegram skill is listed under tools.enabled, and confirm the bot was started with /start in Telegram. The bot token must be from @BotFather and have no extra spaces."}},
+        {"@type": "Question", "name": "Why are my OpenClaw skills not loading?", "acceptedAnswer": {"@type": "Answer", "text": "Skills must be placed in the correct skills directory (usually ~/.openclaw/skills/). Run openclaw skills list to see what is detected. If a skill shows as broken, check its SKILL.md file for syntax errors or missing dependencies."}}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:       #dc2626;
+      --red-lt:    #fef2f2;
+      --red-md:    #fecaca;
+      --red-dk:    #b91c1c;
+      --orange:    #ea580c;
+      --orange-lt: #fff7ed;
+      --green:     #16a34a;
+      --green-lt:  #f0fdf4;
+      --blue:      #2563eb;
+      --blue-lt:   #eff6ff;
+      --blue-md:   #bfdbfe;
+      --blue-dk:   #1d4ed8;
+      --gray-1:    #f9fafb;
+      --gray-2:    #f3f4f6;
+      --gray-3:    #e5e7eb;
+      --gray-5:    #6b7280;
+      --gray-7:    #374151;
+      --gray-8:    #1f2937;
+      --white:     #ffffff;
+      --radius:    12px;
+      --shadow:    0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── Skip nav (ADA) ── */
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--blue);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .nav-logo .claw { font-size: 1.4rem; }
+
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-links a[aria-current="page"] { color: var(--blue-dk); font-weight: 700; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 50%, #dc2626 100%);
+      color: var(--white);
+      padding: 64px 24px 56px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.15);
+      color: var(--white);
+      font-size: .75rem; font-weight: 700; letter-spacing: .07em;
+      padding: 4px 14px; border-radius: 100px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,.25);
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: 1.05rem; color: #fca5a5;
+      max-width: 580px; margin: 0 auto 28px;
+    }
+
+    /* ── Quick-jump nav ── */
+    .jump-nav {
+      background: var(--gray-1);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 16px 24px;
+      overflow-x: auto;
+    }
+    .jump-nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .jump-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 14px; border-radius: 100px;
+      background: var(--white); border: 1px solid var(--gray-3);
+      font-size: .82rem; font-weight: 600; color: var(--gray-7);
+      white-space: nowrap; text-decoration: none;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .jump-link:hover { background: var(--red-lt); border-color: var(--red-md); color: var(--red); text-decoration: none; }
+
+    /* ── Main layout ── */
+    main { padding: 48px 24px 72px; }
+
+    /* ── Category header ── */
+    .category-header {
+      display: flex; align-items: center; gap: 12px;
+      margin: 52px 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-3);
+    }
+    .category-header:first-of-type { margin-top: 0; }
+    .category-icon { font-size: 1.6rem; }
+    .category-header h2 {
+      font-size: 1.35rem; font-weight: 800;
+      color: var(--gray-8);
+    }
+    .category-count {
+      margin-left: auto;
+      background: var(--gray-2); color: var(--gray-5);
+      font-size: .75rem; font-weight: 700;
+      padding: 2px 10px; border-radius: 100px;
+    }
+
+    /* ── Error cards ── */
+    .error-card {
+      border: 1px solid var(--gray-3);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow .15s;
+    }
+    .error-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.1); }
+
+    .error-header {
+      width: 100%;
+      background: var(--white);
+      border: none;
+      padding: 18px 20px;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: background .15s;
+    }
+    .error-header:hover { background: var(--gray-1); }
+    .error-header[aria-expanded="true"] {
+      background: var(--red-lt);
+      border-bottom: 1px solid var(--red-md);
+    }
+
+    .error-left { display: flex; align-items: flex-start; gap: 12px; flex: 1; min-width: 0; }
+    .error-severity {
+      flex-shrink: 0; margin-top: 2px;
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .sev-high   { background: var(--red); }
+    .sev-medium { background: #f59e0b; }
+    .sev-low    { background: var(--green); }
+
+    .error-title-group { flex: 1; min-width: 0; }
+    .error-title {
+      font-size: .97rem; font-weight: 700;
+      color: var(--gray-8); line-height: 1.3;
+      display: block; margin-bottom: 3px;
+    }
+    .error-message {
+      font-size: .82rem; font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      color: var(--red); background: var(--red-lt);
+      padding: 2px 8px; border-radius: 4px;
+      display: inline-block;
+    }
+
+    .error-chevron {
+      flex-shrink: 0; font-size: .85rem; color: var(--gray-5);
+      transition: transform .2s; margin-top: 2px;
+    }
+    .error-header[aria-expanded="true"] .error-chevron { transform: rotate(180deg); }
+
+    .error-body {
+      display: none;
+      padding: 20px 24px 24px;
+      background: var(--white);
+      border-top: 1px solid var(--gray-2);
+    }
+    .error-body.open { display: block; }
+
+    /* body content */
+    .cause-label, .fix-label {
+      font-size: .72rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .08em; margin-bottom: 6px;
+    }
+    .cause-label { color: var(--orange); }
+    .fix-label   { color: var(--green); margin-top: 16px; }
+
+    .cause-text, .fix-text {
+      font-size: .93rem; color: var(--gray-7); line-height: 1.65;
+      margin-bottom: 4px;
+    }
+    .fix-steps { padding-left: 0; list-style: none; }
+    .fix-steps li {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: .93rem; color: var(--gray-7); margin-bottom: 8px;
+    }
+    .fix-steps li::before {
+      content: '→';
+      color: var(--green); font-weight: 700;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* inline code */
+    code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .85em;
+      background: var(--gray-2); color: var(--gray-8);
+      padding: 2px 6px; border-radius: 4px;
+    }
+
+    /* command blocks */
+    .cmd {
+      background: #1e293b; color: #e2e8f0;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .85rem; line-height: 1.6;
+      padding: 10px 16px; border-radius: 8px;
+      margin: 10px 0; overflow-x: auto;
+      display: block;
+    }
+    .cmd .prompt { color: #64748b; user-select: none; }
+    .cmd .c { color: #22d3ee; }
+
+    /* callout inside body */
+    .note {
+      background: var(--blue-lt);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: .88rem;
+      color: var(--gray-7);
+      margin-top: 12px;
+    }
+    .note strong { color: var(--blue-dk); }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      background: var(--red-lt);
+      border: 1px solid var(--red-md);
+      border-radius: var(--radius);
+      padding: 20px 28px;
+      display: flex; gap: 32px; flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .stat { text-align: center; }
+    .stat strong { display: block; font-size: 1.5rem; font-weight: 800; color: var(--red); }
+    .stat span   { font-size: .8rem; color: var(--gray-5); }
+
+    /* ── Related links ── */
+    .related {
+      background: var(--gray-1);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-top: 52px;
+    }
+    .related h2 {
+      font-size: 1.1rem; font-weight: 800;
+      color: var(--gray-8); margin-bottom: 16px;
+    }
+    .related-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .related-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; border-radius: 8px;
+      background: var(--white); border: 1px solid var(--gray-3);
+      font-size: .88rem; font-weight: 600; color: var(--gray-7);
+      text-decoration: none; transition: border-color .15s, color .15s;
+    }
+    .related-link:hover { border-color: var(--blue-md); color: var(--blue); text-decoration: none; }
+    .related-link .rl-icon { font-size: 1rem; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8);
+      color: #9ca3af;
+      padding: 32px 24px;
+      text-align: center;
+      font-size: .875rem;
+    }
+    .footer-links {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 8px 20px; margin-bottom: 16px;
+    }
+    .footer-links a { color: #9ca3af; }
+    .footer-links a:hover { color: var(--white); }
+
+    @media (max-width: 600px) {
+      .stats-bar { gap: 20px; }
+      .hero { padding: 48px 20px 40px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="learn.html">Learn</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero" role="banner">
+    <div class="hero-badge">Troubleshooting Guide</div>
+    <h1>OpenClaw Not Working?<br>Here's How to Fix It.</h1>
+    <p>The 20 most common OpenClaw errors — with plain-English explanations and step-by-step fixes. Find your error and get back on track in minutes.</p>
+  </header>
+
+  <!-- Quick-jump category nav -->
+  <div class="jump-nav" aria-label="Jump to error category">
+    <div class="jump-nav-inner">
+      <a href="#startup" class="jump-link">🚀 Startup &amp; Installation</a>
+      <a href="#agent" class="jump-link">🤖 Agent Not Responding</a>
+      <a href="#messaging" class="jump-link">💬 Messaging Integrations</a>
+      <a href="#skills" class="jump-link">🧩 Skills &amp; Tools</a>
+      <a href="#api" class="jump-link">🔑 API &amp; Auth Errors</a>
+      <a href="#performance" class="jump-link">⚡ Performance</a>
+    </div>
+  </div>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- Stats bar -->
+      <div class="stats-bar" role="region" aria-label="Guide overview">
+        <div class="stat"><strong>20</strong><span>errors covered</span></div>
+        <div class="stat"><strong>6</strong><span>categories</span></div>
+        <div class="stat"><strong>~2 min</strong><span>avg fix time</span></div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════
+           CATEGORY 1: Startup & Installation
+      ════════════════════════════════════════════════ -->
+      <section aria-labelledby="startup-heading">
+        <div class="category-header" id="startup">
+          <span class="category-icon" aria-hidden="true">🚀</span>
+          <h2 id="startup-heading">Startup &amp; Installation</h2>
+          <span class="category-count">4 errors</span>
+        </div>
+
+        <!-- Error 1 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err1-body" id="err1-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">OpenClaw won't start / crashes immediately on launch</span>
+                <code class="error-message">Error: Cannot find module 'openclaw'</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err1-body" role="region" aria-labelledby="err1-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">OpenClaw wasn't installed globally, or the install completed with errors. This often happens after a Node.js version upgrade that clears global packages.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Re-install OpenClaw globally: <code>npm install -g openclaw</code></li>
+              <li>Verify it installed: <code>openclaw --version</code></li>
+              <li>If you get a permissions error on macOS/Linux, run: <code>sudo npm install -g openclaw</code></li>
+              <li>On Windows, open your terminal as Administrator before running npm install.</li>
+            </ul>
+            <div class="note"><strong>Node.js version:</strong> OpenClaw requires Node.js 18 or higher. Run <code>node --version</code> to check. If you're on v16 or lower, update Node.js first.</div>
+          </div>
+        </div>
+
+        <!-- Error 2 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err2-body" id="err2-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Config file not found — agent starts but does nothing</span>
+                <code class="error-message">Config file not found: openclaw.json</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err2-body" role="region" aria-labelledby="err2-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">OpenClaw looks for <code>openclaw.json</code> (or <code>config.yaml</code>) in the current working directory. If you run it from the wrong folder, or the file was never created, this error appears.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Make sure you're in your project folder: <code>cd /path/to/your/project</code></li>
+              <li>Check the file exists: <code>ls openclaw.json</code> (Mac/Linux) or <code>dir openclaw.json</code> (Windows)</li>
+              <li>If it doesn't exist, create one — see the <a href="config-json.html">openclaw.json guide</a> for a starter template.</li>
+              <li>If using <code>config.yaml</code>, make sure it's not misnamed (e.g. <code>config.yml</code> — the extension must be <code>.yaml</code>).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 3 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err3-body" id="err3-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Port already in use — gateway fails to start</span>
+                <code class="error-message">EADDRINUSE: address already in use :::8080</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err3-body" role="region" aria-labelledby="err3-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">Something else is already listening on port 8080 — either another OpenClaw instance left running, or another app claimed that port.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Find what's using the port: <code>lsof -i :8080</code> (Mac/Linux) or <code>netstat -ano | findstr 8080</code> (Windows)</li>
+              <li>Kill the conflicting process, or change OpenClaw's port in your config:<br>
+                In <code>openclaw.json</code>: <code>"gateway": &#123; "port": 8181 &#125;</code></li>
+              <li>Make sure you didn't leave a previous OpenClaw session running in another terminal tab.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 4 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err4-body" id="err4-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Node.js or npm version incompatibility</span>
+                <code class="error-message">engine "node" is incompatible with this module</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err4-body" role="region" aria-labelledby="err4-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">You're running an older version of Node.js that OpenClaw doesn't support. OpenClaw requires Node.js 18+.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Check your version: <code>node --version</code></li>
+              <li>If it's below v18, install the latest LTS from <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> or use a version manager like <code>nvm</code>.</li>
+              <li>With nvm: <code>nvm install 20 &amp;&amp; nvm use 20</code></li>
+              <li>After upgrading, re-run <code>npm install -g openclaw</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════
+           CATEGORY 2: Agent Not Responding
+      ════════════════════════════════════════════════ -->
+      <section aria-labelledby="agent-heading">
+        <div class="category-header" id="agent">
+          <span class="category-icon" aria-hidden="true">🤖</span>
+          <h2 id="agent-heading">Agent Not Responding</h2>
+          <span class="category-count">4 errors</span>
+        </div>
+
+        <!-- Error 5 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err5-body" id="err5-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Agent hangs and never replies to messages</span>
+                <code class="error-message">No response after 30s — check agent status</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err5-body" role="region" aria-labelledby="err5-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">The three most common causes: (1) the gateway isn't running, (2) the LLM provider is down or unreachable, or (3) the API key is invalid and requests are silently failing.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Run <code>openclaw status</code> to check if the agent process is alive.</li>
+              <li>Check the logs: <code>openclaw logs --tail 50</code> — look for connection errors or auth failures.</li>
+              <li>Test your API key directly with a curl command to your LLM provider's API.</li>
+              <li>Check your LLM provider's status page (e.g. status.anthropic.com) for outages.</li>
+              <li>Increase the timeout in your config if you're on a slow connection: <code>"gateway": &#123; "timeout": 60000 &#125;</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 6 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err6-body" id="err6-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Agent gets stuck in a loop and won't stop</span>
+                <code class="error-message">Max iterations reached (agent loop detected)</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err6-body" role="region" aria-labelledby="err6-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">The agent is repeating the same tool call because it never gets a satisfying result — often caused by a broken tool, a vague task description, or a tool that returns unexpected output.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Stop the current task immediately: <code>openclaw task stop</code></li>
+              <li>Check which tool is looping in the logs: <code>openclaw logs --tail 100</code></li>
+              <li>If the looping tool is broken, disable it in <code>tools.enabled</code> and re-test.</li>
+              <li>Be more specific in your task prompt — vague instructions like "fix all the things" often cause loops.</li>
+              <li>Add a max-iteration limit in your config if not already set: <code>"tools": &#123; "maxIterations": 20 &#125;</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 7 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err7-body" id="err7-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Responses are extremely slow (30+ seconds)</span>
+                <code class="error-message">Request timeout — took longer than expected</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err7-body" role="region" aria-labelledby="err7-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">Likely either a slow local model that doesn't match your hardware, high load on a cloud LLM provider, or a tool call (like web search) taking a very long time.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Switch to a faster/smaller model for testing: <code>"model": "claude-haiku-4-5-20251001"</code> or <code>"model": "gpt-4o-mini"</code></li>
+              <li>For local models, make sure GPU acceleration is enabled in Ollama or LM Studio.</li>
+              <li>Disable tools you don't need — fewer tools = fewer extra calls per response.</li>
+              <li>Lower <code>maxTokens</code> in your config to reduce response generation time.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 8 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err8-body" id="err8-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Agent forgets previous conversations / no memory</span>
+                <code class="error-message">Memory backend unavailable or not configured</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err8-body" role="region" aria-labelledby="err8-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">The default memory type is <code>"memory"</code> (in-process RAM), which clears on every restart. If you want persistence between sessions, you need to configure SQLite or Postgres.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Add this to your <code>openclaw.json</code> to enable persistent SQLite memory:</li>
+            </ul>
+            <div class="cmd"><span class="c">"memory": &#123; "type": "sqlite", "path": "./agent.db" &#125;</span></div>
+            <ul class="fix-steps">
+              <li>Make sure the path is writable and the directory exists.</li>
+              <li>If the <code>.db</code> file gets corrupted, delete it and let OpenClaw recreate it on next start.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════
+           CATEGORY 3: Messaging Integrations
+      ════════════════════════════════════════════════ -->
+      <section aria-labelledby="messaging-heading">
+        <div class="category-header" id="messaging">
+          <span class="category-icon" aria-hidden="true">💬</span>
+          <h2 id="messaging-heading">Messaging Integrations</h2>
+          <span class="category-count">4 errors</span>
+        </div>
+
+        <!-- Error 9 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err9-body" id="err9-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Telegram bot not working — messages sent but no reply</span>
+                <code class="error-message">Telegram webhook failed: 401 Unauthorized</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err9-body" role="region" aria-labelledby="err9-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">The most common causes: invalid bot token, the Telegram skill not listed under <code>tools.enabled</code>, or the bot wasn't started with <code>/start</code> in the Telegram app.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Get a fresh token from @BotFather in Telegram — even a single extra space breaks it.</li>
+              <li>Make sure <code>telegram</code> is in your <code>tools.enabled</code> array in your config.</li>
+              <li>Open Telegram, find your bot, and send it <code>/start</code> — bots won't respond until this handshake happens.</li>
+              <li>Check that your bot token is set correctly: <code>"TELEGRAM_BOT_TOKEN": "$TELEGRAM_BOT_TOKEN"</code> in your env or config.</li>
+              <li>Verify the bot is active via the Telegram Bot API: <code>https://api.telegram.org/bot&lt;YOUR_TOKEN&gt;/getMe</code></li>
+            </ul>
+            <div class="note"><strong>Group chats:</strong> If using the bot in a group, you must add it as an admin and may need to disable privacy mode via @BotFather → Bot Settings → Group Privacy.</div>
+          </div>
+        </div>
+
+        <!-- Error 10 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err10-body" id="err10-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">WhatsApp integration not receiving or sending messages</span>
+                <code class="error-message">WhatsApp Web session expired or disconnected</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err10-body" role="region" aria-labelledby="err10-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">WhatsApp's web session expires or gets logged out, especially if you open WhatsApp on your phone while the bot session is active. This is a WhatsApp limitation, not an OpenClaw bug.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Restart OpenClaw — it will generate a new QR code to re-link your WhatsApp account.</li>
+              <li>Scan the QR code with WhatsApp on your phone (Settings → Linked Devices → Link a Device).</li>
+              <li>Keep your phone connected to the internet while OpenClaw is running.</li>
+              <li>Avoid opening WhatsApp Web in a browser simultaneously — this kicks out the bot session.</li>
+              <li>Delete the session cache folder (<code>~/.openclaw/whatsapp-session/</code>) if the QR code loop keeps repeating.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 11 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err11-body" id="err11-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Discord or Slack bot not showing up in channels</span>
+                <code class="error-message">Missing Access / Bot not in server</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err11-body" role="region" aria-labelledby="err11-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">The bot token is valid but the bot hasn't been invited to the server/workspace, or it lacks the correct permissions (scopes).</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li><strong>Discord:</strong> Go to the Discord Developer Portal → OAuth2 → URL Generator. Select the <code>bot</code> scope and required permissions, then use the generated URL to invite the bot to your server.</li>
+              <li><strong>Slack:</strong> Make sure your Slack app has the <code>chat:write</code>, <code>channels:read</code>, and <code>im:history</code> OAuth scopes. Reinstall the app to your workspace after adding scopes.</li>
+              <li>Verify the bot token in your config matches the token in your developer portal — these rotate if you regenerate them.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 12 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err12-body" id="err12-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Email integration not sending or receiving</span>
+                <code class="error-message">SMTP authentication failed / IMAP connection refused</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err12-body" role="region" aria-labelledby="err12-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">Gmail and other providers often block standard password logins from apps. You need an app-specific password or an OAuth token — not your regular account password.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li><strong>Gmail:</strong> Enable 2-Step Verification, then go to Google Account → Security → App Passwords. Generate a password and use that in your OpenClaw email config — not your main Gmail password.</li>
+              <li>Make sure IMAP is enabled in Gmail Settings → Forwarding and POP/IMAP → Enable IMAP.</li>
+              <li>For Outlook/Hotmail, use an OAuth token or enable "Less Secure App Access" in your Microsoft account settings.</li>
+              <li>Double-check the SMTP port: Gmail uses port 587 (TLS) or 465 (SSL).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════
+           CATEGORY 4: Skills & Tools
+      ════════════════════════════════════════════════ -->
+      <section aria-labelledby="skills-heading">
+        <div class="category-header" id="skills">
+          <span class="category-icon" aria-hidden="true">🧩</span>
+          <h2 id="skills-heading">Skills &amp; Tools</h2>
+          <span class="category-count">4 errors</span>
+        </div>
+
+        <!-- Error 13 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err13-body" id="err13-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Skills not loading — agent can't find installed skills</span>
+                <code class="error-message">No skills found in skills directory</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err13-body" role="region" aria-labelledby="err13-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">Skills must be in the correct directory and have a valid <code>SKILL.md</code> file. A missing directory, wrong path in config, or a malformed skill file will cause this error.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Run <code>openclaw skills list</code> to see what OpenClaw detects. A skill showing as "broken" means the SKILL.md has an issue.</li>
+              <li>Check the skills directory exists: <code>ls ~/.openclaw/skills/</code></li>
+              <li>Each skill must be a folder with a <code>SKILL.md</code> file inside: <code>~/.openclaw/skills/my-skill/SKILL.md</code></li>
+              <li>If you set a custom skills path in config, make sure the folder actually exists at that path.</li>
+              <li>Re-install a broken skill: <code>openclaw skills install &lt;skill-name&gt;</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 14 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err14-body" id="err14-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">MCP server connection failed — tool unavailable</span>
+                <code class="error-message">MCP server "filesystem" failed to start</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-labelledby="err14-btn" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err14-body" role="region" aria-labelledby="err14-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">The MCP server process failed to launch — usually because <code>npx</code> can't find the package, a required env variable is missing, or the path argument is wrong.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Test the MCP command directly in your terminal: <code>npx -y @modelcontextprotocol/server-filesystem /your/path</code> — if it fails here, it'll fail in OpenClaw too.</li>
+              <li>Make sure the path you're passing exists and OpenClaw has read/write permission to it.</li>
+              <li>Check all required environment variables are set (e.g. <code>GITHUB_TOKEN</code> for the GitHub MCP server).</li>
+              <li>Update the MCP package: <code>npx -y @modelcontextprotocol/server-filesystem@latest</code></li>
+              <li>Check the <a href="mcp.html">MCP guide</a> for server-specific setup requirements.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 15 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err15-body" id="err15-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Web search tool failing — returns no results</span>
+                <code class="error-message">Web search error: API key invalid or quota exceeded</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err15-body" role="region" aria-labelledby="err15-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">Web search requires a third-party search API key (Brave, SerpAPI, etc.). The key is either missing, invalid, or you've hit the free-tier monthly limit.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Check your search API dashboard for usage/quota status.</li>
+              <li>Re-confirm the API key in your config matches what's in your provider dashboard — no extra spaces or quotes.</li>
+              <li>Brave Search API has a generous free tier (2,000 queries/month) — get a key at <a href="https://api.search.brave.com" target="_blank" rel="noopener">api.search.brave.com</a></li>
+              <li>Temporarily disable web search to test if it's blocking other tools: remove <code>"web_search"</code> from <code>tools.enabled</code>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 16 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err16-body" id="err16-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Voice mode not working — no audio input or output</span>
+                <code class="error-message">Voice provider connection failed / microphone not found</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err16-body" role="region" aria-labelledby="err16-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">Voice mode requires both a microphone for input and a TTS provider API key for output. Either the API key is wrong, the mic isn't accessible, or voice mode wasn't enabled in config.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Make sure <code>"voice": &#123; "enabled": true &#125;</code> is in your config.</li>
+              <li>Check your TTS API key is set correctly for your provider (ElevenLabs, OpenAI, etc.).</li>
+              <li>Grant microphone permissions to your terminal application in System Settings (macOS) or Settings (Windows).</li>
+              <li>Test your mic with another app to rule out a hardware issue.</li>
+              <li>See the <a href="voice.html">Voice Mode guide</a> for a full setup walkthrough.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════
+           CATEGORY 5: API & Auth Errors
+      ════════════════════════════════════════════════ -->
+      <section aria-labelledby="api-heading">
+        <div class="category-header" id="api">
+          <span class="category-icon" aria-hidden="true">🔑</span>
+          <h2 id="api-heading">API &amp; Auth Errors</h2>
+          <span class="category-count">2 errors</span>
+        </div>
+
+        <!-- Error 17 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err17-body" id="err17-btn">
+            <div class="error-left">
+              <span class="error-severity sev-high" title="High severity" aria-label="High severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">API key invalid or not being read from config</span>
+                <code class="error-message">401 Unauthorized — invalid API key</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err17-body" role="region" aria-labelledby="err17-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">The API key in your config is wrong, expired, or the environment variable it references isn't set. This is the #1 most common error for new OpenClaw users.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Copy-paste your API key directly from your provider dashboard — never type it by hand.</li>
+              <li>If using an env var like <code>$ANTHROPIC_API_KEY</code>, verify it's actually set: <code>echo $ANTHROPIC_API_KEY</code> in your terminal.</li>
+              <li>Check for hidden characters: open the config file in a hex editor or run <code>cat -A openclaw.json</code> to spot invisible characters.</li>
+              <li>Make sure the key hasn't been revoked — log in to your provider dashboard and check its status.</li>
+              <li>Never commit your API key to git. Use environment variables or a <code>.env</code> file that's in your <code>.gitignore</code>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 18 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err18-body" id="err18-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">Rate limit exceeded — too many API requests</span>
+                <code class="error-message">429 Too Many Requests — rate limit exceeded</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err18-body" role="region" aria-labelledby="err18-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">You've sent more requests than your API tier allows in a given time window. This is common with free-tier API keys or when running many automations at once.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Wait a minute and try again — rate limits usually reset within 60 seconds.</li>
+              <li>Reduce concurrent automations — if you have 10 automations running simultaneously, spread them out.</li>
+              <li>Switch to a smaller model (e.g. Claude Haiku, GPT-4o mini) — cheaper models have higher rate limits on most tiers.</li>
+              <li>Upgrade your API tier if you need higher throughput — or switch to a local model to avoid rate limits entirely (see the <a href="pricing.html">Pricing guide</a>).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════
+           CATEGORY 6: Performance
+      ════════════════════════════════════════════════ -->
+      <section aria-labelledby="performance-heading">
+        <div class="category-header" id="performance">
+          <span class="category-icon" aria-hidden="true">⚡</span>
+          <h2 id="performance-heading">Performance &amp; Resources</h2>
+          <span class="category-count">2 errors</span>
+        </div>
+
+        <!-- Error 19 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err19-body" id="err19-btn">
+            <div class="error-left">
+              <span class="error-severity sev-medium" title="Medium severity" aria-label="Medium severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">High memory / RAM usage with local models</span>
+                <code class="error-message">Out of memory — process killed by OS</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err19-body" role="region" aria-labelledby="err19-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">Large local models (7B+ parameters) require significant RAM and VRAM. Running a 13B model on a machine with 8GB RAM will cause crashes or extreme slowness.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Use a smaller quantized model — a 4-bit quantized 7B model uses ~4GB RAM vs. ~14GB for the full version. In Ollama: <code>ollama pull llama3:7b-instruct-q4_0</code></li>
+              <li>Close other heavy applications before running a local model.</li>
+              <li>If you have less than 16GB RAM, consider using a cloud API instead (see the <a href="pricing.html">Pricing guide</a> — it can be cheaper than you think).</li>
+              <li>Enable GPU offloading in Ollama or LM Studio to shift processing to your GPU and free up system RAM.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Error 20 -->
+        <div class="error-card">
+          <button class="error-header" aria-expanded="false" aria-controls="err20-body" id="err20-btn">
+            <div class="error-left">
+              <span class="error-severity sev-low" title="Low severity" aria-label="Low severity"></span>
+              <div class="error-title-group">
+                <span class="error-title">SQLite database locked or corrupted</span>
+                <code class="error-message">SQLITE_BUSY: database is locked</code>
+              </div>
+            </div>
+            <span class="error-chevron" aria-hidden="true">▼</span>
+          </button>
+          <div class="error-body" id="err20-body" role="region" aria-labelledby="err20-btn">
+            <div class="cause-label">Why this happens</div>
+            <p class="cause-text">Two OpenClaw processes tried to write to the same SQLite file at the same time, or a previous run crashed mid-write and left a lock file behind.</p>
+            <div class="fix-label">How to fix it</div>
+            <ul class="fix-steps">
+              <li>Make sure only one OpenClaw instance is running at a time: <code>openclaw status</code></li>
+              <li>Look for a stale lock file: <code>ls *.db-wal *.db-shm</code> — delete these if OpenClaw isn't running.</li>
+              <li>If the database is corrupted (not just locked), back up and delete the <code>.db</code> file — OpenClaw will create a fresh one on next start. You'll lose stored memories but the agent will work again.</li>
+              <li>To prevent this, don't run multiple OpenClaw instances pointing at the same database file.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related links -->
+      <aside class="related" aria-labelledby="related-heading">
+        <h2 id="related-heading">Still stuck? These pages might help.</h2>
+        <div class="related-links">
+          <a href="faq.html" class="related-link"><span class="rl-icon" aria-hidden="true">❓</span> FAQ</a>
+          <a href="gettingstarted.html" class="related-link"><span class="rl-icon" aria-hidden="true">🚀</span> Getting Started</a>
+          <a href="config-json.html" class="related-link"><span class="rl-icon" aria-hidden="true">📄</span> openclaw.json</a>
+          <a href="config-yaml.html" class="related-link"><span class="rl-icon" aria-hidden="true">📋</span> config.yaml</a>
+          <a href="mcp.html" class="related-link"><span class="rl-icon" aria-hidden="true">🔌</span> MCP Servers</a>
+          <a href="voice.html" class="related-link"><span class="rl-icon" aria-hidden="true">🎙️</span> Voice Mode</a>
+          <a href="pricing.html" class="related-link"><span class="rl-icon" aria-hidden="true">💰</span> Pricing Guide</a>
+          <a href="cheatsheet.html" class="related-link"><span class="rl-icon" aria-hidden="true">📋</span> Cheat Sheet</a>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="cheatsheet.html">Cheat Sheet</a>
+      <a href="glossary.html">Glossary</a>
+    </div>
+    <p>© 2026 learnopenclaw.org — Independent learning resource. Not affiliated with the OpenClaw project.</p>
+  </footer>
+
+  <script>
+    // ── Hamburger nav ──
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // ── Error accordion ──
+    document.querySelectorAll('.error-header').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const bodyId  = btn.getAttribute('aria-controls');
+        const body    = document.getElementById(bodyId);
+        const isOpen  = btn.getAttribute('aria-expanded') === 'true';
+
+        // close all
+        document.querySelectorAll('.error-header').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+        });
+        document.querySelectorAll('.error-body').forEach(b => {
+          b.classList.remove('open');
+        });
+
+        // open clicked (unless it was already open)
+        if (!isOpen) {
+          btn.setAttribute('aria-expanded', 'true');
+          body.classList.add('open');
+          // smooth scroll into view on mobile
+          if (window.innerWidth < 640) {
+            setTimeout(() => btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
