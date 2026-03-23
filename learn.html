@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn OpenClaw — Guides, References &amp; Tutorials</title>
+  <meta name="description" content="Everything you need to learn OpenClaw — setup guides, feature deep-dives, config references, integration tutorials, and quick-reference docs all in one place." />
+  <meta name="keywords" content="learn OpenClaw, OpenClaw guides, OpenClaw tutorials, OpenClaw documentation, OpenClaw reference" />
+  <link rel="canonical" href="https://learnopenclaw.org/learn.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Learn OpenClaw — Guides, References &amp; Tutorials" />
+  <meta property="og:description" content="Every OpenClaw guide, tutorial, and reference in one place — organized by topic." />
+  <meta property="og:url" content="https://learnopenclaw.org/learn.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Learn OpenClaw — All Guides &amp; References" />
+  <meta name="twitter:description" content="Every OpenClaw guide, tutorial, and reference in one place." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "headline": "Learn OpenClaw — Guides, References & Tutorials",
+    "description": "Complete learning hub for OpenClaw — setup guides, feature deep-dives, config references, and quick-reference docs.",
+    "url": "https://learnopenclaw.org/learn.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Learn","item":"https://learnopenclaw.org/learn.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue:     #2563eb;
+      --blue-lt:  #eff6ff;
+      --blue-md:  #bfdbfe;
+      --blue-dk:  #1d4ed8;
+      --gray-0:   #f9fafb;
+      --gray-1:   #f3f4f6;
+      --gray-2:   #e5e7eb;
+      --gray-3:   #d1d5db;
+      --gray-5:   #6b7280;
+      --gray-7:   #374151;
+      --gray-8:   #1f2937;
+      --gray-9:   #111827;
+      --white:    #ffffff;
+      --radius:   12px;
+      --shadow:   0 2px 12px rgba(0,0,0,.08);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--gray-9); line-height: 1.6; background: var(--white); }
+
+    /* Skip nav */
+    .skip-nav { position: absolute; top: -40px; left: 16px; background: var(--blue); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; text-decoration: none; z-index: 9999; transition: top .2s; }
+    .skip-nav:focus { top: 8px; }
+
+    /* Nav */
+    nav { background: var(--white); border-bottom: 1px solid var(--gray-2); position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; position: relative; }
+    .nav-logo { font-weight: 800; font-size: 1.1rem; color: var(--gray-9); text-decoration: none; }
+    .hamburger { margin-left: auto; background: none; border: none; cursor: pointer; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-7); border-radius: 2px; transition: .3s; }
+    .hamburger:focus { outline: 2px solid var(--blue); outline-offset: 2px; border-radius: 4px; }
+    .nav-links { display: none; flex-direction: column; gap: 4px; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-2); border-radius: var(--radius); padding: 12px 16px; min-width: 180px; box-shadow: var(--shadow); }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-7); text-decoration: none; font-size: .9rem; padding: 6px 4px; border-radius: 4px; }
+    .nav-links a:hover, .nav-links a:focus { color: var(--blue); outline: none; }
+    .nav-links a:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .nav-links a[aria-current="page"] { color: var(--blue); font-weight: 700; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* Hero */
+    .hero { background: linear-gradient(135deg, var(--blue-lt) 0%, #dbeafe 60%, var(--blue-md) 100%); padding: 64px 24px 56px; text-align: center; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; color: var(--gray-9); margin-bottom: 12px; }
+    .hero p { font-size: 1.1rem; color: var(--gray-7); max-width: 580px; margin: 0 auto; }
+
+    /* Sections */
+    .section { padding: 56px 24px; }
+    .section--alt { background: var(--gray-0); }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .group-label { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+    .group-label h2 { font-size: 1.3rem; font-weight: 800; color: var(--gray-9); }
+    .group-label .group-icon { font-size: 1.4rem; }
+    .group-divider { border: none; border-top: 2px solid var(--gray-2); margin: 48px 0 0; }
+
+    /* Cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .card { background: var(--white); border: 1px solid var(--gray-2); border-radius: var(--radius); padding: 20px 18px; text-decoration: none; color: inherit; transition: box-shadow .15s, border-color .15s; display: flex; flex-direction: column; gap: 6px; }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); border-color: var(--blue-md); }
+    .card:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .card-icon { font-size: 1.6rem; line-height: 1; }
+    .card-name { font-size: 1rem; font-weight: 700; color: var(--gray-9); }
+    .card-desc { font-size: .85rem; color: var(--gray-5); line-height: 1.5; }
+    .card-arrow { font-size: .8rem; color: var(--blue); margin-top: auto; padding-top: 8px; font-weight: 600; }
+
+    /* Sub-group for workspace files / config */
+    .sub-group { margin-top: 20px; }
+    .sub-group-label { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--gray-5); margin-bottom: 10px; padding-left: 2px; }
+    .sub-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+    .sub-card { background: var(--gray-0); border: 1px solid var(--gray-2); border-radius: 8px; padding: 14px 14px; text-decoration: none; color: inherit; transition: border-color .15s, background .15s; display: flex; align-items: center; gap: 10px; }
+    .sub-card:hover { background: var(--white); border-color: var(--blue-md); }
+    .sub-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .sub-card-mono { font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace; font-size: .85rem; font-weight: 700; color: var(--gray-8); }
+    .sub-card-desc { font-size: .78rem; color: var(--gray-5); }
+
+    /* Footer */
+    footer { background: var(--gray-8); color: #9ca3af; text-align: center; padding: 36px 24px; font-size: .875rem; }
+    footer a { color: #60a5fa; }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <a href="learn.html" aria-current="page">Learn</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<header class="hero">
+  <h1>Learn OpenClaw</h1>
+  <p>Every guide, reference, and tutorial — organized so you can find what you need fast.</p>
+</header>
+
+<section class="section" id="getting-started">
+  <div class="container">
+
+    <!-- Getting Started -->
+    <div class="group-label">
+      <span class="group-icon">🚀</span>
+      <h2>Getting Started</h2>
+    </div>
+    <div class="cards">
+      <a href="gettingstarted.html" class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-name">Get Started</div>
+        <div class="card-desc">Install OpenClaw and have your agent running in under 5 minutes.</div>
+        <div class="card-arrow">Read guide →</div>
+      </a>
+      <a href="usecases.html" class="card">
+        <div class="card-icon">💡</div>
+        <div class="card-name">Use Cases</div>
+        <div class="card-desc">Real things people use OpenClaw for — from daily tasks to business automation.</div>
+        <div class="card-arrow">See examples →</div>
+      </a>
+      <a href="pricing.html" class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-name">Pricing</div>
+        <div class="card-desc">OpenClaw is free. Your real cost is the LLM API — here's every number explained.</div>
+        <div class="card-arrow">View pricing →</div>
+      </a>
+      <a href="compare.html" class="card">
+        <div class="card-icon">⚖️</div>
+        <div class="card-name">Compare</div>
+        <div class="card-desc">How OpenClaw stacks up against other AI assistant and automation tools.</div>
+        <div class="card-arrow">Compare →</div>
+      </a>
+    </div>
+
+    <hr class="group-divider" />
+
+    <!-- Features -->
+    <div class="group-label" style="margin-top:48px;">
+      <span class="group-icon">✨</span>
+      <h2>Features</h2>
+    </div>
+    <div class="cards">
+      <a href="automation.html" class="card">
+        <div class="card-icon">⚙️</div>
+        <div class="card-name">Automation</div>
+        <div class="card-desc">Build workflows, trigger actions from events, and run multi-step automations.</div>
+        <div class="card-arrow">Learn automation →</div>
+      </a>
+      <a href="multiagent.html" class="card">
+        <div class="card-icon">🤝</div>
+        <div class="card-name">Multi-Agent</div>
+        <div class="card-desc">Orchestrate teams of specialised agents working together on complex tasks.</div>
+        <div class="card-arrow">Explore multi-agent →</div>
+      </a>
+      <a href="voice.html" class="card">
+        <div class="card-icon">🎙️</div>
+        <div class="card-name">Voice Mode</div>
+        <div class="card-desc">Talk to your agent with Whisper STT, ElevenLabs TTS, and wake word detection.</div>
+        <div class="card-arrow">Set up voice →</div>
+      </a>
+      <a href="agentchannels.html" class="card">
+        <div class="card-icon">📡</div>
+        <div class="card-name">Agent Channels</div>
+        <div class="card-desc">Reach your agent over WhatsApp, Telegram, Slack, Discord, and iMessage.</div>
+        <div class="card-arrow">Connect channels →</div>
+      </a>
+      <a href="marketplace.html" class="card">
+        <div class="card-icon">🏪</div>
+        <div class="card-name">Marketplace</div>
+        <div class="card-desc">Browse and install skills, plugins, and integrations in seconds.</div>
+        <div class="card-arrow">Browse marketplace →</div>
+      </a>
+    </div>
+
+    <hr class="group-divider" />
+
+    <!-- Integrations -->
+    <div class="group-label" style="margin-top:48px;">
+      <span class="group-icon">🔌</span>
+      <h2>Integrations</h2>
+    </div>
+    <div class="cards">
+      <a href="mcp.html" class="card">
+        <div class="card-icon">🔌</div>
+        <div class="card-name">MCP</div>
+        <div class="card-desc">Connect OpenClaw to 500+ tools with the Model Context Protocol — GitHub, Notion, Slack, Stripe, and more.</div>
+        <div class="card-arrow">Set up MCP →</div>
+      </a>
+      <a href="shopify.html" class="card">
+        <div class="card-icon">🛍️</div>
+        <div class="card-name">Shopify</div>
+        <div class="card-desc">Automate orders, inventory alerts, customer emails, and daily reports for your Shopify store.</div>
+        <div class="card-arrow">Shopify guide →</div>
+      </a>
+    </div>
+
+    <hr class="group-divider" />
+
+    <!-- Architecture & Config -->
+    <div class="group-label" style="margin-top:48px;">
+      <span class="group-icon">🏗️</span>
+      <h2>Architecture &amp; Configuration</h2>
+    </div>
+    <div class="cards">
+      <a href="architecture.html" class="card">
+        <div class="card-icon">🏗️</div>
+        <div class="card-name">Architecture</div>
+        <div class="card-desc">How OpenClaw works under the hood — the agent loop, memory system, and component layout.</div>
+        <div class="card-arrow">Understand architecture →</div>
+      </a>
+      <a href="security.html" class="card">
+        <div class="card-icon">🛡️</div>
+        <div class="card-name">Security</div>
+        <div class="card-desc">API key management, permission rules, sandboxing, and best practices for safe automation.</div>
+        <div class="card-arrow">Security guide →</div>
+      </a>
+    </div>
+
+    <!-- Workspace Files sub-group -->
+    <div class="sub-group">
+      <div class="sub-group-label">Workspace Files</div>
+      <div class="sub-cards">
+        <a href="workspace-user.html" class="sub-card">
+          <div>
+            <div class="sub-card-mono">USER.md</div>
+            <div class="sub-card-desc">Your personal context card</div>
+          </div>
+        </a>
+        <a href="workspace-agents.html" class="sub-card">
+          <div>
+            <div class="sub-card-mono">AGENTS.md</div>
+            <div class="sub-card-desc">Your agent's operating rules</div>
+          </div>
+        </a>
+        <a href="workspace-memory.html" class="sub-card">
+          <div>
+            <div class="sub-card-mono">MEMORY.md</div>
+            <div class="sub-card-desc">Long-term curated memory</div>
+          </div>
+        </a>
+        <a href="workspace-heartbeat.html" class="sub-card">
+          <div>
+            <div class="sub-card-mono">HEARTBEAT.md</div>
+            <div class="sub-card-desc">Scheduled background tasks</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Config Reference sub-group -->
+    <div class="sub-group" style="margin-top:20px;">
+      <div class="sub-group-label">Config Reference</div>
+      <div class="sub-cards">
+        <a href="config-json.html" class="sub-card">
+          <div>
+            <div class="sub-card-mono">openclaw.json</div>
+            <div class="sub-card-desc">JSON config — every field documented</div>
+          </div>
+        </a>
+        <a href="config-yaml.html" class="sub-card">
+          <div>
+            <div class="sub-card-mono">config.yaml</div>
+            <div class="sub-card-desc">YAML config — every field documented</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <hr class="group-divider" />
+
+    <!-- Quick Reference -->
+    <div class="group-label" style="margin-top:48px;">
+      <span class="group-icon">📚</span>
+      <h2>Quick Reference</h2>
+    </div>
+    <div class="cards">
+      <a href="cheatsheet.html" class="card">
+        <div class="card-icon">📋</div>
+        <div class="card-name">Cheat Sheet</div>
+        <div class="card-desc">Every command, config key, and shortcut on a single page. Bookmark this.</div>
+        <div class="card-arrow">Open cheat sheet →</div>
+      </a>
+      <a href="glossary.html" class="card">
+        <div class="card-icon">📖</div>
+        <div class="card-name">Glossary</div>
+        <div class="card-desc">Plain-English definitions for every term in the OpenClaw ecosystem.</div>
+        <div class="card-arrow">Browse glossary →</div>
+      </a>
+      <a href="nemoclaw.html" class="card">
+        <div class="card-icon">🟢</div>
+        <div class="card-name">NemoClaw</div>
+        <div class="card-desc">NVIDIA's enterprise security stack for OpenClaw — OpenShell, Nemotron, Dynamo.</div>
+        <div class="card-arrow">Learn NemoClaw →</div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="learn.html" aria-current="page">Learn</a>
+    <a href="blog.html">Blog</a>
+    <a href="faq.html">FAQ</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="cheatsheet.html">Cheat Sheet</a>
+    <a href="glossary.html">Glossary</a>
+  </div>
+  <p>© 2026 learnopenclaw.org — Independent learning resource. Not affiliated with the OpenClaw project.</p>
+</footer>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+</body>
+</html>
