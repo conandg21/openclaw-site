@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw gateway Config — Telegram, WhatsApp, Slack &amp; Discord Setup</title>
+  <meta name="description" content="Complete gateway config reference for openclaw.json. Connect your agent to Telegram, WhatsApp, Slack, Discord, and the web UI with every field explained." />
+  <meta name="keywords" content="OpenClaw gateway config, Telegram bot, WhatsApp integration, Slack bot, Discord bot, openclaw.json, gateway configuration, iMessage, web UI" />
+  <link rel="canonical" href="https://learnopenclaw.org/config-gateway.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw gateway Config — Telegram, WhatsApp, Slack &amp; Discord Setup" />
+  <meta property="og:description" content="Complete gateway config reference for openclaw.json. Connect your agent to Telegram, WhatsApp, Slack, Discord, and the web UI with every field explained." />
+  <meta property="og:url" content="https://learnopenclaw.org/config-gateway.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw gateway Config Reference" />
+  <meta name="twitter:description" content="Complete gateway config reference for openclaw.json. Connect your agent to Telegram, WhatsApp, Slack, Discord, and the web UI." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw gateway Config — Telegram, WhatsApp, Slack &amp; Discord Setup",
+    "description": "Complete gateway configuration reference for openclaw.json. Connect your agent to Telegram, WhatsApp, Slack, Discord, iMessage, and the built-in web UI with detailed field documentation.",
+    "url": "https://learnopenclaw.org/config-gateway.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Config Reference","item":"https://learnopenclaw.org/config-reference.html"},
+        {"@type":"ListItem","position":3,"name":"gateway { }","item":"https://learnopenclaw.org/config-gateway.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sky:      #0369a1;
+      --sky-lt:   #f0f9ff;
+      --sky-md:   #bae6fd;
+      --sky-dk:   #075985;
+      --gray-1:   #f9fafb;
+      --gray-2:   #f3f4f6;
+      --gray-3:   #e5e7eb;
+      --gray-5:   #6b7280;
+      --gray-8:   #1f2937;
+      --white:    #ffffff;
+      --radius:   12px;
+      --shadow:   0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--sky); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--sky);
+      outline-offset: 3px; border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+
+    a { color: var(--sky); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links {
+      display: none; position: absolute; top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--sky); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-section { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2); padding: 10px 0; margin: 2px 0; }
+    .nav-section-label { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5); }
+    .nav-section a { padding-left: 10px; border-left: 2px solid var(--sky-md); font-size: .88rem; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 52px; text-align: center;
+      background: linear-gradient(160deg, var(--sky-lt) 0%, #e0f2fe 50%, var(--white) 100%);
+    }
+    .hero-badge { display: inline-block; background: var(--sky-md); color: var(--sky); font-size: .78rem; font-weight: 700; letter-spacing: .06em; padding: 4px 14px; border-radius: 100px; margin-bottom: 20px; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+    .hero h1 em { font-style: normal; color: var(--sky); }
+    .hero p { font-size: 1.1rem; color: var(--gray-5); max-width: 580px; margin: 0 auto 32px; }
+
+    /* ── Section headings ── */
+    .section-label { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sky); margin-bottom: 10px; }
+    .section-title { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; line-height: 1.25; margin-bottom: 16px; }
+    .section-subtitle { font-size: 1.05rem; color: var(--gray-5); max-width: 660px; margin-bottom: 40px; }
+
+    /* ── Alerts ── */
+    .alert { border-radius: var(--radius); padding: 20px 24px; display: flex; gap: 14px; align-items: flex-start; margin-bottom: 32px; }
+    .alert--sky { background: var(--sky-lt); border: 1px solid var(--sky-md); }
+    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+    .alert--sky p { color: var(--sky-dk); font-size: .95rem; }
+    .alert strong { font-weight: 700; }
+
+    /* ── Code blocks ── */
+    .code-block { background: #0f172a; border-radius: var(--radius); padding: 22px 24px; margin: 14px 0; overflow-x: auto; }
+    .code-block pre { font-family: "SF Mono", "Fira Code", monospace; font-size: .83rem; line-height: 1.8; color: #e2e8f0; white-space: pre; }
+    .code-label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-5); margin-bottom: 6px; }
+    .ck { color: #94a3b8; }
+    .kw { color: #7dd3fc; }
+    .sv { color: #86efac; }
+    .nm { color: #fde68a; }
+    .br { color: #c4b5fd; }
+    .cmt { color: #64748b; }
+
+    /* ── Field tables ── */
+    .field-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin-bottom: 40px; }
+    .field-table th { text-align: left; padding: 11px 16px; background: var(--gray-2); border-bottom: 2px solid var(--gray-3); font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+    .field-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+    .field-table tr:last-child td { border-bottom: none; }
+    .field-table tr:hover td { background: var(--gray-1); }
+    .field-table .type { font-family: "SF Mono", monospace; font-size: .82rem; color: var(--sky); }
+    .field-table .required { background: #fef2f2; color: #991b1b; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+    .field-table .optional { background: var(--gray-2); color: var(--gray-5); font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+
+    /* ── Channel comparison ── */
+    .comp-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin-bottom: 32px; }
+    .comp-table th { text-align: left; padding: 11px 16px; background: var(--gray-2); border-bottom: 2px solid var(--gray-3); font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+    .comp-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: middle; }
+    .comp-table tr:last-child td { border-bottom: none; }
+    .comp-table tr:hover td { background: var(--gray-1); }
+    .comp-table .badge { font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; display: inline-block; }
+    .badge-easy { background: #dcfce7; color: #166534; }
+    .badge-med { background: #fef3c7; color: #92400e; }
+    .badge-hard { background: #fee2e2; color: #991b1b; }
+    .badge-yes { background: #dcfce7; color: #166534; }
+    .badge-no { background: var(--gray-2); color: var(--gray-5); }
+
+    /* ── Cards grid ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .card p { font-size: .875rem; color: var(--gray-5); }
+
+    /* ── Related cards ── */
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .rel-card { border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); text-decoration: none; color: inherit; display: block; transition: transform .15s, box-shadow .15s; }
+    .rel-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); text-decoration: none; }
+    .rel-card .r-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .rel-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+    .rel-card p { font-size: .83rem; color: var(--gray-5); }
+
+    /* ── Utilities ── */
+    .mb-32 { margin-bottom: 32px; }
+    .mb-40 { margin-bottom: 40px; }
+    h2 { font-size: 1.4rem; font-weight: 800; margin: 32px 0 16px; }
+    h3 { font-size: 1.1rem; font-weight: 700; margin: 24px 0 12px; }
+    .mono { font-family: "SF Mono", monospace; font-size: .9rem; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="agentchannels.html">Agent Channels</a>
+        <a href="mcp.html">MCP</a>
+        <a href="voice.html" style="color:#16a34a;font-weight:700;"><span aria-hidden="true">🎙️</span> Voice Mode</a>
+        <a href="config-reference.html" style="color:#0369a1;font-weight:700;"><span aria-hidden="true">⚙️</span> Config Reference</a>
+        <div style="padding-left:12px;border-left:3px solid #bae6fd;display:flex;flex-direction:column;gap:8px;margin:2px 0 4px;">
+          <span style="font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#0369a1;">Config Sections</span>
+          <a href="config-llm.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">llm { }</a>
+          <a href="config-gateway.html" aria-current="page" style="font-family:'SF Mono',monospace;font-size:.83rem;">gateway { }</a>
+          <a href="config-tools.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">tools { }</a>
+          <a href="config-memory.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">memory { }</a>
+        </div>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+        <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html" style="color:#d97706;font-weight:700;"><span aria-hidden="true">💰</span> Pricing</a>
+      <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+      <a href="glossary.html" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">⚙️ gateway { }</div>
+  <h1>Gateway Configuration</h1>
+  <p>The gateway block controls how users talk to your agent — via Telegram, WhatsApp, Slack, Discord, iMessage, or the built-in web UI.</p>
+</header>
+
+<!-- Full annotated block -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Full Configuration</div>
+    <h2>The Complete gateway Block</h2>
+    <p class="section-subtitle">Copy this into your openclaw.json and fill in the API tokens and configuration for each channel you want to enable.</p>
+
+    <div class="code-block">
+      <pre><span class="ck">{</span>
+  <span class="kw">"gateway"</span><span class="ck">:</span> <span class="ck">{</span>
+    <span class="kw">"telegram"</span><span class="ck">:</span> <span class="ck">{</span>
+      <span class="kw">"enabled"</span><span class="ck">:</span>       <span class="sv">true</span><span class="ck">,</span>
+      <span class="kw">"token"</span><span class="ck">:</span>         <span class="nm">"${TELEGRAM_BOT_TOKEN}"</span><span class="ck">,</span>
+      <span class="kw">"allowedUsers"</span><span class="ck">:</span>  <span class="ck">[</span><span class="nm">123456789</span><span class="ck">],</span>           <span class="cmt">// Telegram user IDs (whitelist)</span>
+      <span class="kw">"allowedGroups"</span><span class="ck">:</span> <span class="ck">[],</span>                    <span class="cmt">// Group chat IDs (empty = no groups)</span>
+      <span class="kw">"parseMode"</span><span class="ck">:</span>     <span class="nm">"Markdown"</span><span class="ck">,</span>            <span class="cmt">// "Markdown" | "HTML" | "plain"</span>
+      <span class="kw">"typingIndicator"</span><span class="ck">:</span> <span class="sv">true</span>                 <span class="cmt">// Show "typing…" while agent works</span>
+    <span class="ck">},</span>
+    <span class="kw">"whatsapp"</span><span class="ck">:</span> <span class="ck">{</span>
+      <span class="kw">"enabled"</span><span class="ck">:</span>       <span class="sv">false</span><span class="ck">,</span>
+      <span class="kw">"provider"</span><span class="ck">:</span>      <span class="nm">"meta-cloud"</span><span class="ck">,</span>          <span class="cmt">// "meta-cloud" | "twilio"</span>
+      <span class="kw">"phoneId"</span><span class="ck">:</span>       <span class="nm">"${WA_PHONE_NUMBER_ID}"</span><span class="ck">,</span>
+      <span class="kw">"token"</span><span class="ck">:</span>         <span class="nm">"${WA_TOKEN}"</span><span class="ck">,</span>
+      <span class="kw">"webhookSecret"</span><span class="ck">:</span> <span class="nm">"${WA_WEBHOOK_SECRET}"</span><span class="ck">,</span>
+      <span class="kw">"webhookPath"</span><span class="ck">:</span>   <span class="nm">"/webhook/whatsapp"</span>
+    <span class="ck">},</span>
+    <span class="kw">"slack"</span><span class="ck">:</span> <span class="ck">{</span>
+      <span class="kw">"enabled"</span><span class="ck">:</span>       <span class="sv">false</span><span class="ck">,</span>
+      <span class="kw">"botToken"</span><span class="ck">:</span>      <span class="nm">"${SLACK_BOT_TOKEN}"</span><span class="ck">,</span>
+      <span class="kw">"signingSecret"</span><span class="ck">:</span> <span class="nm">"${SLACK_SIGNING_SECRET}"</span><span class="ck">,</span>
+      <span class="kw">"allowedChannels"</span><span class="ck">:</span> <span class="ck">[</span><span class="nm">"#general"</span><span class="ck">],</span>        <span class="cmt">// Empty = all channels</span>
+      <span class="kw">"mentionOnly"</span><span class="ck">:</span>   <span class="sv">true</span>                   <span class="cmt">// Only respond when @mentioned</span>
+    <span class="ck">},</span>
+    <span class="kw">"discord"</span><span class="ck">:</span> <span class="ck">{</span>
+      <span class="kw">"enabled"</span><span class="ck">:</span>       <span class="sv">false</span><span class="ck">,</span>
+      <span class="kw">"token"</span><span class="ck">:</span>         <span class="nm">"${DISCORD_TOKEN}"</span><span class="ck">,</span>
+      <span class="kw">"allowedGuilds"</span><span class="ck">:</span> <span class="ck">[],</span>
+      <span class="kw">"allowedChannels"</span><span class="ck">:</span> <span class="ck">[],</span>
+      <span class="kw">"prefix"</span><span class="ck">:</span>        <span class="nm">"!"</span><span class="ck">,</span>                   <span class="cmt">// Command prefix (or use slash commands)</span>
+      <span class="kw">"slashCommands"</span><span class="ck">:</span> <span class="sv">true</span>
+    <span class="ck">},</span>
+    <span class="kw">"web"</span><span class="ck">:</span> <span class="ck">{</span>
+      <span class="kw">"enabled"</span><span class="ck">:</span>       <span class="sv">true</span><span class="ck">,</span>
+      <span class="kw">"port"</span><span class="ck">:</span>          <span class="nm">7799</span><span class="ck">,</span>
+      <span class="kw">"host"</span><span class="ck">:</span>          <span class="nm">"localhost"</span><span class="ck">,</span>           <span class="cmt">// "0.0.0.0" to expose on network</span>
+      <span class="kw">"auth"</span><span class="ck">:</span>          <span class="sv">false</span><span class="ck">,</span>                 <span class="cmt">// Enable basic auth for web UI</span>
+      <span class="kw">"username"</span><span class="ck">:</span>      <span class="nm">""</span><span class="ck">,</span>
+      <span class="kw">"password"</span><span class="ck">:</span>      <span class="nm">""</span>
+    <span class="ck">}</span>
+  <span class="ck">}</span>
+<span class="ck">}</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Telegram -->
+<section class="section section--alt">
+  <div class="container">
+    <h2>Telegram</h2>
+    <p class="section-subtitle">The easiest gateway to set up. Uses long-polling so no public URL needed. Perfect for personal use and testing.</p>
+
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Status</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mono">enabled</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>true</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Enable or disable the Telegram gateway.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">token</span></td>
+          <td><span class="type">string</span></td>
+          <td>—</td>
+          <td><span class="required">required</span></td>
+          <td>Your Telegram bot token from BotFather. Use <code>${TELEGRAM_BOT_TOKEN}</code> to load from env.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">allowedUsers</span></td>
+          <td><span class="type">number[]</span></td>
+          <td><code>[]</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>List of Telegram user IDs allowed to use the bot. Empty means anyone can. Whitelist by ID for security.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">allowedGroups</span></td>
+          <td><span class="type">number[]</span></td>
+          <td><code>[]</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>List of group chat IDs allowed to use the bot. Empty means no groups. Get IDs by using /getchatid in a group.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">parseMode</span></td>
+          <td><span class="type">string</span></td>
+          <td><code>"Markdown"</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>How to format text responses: <code>"Markdown"</code>, <code>"HTML"</code>, or <code>"plain"</code>. Markdown is most portable.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">typingIndicator</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>true</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Show "typing…" status while the agent is processing. Good for UX.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>How to Get Your User ID</h3>
+    <p>To find your Telegram user ID, add this bot to your chat and send any message: <code>@userinfobot</code>. It will reply with your numeric ID. Add that ID to the <code>allowedUsers</code> array.</p>
+  </div>
+</section>
+
+<!-- WhatsApp -->
+<section class="section">
+  <div class="container">
+    <h2>WhatsApp</h2>
+    <p class="section-subtitle">Requires a Meta Business account and a public webhook URL. Most complex to set up, but reaches the broadest audience.</p>
+
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Status</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mono">enabled</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>false</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Enable or disable the WhatsApp gateway.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">provider</span></td>
+          <td><span class="type">string</span></td>
+          <td>—</td>
+          <td><span class="required">required</span></td>
+          <td>WhatsApp API provider: <code>"meta-cloud"</code> (Meta's official Cloud API) or <code>"twilio"</code> (Twilio). Meta is recommended.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">phoneId</span></td>
+          <td><span class="type">string</span></td>
+          <td>—</td>
+          <td><span class="required">required</span></td>
+          <td>Your WhatsApp business phone number ID. Found in Meta Business Manager under Phone Numbers.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">token</span></td>
+          <td><span class="type">string</span></td>
+          <td>—</td>
+          <td><span class="required">required</span></td>
+          <td>Meta Cloud API access token. Use <code>${WA_TOKEN}</code> to load from env.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">webhookSecret</span></td>
+          <td><span class="type">string</span></td>
+          <td>—</td>
+          <td><span class="required">required</span></td>
+          <td>Webhook verify token for signature validation. Use <code>${WA_WEBHOOK_SECRET}</code> to load from env.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">webhookPath</span></td>
+          <td><span class="type">string</span></td>
+          <td><code>"/webhook/whatsapp"</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Path where Meta sends webhook events. Must match your Meta app config.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Slack -->
+<section class="section section--alt">
+  <div class="container">
+    <h2>Slack</h2>
+    <p class="section-subtitle">Best for team communication and internal use. Requires a public webhook URL but is straightforward to set up with any Slack workspace.</p>
+
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Status</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mono">enabled</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>false</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Enable or disable the Slack gateway.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">botToken</span></td>
+          <td><span class="type">string</span></td>
+          <td>—</td>
+          <td><span class="required">required</span></td>
+          <td>OAuth token for your Slack bot app (starts with <code>xoxb-</code>). Use <code>${SLACK_BOT_TOKEN}</code> to load from env.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">signingSecret</span></td>
+          <td><span class="type">string</span></td>
+          <td>—</td>
+          <td><span class="required">required</span></td>
+          <td>Signing secret from your Slack app settings for request verification. Use <code>${SLACK_SIGNING_SECRET}</code> to load from env.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">allowedChannels</span></td>
+          <td><span class="type">string[]</span></td>
+          <td><code>[]</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>List of channel names (with <code>#</code>) the bot can respond in. Empty array means all channels.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">mentionOnly</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>true</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>If true, bot only responds when @mentioned. If false, responds to all messages in allowed channels.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Discord -->
+<section class="section">
+  <div class="container">
+    <h2>Discord</h2>
+    <p class="section-subtitle">Great for communities and gaming servers. Uses websockets so no public URL required. Supports slash commands.</p>
+
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Status</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mono">enabled</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>false</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Enable or disable the Discord gateway.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">token</span></td>
+          <td><span class="type">string</span></td>
+          <td>—</td>
+          <td><span class="required">required</span></td>
+          <td>Discord bot token from the Developer Portal. Use <code>${DISCORD_TOKEN}</code> to load from env. Keep this secret!</td>
+        </tr>
+        <tr>
+          <td><span class="mono">allowedGuilds</span></td>
+          <td><span class="type">string[]</span></td>
+          <td><code>[]</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>List of Discord guild (server) IDs allowed to use the bot. Empty means all guilds your bot is in.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">allowedChannels</span></td>
+          <td><span class="type">string[]</span></td>
+          <td><code>[]</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>List of Discord channel IDs allowed to use the bot. Empty means all channels in allowed guilds.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">prefix</span></td>
+          <td><span class="type">string</span></td>
+          <td><code>"!"</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Prefix for text commands (e.g., <code>!ask</code>). Only used if slash commands are disabled.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">slashCommands</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>true</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Enable Discord slash commands. Recommended over prefix commands.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Web UI -->
+<section class="section section--alt">
+  <div class="container">
+    <h2>Web UI</h2>
+    <p class="section-subtitle">Built-in web interface. Runs locally by default. No authentication needed for localhost, but can add basic auth if exposed to the network.</p>
+
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Status</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="mono">enabled</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>true</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Enable or disable the web UI server.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">port</span></td>
+          <td><span class="type">number</span></td>
+          <td><code>7799</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Port the web server listens on. Access at <code>http://localhost:7799</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">host</span></td>
+          <td><span class="type">string</span></td>
+          <td><code>"localhost"</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Host to bind to. Use <code>"0.0.0.0"</code> to expose on your network. Warning: Only do this with auth enabled.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">auth</span></td>
+          <td><span class="type">boolean</span></td>
+          <td><code>false</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Enable HTTP Basic Authentication. Required if exposing to network with <code>"0.0.0.0"</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">username</span></td>
+          <td><span class="type">string</span></td>
+          <td><code>""</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Basic auth username. Only used if <code>auth: true</code>.</td>
+        </tr>
+        <tr>
+          <td><span class="mono">password</span></td>
+          <td><span class="type">string</span></td>
+          <td><code>""</code></td>
+          <td><span class="optional">optional</span></td>
+          <td>Basic auth password. Only used if <code>auth: true</code>. Use env vars like <code>${WEB_PASSWORD}</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Channel comparison -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Quick Comparison</div>
+    <h2>Choosing a Gateway</h2>
+    <p class="section-subtitle">Not sure which channel is right for your use case? Here's a quick breakdown of setup difficulty, infrastructure needs, and best use cases.</p>
+
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Channel</th>
+          <th>Setup Difficulty</th>
+          <th>Public URL?</th>
+          <th>Mobile</th>
+          <th>Desktop</th>
+          <th>Best For</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Telegram</strong></td>
+          <td><span class="badge badge-easy">Easy</span></td>
+          <td><span class="badge badge-no">No</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td>Personal use, testing, quick setup</td>
+        </tr>
+        <tr>
+          <td><strong>WhatsApp</strong></td>
+          <td><span class="badge badge-hard">Hard</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td>Mass reach, international, business</td>
+        </tr>
+        <tr>
+          <td><strong>Slack</strong></td>
+          <td><span class="badge badge-med">Medium</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td>Team workflows, internal automation</td>
+        </tr>
+        <tr>
+          <td><strong>Discord</strong></td>
+          <td><span class="badge badge-med">Medium</span></td>
+          <td><span class="badge badge-no">No</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td><span class="badge badge-yes">Yes</span></td>
+          <td>Communities, gaming, open discussion</td>
+        </tr>
+        <tr>
+          <td><strong>Web UI</strong></td>
+          <td><span class="badge badge-easy">None</span></td>
+          <td><span class="badge badge-no">No</span></td>
+          <td><span class="badge badge-yes">Browser</span></td>
+          <td><span class="badge badge-yes">Browser</span></td>
+          <td>Built-in, localhost-only by default</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Webhook vs polling -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">Infrastructure</div>
+    <h2>Webhooks vs Polling</h2>
+    <p class="section-subtitle">Different channels use different connection patterns. Understanding this matters for deployment.</p>
+
+    <div class="alert alert--sky">
+      <div class="alert-icon">ℹ️</div>
+      <p><strong>Telegram uses long-polling:</strong> Your OpenClaw instance continually asks Telegram for new messages. No public URL needed. Simple, but slightly higher latency and network overhead.</p>
+    </div>
+
+    <div class="alert alert--sky">
+      <div class="alert-icon">ℹ️</div>
+      <p><strong>WhatsApp &amp; Slack use webhooks:</strong> Meta and Slack send incoming messages directly to a publicly accessible URL on your server. Much lower latency, but requires your server to be internet-facing with HTTPS.</p>
+    </div>
+
+    <div class="alert alert--sky">
+      <div class="alert-icon">ℹ️</div>
+      <p><strong>Discord uses websockets:</strong> Your bot maintains a persistent websocket connection to Discord. Low latency, no public URL required, but your bot must be online at all times.</p>
+    </div>
+
+    <h3>If You Need a Public URL</h3>
+    <p>For WhatsApp and Slack, expose your OpenClaw server publicly:</p>
+    <ul style="padding-left: 20px; margin-bottom: 20px;">
+      <li><strong>ngrok:</strong> Free tool for tunneling. Run <code>ngrok http 7799</code> to get a public URL for localhost testing.</li>
+      <li><strong>VPS (DigitalOcean, AWS, etc.):</strong> Deploy OpenClaw on a server with a static IP and domain name.</li>
+      <li><strong>Your own domain:</strong> If you own a domain, use DNS to point it to your OpenClaw instance and add HTTPS with Let's Encrypt.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Security: Allowlists -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Security Best Practices</div>
+    <h2>Protecting Your Agent with Allowlists</h2>
+    <p class="section-subtitle">Without user and channel allowlists, anyone who finds your bot token can use your agent. Here's why and how to restrict access.</p>
+
+    <h3>Telegram: allowedUsers and allowedGroups</h3>
+    <p>If you don't set <code>allowedUsers</code>, anyone on Telegram can message your bot and trigger your agent. If your agent can make API calls or access databases, this is a security risk.</p>
+    <div class="code-block">
+      <pre><span class="ck">{</span>
+  <span class="kw">"telegram"</span><span class="ck">:</span> <span class="ck">{</span>
+    <span class="kw">"enabled"</span><span class="ck">:</span> <span class="sv">true</span><span class="ck">,</span>
+    <span class="kw">"token"</span><span class="ck">:</span> <span class="nm">"${TELEGRAM_BOT_TOKEN}"</span><span class="ck">,</span>
+    <span class="kw">"allowedUsers"</span><span class="ck">:</span> <span class="ck">[</span><span class="nm">123456789</span><span class="ck">,</span> <span class="nm">987654321</span><span class="ck">],</span>  <span class="cmt">// Only these users can use the bot</span>
+    <span class="kw">"allowedGroups"</span><span class="ck">:</span> <span class="ck">[</span><span class="nm">-1001234567890</span><span class="ck">]</span>        <span class="cmt">// Only this group can use the bot</span>
+  <span class="ck">}</span>
+<span class="ck">}</span></pre>
+    </div>
+
+    <h3>Slack: allowedChannels and mentionOnly</h3>
+    <p>By default, if <code>mentionOnly</code> is true, the bot ignores messages where it's not mentioned. For extra control, specify <code>allowedChannels</code> to restrict to specific channels:</p>
+    <div class="code-block">
+      <pre><span class="ck">{</span>
+  <span class="kw">"slack"</span><span class="ck">:</span> <span class="ck">{</span>
+    <span class="kw">"enabled"</span><span class="ck">:</span> <span class="sv">true</span><span class="ck">,</span>
+    <span class="kw">"botToken"</span><span class="ck">:</span> <span class="nm">"${SLACK_BOT_TOKEN}"</span><span class="ck">,</span>
+    <span class="kw">"signingSecret"</span><span class="ck">:</span> <span class="nm">"${SLACK_SIGNING_SECRET}"</span><span class="ck">,</span>
+    <span class="kw">"allowedChannels"</span><span class="ck">:</span> <span class="ck">[</span><span class="nm">"#ai-team"</span><span class="ck">,</span> <span class="nm">"#beta-testers"</span><span class="ck">],</span>
+    <span class="kw">"mentionOnly"</span><span class="ck">:</span> <span class="sv">true</span>
+  <span class="ck">}</span>
+<span class="ck">}</span></pre>
+    </div>
+
+    <h3>Discord: allowedGuilds and allowedChannels</h3>
+    <p>Restrict your Discord bot to specific servers and channels:</p>
+    <div class="code-block">
+      <pre><span class="ck">{</span>
+  <span class="kw">"discord"</span><span class="ck">:</span> <span class="ck">{</span>
+    <span class="kw">"enabled"</span><span class="ck">:</span> <span class="sv">true</span><span class="ck">,</span>
+    <span class="kw">"token"</span><span class="ck">:</span> <span class="nm">"${DISCORD_TOKEN}"</span><span class="ck">,</span>
+    <span class="kw">"allowedGuilds"</span><span class="ck">:</span> <span class="ck">[</span><span class="nm">"1234567890"</span><span class="ck">],</span>        <span class="cmt">// Only this guild</span>
+    <span class="kw">"allowedChannels"</span><span class="ck">:</span> <span class="ck">[</span><span class="nm">"9876543210"</span><span class="ck">]</span>      <span class="cmt">// Only this channel</span>
+  <span class="ck">}</span>
+<span class="ck">}</span></pre>
+    </div>
+
+    <h3>Environment Variables for Secrets</h3>
+    <p>Never hardcode API tokens in your config file. Always use environment variables:</p>
+    <div class="code-block">
+      <pre><span class="cmt">// ✅ Good: uses env var</span>
+<span class="kw">"token"</span><span class="ck">:</span> <span class="nm">"${TELEGRAM_BOT_TOKEN}"</span>
+
+<span class="cmt">// ❌ Bad: hardcoded secret</span>
+<span class="kw">"token"</span><span class="ck">:</span> <span class="nm">"123456:ABCdefGHIjklMNOpqrsTUVwxyz"</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Related config pages -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">Next Steps</div>
+    <h2>Explore Other Config Sections</h2>
+    <p class="section-subtitle">The gateway block is just one piece of openclaw.json. Check out the other sections to fine-tune your agent.</p>
+
+    <div class="rel-grid">
+      <a href="config-llm.html" class="rel-card">
+        <div class="r-icon">🧠</div>
+        <h3>llm { }</h3>
+        <p>Configure your LLM provider, model, temperature, context window, and cost limits.</p>
+      </a>
+      <a href="config-tools.html" class="rel-card">
+        <div class="r-icon">🔧</div>
+        <h3>tools { }</h3>
+        <p>Enable and configure the tools your agent can use to take actions.</p>
+      </a>
+      <a href="config-memory.html" class="rel-card">
+        <div class="r-icon">💾</div>
+        <h3>memory { }</h3>
+        <p>Set up conversation history, long-term memory, and user profiles.</p>
+      </a>
+      <a href="config-reference.html" class="rel-card">
+        <div class="r-icon">📋</div>
+        <h3>Config Reference</h3>
+        <p>Overview of all openclaw.json sections and how they work together.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  // Hamburger menu toggle
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (hamburger) {
+    hamburger.addEventListener('click', (e) => {
+      const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', !isOpen);
+      navLinks.classList.toggle('open');
+    });
+  }
+
+  // Close menu on outside click
+  document.addEventListener('click', (e) => {
+    if (hamburger && navLinks && navLinks.classList.contains('open')) {
+      if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        hamburger.setAttribute('aria-expanded', 'false');
+        navLinks.classList.remove('open');
+      }
+    }
+  });
+
+  // Close menu on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navLinks && navLinks.classList.contains('open')) {
+      hamburger.setAttribute('aria-expanded', 'false');
+      navLinks.classList.remove('open');
+    }
+  });
+</script>
+
+</body>
+</html>

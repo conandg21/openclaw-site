@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Config Reference — Complete openclaw.json Field Guide</title>
+  <meta name="description" content="Every field in openclaw.json documented. LLM provider settings, gateway channels, tool permissions, memory config, voice, and heartbeat — all in one place." />
+  <meta name="keywords" content="OpenClaw config, openclaw.json, LLM configuration, gateway channels, Telegram, WhatsApp, Slack, tool permissions, memory configuration, voice settings, heartbeat tasks" />
+  <link rel="canonical" href="https://learnopenclaw.org/config-reference.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Config Reference — Complete openclaw.json Field Guide" />
+  <meta property="og:description" content="Every field in openclaw.json documented. LLM provider settings, gateway channels, tool permissions, memory config, voice, and heartbeat — all in one place." />
+  <meta property="og:url" content="https://learnopenclaw.org/config-reference.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Config Reference" />
+  <meta name="twitter:description" content="Every field in openclaw.json documented. LLM provider settings, gateway channels, tool permissions, memory config, voice, and heartbeat — all in one place." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw Config Reference — Complete openclaw.json Field Guide",
+    "description": "Complete field-by-field reference for openclaw.json. LLM provider settings, gateway channels, tool permissions, memory configuration, voice settings, and heartbeat task scheduling.",
+    "url": "https://learnopenclaw.org/config-reference.html",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
+        {"@type":"ListItem","position":2,"name":"Learn","item":"https://learnopenclaw.org/gettingstarted.html"},
+        {"@type":"ListItem","position":3,"name":"Config Reference","item":"https://learnopenclaw.org/config-reference.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:     #0369a1;
+      --blue-lt:  #f0f9ff;
+      --blue-md:  #bae6fd;
+      --blue-dk:  #075985;
+      --gray-1:   #f9fafb;
+      --gray-2:   #f3f4f6;
+      --gray-3:   #e5e7eb;
+      --gray-5:   #6b7280;
+      --gray-8:   #1f2937;
+      --white:    #ffffff;
+      --radius:   12px;
+      --shadow:   0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--blue);
+      outline-offset: 3px; border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links {
+      display: none; position: absolute; top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-section { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2); padding: 10px 0; margin: 2px 0; }
+    .nav-section-label { font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5); }
+    .nav-section a { padding-left: 10px; border-left: 2px solid var(--blue-md); font-size: .88rem; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 52px; text-align: center;
+      background: linear-gradient(160deg, var(--blue-lt) 0%, #cffafe 50%, var(--white) 100%);
+    }
+    .hero-badge { display: inline-block; background: var(--blue-md); color: var(--blue); font-size: .78rem; font-weight: 700; letter-spacing: .06em; padding: 4px 14px; border-radius: 100px; margin-bottom: 20px; text-transform: uppercase; }
+    .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+    .hero p { font-size: 1.1rem; color: var(--gray-5); max-width: 580px; margin: 0 auto 32px; }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 22px; border-radius: 8px; font-size: .95rem; font-weight: 700; text-decoration: none; transition: all .18s; }
+    .btn--blue { background: var(--blue); color: var(--white); }
+    .btn--blue:hover { background: var(--blue-dk); text-decoration: none; color: var(--white); }
+    .btn--ghost { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
+    .btn--ghost:hover { background: var(--blue-lt); text-decoration: none; }
+
+    /* ── Section headings ── */
+    .section-label { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+    .section-title { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; line-height: 1.25; margin-bottom: 16px; }
+    .section-subtitle { font-size: 1.05rem; color: var(--gray-5); max-width: 660px; margin-bottom: 40px; }
+
+    /* ── Alerts ── */
+    .alert { border-radius: var(--radius); padding: 20px 24px; display: flex; gap: 14px; align-items: flex-start; margin-bottom: 32px; }
+    .alert--blue { background: var(--blue-lt); border: 1px solid var(--blue-md); }
+    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+    .alert--blue p { color: var(--blue-dk); font-size: .95rem; }
+    .alert strong { font-weight: 700; }
+
+    /* ── Code blocks ── */
+    .code-block { background: #1f2937; border-radius: var(--radius); padding: 22px 24px; margin: 14px 0; overflow-x: auto; }
+    .code-block pre { font-family: "SF Mono", "Fira Code", monospace; font-size: .83rem; line-height: 1.8; color: #e2e8f0; white-space: pre; }
+    .code-label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-5); margin-bottom: 6px; }
+
+    /* ── Cards ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .card p { font-size: .875rem; color: var(--gray-5); }
+
+    /* ── Config skeleton ── */
+    .config-skeleton { background: #1f2937; border-radius: var(--radius); padding: 22px 24px; margin: 32px 0; overflow-x: auto; }
+    .config-skeleton pre { font-family: "SF Mono", "Fira Code", monospace; font-size: .8rem; line-height: 1.8; color: #e2e8f0; white-space: pre; }
+    .config-skeleton .ck { color: #94a3b8; }
+    .config-skeleton .kw { color: #7dd3fc; }
+    .config-skeleton .cm { color: #9ca3af; font-style: italic; }
+
+    /* ── Quick-find table ── */
+    .config-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin: 32px 0; }
+    .config-table th { text-align: left; padding: 11px 16px; background: var(--gray-2); border-bottom: 2px solid var(--gray-3); font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+    .config-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+    .config-table tr:last-child td { border-bottom: none; }
+    .config-table tr:hover td { background: var(--blue-lt); }
+    .config-table code { background: var(--gray-2); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono", monospace; font-size: .83rem; }
+    .config-table .link-badge { background: var(--blue-lt); color: var(--blue); font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+
+    /* ── Tips checklist ── */
+    .tips-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .tips-list li { display: flex; gap: 14px; align-items: flex-start; background: var(--white); border: 1px solid var(--gray-3); border-radius: 10px; padding: 16px 20px; box-shadow: var(--shadow); font-size: .9rem; }
+    .tips-list li .t-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+    .tips-list li strong { display: block; font-weight: 700; margin-bottom: 3px; }
+    .tips-list li span { color: var(--gray-5); font-size: .875rem; }
+
+    /* ── Related ── */
+    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .rel-card { border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); text-decoration: none; color: inherit; display: block; transition: transform .15s, box-shadow .15s; }
+    .rel-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); text-decoration: none; }
+    .rel-card .r-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .rel-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+    .rel-card p { font-size: .83rem; color: var(--gray-5); }
+
+    /* ── Newsletter / Footer ── */
+    .nl-section { background: linear-gradient(135deg, var(--blue-lt) 0%, #cffafe 100%); border-top: 1px solid var(--blue-md); border-bottom: 1px solid var(--blue-md); padding: 48px 24px; text-align: center; }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--blue); }
+    .nl-section > p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] { flex: 1; min-width: 200px; padding: 12px 16px; border: 1.5px solid var(--gray-3); border-radius: 8px; font-size: .95rem; font-family: inherit; background: var(--white); color: var(--gray-8); }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--blue); }
+    .nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 8px; padding: 12px 22px; font-size: .95rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .nl-form button:hover { background: var(--blue-dk); }
+    footer { background: var(--gray-8); color: #9ca3af; text-align: center; padding: 36px 24px; font-size: .875rem; }
+    footer a { color: #60a5fa; }
+    footer .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] { padding: 9px 14px; border-radius: 7px; border: 1px solid #374151; background: #374151; color: #f9fafb; font-size: .88rem; font-family: inherit; min-width: 200px; flex: 1; max-width: 280px; }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<!-- Nav -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="blog.html">Blog</a>
+      <div class="nav-section" role="group" aria-label="Learn">
+        <span class="nav-section-label">Learn</span>
+        <a href="gettingstarted.html">Get Started</a>
+        <a href="usecases.html">Use Cases</a>
+        <a href="automation.html">Automation</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="architecture.html">Architecture</a>
+        <div style="padding-left:12px;border-left:3px solid #ddd6fe;display:flex;flex-direction:column;gap:8px;margin:2px 0 4px;">
+          <span style="font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#7c3aed;">Workspace Files</span>
+          <a href="workspace-user.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">USER.md</a>
+          <a href="workspace-agents.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">AGENTS.md</a>
+          <a href="workspace-memory.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">MEMORY.md</a>
+          <a href="workspace-heartbeat.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">HEARTBEAT.md</a>
+        </div>
+        <a href="multiagent.html">Multi-Agent</a>
+        <a href="agentchannels.html" style="color:#0d9488;font-weight:700;"><span aria-hidden="true">📡</span> Agent Channels</a>
+        <a href="mcp.html" style="color:#4f46e5;font-weight:700;"><span aria-hidden="true">🔌</span> MCP</a>
+        <a href="voice.html" style="color:#16a34a;font-weight:700;"><span aria-hidden="true">🎙️</span> Voice Mode</a>
+        <a href="config-reference.html" aria-current="page" style="color:#0369a1;font-weight:700;"><span aria-hidden="true">⚙️</span> Config Reference</a>
+        <div style="padding-left:12px;border-left:3px solid #bae6fd;display:flex;flex-direction:column;gap:8px;margin:2px 0 4px;">
+          <span style="font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#0369a1;">Config Sections</span>
+          <a href="config-llm.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">llm { }</a>
+          <a href="config-gateway.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">gateway { }</a>
+          <a href="config-tools.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">tools { }</a>
+          <a href="config-memory.html" style="font-family:'SF Mono',monospace;font-size:.83rem;">memory { }</a>
+        </div>
+        <a href="nemoclaw.html">🟢 NemoClaw</a>
+        <a href="compare.html">Compare</a>
+        <a href="shopify.html" style="color:#14532d;font-weight:700;"><span aria-hidden="true">🛍️</span> Shopify</a>
+        <a href="security.html" style="color:#dc2626;font-weight:700;"><span aria-hidden="true">🛡️</span> Security</a>
+      </div>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html" style="color:#d97706;font-weight:700;"><span aria-hidden="true">💰</span> Pricing</a>
+      <a href="cheatsheet.html" style="color:#c2410c;font-weight:700;"><span aria-hidden="true">📋</span> Cheat Sheet</a>
+      <a href="glossary.html" style="color:#7c3aed;font-weight:700;"><span aria-hidden="true">📖</span> Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">⚙️ Config Reference</div>
+  <h1>Every Config Field.<br>Documented.</h1>
+  <p>openclaw.json controls everything — your LLM, channels, memory, tools, voice, and scheduling. This is the complete field-by-field reference.</p>
+  <div class="hero-cta">
+    <a href="#llm" class="btn btn--blue">Jump to llm { }</a>
+    <a href="#location" class="btn btn--ghost">Find your config file</a>
+  </div>
+</header>
+
+<!-- Where is your config? -->
+<section class="section" id="location">
+  <div class="container">
+    <div class="section-label">Getting Started</div>
+    <h2 class="section-title">Where Is Your Config File?</h2>
+    <p class="section-subtitle">OpenClaw looks for your configuration file in predictable places. You can override the default location if you need to.</p>
+
+    <div class="alert alert--blue">
+      <span class="alert-icon">📍</span>
+      <div>
+        <p><strong>Default location:</strong> <code>~/.openclaw/openclaw.json</code> — OpenClaw checks here first on every startup.</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;margin:32px 0;">
+      <div style="border:1px solid var(--gray-3);border-radius:var(--radius);padding:20px;background:var(--white);box-shadow:var(--shadow);">
+        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:8px;">Environment Variable</h3>
+        <p style="font-size:.875rem;color:var(--gray-5);margin-bottom:10px;">Override the default path with:</p>
+        <code style="background:var(--gray-2);padding:4px 8px;border-radius:4px;font-family:'SF Mono',monospace;font-size:.83rem;display:block;word-break:break-all;">OPENCLAW_CONFIG=/path/to/config.json</code>
+      </div>
+      <div style="border:1px solid var(--gray-3);border-radius:var(--radius);padding:20px;background:var(--white);box-shadow:var(--shadow);">
+        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:8px;">CLI Flag</h3>
+        <p style="font-size:.875rem;color:var(--gray-5);margin-bottom:10px;">Pass the config path at launch:</p>
+        <code style="background:var(--gray-2);padding:4px 8px;border-radius:4px;font-family:'SF Mono',monospace;font-size:.83rem;display:block;word-break:break-all;">openclaw --config /path/to/config.json</code>
+      </div>
+      <div style="border:1px solid var(--gray-3);border-radius:var(--radius);padding:20px;background:var(--white);box-shadow:var(--shadow);">
+        <h3 style="font-size:.95rem;font-weight:700;margin-bottom:8px;">Quick Edit</h3>
+        <p style="font-size:.875rem;color:var(--gray-5);margin-bottom:10px;">Open in your default editor:</p>
+        <code style="background:var(--gray-2);padding:4px 8px;border-radius:4px;font-family:'SF Mono',monospace;font-size:.83rem;display:block;word-break:break-all;">openclaw config edit</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Config skeleton -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">The Big Picture</div>
+    <h2 class="section-title">Full openclaw.json Structure</h2>
+    <p class="section-subtitle">Here's every top-level key in your configuration file. Each one controls a major subsystem.</p>
+
+    <div class="config-skeleton">
+      <pre>{
+  <span class="kw">"llm"</span>: { <span class="cm">/* → Model provider, API key, model name, temperature */</span> },
+  <span class="kw">"gateway"</span>: { <span class="cm">/* → Messaging channels: Telegram, WhatsApp, Slack, Discord */</span> },
+  <span class="kw">"tools"</span>: { <span class="cm">/* → Which tools/skills the agent can use, permissions */</span> },
+  <span class="kw">"memory"</span>: { <span class="cm">/* → Memory storage, retention, search, daily notes */</span> },
+  <span class="kw">"voice"</span>: { <span class="cm">/* → STT provider, TTS provider, wake word detection */</span> },
+  <span class="kw">"heartbeat"</span>: { <span class="cm">/* → Scheduled background tasks, cron jobs */</span> },
+  <span class="kw">"mcp"</span>: { <span class="cm">/* → MCP server connections and configuration */</span> },
+  <span class="kw">"logging"</span>: { <span class="cm">/* → Log level, output path, rotation */</span> }
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- Config sections cards -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Main Sections</div>
+    <h2 class="section-title">Config Section Details</h2>
+    <p class="section-subtitle">Click through to see every field, examples, and troubleshooting tips for each section.</p>
+
+    <div class="cards-grid">
+      <a href="config-llm.html" class="card" style="text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s;">
+        <div class="card-icon">🤖</div>
+        <h3>llm { }</h3>
+        <p>Provider, API key, model name, temperature, caching, token limits, retry behavior. Configure which LLM powers your agent.</p>
+        <div style="margin-top:12px;font-size:.85rem;color:var(--blue);font-weight:600;">View all fields →</div>
+      </a>
+      <a href="config-gateway.html" class="card" style="text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s;">
+        <div class="card-icon">📡</div>
+        <h3>gateway { }</h3>
+        <p>Telegram, WhatsApp, Slack, Discord, web UI. Control which messaging channels your agent listens on and responds through.</p>
+        <div style="margin-top:12px;font-size:.85rem;color:var(--blue);font-weight:600;">View all fields →</div>
+      </a>
+      <a href="config-tools.html" class="card" style="text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s;">
+        <div class="card-icon">🧰</div>
+        <h3>tools { }</h3>
+        <p>Enable/disable tools, permission levels, skill config, API integrations. Define what actions your agent is allowed to perform.</p>
+        <div style="margin-top:12px;font-size:.85rem;color:var(--blue);font-weight:600;">View all fields →</div>
+      </a>
+      <a href="config-memory.html" class="card" style="text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s;">
+        <div class="card-icon">🧠</div>
+        <h3>memory { }</h3>
+        <p>Storage path, retention policy, embedding model, daily notes, search config. Manage how your agent remembers conversations.</p>
+        <div style="margin-top:12px;font-size:.85rem;color:var(--blue);font-weight:600;">View all fields →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Format notes -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="section-label">Important</div>
+    <h2 class="section-title">Configuration Format & Tips</h2>
+
+    <ul class="tips-list">
+      <li>
+        <span class="t-icon">📄</span>
+        <div>
+          <strong>JSON only — no YAML</strong>
+          <span>OpenClaw uses strict JSON format. YAML, TOML, and other formats are not supported in current versions. Remember to quote all keys and values properly.</span>
+        </div>
+      </li>
+      <li>
+        <span class="t-icon">✅</span>
+        <div>
+          <strong>Comments are not allowed</strong>
+          <span>Standard JSON does not support comments. If you need to leave notes, create a separate `_notes.txt` file. Use <code>openclaw config validate</code> to check for syntax errors.</span>
+        </div>
+      </li>
+      <li>
+        <span class="t-icon">⚡</span>
+        <div>
+          <strong>Reload without restarting</strong>
+          <span>After editing your config, run <code>openclaw config reload</code> to apply changes immediately. You don't need to stop and restart the agent for most settings.</span>
+        </div>
+      </li>
+      <li>
+        <span class="t-icon">🔐</span>
+        <div>
+          <strong>Environment variable interpolation</strong>
+          <span>All string values support env var expansion using <code>"${VAR_NAME}"</code> syntax. Example: <code>"apiKey": "${OPENAI_API_KEY}"</code>. This keeps secrets out of your config file.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- Quick-find table -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Quick Reference</div>
+    <h2 class="section-title">All Top-Level Keys at a Glance</h2>
+    <p class="section-subtitle">Looking for a specific field? Use this table to find what you need and jump to the detail page.</p>
+
+    <table class="config-table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Type</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Detail Page</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>llm</code></td>
+          <td>object</td>
+          <td>required</td>
+          <td>Language model provider, API credentials, model selection, parameters</td>
+          <td><a href="config-llm.html" class="link-badge">llm { }</a></td>
+        </tr>
+        <tr>
+          <td><code>gateway</code></td>
+          <td>object</td>
+          <td>required</td>
+          <td>Messaging channels (Telegram, WhatsApp, Slack, Discord, web UI)</td>
+          <td><a href="config-gateway.html" class="link-badge">gateway { }</a></td>
+        </tr>
+        <tr>
+          <td><code>tools</code></td>
+          <td>object</td>
+          <td>{}</td>
+          <td>Tool/skill enablement, permissions, integrations, API keys</td>
+          <td><a href="config-tools.html" class="link-badge">tools { }</a></td>
+        </tr>
+        <tr>
+          <td><code>memory</code></td>
+          <td>object</td>
+          <td>see details</td>
+          <td>Conversation storage, embeddings, retention, search, daily notes</td>
+          <td><a href="config-memory.html" class="link-badge">memory { }</a></td>
+        </tr>
+        <tr>
+          <td><code>voice</code></td>
+          <td>object</td>
+          <td>{}</td>
+          <td>Speech-to-text (Whisper, native), text-to-speech (ElevenLabs, native), wake word</td>
+          <td><a href="voice.html" class="link-badge">Voice Mode</a></td>
+        </tr>
+        <tr>
+          <td><code>heartbeat</code></td>
+          <td>object</td>
+          <td>{}</td>
+          <td>Scheduled background tasks, cron expressions, periodic commands</td>
+          <td><a href="workspace-heartbeat.html" class="link-badge">HEARTBEAT.md</a></td>
+        </tr>
+        <tr>
+          <td><code>mcp</code></td>
+          <td>object</td>
+          <td>{}</td>
+          <td>Model Context Protocol server connections and configuration</td>
+          <td><a href="mcp.html" class="link-badge">MCP</a></td>
+        </tr>
+        <tr>
+          <td><code>logging</code></td>
+          <td>object</td>
+          <td>see details</td>
+          <td>Log level (debug/info/warn/error), output file path, rotation</td>
+          <td>see config-reference</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Related -->
+<section class="section section--alt" id="related">
+  <div class="container">
+    <div class="section-label">Keep Learning</div>
+    <h2 class="section-title">Related Topics</h2>
+    <div class="rel-grid">
+      <a href="gettingstarted.html" class="rel-card" aria-label="Getting Started guide">
+        <div class="r-icon">🚀</div>
+        <h3>Get Started</h3>
+        <p>New to OpenClaw? Start here to set up the core system and config basics.</p>
+      </a>
+      <a href="voice.html" class="rel-card" aria-label="Voice Mode setup and configuration">
+        <div class="r-icon">🎙️</div>
+        <h3>Voice Mode</h3>
+        <p>Enable speech-to-text and text-to-speech in your config for hands-free interaction.</p>
+      </a>
+      <a href="workspace-memory.html" class="rel-card" aria-label="MEMORY.md workspace guide">
+        <div class="r-icon">🧠</div>
+        <h3>MEMORY.md</h3>
+        <p>Deep dive into how OpenClaw remembers conversations and stores long-term context.</p>
+      </a>
+      <a href="agentchannels.html" class="rel-card" aria-label="Agent Channels configuration">
+        <div class="r-icon">📡</div>
+        <h3>Agent Channels</h3>
+        <p>Configure Telegram, WhatsApp, Slack, and other messaging integrations.</p>
+      </a>
+      <a href="mcp.html" class="rel-card" aria-label="Model Context Protocol setup">
+        <div class="r-icon">🔌</div>
+        <h3>MCP</h3>
+        <p>Connect external tools and data sources via the Model Context Protocol.</p>
+      </a>
+      <a href="cheatsheet.html" class="rel-card" aria-label="OpenClaw command cheat sheet">
+        <div class="r-icon">📋</div>
+        <h3>Cheat Sheet</h3>
+        <p>Quick command reference including config validation, reloading, and CLI flags.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Newsletter -->
+<section class="nl-section" aria-label="Newsletter signup">
+  <div class="container">
+    <h2>Get <em>Config Tips</em> by Email</h2>
+    <p>Best practices, advanced patterns, and common pitfalls — every week in your inbox.</p>
+    <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank" aria-label="Newsletter signup form">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+    <p style="margin-top:12px; font-size:.78rem; color:var(--gray-5);">No spam. Unsubscribe any time.</p>
+  </div>
+</section>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project or Peter Steinberger.</p>
+</footer>
+
+</body>
+</html>
