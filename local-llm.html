@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Run OpenClaw Free with a Local LLM — No API Key Needed 2026</title>
+  <meta name="description" content="Run OpenClaw completely free using a local LLM like Ollama, LM Studio, or Jan.ai. Step-by-step setup guides, hardware requirements, model recommendations, and config examples." />
+  <meta name="keywords" content="OpenClaw local LLM, run OpenClaw free, Ollama OpenClaw, LM Studio OpenClaw, local AI agent, OpenClaw no API key, private AI agent, offline AI agent, Jan.ai OpenClaw" />
+  <link rel="canonical" href="https://learnopenclaw.org/local-llm.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Run OpenClaw Free with a Local LLM — No API Key Needed 2026" />
+  <meta property="og:description" content="Run OpenClaw completely free using a local LLM. Step-by-step setup for Ollama, LM Studio, Jan.ai, and GPT4All — no API costs, no data sent to the cloud." />
+  <meta property="og:url" content="https://learnopenclaw.org/local-llm.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Run OpenClaw Free with a Local LLM — No API Key Needed" />
+  <meta name="twitter:description" content="Step-by-step setup for Ollama, LM Studio, Jan.ai with OpenClaw. No API costs, full privacy, works offline." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Run OpenClaw Free with a Local LLM — No API Key Needed",
+    "description": "Complete guide to running OpenClaw with a local LLM using Ollama, LM Studio, Jan.ai, or GPT4All. Covers hardware requirements, model selection, and OpenClaw config.",
+    "url": "https://learnopenclaw.org/local-llm.html",
+    "dateModified": "2026-03-22",
+    "author": { "@type": "Organization", "name": "LearnOpenClaw" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home",  "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "Local LLM", "item": "https://learnopenclaw.org/local-llm.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:     #7c3aed;
+      --purple-lt:  #f5f3ff;
+      --purple-md:  #ddd6fe;
+      --purple-dk:  #5b21b6;
+      --green:      #16a34a;
+      --green-lt:   #f0fdf4;
+      --green-md:   #bbf7d0;
+      --blue:       #2563eb;
+      --blue-lt:    #eff6ff;
+      --blue-md:    #bfdbfe;
+      --amber:      #d97706;
+      --amber-lt:   #fffbeb;
+      --red:        #dc2626;
+      --red-lt:     #fef2f2;
+      --gray-1:     #f9fafb;
+      --gray-2:     #f3f4f6;
+      --gray-3:     #e5e7eb;
+      --gray-5:     #6b7280;
+      --gray-7:     #374151;
+      --gray-8:     #1f2937;
+      --white:      #ffffff;
+      --radius:     12px;
+      --shadow:     0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── ADA: Skip nav ── */
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--blue); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus, button:focus {
+      outline: 3px solid var(--blue);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .claw { font-size: 1.4rem; }
+
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--blue); }
+    .nav-links a[aria-current="page"] { color: #5b21b6; font-weight: 700; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #2e1065 0%, #4c1d95 40%, #7c3aed 100%);
+      color: var(--white);
+      padding: 72px 24px 64px;
+    }
+    .hero-inner { max-width: 820px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      color: var(--white); font-size: .75rem; font-weight: 700;
+      letter-spacing: .07em; padding: 4px 14px; border-radius: 100px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(1.9rem, 5vw, 2.8rem);
+      font-weight: 800; line-height: 1.18;
+      margin-bottom: 18px;
+    }
+    .hero h1 em { font-style: normal; color: #c4b5fd; }
+    .hero-sub { font-size: 1.1rem; color: #ddd6fe; max-width: 620px; margin-bottom: 32px; }
+    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      color: #ede9fe; font-size: .82rem; font-weight: 600;
+      padding: 5px 14px; border-radius: 100px;
+    }
+
+    /* ── Benefits strip ── */
+    .benefits {
+      background: var(--purple-lt);
+      border-bottom: 1px solid var(--purple-md);
+      padding: 20px 24px;
+    }
+    .benefits-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;
+    }
+    .benefit { display: flex; align-items: center; gap: 8px; font-size: .88rem; font-weight: 600; color: var(--purple-dk); }
+    .benefit-icon { font-size: 1.1rem; }
+
+    /* ── Main ── */
+    main { padding: 52px 24px 80px; }
+
+    /* ── Section headings ── */
+    .section-title {
+      font-size: 1.45rem; font-weight: 800; color: var(--gray-8);
+      margin: 56px 0 8px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-3);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title:first-of-type { margin-top: 0; }
+    .section-title .st-icon { font-size: 1.4rem; }
+    .section-lead { font-size: .97rem; color: var(--gray-5); margin-bottom: 28px; }
+
+    /* ── Callouts ── */
+    .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; font-size: .93rem; }
+    .callout-green { background: var(--green-lt); border-left: 4px solid var(--green); }
+    .callout-amber { background: var(--amber-lt); border-left: 4px solid var(--amber); }
+    .callout-blue  { background: var(--blue-lt);  border-left: 4px solid var(--blue); }
+    .callout-purple{ background: var(--purple-lt); border-left: 4px solid var(--purple); }
+    .callout strong { font-weight: 700; color: var(--gray-8); display: block; margin-bottom: 4px; }
+    .callout p, .callout li { color: var(--gray-7); line-height: 1.6; }
+    .callout ul { margin-left: 1.2rem; margin-top: 6px; }
+    .callout li { margin-bottom: 3px; }
+
+    /* ── Option cards (Ollama, LM Studio, etc.) ── */
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 24px 0 32px;
+    }
+    .option-card {
+      border: 2px solid var(--gray-3);
+      border-radius: var(--radius);
+      padding: 22px;
+      transition: border-color .2s, box-shadow .2s;
+      position: relative;
+    }
+    .option-card:hover { border-color: var(--purple-md); box-shadow: 0 4px 20px rgba(124,58,237,.1); }
+    .option-card.recommended { border-color: var(--purple); }
+    .rec-badge {
+      position: absolute; top: -1px; right: 16px;
+      background: var(--purple); color: var(--white);
+      font-size: .67rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: .06em; padding: 3px 10px;
+      border-radius: 0 0 6px 6px;
+    }
+    .option-logo { font-size: 2rem; margin-bottom: 10px; }
+    .option-name { font-size: 1.05rem; font-weight: 800; color: var(--gray-8); margin-bottom: 4px; }
+    .option-tagline { font-size: .85rem; color: var(--gray-5); margin-bottom: 14px; line-height: 1.4; }
+    .option-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .tag {
+      font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;
+    }
+    .tag-free    { background: var(--green-lt);  color: var(--green); }
+    .tag-cli     { background: var(--gray-2);    color: var(--gray-7); }
+    .tag-gui     { background: var(--blue-lt);   color: var(--blue); }
+    .tag-win     { background: #eff6ff;           color: #1d4ed8; }
+    .tag-mac     { background: #f5f3ff;           color: var(--purple-dk); }
+    .tag-linux   { background: #fef3c7;           color: #92400e; }
+    .option-pros { list-style: none; padding: 0; font-size: .88rem; }
+    .option-pros li { display: flex; gap: 6px; color: var(--gray-7); margin-bottom: 5px; align-items: flex-start; }
+    .option-pros li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .option-link { display: inline-block; margin-top: 14px; font-size: .85rem; font-weight: 600; color: var(--purple); }
+    .option-link:hover { text-decoration: underline; }
+
+    /* ── Steps ── */
+    .steps { list-style: none; counter-reset: step-counter; padding: 0; margin: 20px 0; }
+    .step-item {
+      counter-increment: step-counter;
+      display: flex; gap: 16px; align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--purple); color: var(--white);
+      font-size: .85rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-num::before { content: counter(step-counter); }
+    .step-content { flex: 1; padding-top: 4px; }
+    .step-content strong { display: block; font-size: .97rem; margin-bottom: 4px; color: var(--gray-8); }
+    .step-content p, .step-content li { font-size: .93rem; color: var(--gray-7); }
+    .step-content ul { margin-left: 1.2rem; margin-top: 6px; }
+    .step-content li { margin-bottom: 3px; }
+
+    /* ── Code blocks ── */
+    code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .85em; background: var(--gray-2);
+      color: var(--gray-8); padding: 2px 6px; border-radius: 4px;
+    }
+    pre {
+      background: #1e1b4b; color: #e0e7ff;
+      border-radius: 10px; padding: 18px 20px;
+      overflow-x: auto; font-size: .87rem; line-height: 1.7;
+      margin: 12px 0 20px;
+    }
+    pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+    .c-key { color: #a5b4fc; }
+    .c-val { color: #86efac; }
+    .c-str { color: #f9a8d4; }
+    .c-num { color: #fdba74; }
+    .c-com { color: #6366f1; font-style: italic; }
+    .c-cmd { color: #67e8f9; }
+
+    /* ── Hardware table ── */
+    .hw-table-wrap { overflow-x: auto; margin: 16px 0 28px; border-radius: 10px; border: 1px solid var(--gray-3); }
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    thead th { background: var(--purple); color: var(--white); text-align: left; padding: 10px 14px; font-weight: 700; white-space: nowrap; }
+    thead th:first-child { border-radius: 10px 0 0 0; }
+    thead th:last-child  { border-radius: 0 10px 0 0; }
+    tbody tr:nth-child(even) { background: var(--gray-1); }
+    tbody td { padding: 10px 14px; border-top: 1px solid var(--gray-2); vertical-align: top; color: var(--gray-7); }
+    tbody td:first-child { font-weight: 700; color: var(--gray-8); }
+    .tier-badge {
+      display: inline-block; font-size: .7rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+    }
+    .tier-basic  { background: var(--green-lt);  color: var(--green); }
+    .tier-mid    { background: var(--blue-lt);   color: var(--blue); }
+    .tier-power  { background: var(--purple-lt); color: var(--purple-dk); }
+    .tier-no     { background: var(--red-lt);    color: var(--red); }
+    .check { color: var(--green); font-weight: 700; }
+    .cross { color: var(--red);   font-weight: 700; }
+
+    /* ── Model comparison table ── */
+    .model-table-wrap { overflow-x: auto; margin: 16px 0 28px; border-radius: 10px; border: 1px solid var(--gray-3); }
+
+    /* ── Provider tabs ── */
+    .tab-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0; border-bottom: 2px solid var(--gray-3); }
+    .tab-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: .88rem; font-weight: 600;
+      color: var(--gray-5); padding: 9px 18px;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover { color: var(--purple); }
+    .tab-btn.active { color: var(--purple-dk); border-bottom-color: var(--purple); }
+    .tab-panel { display: none; padding: 24px 0; }
+    .tab-panel.active { display: block; }
+
+    /* ── Comparison grid (local vs cloud) ── */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin: 20px 0 32px;
+    }
+    .compare-col {
+      border-radius: var(--radius); padding: 22px;
+      border: 1px solid var(--gray-3);
+    }
+    .compare-col.local  { border-color: var(--green);  background: var(--green-lt); }
+    .compare-col.cloud  { border-color: var(--blue-md); background: var(--blue-lt); }
+    .compare-col h3 { font-size: 1rem; font-weight: 800; margin-bottom: 14px; }
+    .compare-col.local h3 { color: var(--green); }
+    .compare-col.cloud h3 { color: var(--blue); }
+    .compare-list { list-style: none; padding: 0; }
+    .compare-list li { display: flex; gap: 8px; align-items: flex-start; font-size: .88rem; color: var(--gray-7); margin-bottom: 8px; }
+    .compare-list li .ci { flex-shrink: 0; font-size: .9rem; }
+
+    @media (max-width: 600px) {
+      .compare-grid { grid-template-columns: 1fr; }
+      .option-grid  { grid-template-columns: 1fr; }
+      .hero { padding: 48px 20px 44px; }
+    }
+
+    /* ── Related links ── */
+    .related { background: var(--gray-1); border-radius: var(--radius); padding: 28px; margin-top: 52px; }
+    .related h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; }
+    .related-links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .related-link {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 16px; border-radius: 8px;
+      background: var(--white); border: 1px solid var(--gray-3);
+      font-size: .88rem; font-weight: 600; color: var(--gray-7);
+      text-decoration: none; transition: border-color .15s, color .15s;
+    }
+    .related-link:hover { border-color: var(--purple-md); color: var(--purple); text-decoration: none; }
+
+    /* ── Footer ── */
+    footer { background: var(--gray-8); color: #9ca3af; padding: 32px 24px; text-align: center; font-size: .875rem; }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; margin-bottom: 16px; }
+    .footer-links a { color: #9ca3af; }
+    .footer-links a:hover { color: var(--white); }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="learn.html">Learn</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero" role="banner">
+    <div class="hero-inner">
+      <div class="hero-badge"><span aria-hidden="true">🆓</span> Zero API Cost</div>
+      <h1>Run OpenClaw <em>Completely Free</em><br>with a Local LLM</h1>
+      <p class="hero-sub">No API key. No monthly bill. No data sent to the cloud. Your AI agent, running entirely on your own hardware using open-source models like Llama, Mistral, and Phi.</p>
+      <div class="hero-pills" role="list" aria-label="Key benefits">
+        <span class="pill" role="listitem"><span aria-hidden="true">💰</span> $0/month</span>
+        <span class="pill" role="listitem"><span aria-hidden="true">🔒</span> 100% private</span>
+        <span class="pill" role="listitem"><span aria-hidden="true">✈️</span> Works offline</span>
+        <span class="pill" role="listitem"><span aria-hidden="true">🖥️</span> Runs on your hardware</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Benefits strip -->
+  <div class="benefits" role="region" aria-label="Feature highlights">
+    <div class="benefits-inner">
+      <div class="benefit"><span class="benefit-icon" aria-hidden="true">🚀</span> Set up in under 10 minutes</div>
+      <div class="benefit"><span class="benefit-icon" aria-hidden="true">🤖</span> Works with Llama, Mistral, Phi, Gemma &amp; more</div>
+      <div class="benefit"><span class="benefit-icon" aria-hidden="true">💻</span> Runs on Mac, Windows, and Linux</div>
+      <div class="benefit"><span class="benefit-icon" aria-hidden="true">⚡</span> GPU acceleration supported</div>
+    </div>
+  </div>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- What is a local LLM? -->
+      <h2 class="section-title" id="what-is-local-llm">
+        <span class="st-icon" aria-hidden="true">💡</span> What Is a Local LLM?
+      </h2>
+      <p class="section-lead">A quick explainer before we dive into setup.</p>
+
+      <p style="color:var(--gray-7);margin-bottom:16px;">When you use OpenClaw with a service like Claude or ChatGPT, every message you send goes over the internet to that company's servers — and you pay per token. A <strong>local LLM</strong> (Large Language Model) runs the AI model directly on your own computer instead. Nothing leaves your machine.</p>
+
+      <div class="compare-grid" aria-label="Local LLM vs Cloud API comparison">
+        <div class="compare-col local">
+          <h3>🖥️ Local LLM</h3>
+          <ul class="compare-list">
+            <li><span class="ci">✅</span> Completely free — no API costs ever</li>
+            <li><span class="ci">✅</span> 100% private — data never leaves your machine</li>
+            <li><span class="ci">✅</span> Works offline — no internet needed</li>
+            <li><span class="ci">✅</span> No rate limits — run as many queries as you want</li>
+            <li><span class="ci">⚠️</span> Slower than cloud models on most hardware</li>
+            <li><span class="ci">⚠️</span> Requires 8GB+ RAM (16GB+ recommended)</li>
+            <li><span class="ci">⚠️</span> Smaller models = less capable than GPT-4/Claude Sonnet</li>
+          </ul>
+        </div>
+        <div class="compare-col cloud">
+          <h3>☁️ Cloud API (Claude, GPT-4, etc.)</h3>
+          <ul class="compare-list">
+            <li><span class="ci">✅</span> More capable, especially for complex reasoning</li>
+            <li><span class="ci">✅</span> Fast responses — no hardware bottleneck</li>
+            <li><span class="ci">✅</span> Always up to date with latest models</li>
+            <li><span class="ci">💸</span> Costs $5–$30/month depending on usage</li>
+            <li><span class="ci">🌐</span> Requires internet connection</li>
+            <li><span class="ci">🔒</span> Data processed on provider's servers</li>
+            <li><span class="ci">⏳</span> Subject to rate limits on free tiers</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-purple">
+        <strong>💡 You don't have to choose one forever</strong>
+        <p>You can switch between local and cloud models in your OpenClaw config at any time — even run different models for different tasks. Many users start with a local model to experiment for free, then switch to a cloud model for production use.</p>
+      </div>
+
+      <!-- Hardware requirements -->
+      <h2 class="section-title" id="hardware">
+        <span class="st-icon" aria-hidden="true">💻</span> Hardware Requirements
+      </h2>
+      <p class="section-lead">What you need before picking a model. The key number is your available RAM (and VRAM if you have a GPU).</p>
+
+      <div class="hw-table-wrap">
+        <table aria-label="Hardware requirements by tier">
+          <thead>
+            <tr>
+              <th scope="col">Your Machine</th>
+              <th scope="col">RAM</th>
+              <th scope="col">GPU?</th>
+              <th scope="col">Tier</th>
+              <th scope="col">Best Models</th>
+              <th scope="col">Expected Speed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Older laptop / basic PC</td>
+              <td>8 GB</td>
+              <td><span class="cross" aria-label="No">✗</span> CPU only</td>
+              <td><span class="tier-badge tier-basic">Basic</span></td>
+              <td>Phi-3 Mini (3.8B), Gemma 2B</td>
+              <td>3–8 tokens/sec</td>
+            </tr>
+            <tr>
+              <td>Modern laptop / mid PC</td>
+              <td>16 GB</td>
+              <td><span class="cross" aria-label="No">✗</span> CPU only</td>
+              <td><span class="tier-badge tier-mid">Mid</span></td>
+              <td>Llama 3.1 8B, Mistral 7B, Phi-3 Medium</td>
+              <td>8–20 tokens/sec</td>
+            </tr>
+            <tr>
+              <td>Mac with Apple Silicon (M1/M2/M3)</td>
+              <td>8–24 GB unified</td>
+              <td><span class="check" aria-label="Yes">✓</span> Integrated GPU</td>
+              <td><span class="tier-badge tier-power">Power</span></td>
+              <td>Llama 3.1 8B, Mistral 7B, Qwen2.5 7B</td>
+              <td>25–50 tokens/sec</td>
+            </tr>
+            <tr>
+              <td>PC with dedicated GPU (RTX 3060+)</td>
+              <td>16 GB+</td>
+              <td><span class="check" aria-label="Yes">✓</span> 8–12 GB VRAM</td>
+              <td><span class="tier-badge tier-power">Power</span></td>
+              <td>Llama 3.1 8B–13B, Mixtral 8x7B</td>
+              <td>40–80 tokens/sec</td>
+            </tr>
+            <tr>
+              <td>PC with RTX 4090 / workstation GPU</td>
+              <td>32 GB+</td>
+              <td><span class="check" aria-label="Yes">✓</span> 24 GB VRAM</td>
+              <td><span class="tier-badge tier-power">Power</span></td>
+              <td>Llama 3.1 70B (Q4), Mixtral, Qwen 72B</td>
+              <td>30–60 tokens/sec on large models</td>
+            </tr>
+            <tr>
+              <td>Low-end PC / Chromebook</td>
+              <td>4 GB or less</td>
+              <td><span class="cross" aria-label="No">✗</span></td>
+              <td><span class="tier-badge tier-no">Not recommended</span></td>
+              <td>Use Groq free tier instead (cloud but free)</td>
+              <td>—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-amber">
+        <strong>⚠️ RAM tip: always use a quantized model</strong>
+        <p>A "quantized" model (e.g. <code>q4_0</code> or <code>q5_k_m</code>) is a compressed version that uses 3–4× less RAM with minimal quality loss. On 16 GB RAM, a <code>q4_0</code> Llama 3.1 8B uses ~5 GB rather than ~16 GB. Always pick a quantized version unless you have 32+ GB RAM.</p>
+      </div>
+
+      <!-- Software options -->
+      <h2 class="section-title" id="options">
+        <span class="st-icon" aria-hidden="true">🛠️</span> Local LLM Software Options
+      </h2>
+      <p class="section-lead">These tools handle downloading, running, and serving local models. OpenClaw connects to any of them. Pick the one that suits you best.</p>
+
+      <div class="option-grid">
+
+        <!-- Ollama -->
+        <div class="option-card recommended" aria-labelledby="ollama-name">
+          <div class="rec-badge">Recommended</div>
+          <div class="option-logo" aria-hidden="true">🦙</div>
+          <div class="option-name" id="ollama-name">Ollama</div>
+          <div class="option-tagline">The easiest way to run local models. One command to download and run any model — no config needed.</div>
+          <div class="option-tags" aria-label="Ollama tags">
+            <span class="tag tag-free">Free</span>
+            <span class="tag tag-cli">CLI</span>
+            <span class="tag tag-mac">Mac</span>
+            <span class="tag tag-win">Windows</span>
+            <span class="tag tag-linux">Linux</span>
+          </div>
+          <ul class="option-pros" aria-label="Ollama advantages">
+            <li>One command to pull &amp; run any model</li>
+            <li>Automatic GPU acceleration (Apple Silicon, NVIDIA, AMD)</li>
+            <li>Exposes an OpenAI-compatible API on port 11434</li>
+            <li>Huge model library — Llama, Mistral, Phi, Gemma and more</li>
+            <li>Lightest on resources, fastest startup time</li>
+          </ul>
+          <a href="https://ollama.com" target="_blank" rel="noopener" class="option-link">ollama.com →</a>
+        </div>
+
+        <!-- LM Studio -->
+        <div class="option-card" aria-labelledby="lmstudio-name">
+          <div class="option-logo" aria-hidden="true">🖥️</div>
+          <div class="option-name" id="lmstudio-name">LM Studio</div>
+          <div class="option-tagline">A polished desktop app with a built-in model browser, chat interface, and local server — great for beginners who prefer a GUI.</div>
+          <div class="option-tags" aria-label="LM Studio tags">
+            <span class="tag tag-free">Free</span>
+            <span class="tag tag-gui">GUI</span>
+            <span class="tag tag-mac">Mac</span>
+            <span class="tag tag-win">Windows</span>
+            <span class="tag tag-linux">Linux</span>
+          </div>
+          <ul class="option-pros" aria-label="LM Studio advantages">
+            <li>Visual model browser — search and download from HuggingFace</li>
+            <li>Built-in chat UI to test models before connecting to OpenClaw</li>
+            <li>OpenAI-compatible local server (enable in app settings)</li>
+            <li>GPU acceleration on Mac (Metal), Windows (CUDA / Vulkan)</li>
+          </ul>
+          <a href="https://lmstudio.ai" target="_blank" rel="noopener" class="option-link">lmstudio.ai →</a>
+        </div>
+
+        <!-- Jan.ai -->
+        <div class="option-card" aria-labelledby="janai-name">
+          <div class="option-logo" aria-hidden="true">🌙</div>
+          <div class="option-name" id="janai-name">Jan.ai</div>
+          <div class="option-tagline">An open-source ChatGPT alternative that runs locally. Clean UI, model hub, and a local API server built in.</div>
+          <div class="option-tags" aria-label="Jan.ai tags">
+            <span class="tag tag-free">Free</span>
+            <span class="tag tag-gui">GUI</span>
+            <span class="tag tag-mac">Mac</span>
+            <span class="tag tag-win">Windows</span>
+            <span class="tag tag-linux">Linux</span>
+          </div>
+          <ul class="option-pros" aria-label="Jan.ai advantages">
+            <li>Familiar chat interface — easy for non-technical users</li>
+            <li>One-click model install from their curated hub</li>
+            <li>Runs an OpenAI-compatible API server at localhost:1337</li>
+            <li>Supports extensions for custom integrations</li>
+          </ul>
+          <a href="https://jan.ai" target="_blank" rel="noopener" class="option-link">jan.ai →</a>
+        </div>
+
+        <!-- GPT4All -->
+        <div class="option-card" aria-labelledby="gpt4all-name">
+          <div class="option-logo" aria-hidden="true">🤖</div>
+          <div class="option-name" id="gpt4all-name">GPT4All</div>
+          <div class="option-tagline">Designed for simplicity. Excellent on low-end hardware, with a built-in local docs feature for RAG workflows.</div>
+          <div class="option-tags" aria-label="GPT4All tags">
+            <span class="tag tag-free">Free</span>
+            <span class="tag tag-gui">GUI</span>
+            <span class="tag tag-mac">Mac</span>
+            <span class="tag tag-win">Windows</span>
+            <span class="tag tag-linux">Linux</span>
+          </div>
+          <ul class="option-pros" aria-label="GPT4All advantages">
+            <li>Best performance on CPU-only machines</li>
+            <li>Built-in "LocalDocs" — chat with your own files</li>
+            <li>Very low resource usage — works on older hardware</li>
+            <li>Provides an OpenAI-compatible API server</li>
+          </ul>
+          <a href="https://gpt4all.io" target="_blank" rel="noopener" class="option-link">gpt4all.io →</a>
+        </div>
+
+      </div>
+
+      <div class="callout callout-green">
+        <strong>🎁 No GPU? Try Groq's free tier instead</strong>
+        <p>Groq offers free API access to Llama 3.1 and Mixtral with extremely fast inference (using their custom LPU hardware). It's not truly local, but it's <strong>free</strong>, requires no setup, and is much faster than running models on a CPU. Use <code>"provider": "groq"</code> in your OpenClaw config with a free Groq API key from <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a>.</p>
+      </div>
+
+      <!-- Setup guides -->
+      <h2 class="section-title" id="setup">
+        <span class="st-icon" aria-hidden="true">⚙️</span> Step-by-Step Setup
+      </h2>
+      <p class="section-lead">Select your local LLM software below for a tailored setup guide.</p>
+
+      <div role="tablist" aria-label="Setup guides by provider" class="tab-bar" id="setup-tabs">
+        <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="tab-ollama"   id="btn-ollama">🦙 Ollama</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-lmstudio" id="btn-lmstudio">🖥️ LM Studio</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-janai"    id="btn-janai">🌙 Jan.ai</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-groq"     id="btn-groq">⚡ Groq (free tier)</button>
+      </div>
+
+      <!-- Ollama tab -->
+      <div class="tab-panel active" id="tab-ollama" role="tabpanel" aria-labelledby="btn-ollama">
+        <ol class="steps" aria-label="Ollama setup steps">
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Install Ollama</strong>
+              <p>Download from <a href="https://ollama.com" target="_blank" rel="noopener">ollama.com</a> and run the installer. On Mac, drag to Applications. On Linux, run the one-liner:</p>
+              <pre><code><span class="c-cmd">curl -fsSL https://ollama.com/install.sh | sh</span></code></pre>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Pull a model</strong>
+              <p>Open your terminal and pull a model. For most machines, Llama 3.1 8B is the best starting point:</p>
+              <pre><code><span class="c-cmd">ollama pull llama3.1:8b</span>
+
+<span class="c-com"># For low-end hardware (under 8GB RAM), use a smaller model:</span>
+<span class="c-cmd">ollama pull phi3:mini</span>
+
+<span class="c-com"># For Apple Silicon / powerful GPU, try a larger model:</span>
+<span class="c-cmd">ollama pull llama3.1:8b-instruct-q5_k_m</span></code></pre>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Verify Ollama is running</strong>
+              <p>Ollama starts automatically after install. Confirm it's running and your model responds:</p>
+              <pre><code><span class="c-cmd">ollama run llama3.1:8b "Say hello in one sentence"</span></code></pre>
+              <p>You should get a response within a few seconds.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Configure OpenClaw to use Ollama</strong>
+              <p>Add this to your <code>openclaw.json</code> (or <code>config.yaml</code>):</p>
+              <pre><code>{
+  <span class="c-key">"llm"</span>: {
+    <span class="c-key">"provider"</span>: <span class="c-str">"ollama"</span>,
+    <span class="c-key">"model"</span>: <span class="c-str">"llama3.1:8b"</span>,
+    <span class="c-key">"baseUrl"</span>: <span class="c-str">"http://localhost:11434"</span>
+    <span class="c-com">// No apiKey needed!</span>
+  }
+}</code></pre>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Start OpenClaw</strong>
+              <p>Run <code>openclaw start</code> from your project folder. Your agent is now running 100% locally at no cost.</p>
+            </div>
+          </li>
+        </ol>
+        <div class="callout callout-blue">
+          <strong>📋 View all available Ollama models</strong>
+          <p>Run <code>ollama list</code> to see your downloaded models. Browse the full library at <a href="https://ollama.com/library" target="_blank" rel="noopener">ollama.com/library</a> — there are hundreds of models including coding specialists, multilingual models, and vision models.</p>
+        </div>
+      </div>
+
+      <!-- LM Studio tab -->
+      <div class="tab-panel" id="tab-lmstudio" role="tabpanel" aria-labelledby="btn-lmstudio">
+        <ol class="steps" aria-label="LM Studio setup steps">
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Download and install LM Studio</strong>
+              <p>Go to <a href="https://lmstudio.ai" target="_blank" rel="noopener">lmstudio.ai</a>, download for your OS, and install it. Launch the app.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Download a model</strong>
+              <p>Click the <strong>Search</strong> tab (magnifying glass icon). Search for <code>llama3.1</code> or <code>mistral</code>, pick a <code>Q4_K_M</code> quantized version for your RAM size, and click Download.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Start the local API server</strong>
+              <p>Go to the <strong>Local Server</strong> tab (the <code>&lt;-&gt;</code> icon). Select your downloaded model from the dropdown, then click <strong>Start Server</strong>. It runs on <code>http://localhost:1234</code> by default.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Configure OpenClaw</strong>
+              <p>Add this to your <code>openclaw.json</code>:</p>
+              <pre><code>{
+  <span class="c-key">"llm"</span>: {
+    <span class="c-key">"provider"</span>: <span class="c-str">"openai"</span>,
+    <span class="c-key">"model"</span>: <span class="c-str">"local-model"</span>,
+    <span class="c-key">"apiKey"</span>: <span class="c-str">"lm-studio"</span>,
+    <span class="c-key">"baseUrl"</span>: <span class="c-str">"http://localhost:1234/v1"</span>
+  }
+}</code></pre>
+              <p style="margin-top:8px;font-size:.88rem;color:var(--gray-5);">LM Studio uses the OpenAI API format. The <code>apiKey</code> value doesn't matter — just set it to anything non-empty.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Jan.ai tab -->
+      <div class="tab-panel" id="tab-janai" role="tabpanel" aria-labelledby="btn-janai">
+        <ol class="steps" aria-label="Jan.ai setup steps">
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Download and install Jan.ai</strong>
+              <p>Go to <a href="https://jan.ai" target="_blank" rel="noopener">jan.ai</a>, download the installer for your OS, and install it. Launch the Jan app.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Download a model from the Hub</strong>
+              <p>Click <strong>Hub</strong> in the left sidebar. Browse or search for a model (Llama 3.1 8B or Mistral 7B are good starting points). Click <strong>Download</strong> next to a <code>Q4</code> variant.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Enable the local API server</strong>
+              <p>Go to <strong>Settings</strong> (gear icon) → <strong>Advanced</strong> → turn on <strong>API Server</strong>. The server starts on <code>http://localhost:1337</code>.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Configure OpenClaw</strong>
+              <pre><code>{
+  <span class="c-key">"llm"</span>: {
+    <span class="c-key">"provider"</span>: <span class="c-str">"openai"</span>,
+    <span class="c-key">"model"</span>: <span class="c-str">"mistral-7b-instruct-v0.2-q4"</span>,
+    <span class="c-key">"apiKey"</span>: <span class="c-str">"jan-local"</span>,
+    <span class="c-key">"baseUrl"</span>: <span class="c-str">"http://localhost:1337/v1"</span>
+  }
+}</code></pre>
+              <p style="margin-top:8px;font-size:.88rem;color:var(--gray-5);">Use the exact model name shown in Jan.ai — it appears in the model card. The <code>apiKey</code> value can be anything.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Groq tab -->
+      <div class="tab-panel" id="tab-groq" role="tabpanel" aria-labelledby="btn-groq">
+        <div class="callout callout-purple" style="margin-bottom:24px;">
+          <strong>⚡ Groq isn't local — but it's free and incredibly fast</strong>
+          <p>Groq runs open-source models (Llama, Mixtral, Gemma) on their custom LPU chips in the cloud. It's free with generous rate limits, has no data retention by default, and is dramatically faster than running models locally on CPU. Great if your hardware is limited.</p>
+        </div>
+        <ol class="steps" aria-label="Groq setup steps">
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Get a free Groq API key</strong>
+              <p>Sign up at <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a> (free, no credit card needed). Go to <strong>API Keys</strong> and create a new key.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Configure OpenClaw</strong>
+              <pre><code>{
+  <span class="c-key">"llm"</span>: {
+    <span class="c-key">"provider"</span>: <span class="c-str">"groq"</span>,
+    <span class="c-key">"model"</span>: <span class="c-str">"llama-3.1-8b-instant"</span>,
+    <span class="c-key">"apiKey"</span>: <span class="c-str">"$GROQ_API_KEY"</span>
+  }
+}</code></pre>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-hidden="true"></div>
+            <div class="step-content">
+              <strong>Available free models on Groq</strong>
+              <ul>
+                <li><code>llama-3.1-8b-instant</code> — fast, good for most tasks</li>
+                <li><code>llama-3.1-70b-versatile</code> — much more capable, still free</li>
+                <li><code>mixtral-8x7b-32768</code> — great for long-context tasks</li>
+                <li><code>gemma2-9b-it</code> — Google's efficient model</li>
+              </ul>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Model recommendations -->
+      <h2 class="section-title" id="models">
+        <span class="st-icon" aria-hidden="true">🤖</span> Which Model Should You Use?
+      </h2>
+      <p class="section-lead">The best model depends on your hardware and use case. Here are our picks for each situation.</p>
+
+      <div class="model-table-wrap">
+        <table aria-label="Model recommendations by use case">
+          <thead>
+            <tr>
+              <th scope="col">Use Case</th>
+              <th scope="col">Recommended Model</th>
+              <th scope="col">Min RAM</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>General assistant / chat</td>
+              <td><code>llama3.1:8b</code></td>
+              <td>8 GB</td>
+              <td>Best balance of quality and speed for most tasks</td>
+            </tr>
+            <tr>
+              <td>Low-end hardware</td>
+              <td><code>phi3:mini</code></td>
+              <td>4 GB</td>
+              <td>Microsoft's 3.8B model — surprisingly capable for its size</td>
+            </tr>
+            <tr>
+              <td>Writing &amp; summarization</td>
+              <td><code>mistral:7b</code></td>
+              <td>8 GB</td>
+              <td>Excellent instruction following and long-form writing</td>
+            </tr>
+            <tr>
+              <td>Coding assistant</td>
+              <td><code>qwen2.5-coder:7b</code></td>
+              <td>8 GB</td>
+              <td>Purpose-built for code generation and debugging</td>
+            </tr>
+            <tr>
+              <td>Multilingual tasks</td>
+              <td><code>qwen2.5:7b</code></td>
+              <td>8 GB</td>
+              <td>Strong across 30+ languages including Chinese, Japanese, Arabic</td>
+            </tr>
+            <tr>
+              <td>Complex reasoning</td>
+              <td><code>llama3.1:70b-q4</code></td>
+              <td>32 GB</td>
+              <td>Near GPT-4 quality, but requires powerful hardware</td>
+            </tr>
+            <tr>
+              <td>Vision / image understanding</td>
+              <td><code>llava:13b</code></td>
+              <td>16 GB</td>
+              <td>Can analyze images as well as text — multimodal</td>
+            </tr>
+            <tr>
+              <td>Maximum privacy / air-gapped</td>
+              <td>Any of the above</td>
+              <td>—</td>
+              <td>All local models are fully private — nothing leaves your machine</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Performance tips -->
+      <h2 class="section-title" id="tips">
+        <span class="st-icon" aria-hidden="true">⚡</span> Performance Tips
+      </h2>
+      <p class="section-lead">Getting the most speed out of your local model setup.</p>
+
+      <div class="callout callout-green">
+        <strong>✅ Use GPU acceleration</strong>
+        <p>GPU offloading is the single biggest performance improvement. Ollama, LM Studio, and Jan.ai all enable GPU acceleration automatically if they detect a compatible GPU. On a Mac with Apple Silicon, models run on the Neural Engine / GPU by default — much faster than CPU-only on Intel Macs.</p>
+      </div>
+      <div class="callout callout-blue">
+        <strong>🧮 Choose the right quantization level</strong>
+        <p>Quantization levels trade quality for speed and RAM:</p>
+        <ul>
+          <li><code>q4_0</code> — smallest/fastest, minor quality reduction — great for most uses</li>
+          <li><code>q4_k_m</code> — slightly better quality than q4_0, same RAM — our top pick</li>
+          <li><code>q5_k_m</code> — excellent quality/speed balance if you have 16+ GB RAM</li>
+          <li><code>q8_0</code> — near-full quality, needs lots of RAM — only if you have 32+ GB</li>
+        </ul>
+      </div>
+      <div class="callout callout-amber">
+        <strong>⚠️ Close other RAM-heavy apps</strong>
+        <p>Local LLMs compete directly with other applications for RAM. Before running a large model, close your browser tabs, video apps, and any other memory-intensive software. On macOS, Activity Monitor shows your "Memory Pressure" — keep it in the green zone for best performance.</p>
+      </div>
+      <div class="callout callout-purple">
+        <strong>💡 Keep your OpenClaw context short</strong>
+        <p>Local models are slower with longer conversation histories. For automation tasks (where you don't need persistent chat), set a low <code>maxTokens</code> value and clear conversation history between tasks to keep responses snappy.</p>
+      </div>
+
+      <!-- Related -->
+      <aside class="related" aria-labelledby="related-heading">
+        <h2 id="related-heading">Related pages</h2>
+        <div class="related-links">
+          <a href="pricing.html"         class="related-link"><span aria-hidden="true">💰</span> Pricing Guide</a>
+          <a href="gettingstarted.html"  class="related-link"><span aria-hidden="true">🚀</span> Getting Started</a>
+          <a href="config-json.html"     class="related-link"><span aria-hidden="true">📄</span> openclaw.json</a>
+          <a href="config-yaml.html"     class="related-link"><span aria-hidden="true">📋</span> config.yaml</a>
+          <a href="troubleshooting.html" class="related-link"><span aria-hidden="true">🔧</span> Troubleshooting</a>
+          <a href="voice.html"           class="related-link"><span aria-hidden="true">🎙️</span> Voice Mode</a>
+          <a href="security.html"        class="related-link"><span aria-hidden="true">🔒</span> Security</a>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="cheatsheet.html">Cheat Sheet</a>
+    </div>
+    <p>© 2026 learnopenclaw.org — Independent learning resource. Not affiliated with the OpenClaw project.</p>
+  </footer>
+
+  <script>
+    // ── Hamburger ──
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', e => {
+      if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // ── Setup tabs ──
+    const tabBtns   = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('aria-controls');
+
+        tabBtns.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        tabPanels.forEach(p => p.classList.remove('active'));
+
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(target).classList.add('active');
+      });
+
+      // Keyboard: arrow key navigation between tabs
+      btn.addEventListener('keydown', e => {
+        const tabs = [...tabBtns];
+        const idx  = tabs.indexOf(btn);
+        if (e.key === 'ArrowRight') { e.preventDefault(); tabs[(idx + 1) % tabs.length].focus(); tabs[(idx + 1) % tabs.length].click(); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); tabs[(idx - 1 + tabs.length) % tabs.length].focus(); tabs[(idx - 1 + tabs.length) % tabs.length].click(); }
+      });
+    });
+  </script>
+</body>
+</html>
