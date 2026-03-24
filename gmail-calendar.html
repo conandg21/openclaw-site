@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw + Gmail & Google Calendar Integration Guide</title>
+  <meta name="description" content="Connect OpenClaw to Gmail and Google Calendar. Read, send, and search emails. Create events, check availability, and get reminders — step-by-step setup guide." />
+  <meta name="keywords" content="OpenClaw Gmail, OpenClaw Google Calendar, AI agent Gmail, connect AI to Gmail, OpenClaw Google integration, AI email assistant, AI calendar assistant" />
+  <link rel="canonical" href="https://learnopenclaw.org/gmail-calendar.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw + Gmail & Google Calendar Integration Guide" />
+  <meta property="og:description" content="Connect OpenClaw to Gmail and Google Calendar. Read, send, and search emails. Create events, check availability — full setup guide with config examples." />
+  <meta property="og:url" content="https://learnopenclaw.org/gmail-calendar.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw + Gmail & Google Calendar Integration" />
+  <meta name="twitter:description" content="Let OpenClaw read, draft, and send emails. Schedule meetings, check your calendar, set reminders — step-by-step setup guide." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:image:alt" content="learnopenclaw.org — OpenClaw AI Agent Documentation" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw + Gmail & Google Calendar Integration Guide",
+    "description": "How to connect OpenClaw to Gmail and Google Calendar. Covers OAuth setup, configuration, use cases, example prompts, and troubleshooting.",
+    "url": "https://learnopenclaw.org/gmail-calendar.html",
+    "dateModified": "2026-03-23",
+    "author": { "@type": "Organization", "name": "LearnOpenClaw" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home",         "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn",        "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "Gmail & Calendar", "item": "https://learnopenclaw.org/gmail-calendar.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --google-blue:  #4285f4;
+      --google-red:   #ea4335;
+      --google-green: #34a853;
+      --google-yellow:#fbbc04;
+      --accent:       #4285f4;
+      --accent-dk:    #1a56db;
+      --accent-lt:    #eff6ff;
+      --accent-md:    #bfdbfe;
+      --gmail:        #ea4335;
+      --gmail-lt:     #fef2f2;
+      --cal:          #1e8e3e;
+      --cal-lt:       #f0fdf4;
+      --cal-md:       #bbf7d0;
+      --amber:        #d97706;
+      --amber-lt:     #fffbeb;
+      --gray-1:       #f9fafb;
+      --gray-2:       #f3f4f6;
+      --gray-3:       #e5e7eb;
+      --gray-5:       #6b7280;
+      --gray-7:       #374151;
+      --gray-8:       #1f2937;
+      --white:        #ffffff;
+      --radius:       12px;
+      --shadow:       0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--accent); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .claw { font-size: 1.4rem; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a[aria-current="page"] { color: var(--accent-dk); font-weight: 700; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #1a237e 0%, #1565c0 55%, #4285f4 100%);
+      color: var(--white); padding: 72px 24px 60px;
+    }
+    .hero-inner { max-width: 820px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      color: var(--white); font-size: .75rem; font-weight: 700;
+      letter-spacing: .07em; padding: 4px 14px; border-radius: 100px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .hero h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+    .hero h1 em { font-style: normal; color: #bfdbfe; }
+    .hero-sub { font-size: 1.05rem; color: #bfdbfe; max-width: 640px; margin-bottom: 28px; }
+    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      color: #e0f2fe; font-size: .82rem; font-weight: 600;
+      padding: 5px 14px; border-radius: 100px;
+    }
+
+    /* ── Main ── */
+    main { padding: 52px 24px 80px; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 1.45rem; font-weight: 800; color: var(--gray-8);
+      margin: 56px 0 8px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-3);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title:first-of-type { margin-top: 0; }
+    .section-lead { font-size: .97rem; color: var(--gray-5); margin-bottom: 24px; max-width: 700px; }
+
+    /* ── Use case cards ── */
+    .uc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0 32px; }
+    .uc-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow); background: var(--white);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .uc-card.gmail:hover  { border-color: #fca5a5; box-shadow: 0 4px 16px rgba(234,67,53,.1); }
+    .uc-card.cal:hover    { border-color: var(--cal-md); box-shadow: 0 4px 16px rgba(30,142,62,.1); }
+    .uc-card .uc-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .uc-card h3 { font-size: .95rem; font-weight: 800; color: var(--gray-8); margin-bottom: 6px; }
+    .uc-card p  { font-size: .88rem; color: var(--gray-5); line-height: 1.55; }
+    .uc-prompt {
+      margin-top: 10px; background: var(--gray-1);
+      border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;
+      padding: 8px 12px; font-size: .82rem; color: var(--gray-7);
+      font-style: italic;
+    }
+
+    /* ── Steps ── */
+    .steps { list-style: none; counter-reset: step-ctr; padding: 0; margin: 16px 0 8px; }
+    .step-item { counter-increment: step-ctr; display: flex; gap: 16px; align-items: flex-start; margin-bottom: 28px; }
+    .step-num {
+      flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+      background: var(--accent); color: var(--white);
+      font-size: .85rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-num::before { content: counter(step-ctr); }
+    .step-content { flex: 1; padding-top: 4px; }
+    .step-content strong { display: block; font-size: .97rem; font-weight: 700; color: var(--gray-8); margin-bottom: 6px; }
+    .step-content p { font-size: .93rem; color: var(--gray-7); margin-bottom: 8px; }
+    .step-content ul { margin-left: 1.2rem; margin-top: 6px; font-size: .92rem; color: var(--gray-7); }
+    .step-content li { margin-bottom: 5px; }
+
+    /* ── Code ── */
+    code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .85em; background: var(--gray-2);
+      color: var(--gray-8); padding: 2px 6px; border-radius: 4px;
+    }
+    .code-block {
+      background: #0d1117; border-radius: 10px;
+      margin: 10px 0 20px; overflow: hidden;
+    }
+    .code-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 16px; background: #161b22;
+      border-bottom: 1px solid #30363d;
+    }
+    .code-label { font-size: .75rem; font-weight: 700; color: #8b949e; letter-spacing: .05em; text-transform: uppercase; }
+    .copy-btn {
+      background: none; border: 1px solid #30363d; color: #8b949e;
+      font-size: .75rem; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .copy-btn:hover { border-color: #8b949e; color: #c9d1d9; }
+    .code-block pre {
+      padding: 18px 20px; overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .84rem; line-height: 1.65; color: #e6edf3; margin: 0;
+    }
+    .code-block pre .cm  { color: #8b949e; }  /* comment */
+    .code-block pre .ky  { color: #ff7b72; }  /* keyword */
+    .code-block pre .st  { color: #a5d6ff; }  /* string */
+    .code-block pre .nu  { color: #79c0ff; }  /* number */
+    .code-block pre .kk  { color: #ffa657; }  /* key */
+
+    /* ── Callout boxes ── */
+    .callout {
+      display: flex; gap: 14px; align-items: flex-start;
+      border-radius: var(--radius); padding: 18px 20px; margin: 20px 0;
+    }
+    .callout.info    { background: var(--accent-lt); border: 1px solid var(--accent-md); }
+    .callout.warning { background: var(--amber-lt);  border: 1px solid #fcd34d; }
+    .callout.success { background: var(--cal-lt);    border: 1px solid var(--cal-md); }
+    .callout.gmail   { background: var(--gmail-lt);  border: 1px solid #fca5a5; }
+    .callout-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .callout-body strong { display: block; font-size: .95rem; font-weight: 700; color: var(--gray-8); margin-bottom: 4px; }
+    .callout-body p, .callout-body ul { font-size: .9rem; color: var(--gray-7); line-height: 1.6; }
+    .callout-body ul { margin-left: 1.1rem; margin-top: 6px; }
+    .callout-body li { margin-bottom: 4px; }
+
+    /* ── Permission table ── */
+    .perm-table { width: 100%; border-collapse: collapse; margin: 16px 0 28px; font-size: .9rem; }
+    .perm-table th { background: var(--gray-2); text-align: left; padding: 10px 14px; border: 1px solid var(--gray-3); font-weight: 700; color: var(--gray-8); }
+    .perm-table td { padding: 10px 14px; border: 1px solid var(--gray-3); color: var(--gray-7); vertical-align: top; }
+    .perm-table tr:nth-child(even) td { background: var(--gray-1); }
+    .badge-scope { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+    .badge-read  { background: #dbeafe; color: #1e40af; }
+    .badge-write { background: #fef9c3; color: #713f12; }
+    .badge-send  { background: #fce7f3; color: #9d174d; }
+
+    /* ── Prompt examples ── */
+    .prompt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0 32px; }
+    .prompt-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 18px; background: var(--white); box-shadow: var(--shadow);
+    }
+    .prompt-card .prompt-tag {
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; margin-bottom: 8px;
+    }
+    .prompt-card .prompt-tag.gmail { color: var(--gmail); }
+    .prompt-card .prompt-tag.cal   { color: var(--cal); }
+    .prompt-card .prompt-text {
+      font-size: .92rem; color: var(--gray-7); font-style: italic;
+      background: var(--gray-1); padding: 10px 14px;
+      border-radius: 8px; border-left: 3px solid var(--accent);
+      line-height: 1.55;
+    }
+
+    /* ── Troubleshoot ── */
+    .trouble-list { list-style: none; padding: 0; margin: 16px 0 28px; }
+    .trouble-item { border: 1px solid var(--gray-3); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+    .trouble-q {
+      width: 100%; text-align: left; background: var(--gray-1);
+      border: none; padding: 14px 18px; cursor: pointer;
+      font-family: inherit; font-size: .95rem; font-weight: 700; color: var(--gray-8);
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .trouble-q:hover { background: var(--gray-2); }
+    .trouble-q .chevron { transition: transform .25s; font-style: normal; flex-shrink: 0; }
+    .trouble-q[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .trouble-a { display: none; padding: 14px 18px 16px; font-size: .92rem; color: var(--gray-7); line-height: 1.65; border-top: 1px solid var(--gray-3); }
+    .trouble-a ul { margin-left: 1.2rem; margin-top: 6px; }
+    .trouble-a li { margin-bottom: 5px; }
+    .trouble-a.open { display: block; }
+
+    /* ── Sibling cards ── */
+    .sibling-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 20px; }
+    .sibling-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 18px; text-decoration: none; color: inherit;
+      box-shadow: var(--shadow); transition: border-color .2s, box-shadow .2s;
+      display: block;
+    }
+    .sibling-card:hover { border-color: var(--accent-md); box-shadow: 0 4px 16px rgba(66,133,244,.12); text-decoration: none; }
+    .sibling-card .sc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .sibling-card h3 { font-size: .95rem; font-weight: 700; color: var(--gray-8); margin-bottom: 4px; }
+    .sibling-card p  { font-size: .83rem; color: var(--gray-5); }
+
+    /* ── Footer ── */
+    footer {
+      background: #0c1a2e; color: #94a3b8;
+      padding: 40px 24px; text-align: center; font-size: .88rem;
+    }
+    footer a { color: #60a5fa; }
+    footer a:hover { color: var(--white); }
+    .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
+
+    @media (max-width: 640px) {
+      .hero { padding: 48px 20px 40px; }
+      main  { padding: 36px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org
+      </a>
+      <button class="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="learn.html" role="listitem">Learn Hub</a>
+        <a href="gettingstarted.html" role="listitem">Getting Started</a>
+        <a href="agentchannels.html" role="listitem">Agent Channels</a>
+        <a href="gmail-calendar.html" role="listitem" aria-current="page">Gmail &amp; Calendar</a>
+        <a href="automation.html" role="listitem">Automation</a>
+        <a href="troubleshooting.html" role="listitem">Troubleshooting</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" role="banner">
+    <div class="hero-inner">
+      <div class="hero-badge" aria-label="Integration guide">📬 Integration Guide</div>
+      <h1>OpenClaw + <em>Gmail &amp; Google Calendar</em></h1>
+      <p class="hero-sub">Let your AI agent read your inbox, draft replies, schedule meetings, and manage your calendar — all from a simple message.</p>
+      <div class="hero-pills" aria-label="Topics covered">
+        <span class="pill" aria-hidden="true">📧 Gmail</span>
+        <span class="pill" aria-hidden="true">📅 Google Calendar</span>
+        <span class="pill" aria-hidden="true">🔐 OAuth Setup</span>
+        <span class="pill" aria-hidden="true">⚙️ Configuration</span>
+        <span class="pill" aria-hidden="true">💬 Example Prompts</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- ── What can OpenClaw do with Gmail? ── -->
+      <h2 class="section-title"><span class="icon" aria-hidden="true">📧</span> What can OpenClaw do with Gmail?</h2>
+      <p class="section-lead">Once connected, you talk to your agent the same way you'd ask a human assistant — no commands to memorize.</p>
+
+      <div class="uc-grid">
+        <div class="uc-card gmail">
+          <div class="uc-icon" aria-hidden="true">📥</div>
+          <h3>Read &amp; Summarize</h3>
+          <p>Get a summary of unread emails, find specific threads, or ask "did anyone email me about the invoice?"</p>
+          <div class="uc-prompt">"Summarize my unread emails from today"</div>
+        </div>
+        <div class="uc-card gmail">
+          <div class="uc-icon" aria-hidden="true">✍️</div>
+          <h3>Draft Replies</h3>
+          <p>Tell OpenClaw what to say — it writes the email in your tone and either sends it or shows it to you first.</p>
+          <div class="uc-prompt">"Reply to Sarah's last email and say I'll have it ready by Friday"</div>
+        </div>
+        <div class="uc-card gmail">
+          <div class="uc-icon" aria-hidden="true">🔍</div>
+          <h3>Search Your Inbox</h3>
+          <p>Find emails by sender, topic, date range, or keyword — like a smart search bar you talk to.</p>
+          <div class="uc-prompt">"Find all emails from my landlord in the last 3 months"</div>
+        </div>
+        <div class="uc-card gmail">
+          <div class="uc-icon" aria-hidden="true">🏷️</div>
+          <h3>Label &amp; Organize</h3>
+          <p>Apply labels, archive threads, or move emails to folders without ever opening Gmail.</p>
+          <div class="uc-prompt">"Label all emails from noreply@ as newsletters"</div>
+        </div>
+        <div class="uc-card gmail">
+          <div class="uc-icon" aria-hidden="true">🔔</div>
+          <h3>Watch for Emails</h3>
+          <p>Ask OpenClaw to notify you when a specific email arrives — like a payment confirmation or a job response.</p>
+          <div class="uc-prompt">"Let me know when I get an email from Amazon with a tracking number"</div>
+        </div>
+        <div class="uc-card gmail">
+          <div class="uc-icon" aria-hidden="true">📤</div>
+          <h3>Send New Emails</h3>
+          <p>Compose and send a new email to any contact. OpenClaw can look up addresses from your previous threads.</p>
+          <div class="uc-prompt">"Email John and ask if we're still on for Thursday"</div>
+        </div>
+      </div>
+
+      <!-- ── What can OpenClaw do with Google Calendar? ── -->
+      <h2 class="section-title"><span class="icon" aria-hidden="true">📅</span> What can OpenClaw do with Google Calendar?</h2>
+      <p class="section-lead">OpenClaw can see your schedule, create events, find open slots, and send invites — like having a personal scheduler on call.</p>
+
+      <div class="uc-grid">
+        <div class="uc-card cal">
+          <div class="uc-icon" aria-hidden="true">👀</div>
+          <h3>Check Your Schedule</h3>
+          <p>Ask what's on your calendar today, this week, or on any specific date.</p>
+          <div class="uc-prompt">"What do I have on Thursday afternoon?"</div>
+        </div>
+        <div class="uc-card cal">
+          <div class="uc-icon" aria-hidden="true">➕</div>
+          <h3>Create Events</h3>
+          <p>Add meetings, reminders, or blocks to your calendar just by describing them.</p>
+          <div class="uc-prompt">"Add a dentist appointment Tuesday at 2pm for 1 hour"</div>
+        </div>
+        <div class="uc-card cal">
+          <div class="uc-icon" aria-hidden="true">🕐</div>
+          <h3>Find Free Time</h3>
+          <p>OpenClaw checks your calendar and tells you when you're actually free.</p>
+          <div class="uc-prompt">"When am I free for a 30-minute call next week?"</div>
+        </div>
+        <div class="uc-card cal">
+          <div class="uc-icon" aria-hidden="true">📨</div>
+          <h3>Send Invites</h3>
+          <p>Create an event and invite other people — OpenClaw adds them as guests and sends the invite.</p>
+          <div class="uc-prompt">"Schedule a team sync Friday at 10am and invite alex@company.com"</div>
+        </div>
+        <div class="uc-card cal">
+          <div class="uc-icon" aria-hidden="true">🗑️</div>
+          <h3>Cancel or Reschedule</h3>
+          <p>Move or delete existing events without opening Google Calendar.</p>
+          <div class="uc-prompt">"Move my 3pm meeting to 4pm"</div>
+        </div>
+        <div class="uc-card cal">
+          <div class="uc-icon" aria-hidden="true">⏰</div>
+          <h3>Set Reminders</h3>
+          <p>Add reminders to any event or create standalone reminders for tasks.</p>
+          <div class="uc-prompt">"Remind me 30 minutes before every meeting tomorrow"</div>
+        </div>
+      </div>
+
+      <!-- ── How to connect ── -->
+      <h2 class="section-title"><span class="icon" aria-hidden="true">🔐</span> How to connect your Google account</h2>
+      <p class="section-lead">OpenClaw uses OAuth 2.0 to connect to Google — the same secure login flow used by apps like Zoom and Slack. You authorize it once; OpenClaw never sees your password.</p>
+
+      <div class="callout info">
+        <div class="callout-icon" aria-hidden="true">ℹ️</div>
+        <div class="callout-body">
+          <strong>What you'll need</strong>
+          <ul>
+            <li>A Google account</li>
+            <li>OpenClaw installed and running (<a href="gettingstarted.html">Getting Started guide</a>)</li>
+            <li>About 10 minutes</li>
+          </ul>
+        </div>
+      </div>
+
+      <ol class="steps" aria-label="Setup steps">
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 1"></div>
+          <div class="step-content">
+            <strong>Go to Google Cloud Console</strong>
+            <p>Open <a href="https://console.cloud.google.com" target="_blank" rel="noopener">console.cloud.google.com</a> and sign in with your Google account. This is Google's developer portal — it's free to use.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 2"></div>
+          <div class="step-content">
+            <strong>Create a new project</strong>
+            <p>Click the project dropdown at the top → <strong>New Project</strong> → name it something like <em>openclaw-integration</em> → click <strong>Create</strong>.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 3"></div>
+          <div class="step-content">
+            <strong>Enable the Gmail and Calendar APIs</strong>
+            <p>In the left menu go to <strong>APIs &amp; Services → Library</strong>. Search for and enable both:</p>
+            <ul>
+              <li><strong>Gmail API</strong> — for email access</li>
+              <li><strong>Google Calendar API</strong> — for calendar access</li>
+            </ul>
+            <p style="margin-top:8px">Click each one → <strong>Enable</strong>. Takes about 30 seconds each.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 4"></div>
+          <div class="step-content">
+            <strong>Create OAuth credentials</strong>
+            <p>Go to <strong>APIs &amp; Services → Credentials → Create Credentials → OAuth client ID</strong>.</p>
+            <ul>
+              <li>Application type: <strong>Desktop app</strong></li>
+              <li>Name: anything you like (e.g. <em>OpenClaw Desktop</em>)</li>
+              <li>Click <strong>Create</strong></li>
+            </ul>
+            <p style="margin-top:8px">Google will show you a <strong>Client ID</strong> and <strong>Client Secret</strong>. Copy both — you'll need them in the next step.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 5"></div>
+          <div class="step-content">
+            <strong>Configure the OAuth consent screen</strong>
+            <p>Go to <strong>APIs &amp; Services → OAuth consent screen</strong>. Set:</p>
+            <ul>
+              <li>User type: <strong>External</strong> (even if it's just you)</li>
+              <li>App name: anything (e.g. <em>My OpenClaw</em>)</li>
+              <li>Support email: your email</li>
+              <li>Add your email as a <strong>Test user</strong></li>
+            </ul>
+            <p style="margin-top:8px">You don't need to publish the app — keeping it in test mode is fine for personal use.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 6"></div>
+          <div class="step-content">
+            <strong>Add credentials to openclaw.json</strong>
+            <p>Open your <a href="config-json.html">openclaw.json</a> file and add the Google section:</p>
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-label">openclaw.json</span>
+                <button class="copy-btn" aria-label="Copy code">Copy</button>
+              </div>
+              <pre>{
+  <span class="kk">"integrations"</span>: {
+    <span class="kk">"google"</span>: {
+      <span class="kk">"enabled"</span>: <span class="nu">true</span>,
+      <span class="kk">"client_id"</span>: <span class="st">"YOUR_CLIENT_ID.apps.googleusercontent.com"</span>,
+      <span class="kk">"client_secret"</span>: <span class="st">"YOUR_CLIENT_SECRET"</span>,
+      <span class="kk">"scopes"</span>: [
+        <span class="st">"https://www.googleapis.com/auth/gmail.modify"</span>,
+        <span class="st">"https://www.googleapis.com/auth/calendar"</span>
+      ]
+    }
+  }
+}</pre>
+            </div>
+            <p>Replace <code>YOUR_CLIENT_ID</code> and <code>YOUR_CLIENT_SECRET</code> with the values from Step 4.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 7"></div>
+          <div class="step-content">
+            <strong>Authorize OpenClaw</strong>
+            <p>Restart OpenClaw. The first time it tries to access Gmail or Calendar, it will open a browser window asking you to sign in with Google and grant permission. Click <strong>Allow</strong>.</p>
+            <p>OpenClaw saves a token locally so you only need to do this once. The token is stored on your machine — it never leaves your computer.</p>
+          </div>
+        </li>
+
+      </ol>
+
+      <div class="callout success">
+        <div class="callout-icon" aria-hidden="true">✅</div>
+        <div class="callout-body">
+          <strong>You're connected!</strong>
+          <p>Try sending your agent a message: <em>"What emails do I have today?"</em> — if it reads your inbox, the integration is working.</p>
+        </div>
+      </div>
+
+      <!-- ── Scopes explained ── -->
+      <h2 class="section-title"><span class="icon" aria-hidden="true">🔒</span> What permissions does OpenClaw request?</h2>
+      <p class="section-lead">Google requires apps to declare exactly what they can access. Here's what each scope means in plain English.</p>
+
+      <table class="perm-table" aria-label="Google permission scopes">
+        <thead>
+          <tr>
+            <th scope="col">Scope</th>
+            <th scope="col">Type</th>
+            <th scope="col">What it allows</th>
+            <th scope="col">Why it's needed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>gmail.readonly</code></td>
+            <td><span class="badge-scope badge-read">Read</span></td>
+            <td>Read emails and labels</td>
+            <td>Summarize, search, and find threads</td>
+          </tr>
+          <tr>
+            <td><code>gmail.modify</code></td>
+            <td><span class="badge-scope badge-write">Write</span></td>
+            <td>Read emails + apply labels, archive, mark read</td>
+            <td>Organize inbox, label emails</td>
+          </tr>
+          <tr>
+            <td><code>gmail.send</code></td>
+            <td><span class="badge-scope badge-send">Send</span></td>
+            <td>Send emails on your behalf</td>
+            <td>Draft and send replies or new emails</td>
+          </tr>
+          <tr>
+            <td><code>calendar.readonly</code></td>
+            <td><span class="badge-scope badge-read">Read</span></td>
+            <td>View calendar events</td>
+            <td>Check your schedule, find free time</td>
+          </tr>
+          <tr>
+            <td><code>calendar</code></td>
+            <td><span class="badge-scope badge-write">Write</span></td>
+            <td>View + create, edit, delete events</td>
+            <td>Create meetings, send invites, reschedule</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout warning">
+        <div class="callout-icon" aria-hidden="true">⚠️</div>
+        <div class="callout-body">
+          <strong>Least-privilege tip</strong>
+          <p>If you only want OpenClaw to read your email (never send), use <code>gmail.readonly</code> instead of <code>gmail.modify</code>. You can always upgrade the scope later by re-running the auth flow.</p>
+        </div>
+      </div>
+
+      <!-- ── Example prompts ── -->
+      <h2 class="section-title"><span class="icon" aria-hidden="true">💬</span> Example prompts to try</h2>
+      <p class="section-lead">Once connected, just talk to OpenClaw naturally. Here are some prompts to get you started.</p>
+
+      <div class="prompt-grid">
+        <div class="prompt-card">
+          <div class="prompt-tag gmail">📧 Gmail</div>
+          <div class="prompt-text">"Who emailed me today and what do they want?"</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag gmail">📧 Gmail</div>
+          <div class="prompt-text">"Draft a reply to the last email from my boss saying I'll have the report done by end of day."</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag gmail">📧 Gmail</div>
+          <div class="prompt-text">"Find any emails about my Amazon order from last week."</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag gmail">📧 Gmail</div>
+          <div class="prompt-text">"Unsubscribe me from all marketing emails in my inbox."</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag cal">📅 Calendar</div>
+          <div class="prompt-text">"What's on my calendar this week? Anything I might be forgetting?"</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag cal">📅 Calendar</div>
+          <div class="prompt-text">"Schedule a 1-hour focus block tomorrow morning and block it as busy."</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag cal">📅 Calendar</div>
+          <div class="prompt-text">"Find a 30-minute slot this week where both me and sarah@work.com are free."</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag cal">📅 Calendar</div>
+          <div class="prompt-text">"Cancel all my meetings on Friday — I'm taking the day off."</div>
+        </div>
+      </div>
+
+      <!-- ── Troubleshooting ── -->
+      <h2 class="section-title"><span class="icon" aria-hidden="true">🔧</span> Common problems &amp; fixes</h2>
+      <ul class="trouble-list" aria-label="Troubleshooting accordion">
+
+        <li class="trouble-item">
+          <button class="trouble-q" aria-expanded="false" aria-controls="t1-panel">
+            "Access blocked: This app hasn't been verified by Google"
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t1-panel" role="region" aria-labelledby="t1-btn">
+            <p>This is normal for personal OAuth apps in test mode. Google shows this warning to protect users from unknown apps. Since this is your own app connecting to your own account, it's safe to continue.</p>
+            <ul>
+              <li>Click <strong>Advanced</strong> on the warning screen</li>
+              <li>Click <strong>"Go to [your app name] (unsafe)"</strong></li>
+              <li>This only appears the first time you authorize</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="trouble-item">
+          <button class="trouble-q" aria-expanded="false" aria-controls="t2-panel">
+            OpenClaw can read emails but can't send
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t2-panel" role="region">
+            <p>The <code>gmail.send</code> scope is separate from <code>gmail.modify</code>. Add it to your scopes array in openclaw.json, then re-authorize:</p>
+            <ul>
+              <li>Add <code>"https://mail.google.com/"</code> to the <code>scopes</code> array</li>
+              <li>Delete the saved token file (usually <code>~/.openclaw/google_token.json</code>)</li>
+              <li>Restart OpenClaw and go through the auth flow again</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="trouble-item">
+          <button class="trouble-q" aria-expanded="false" aria-controls="t3-panel">
+            "Token has been expired or revoked"
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t3-panel" role="region">
+            <p>Google OAuth tokens expire after 7 days if the app is in test mode (or if you revoke access from your Google account). To fix it:</p>
+            <ul>
+              <li>Delete the token file at <code>~/.openclaw/google_token.json</code></li>
+              <li>Restart OpenClaw — it will prompt you to re-authorize</li>
+              <li>To avoid this, publish your OAuth app in Google Cloud Console (you don't need to submit it for review for personal use)</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="trouble-item">
+          <button class="trouble-q" aria-expanded="false" aria-controls="t4-panel">
+            Calendar events are showing in the wrong timezone
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t4-panel" role="region">
+            <p>OpenClaw uses the timezone set in your openclaw.json config. Make sure it matches your Google Calendar timezone.</p>
+            <ul>
+              <li>Add <code>"timezone": "America/New_York"</code> (or your timezone) to the google section of openclaw.json</li>
+              <li>Use <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank" rel="noopener">IANA timezone names</a> (e.g. <code>Europe/London</code>, <code>Asia/Tokyo</code>)</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="trouble-item">
+          <button class="trouble-q" aria-expanded="false" aria-controls="t5-panel">
+            "API has not been used in project" error
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t5-panel" role="region">
+            <p>You created credentials but forgot to enable the API. Go back to <strong>Google Cloud Console → APIs &amp; Services → Library</strong> and enable the Gmail API and/or Google Calendar API for your project. It can take a minute to propagate.</p>
+          </div>
+        </li>
+
+      </ul>
+
+      <!-- ── Related pages ── -->
+      <h2 class="section-title"><span class="icon" aria-hidden="true">🔗</span> Related guides</h2>
+      <div class="sibling-grid">
+        <a href="agentchannels.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">💬</div>
+          <h3>Agent Channels</h3>
+          <p>Talk to your agent via WhatsApp, Telegram, Slack &amp; more</p>
+        </a>
+        <a href="automation.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">⚡</div>
+          <h3>Automation</h3>
+          <p>Set up scheduled tasks and event-triggered automations</p>
+        </a>
+        <a href="config-json.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">⚙️</div>
+          <h3>openclaw.json</h3>
+          <p>Full guide to every config field</p>
+        </a>
+        <a href="troubleshooting.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">🔧</div>
+          <h3>Troubleshooting</h3>
+          <p>Fix the most common OpenClaw errors</p>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn Hub</a>
+      <a href="gettingstarted.html">Getting Started</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="faq.html">FAQ</a>
+      <a href="sitemap.xml">Sitemap</a>
+    </div>
+    <p>© 2026 learnopenclaw.org — Community documentation for the OpenClaw AI agent framework.</p>
+  </footer>
+
+  <script>
+    // ── Nav hamburger ──────────────────────────────────────────────────────────
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
+      }
+    });
+
+    // ── Accordion troubleshooting ──────────────────────────────────────────────
+    document.querySelectorAll('.trouble-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const panel  = document.getElementById(btn.getAttribute('aria-controls'));
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        // Close all
+        document.querySelectorAll('.trouble-q').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+          const p = document.getElementById(b.getAttribute('aria-controls'));
+          if (p) p.classList.remove('open');
+        });
+        // Open clicked if it was closed
+        if (!isOpen) {
+          btn.setAttribute('aria-expanded', 'true');
+          panel.classList.add('open');
+        }
+      });
+    });
+
+    // ── Copy buttons ───────────────────────────────────────────────────────────
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pre = btn.closest('.code-block').querySelector('pre');
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = 'Copy', 2000);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
