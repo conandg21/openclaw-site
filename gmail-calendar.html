@@ -316,33 +316,33 @@
       <a href="index.html" class="nav-logo">
         <span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org
       </a>
-      <button class="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-links">
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
         <span></span><span></span><span></span>
       </button>
-      <div class="nav-links" id="nav-links" role="list">
-        <a href="index.html" role="listitem">Home</a>
-        <a href="learn.html" role="listitem">Learn Hub</a>
-        <a href="gettingstarted.html" role="listitem">Getting Started</a>
-        <a href="agentchannels.html" role="listitem">Agent Channels</a>
-        <a href="gmail-calendar.html" role="listitem" aria-current="page">Gmail &amp; Calendar</a>
-        <a href="automation.html" role="listitem">Automation</a>
-        <a href="troubleshooting.html" role="listitem">Troubleshooting</a>
-        <a href="faq.html" role="listitem">FAQ</a>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="learn.html">Learn Hub</a>
+        <a href="gettingstarted.html">Getting Started</a>
+        <a href="agentchannels.html">Agent Channels</a>
+        <a href="gmail-calendar.html" aria-current="page">Gmail &amp; Calendar</a>
+        <a href="automation.html">Automation</a>
+        <a href="troubleshooting.html">Troubleshooting</a>
+        <a href="faq.html">FAQ</a>
       </div>
     </div>
   </nav>
 
   <header class="hero" role="banner">
     <div class="hero-inner">
-      <div class="hero-badge" aria-label="Integration guide">📬 Integration Guide</div>
+      <div class="hero-badge"><span aria-hidden="true">📬</span> Integration Guide</div>
       <h1>OpenClaw + <em>Gmail &amp; Google Calendar</em></h1>
       <p class="hero-sub">Let your AI agent read your inbox, draft replies, schedule meetings, and manage your calendar — all from a simple message.</p>
-      <div class="hero-pills" aria-label="Topics covered">
-        <span class="pill" aria-hidden="true">📧 Gmail</span>
-        <span class="pill" aria-hidden="true">📅 Google Calendar</span>
-        <span class="pill" aria-hidden="true">🔐 OAuth Setup</span>
-        <span class="pill" aria-hidden="true">⚙️ Configuration</span>
-        <span class="pill" aria-hidden="true">💬 Example Prompts</span>
+      <div class="hero-pills" aria-label="Topics covered on this page">
+        <span class="pill">Gmail</span>
+        <span class="pill">Google Calendar</span>
+        <span class="pill">OAuth Setup</span>
+        <span class="pill">Configuration</span>
+        <span class="pill">Example Prompts</span>
       </div>
     </div>
   </header>
@@ -658,7 +658,7 @@
       <ul class="trouble-list" aria-label="Troubleshooting accordion">
 
         <li class="trouble-item">
-          <button class="trouble-q" aria-expanded="false" aria-controls="t1-panel">
+          <button class="trouble-q" id="t1-btn" aria-expanded="false" aria-controls="t1-panel">
             "Access blocked: This app hasn't been verified by Google"
             <em class="chevron" aria-hidden="true">▾</em>
           </button>
@@ -673,11 +673,11 @@
         </li>
 
         <li class="trouble-item">
-          <button class="trouble-q" aria-expanded="false" aria-controls="t2-panel">
+          <button class="trouble-q" id="t2-btn" aria-expanded="false" aria-controls="t2-panel">
             OpenClaw can read emails but can't send
             <em class="chevron" aria-hidden="true">▾</em>
           </button>
-          <div class="trouble-a" id="t2-panel" role="region">
+          <div class="trouble-a" id="t2-panel" role="region" aria-labelledby="t2-btn">
             <p>The <code>gmail.send</code> scope is separate from <code>gmail.modify</code>. Add it to your scopes array in openclaw.json, then re-authorize:</p>
             <ul>
               <li>Add <code>"https://mail.google.com/"</code> to the <code>scopes</code> array</li>
@@ -688,11 +688,11 @@
         </li>
 
         <li class="trouble-item">
-          <button class="trouble-q" aria-expanded="false" aria-controls="t3-panel">
+          <button class="trouble-q" id="t3-btn" aria-expanded="false" aria-controls="t3-panel">
             "Token has been expired or revoked"
             <em class="chevron" aria-hidden="true">▾</em>
           </button>
-          <div class="trouble-a" id="t3-panel" role="region">
+          <div class="trouble-a" id="t3-panel" role="region" aria-labelledby="t3-btn">
             <p>Google OAuth tokens expire after 7 days if the app is in test mode (or if you revoke access from your Google account). To fix it:</p>
             <ul>
               <li>Delete the token file at <code>~/.openclaw/google_token.json</code></li>
@@ -703,11 +703,11 @@
         </li>
 
         <li class="trouble-item">
-          <button class="trouble-q" aria-expanded="false" aria-controls="t4-panel">
+          <button class="trouble-q" id="t4-btn" aria-expanded="false" aria-controls="t4-panel">
             Calendar events are showing in the wrong timezone
             <em class="chevron" aria-hidden="true">▾</em>
           </button>
-          <div class="trouble-a" id="t4-panel" role="region">
+          <div class="trouble-a" id="t4-panel" role="region" aria-labelledby="t4-btn">
             <p>OpenClaw uses the timezone set in your openclaw.json config. Make sure it matches your Google Calendar timezone.</p>
             <ul>
               <li>Add <code>"timezone": "America/New_York"</code> (or your timezone) to the google section of openclaw.json</li>
@@ -717,11 +717,11 @@
         </li>
 
         <li class="trouble-item">
-          <button class="trouble-q" aria-expanded="false" aria-controls="t5-panel">
+          <button class="trouble-q" id="t5-btn" aria-expanded="false" aria-controls="t5-panel">
             "API has not been used in project" error
             <em class="chevron" aria-hidden="true">▾</em>
           </button>
-          <div class="trouble-a" id="t5-panel" role="region">
+          <div class="trouble-a" id="t5-panel" role="region" aria-labelledby="t5-btn">
             <p>You created credentials but forgot to enable the API. Go back to <strong>Google Cloud Console → APIs &amp; Services → Library</strong> and enable the Gmail API and/or Google Calendar API for your project. It can take a minute to propagate.</p>
           </div>
         </li>
