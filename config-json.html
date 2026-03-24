@@ -4,15 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>openclaw.json Config File Explained | OpenClaw</title>
-  <meta name="description" content="Learn what openclaw.json is, why it exists, and how to configure it — a beginner-friendly guide to OpenClaw's main configuration file.">
+  <meta name="description" content="Learn what openclaw.json does, where to put it, and how to configure every field. A beginner-friendly guide with annotated examples.">
   <link rel="canonical" href="https://learnopenclaw.org/config-json.html">
   <meta property="og:title" content="openclaw.json Config File Explained | OpenClaw">
   <meta property="og:description" content="Learn what openclaw.json is, why it exists, and how to configure it — a beginner-friendly guide to OpenClaw's main configuration file.">
   <meta property="og:url" content="https://learnopenclaw.org/config-json.html">
   <meta property="og:type" content="article">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="openclaw.json Config File Explained | OpenClaw">
   <meta name="twitter:description" content="Learn what openclaw.json is, why it exists, and how to configure it — a beginner-friendly guide to OpenClaw's main configuration file.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:image:alt" content="learnopenclaw.org — OpenClaw AI Agent Documentation" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -288,7 +291,7 @@
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls which AI model powers your agent.</p>
         <table class="field-table" aria-label="LLM configuration fields">
-          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>provider</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> AI provider: <code>"anthropic"</code>, <code>"openai"</code>, <code>"ollama"</code>, <code>"groq"</code></td></tr>
             <tr><td><code>model</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> Model name, e.g. <code>"claude-sonnet-4-6"</code> or <code>"gpt-4o"</code></td></tr>
@@ -307,7 +310,7 @@
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls how OpenClaw exposes its HTTP gateway for apps and tools to connect to.</p>
         <table class="field-table" aria-label="Gateway configuration fields">
-          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>port</code></td><td>number</td><td>8080</td><td><span class="badge badge-opt">optional</span> Port to listen on</td></tr>
             <tr><td><code>host</code></td><td>string</td><td>127.0.0.1</td><td><span class="badge badge-opt">optional</span> Host to bind to. Use <code>"0.0.0.0"</code> to accept connections from other devices on your network</td></tr>
@@ -324,7 +327,7 @@
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls how your agent remembers things between conversations.</p>
         <table class="field-table" aria-label="Memory configuration fields">
-          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>type</code></td><td>string</td><td>memory</td><td><span class="badge badge-opt">optional</span> Storage backend: <code>"memory"</code> (no persistence), <code>"sqlite"</code>, <code>"postgres"</code></td></tr>
             <tr><td><code>path</code></td><td>string</td><td>./agent.db</td><td><span class="badge badge-opt">optional</span> File path for SQLite database</td></tr>
@@ -341,7 +344,7 @@
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls which tools your agent can use — web search, file access, code execution, etc.</p>
         <table class="field-table" aria-label="Tools configuration fields">
-          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>enabled</code></td><td>array</td><td>[]</td><td><span class="badge badge-opt">optional</span> List of tool names to activate: <code>"web_search"</code>, <code>"file_read"</code>, <code>"file_write"</code>, <code>"code_run"</code>, <code>"browser"</code></td></tr>
             <tr><td><code>webSearch</code></td><td>object</td><td>—</td><td><span class="badge badge-opt">optional</span> Web search config — requires <code>provider</code> and <code>apiKey</code></td></tr>
@@ -357,7 +360,7 @@
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Keeps your agent active between requests so it's always ready to respond quickly.</p>
         <table class="field-table" aria-label="Heartbeat configuration fields">
-          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>enabled</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Turn keep-alive on or off</td></tr>
             <tr><td><code>intervalMs</code></td><td>number</td><td>60000</td><td><span class="badge badge-opt">optional</span> How often to ping in milliseconds</td></tr>
@@ -372,7 +375,7 @@
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Enables spoken interaction with your agent. See the <a href="voice.html">Voice Mode guide</a> for setup details.</p>
         <table class="field-table" aria-label="Voice configuration fields">
-          <thead><tr><th>Field</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>enabled</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Enable voice input/output</td></tr>
             <tr><td><code>provider</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> TTS provider: <code>"elevenlabs"</code>, <code>"openai"</code>, <code>"piper"</code> (local)</td></tr>
@@ -402,7 +405,7 @@
   }
 }</code></pre>
         <table class="field-table" aria-label="MCP server fields">
-          <thead><tr><th>Field</th><th>Description</th></tr></thead>
+          <thead><tr><th scope="col">Field</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>command</code></td><td>Executable to launch the server (e.g. <code>"npx"</code>, <code>"python"</code>, <code>"node"</code>)</td></tr>
             <tr><td><code>args</code></td><td>Array of arguments passed to the command</td></tr>
