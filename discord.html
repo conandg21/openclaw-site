@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Discord Bot Setup — Talk to Your Agent in Discord</title>
+  <meta name="description" content="Set up an OpenClaw Discord bot in under 15 minutes. Create the bot, connect it to your server, and talk to your AI agent directly from any Discord channel." />
+  <meta name="keywords" content="OpenClaw Discord bot, AI Discord bot setup, OpenClaw Discord integration, Discord AI agent, OpenClaw bot token, add AI to Discord server" />
+  <link rel="canonical" href="https://learnopenclaw.org/discord.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Discord Bot Setup — Talk to Your Agent in Discord" />
+  <meta property="og:description" content="Set up an OpenClaw Discord bot in under 15 minutes. Create the bot, connect it to your server, and chat with your AI agent from any Discord channel." />
+  <meta property="og:url" content="https://learnopenclaw.org/discord.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Discord Bot Setup Guide" />
+  <meta name="twitter:description" content="Add an OpenClaw AI agent to your Discord server. Step-by-step guide: create the bot, set permissions, connect to OpenClaw, and start chatting." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:image:alt" content="learnopenclaw.org — OpenClaw AI Agent Documentation" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw Discord Bot Setup — Talk to Your Agent in Discord",
+    "description": "How to create a Discord bot, connect it to OpenClaw, and talk to your AI agent directly from a Discord server. Covers bot creation, permissions, token setup, and config.",
+    "url": "https://learnopenclaw.org/discord.html",
+    "dateModified": "2026-03-23",
+    "author": { "@type": "Organization", "name": "LearnOpenClaw" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home",    "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn",   "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "Discord", "item": "https://learnopenclaw.org/discord.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --discord:    #5865f2;
+      --discord-dk: #4752c4;
+      --discord-lt: #eef0fd;
+      --discord-md: #c5c9f9;
+      --green:      #57f287;
+      --green-dk:   #1e8e3e;
+      --green-lt:   #f0fdf4;
+      --green-md:   #bbf7d0;
+      --amber:      #d97706;
+      --amber-lt:   #fffbeb;
+      --amber-md:   #fcd34d;
+      --red:        #dc2626;
+      --red-lt:     #fef2f2;
+      --blue:       #2563eb;
+      --blue-lt:    #eff6ff;
+      --gray-1:     #f9fafb;
+      --gray-2:     #f3f4f6;
+      --gray-3:     #e5e7eb;
+      --gray-5:     #6b7280;
+      --gray-7:     #374151;
+      --gray-8:     #1f2937;
+      --white:      #ffffff;
+      --radius:     12px;
+      --shadow:     0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--discord); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--discord); outline-offset: 3px; border-radius: 4px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+    a { color: var(--discord); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .claw { font-size: 1.4rem; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--discord); }
+    .nav-links a[aria-current="page"] { color: var(--discord-dk); font-weight: 700; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #23272a 0%, #36393f 45%, #5865f2 100%);
+      color: var(--white); padding: 72px 24px 60px;
+    }
+    .hero-inner { max-width: 820px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      color: var(--white); font-size: .75rem; font-weight: 700;
+      letter-spacing: .07em; padding: 4px 14px; border-radius: 100px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .hero h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+    .hero h1 em { font-style: normal; color: #c5c9f9; }
+    .hero-sub { font-size: 1.05rem; color: #c5c9f9; max-width: 640px; margin-bottom: 28px; }
+    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      color: #e0e7ff; font-size: .82rem; font-weight: 600;
+      padding: 5px 14px; border-radius: 100px;
+    }
+
+    /* ── Main ── */
+    main { padding: 52px 24px 80px; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 1.45rem; font-weight: 800; color: var(--gray-8);
+      margin: 56px 0 8px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-3);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title:first-of-type { margin-top: 0; }
+    .section-lead { font-size: .97rem; color: var(--gray-5); margin-bottom: 24px; max-width: 700px; }
+
+    /* ── Analogy box ── */
+    .analogy {
+      background: var(--discord-lt); border: 2px solid var(--discord-md);
+      border-radius: var(--radius); padding: 22px 24px; margin: 20px 0 32px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .analogy-icon { font-size: 2.2rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .analogy-body strong { font-size: 1rem; font-weight: 800; color: var(--discord-dk); display: block; margin-bottom: 6px; }
+    .analogy-body p { font-size: .93rem; color: var(--gray-7); margin: 0; line-height: 1.6; }
+
+    /* ── What you can do cards ── */
+    .uc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0 32px; }
+    .uc-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow); background: var(--white);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .uc-card:hover { border-color: var(--discord-md); box-shadow: 0 4px 16px rgba(88,101,242,.1); }
+    .uc-card .uc-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .uc-card h3 { font-size: .95rem; font-weight: 800; color: var(--gray-8); margin-bottom: 6px; }
+    .uc-card p  { font-size: .88rem; color: var(--gray-5); line-height: 1.55; }
+    .uc-prompt {
+      margin-top: 10px; background: var(--gray-1);
+      border-left: 3px solid var(--discord); border-radius: 0 6px 6px 0;
+      padding: 8px 12px; font-size: .82rem; color: var(--gray-7); font-style: italic;
+    }
+
+    /* ── Steps ── */
+    .steps { list-style: none; counter-reset: step-ctr; padding: 0; margin: 16px 0 8px; }
+    .step-item { counter-increment: step-ctr; display: flex; gap: 16px; align-items: flex-start; margin-bottom: 28px; }
+    .step-num {
+      flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+      background: var(--discord); color: var(--white);
+      font-size: .85rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-num::before { content: counter(step-ctr); }
+    .step-content { flex: 1; padding-top: 4px; }
+    .step-content strong { display: block; font-size: .97rem; font-weight: 700; color: var(--gray-8); margin-bottom: 6px; }
+    .step-content p { font-size: .93rem; color: var(--gray-7); margin-bottom: 8px; }
+    .step-content ul { margin-left: 1.2rem; margin-top: 6px; font-size: .92rem; color: var(--gray-7); }
+    .step-content li { margin-bottom: 5px; }
+
+    /* ── Screenshot stand-in ── */
+    .screen-note {
+      background: #36393f; border-radius: 10px; padding: 14px 18px;
+      margin: 10px 0 16px; font-size: .85rem; color: #dcddde;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .screen-note .dot { width: 10px; height: 10px; border-radius: 50%; background: #57f287; flex-shrink: 0; }
+
+    /* ── Code ── */
+    code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .85em; background: var(--gray-2);
+      color: var(--gray-8); padding: 2px 6px; border-radius: 4px;
+    }
+    .code-block { background: #0d1117; border-radius: 10px; margin: 10px 0 20px; overflow: hidden; }
+    .code-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 16px; background: #161b22; border-bottom: 1px solid #30363d;
+    }
+    .code-label { font-size: .75rem; font-weight: 700; color: #8b949e; letter-spacing: .05em; text-transform: uppercase; }
+    .copy-btn {
+      background: none; border: 1px solid #30363d; color: #8b949e;
+      font-size: .75rem; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+      transition: border-color .2s, color .2s; font-family: inherit;
+    }
+    .copy-btn:hover { border-color: #8b949e; color: #c9d1d9; }
+    .code-block pre {
+      padding: 18px 20px; overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .84rem; line-height: 1.65; color: #e6edf3; margin: 0;
+    }
+    .code-block pre .cm { color: #8b949e; }
+    .code-block pre .st { color: #a5d6ff; }
+    .code-block pre .kk { color: #ffa657; }
+    .code-block pre .nu { color: #79c0ff; }
+    .code-block pre .bo { color: #ff7b72; }
+
+    /* ── Callouts ── */
+    .callout {
+      display: flex; gap: 14px; align-items: flex-start;
+      border-radius: var(--radius); padding: 18px 20px; margin: 20px 0;
+    }
+    .callout.info    { background: var(--discord-lt); border: 1px solid var(--discord-md); }
+    .callout.warning { background: var(--amber-lt);   border: 1px solid var(--amber-md); }
+    .callout.success { background: var(--green-lt);   border: 1px solid var(--green-md); }
+    .callout.danger  { background: var(--red-lt);     border: 1px solid #fca5a5; }
+    .callout-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .callout-body strong { display: block; font-size: .95rem; font-weight: 700; color: var(--gray-8); margin-bottom: 4px; }
+    .callout-body p, .callout-body ul { font-size: .9rem; color: var(--gray-7); line-height: 1.6; }
+    .callout-body ul { margin-left: 1.1rem; margin-top: 6px; }
+    .callout-body li { margin-bottom: 4px; }
+
+    /* ── Permission table ── */
+    .perm-table { width: 100%; border-collapse: collapse; margin: 16px 0 28px; font-size: .9rem; }
+    .perm-table th { background: var(--gray-2); text-align: left; padding: 10px 14px; border: 1px solid var(--gray-3); font-weight: 700; color: var(--gray-8); }
+    .perm-table td { padding: 10px 14px; border: 1px solid var(--gray-3); color: var(--gray-7); vertical-align: top; }
+    .perm-table tr:nth-child(even) td { background: var(--gray-1); }
+    .badge { display: inline-block; font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+    .badge-req  { background: #dbeafe; color: #1e40af; }
+    .badge-opt  { background: var(--gray-2); color: var(--gray-5); }
+
+    /* ── Prompt examples ── */
+    .prompt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0 32px; }
+    .prompt-card { border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px; background: var(--white); box-shadow: var(--shadow); }
+    .prompt-tag { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--discord); margin-bottom: 8px; }
+    .prompt-text {
+      font-size: .92rem; color: var(--gray-7); font-style: italic;
+      background: var(--gray-1); padding: 10px 14px;
+      border-radius: 8px; border-left: 3px solid var(--discord); line-height: 1.55;
+    }
+
+    /* ── Troubleshoot accordion ── */
+    .trouble-list { list-style: none; padding: 0; margin: 16px 0 28px; }
+    .trouble-item { border: 1px solid var(--gray-3); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+    .trouble-q {
+      width: 100%; text-align: left; background: var(--gray-1);
+      border: none; padding: 14px 18px; cursor: pointer;
+      font-family: inherit; font-size: .95rem; font-weight: 700; color: var(--gray-8);
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .trouble-q:hover { background: var(--gray-2); }
+    .trouble-q .chevron { transition: transform .25s; font-style: normal; flex-shrink: 0; }
+    .trouble-q[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .trouble-a { display: none; padding: 14px 18px 16px; font-size: .92rem; color: var(--gray-7); line-height: 1.65; border-top: 1px solid var(--gray-3); }
+    .trouble-a ul { margin-left: 1.2rem; margin-top: 6px; }
+    .trouble-a li { margin-bottom: 5px; }
+    .trouble-a.open { display: block; }
+
+    /* ── Quick ref table ── */
+    .ref-table { width: 100%; border-collapse: collapse; margin: 16px 0 28px; font-size: .9rem; }
+    .ref-table th { background: var(--gray-2); text-align: left; padding: 10px 14px; border: 1px solid var(--gray-3); font-weight: 700; }
+    .ref-table td { padding: 10px 14px; border: 1px solid var(--gray-3); color: var(--gray-7); vertical-align: top; }
+    .ref-table tr:nth-child(even) td { background: var(--gray-1); }
+    .ref-table code { font-size: .82rem; }
+
+    /* ── Sibling cards ── */
+    .sibling-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 20px; }
+    .sibling-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 18px; text-decoration: none; color: inherit;
+      box-shadow: var(--shadow); transition: border-color .2s, box-shadow .2s; display: block;
+    }
+    .sibling-card:hover { border-color: var(--discord-md); box-shadow: 0 4px 16px rgba(88,101,242,.12); text-decoration: none; }
+    .sibling-card .sc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .sibling-card h3 { font-size: .95rem; font-weight: 700; color: var(--gray-8); margin-bottom: 4px; }
+    .sibling-card p  { font-size: .83rem; color: var(--gray-5); }
+
+    /* ── Footer ── */
+    footer { background: #0c1a2e; color: #94a3b8; padding: 40px 24px; text-align: center; font-size: .88rem; }
+    footer a { color: #60a5fa; }
+    footer a:hover { color: var(--white); }
+    .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
+
+    @media (max-width: 640px) {
+      .hero { padding: 48px 20px 40px; }
+      main  { padding: 36px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="learn.html">Learn</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" role="banner">
+    <div class="hero-inner">
+      <div class="hero-badge"><span aria-hidden="true">🎮</span> Integration Guide</div>
+      <h1>OpenClaw <em>Discord Bot</em> Setup</h1>
+      <p class="hero-sub">Create a Discord bot, connect it to OpenClaw, and talk to your AI agent directly inside any channel or DM — in about 15 minutes.</p>
+      <div class="hero-pills" role="list" aria-label="Topics covered">
+        <span class="pill" role="listitem">Bot Creation</span>
+        <span class="pill" role="listitem">Permissions</span>
+        <span class="pill" role="listitem">Token Setup</span>
+        <span class="pill" role="listitem">Config</span>
+        <span class="pill" role="listitem">Example Commands</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- What is a Discord bot? -->
+      <h2 class="section-title" id="what-is-a-bot">
+        <span class="icon" aria-hidden="true">💡</span> What is a Discord bot?
+      </h2>
+      <p class="section-lead">New to bots? Here's the short version before we get into the setup.</p>
+
+      <div class="analogy" role="region" aria-label="Discord bot analogy">
+        <div class="analogy-icon" aria-hidden="true">🤖</div>
+        <div class="analogy-body">
+          <strong>Think of it like adding a team member to your server</strong>
+          <p>A Discord bot is just an account that's controlled by software instead of a human. You invite it to your server like you'd invite a friend, give it permission to read and send messages in specific channels, and then it listens for messages and responds. OpenClaw powers the bot's brain — every message you send it gets processed by your AI agent, which then replies.</p>
+        </div>
+      </div>
+
+      <!-- What can it do -->
+      <h2 class="section-title" id="what-it-does">
+        <span class="icon" aria-hidden="true">⚡</span> What can OpenClaw do in Discord?
+      </h2>
+      <p class="section-lead">Once connected, your bot can do everything OpenClaw can do — from inside Discord.</p>
+
+      <div class="uc-grid">
+        <div class="uc-card">
+          <div class="uc-icon" aria-hidden="true">💬</div>
+          <h3>Answer Questions</h3>
+          <p>Ask your bot anything — it uses your OpenClaw agent's full knowledge and connected tools to respond.</p>
+          <div class="uc-prompt">"Hey @MyBot, summarize what we talked about in this channel last week"</div>
+        </div>
+        <div class="uc-card">
+          <div class="uc-icon" aria-hidden="true">🔔</div>
+          <h3>Run Automations</h3>
+          <p>Trigger scheduled tasks, check emails, run reports, or fetch data — all by messaging your bot.</p>
+          <div class="uc-prompt">"@MyBot check if my server is still running"</div>
+        </div>
+        <div class="uc-card">
+          <div class="uc-icon" aria-hidden="true">📋</div>
+          <h3>Manage Tasks</h3>
+          <p>Add to-dos, set reminders, draft messages, or update notes without leaving Discord.</p>
+          <div class="uc-prompt">"@MyBot remind me at 3pm to review the pull request"</div>
+        </div>
+        <div class="uc-card">
+          <div class="uc-icon" aria-hidden="true">🌐</div>
+          <h3>Search &amp; Research</h3>
+          <p>Ask the bot to look things up, summarize web pages, or research a topic and post the results.</p>
+          <div class="uc-prompt">"@MyBot what's the latest on OpenAI's new model?"</div>
+        </div>
+        <div class="uc-card">
+          <div class="uc-icon" aria-hidden="true">👥</div>
+          <h3>Serve Your Whole Server</h3>
+          <p>Other members can talk to the bot too — great for communities, dev teams, or shared workspaces.</p>
+          <div class="uc-prompt">"@MyBot explain what a Docker container is"</div>
+        </div>
+        <div class="uc-card">
+          <div class="uc-icon" aria-hidden="true">🔒</div>
+          <h3>Private DM Mode</h3>
+          <p>Configure the bot to only respond to you via DMs, keeping your personal agent private.</p>
+          <div class="uc-prompt">DM the bot directly — no one else sees the conversation</div>
+        </div>
+      </div>
+
+      <!-- Setup steps -->
+      <h2 class="section-title" id="setup">
+        <span class="icon" aria-hidden="true">🛠️</span> Step-by-step setup
+      </h2>
+      <p class="section-lead">Takes about 15 minutes. You'll need a Discord account and OpenClaw already installed.</p>
+
+      <ol class="steps" aria-label="Discord bot setup steps">
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 1"></div>
+          <div class="step-content">
+            <strong>Go to the Discord Developer Portal</strong>
+            <p>Open <a href="https://discord.com/developers/applications" target="_blank" rel="noopener">discord.com/developers/applications</a> and log in with your Discord account. This is Discord's free developer dashboard — no credit card needed.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 2"></div>
+          <div class="step-content">
+            <strong>Create a new application</strong>
+            <p>Click <strong>New Application</strong> in the top right. Give it a name — this becomes the bot's display name in your server (you can change it later). Click <strong>Create</strong>.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 3"></div>
+          <div class="step-content">
+            <strong>Add a bot to the application</strong>
+            <p>In the left sidebar, click <strong>Bot</strong>. Then click <strong>Add Bot</strong> → <strong>Yes, do it!</strong>. Your application now has a bot account attached to it.</p>
+            <p>On this page you can also:</p>
+            <ul>
+              <li>Upload a profile picture for the bot</li>
+              <li>Toggle <strong>Public Bot</strong> off if you want to be the only one who can add it to servers</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 4"></div>
+          <div class="step-content">
+            <strong>Enable required Privileged Gateway Intents</strong>
+            <p>Still on the Bot page, scroll down to <strong>Privileged Gateway Intents</strong> and enable:</p>
+            <ul>
+              <li><strong>Message Content Intent</strong> — lets the bot read message text (required for OpenClaw to understand what you're saying)</li>
+              <li><strong>Server Members Intent</strong> — optional, needed if you want the bot to see member info</li>
+            </ul>
+            <p style="margin-top: 8px">Click <strong>Save Changes</strong>.</p>
+
+            <div class="callout warning" style="margin-top: 12px">
+              <div class="callout-icon" aria-hidden="true">⚠️</div>
+              <div class="callout-body">
+                <strong>Message Content Intent is required</strong>
+                <p>Without this, your bot will receive messages but won't be able to read what they say. OpenClaw will not be able to respond.</p>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 5"></div>
+          <div class="step-content">
+            <strong>Copy your bot token</strong>
+            <p>On the Bot page, click <strong>Reset Token</strong> → confirm → then click <strong>Copy</strong>. This is your bot's password — treat it like one.</p>
+
+            <div class="callout danger" style="margin-top: 12px">
+              <div class="callout-icon" aria-hidden="true">🚨</div>
+              <div class="callout-body">
+                <strong>Never share your bot token</strong>
+                <p>Anyone with your token can control your bot. Never post it on GitHub, in a Discord message, or anywhere public. If it leaks, click <strong>Reset Token</strong> immediately to invalidate it.</p>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 6"></div>
+          <div class="step-content">
+            <strong>Invite the bot to your server</strong>
+            <p>In the left sidebar, go to <strong>OAuth2 → URL Generator</strong>. Under <strong>Scopes</strong>, check <strong>bot</strong>. Under <strong>Bot Permissions</strong>, check:</p>
+            <ul>
+              <li><strong>Read Messages / View Channels</strong></li>
+              <li><strong>Send Messages</strong></li>
+              <li><strong>Read Message History</strong></li>
+              <li><strong>Use Slash Commands</strong> (optional but recommended)</li>
+            </ul>
+            <p style="margin-top: 8px">Copy the generated URL at the bottom of the page, open it in your browser, select your server, and click <strong>Authorize</strong>. Your bot will appear in your server's member list.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 7"></div>
+          <div class="step-content">
+            <strong>Add the token to openclaw.json</strong>
+            <p>Open your <a href="config-json.html">openclaw.json</a> file and add the Discord section:</p>
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-label">openclaw.json</span>
+                <button class="copy-btn" aria-label="Copy code">Copy</button>
+              </div>
+              <pre>{
+  <span class="kk">"channels"</span>: {
+    <span class="kk">"discord"</span>: {
+      <span class="kk">"enabled"</span>: <span class="bo">true</span>,
+      <span class="kk">"token"</span>: <span class="st">"YOUR_BOT_TOKEN_HERE"</span>,
+      <span class="kk">"prefix"</span>: <span class="st">"!"</span>,           <span class="cm">// optional command prefix</span>
+      <span class="kk">"allowed_channels"</span>: [],    <span class="cm">// empty = all channels</span>
+      <span class="kk">"allowed_users"</span>: [],       <span class="cm">// empty = all users</span>
+      <span class="kk">"respond_to_mentions"</span>: <span class="bo">true</span>, <span class="cm">// @bot triggers a response</span>
+      <span class="kk">"respond_to_dms"</span>: <span class="bo">true</span>      <span class="cm">// bot responds to direct messages</span>
+    }
+  }
+}</pre>
+            </div>
+            <p>Replace <code>YOUR_BOT_TOKEN_HERE</code> with the token you copied in Step 5.</p>
+          </div>
+        </li>
+
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 8"></div>
+          <div class="step-content">
+            <strong>Restart OpenClaw and test it</strong>
+            <p>Save openclaw.json and restart OpenClaw. Your bot should now show as <strong>Online</strong> in your Discord server. Send it a message by mentioning it:</p>
+            <div class="screen-note">
+              <div class="dot" aria-hidden="true"></div>
+              @YourBot hello, are you there?
+            </div>
+            <p>If it replies, you're done. If not, check the troubleshooting section below.</p>
+          </div>
+        </li>
+
+      </ol>
+
+      <div class="callout success">
+        <div class="callout-icon" aria-hidden="true">✅</div>
+        <div class="callout-body">
+          <strong>Bot is live!</strong>
+          <p>Mention your bot or DM it to start chatting. Every message is processed by your OpenClaw agent, so it has access to all your connected tools, memory, and skills.</p>
+        </div>
+      </div>
+
+      <!-- Config options -->
+      <h2 class="section-title" id="config">
+        <span class="icon" aria-hidden="true">⚙️</span> Configuration options
+      </h2>
+      <p class="section-lead">Fine-tune how your bot behaves using these openclaw.json settings.</p>
+
+      <table class="perm-table" aria-label="Discord configuration options">
+        <thead>
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Type</th>
+            <th scope="col">Default</th>
+            <th scope="col">What it does</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>token</code></td>
+            <td>string</td>
+            <td>—</td>
+            <td>Your Discord bot token. Required.</td>
+          </tr>
+          <tr>
+            <td><code>prefix</code></td>
+            <td>string</td>
+            <td><code>"!"</code></td>
+            <td>Command prefix for text commands (e.g. <code>!help</code>). Leave blank to disable.</td>
+          </tr>
+          <tr>
+            <td><code>allowed_channels</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Channel IDs where the bot will respond. Empty array means all channels.</td>
+          </tr>
+          <tr>
+            <td><code>allowed_users</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Discord user IDs that can talk to the bot. Empty array means anyone in the server.</td>
+          </tr>
+          <tr>
+            <td><code>respond_to_mentions</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Bot responds when someone @mentions it in a channel.</td>
+          </tr>
+          <tr>
+            <td><code>respond_to_dms</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Bot responds to direct messages.</td>
+          </tr>
+          <tr>
+            <td><code>typing_indicator</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Shows the bot "typing…" while generating a response.</td>
+          </tr>
+          <tr>
+            <td><code>max_message_length</code></td>
+            <td>number</td>
+            <td><code>2000</code></td>
+            <td>Discord's message limit. Long responses are split automatically.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Restrict to one channel -->
+      <h2 class="section-title" id="restrict">
+        <span class="icon" aria-hidden="true">🔒</span> Restrict the bot to one channel or user
+      </h2>
+      <p class="section-lead">If you're running the bot on a shared server, you probably don't want everyone talking to your personal AI agent. Here's how to lock it down.</p>
+
+      <p style="font-size:.95rem; color: var(--gray-7); margin-bottom: 16px;">To find a channel ID: right-click the channel in Discord → <strong>Copy Channel ID</strong> (you may need to enable Developer Mode in Discord Settings → Advanced first).</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-label">openclaw.json — restricted config</span>
+          <button class="copy-btn" aria-label="Copy restricted config code">Copy</button>
+        </div>
+        <pre>{
+  <span class="kk">"channels"</span>: {
+    <span class="kk">"discord"</span>: {
+      <span class="kk">"enabled"</span>: <span class="bo">true</span>,
+      <span class="kk">"token"</span>: <span class="st">"YOUR_BOT_TOKEN"</span>,
+      <span class="kk">"allowed_channels"</span>: [<span class="st">"1234567890123456789"</span>], <span class="cm">// only this channel</span>
+      <span class="kk">"allowed_users"</span>: [<span class="st">"9876543210987654321"</span>],    <span class="cm">// only you</span>
+      <span class="kk">"respond_to_dms"</span>: <span class="bo">true</span>
+    }
+  }
+}</pre>
+      </div>
+
+      <!-- Example prompts -->
+      <h2 class="section-title" id="prompts">
+        <span class="icon" aria-hidden="true">💬</span> Example prompts to try
+      </h2>
+      <p class="section-lead">Once your bot is online, mention it or DM it with any of these to get started.</p>
+
+      <div class="prompt-grid">
+        <div class="prompt-card">
+          <div class="prompt-tag">General</div>
+          <div class="prompt-text">"@MyBot what can you do?"</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag">Research</div>
+          <div class="prompt-text">"@MyBot give me a quick summary of what's happening with AI this week"</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag">Tasks</div>
+          <div class="prompt-text">"@MyBot add 'finish project proposal' to my task list"</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag">Automation</div>
+          <div class="prompt-text">"@MyBot every morning at 9am, post the weather forecast in #general"</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag">Writing</div>
+          <div class="prompt-text">"@MyBot draft an announcement for our server about next week's event"</div>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-tag">Code</div>
+          <div class="prompt-text">"@MyBot explain what this Python function does" [paste code]</div>
+        </div>
+      </div>
+
+      <!-- Troubleshooting -->
+      <h2 class="section-title" id="troubleshooting">
+        <span class="icon" aria-hidden="true">🔧</span> Common problems &amp; fixes
+      </h2>
+
+      <ul class="trouble-list" aria-label="Troubleshooting accordion">
+
+        <li class="trouble-item">
+          <button class="trouble-q" id="t1-btn" aria-expanded="false" aria-controls="t1-panel">
+            The bot shows as Offline in my server
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t1-panel" role="region" aria-labelledby="t1-btn">
+            <p>The bot only shows as Online while OpenClaw is running. Check that:</p>
+            <ul>
+              <li>OpenClaw is actually running on your machine</li>
+              <li>The <code>token</code> in openclaw.json matches the one in the Developer Portal exactly</li>
+              <li>You saved openclaw.json and restarted OpenClaw after adding the Discord config</li>
+              <li>The <code>enabled</code> field is set to <code>true</code></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="trouble-item">
+          <button class="trouble-q" id="t2-btn" aria-expanded="false" aria-controls="t2-panel">
+            The bot is online but doesn't respond to messages
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t2-panel" role="region" aria-labelledby="t2-btn">
+            <ul>
+              <li>Check that <strong>Message Content Intent</strong> is enabled in the Developer Portal under Bot → Privileged Gateway Intents</li>
+              <li>Make sure you're @mentioning the bot or messaging it in an allowed channel</li>
+              <li>If you set <code>allowed_channels</code>, confirm you're in one of those channels</li>
+              <li>If you set <code>allowed_users</code>, confirm your Discord user ID is in the list</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="trouble-item">
+          <button class="trouble-q" id="t3-btn" aria-expanded="false" aria-controls="t3-panel">
+            "Invalid token" error in OpenClaw logs
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t3-panel" role="region" aria-labelledby="t3-btn">
+            <p>The token in your openclaw.json doesn't match your bot's current token. This happens if:</p>
+            <ul>
+              <li>You copied it incorrectly (watch for extra spaces)</li>
+              <li>You clicked <strong>Reset Token</strong> in the Developer Portal after setting it up</li>
+              <li>The token has special characters that need to be quoted in JSON</li>
+            </ul>
+            <p style="margin-top: 8px">Go to the Developer Portal → Bot → Reset Token → copy the new token and paste it into openclaw.json, then restart OpenClaw.</p>
+          </div>
+        </li>
+
+        <li class="trouble-item">
+          <button class="trouble-q" id="t4-btn" aria-expanded="false" aria-controls="t4-panel">
+            Bot responds in the wrong channel or to everyone
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t4-panel" role="region" aria-labelledby="t4-btn">
+            <p>Set the <code>allowed_channels</code> and <code>allowed_users</code> fields to restrict who and where the bot responds. See the <a href="#restrict">Restrict to one channel</a> section above for the exact config. Remember to use the numeric channel and user IDs, not the names.</p>
+          </div>
+        </li>
+
+        <li class="trouble-item">
+          <button class="trouble-q" id="t5-btn" aria-expanded="false" aria-controls="t5-panel">
+            Long responses get cut off or split weirdly
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t5-panel" role="region" aria-labelledby="t5-btn">
+            <p>Discord has a 2000 character limit per message. OpenClaw automatically splits long responses into multiple messages, but if the split feels awkward you can ask your agent to be more concise, or add this to your AGENTS.md:</p>
+            <div class="code-block" style="margin-top: 10px">
+              <div class="code-header">
+                <span class="code-label">AGENTS.md</span>
+                <button class="copy-btn" aria-label="Copy AGENTS.md snippet">Copy</button>
+              </div>
+              <pre>When responding in Discord, keep replies under 1800 characters.
+If a response needs to be longer, summarize and offer to continue.</pre>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+
+      <!-- Related guides -->
+      <h2 class="section-title" id="related">
+        <span class="icon" aria-hidden="true">🔗</span> Related guides
+      </h2>
+      <div class="sibling-grid">
+        <a href="agentchannels.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">💬</div>
+          <h3>Agent Channels</h3>
+          <p>WhatsApp, Telegram, Slack, iMessage &amp; more</p>
+        </a>
+        <a href="gmail-calendar.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">📬</div>
+          <h3>Gmail &amp; Calendar</h3>
+          <p>Connect OpenClaw to your Google account</p>
+        </a>
+        <a href="config-json.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">⚙️</div>
+          <h3>openclaw.json</h3>
+          <p>Full guide to every config option</p>
+        </a>
+        <a href="troubleshooting.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">🔧</div>
+          <h3>Troubleshooting</h3>
+          <p>Fix the most common OpenClaw errors</p>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn Hub</a>
+      <a href="gettingstarted.html">Getting Started</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="faq.html">FAQ</a>
+      <a href="sitemap.xml">Sitemap</a>
+    </div>
+    <p>© 2026 learnopenclaw.org — Community documentation for the OpenClaw AI agent framework.</p>
+  </footer>
+
+  <script>
+    // ── Nav ───────────────────────────────────────────────────────────────────
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
+      }
+    });
+
+    // ── Accordion ─────────────────────────────────────────────────────────────
+    document.querySelectorAll('.trouble-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const panel  = document.getElementById(btn.getAttribute('aria-controls'));
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.trouble-q').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+          const p = document.getElementById(b.getAttribute('aria-controls'));
+          if (p) p.classList.remove('open');
+        });
+        if (!isOpen) {
+          btn.setAttribute('aria-expanded', 'true');
+          panel.classList.add('open');
+        }
+      });
+    });
+
+    // ── Copy buttons ──────────────────────────────────────────────────────────
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pre = btn.closest('.code-block').querySelector('pre');
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = 'Copy', 2000);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
