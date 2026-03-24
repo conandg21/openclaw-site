@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw + n8n & Zapier — Connect Your AI Agent to Any Tool</title>
+  <meta name="description" content="Connect OpenClaw to n8n, Zapier, and Make. Trigger your AI agent from any app, send results anywhere, and build powerful no-code automation workflows." />
+  <meta name="keywords" content="OpenClaw n8n, OpenClaw Zapier, AI agent automation, OpenClaw webhook, connect AI to Zapier, n8n AI workflow, OpenClaw Make, no-code AI automation" />
+  <link rel="canonical" href="https://learnopenclaw.org/automation-tools.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw + n8n & Zapier — Connect Your AI Agent to Any Tool" />
+  <meta property="og:description" content="Connect OpenClaw to n8n, Zapier, and Make. Trigger your AI agent from any app and send results anywhere with no-code automation workflows." />
+  <meta property="og:url" content="https://learnopenclaw.org/automation-tools.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw + n8n & Zapier Integration Guide" />
+  <meta name="twitter:description" content="Trigger OpenClaw from Zapier, n8n, or Make. Connect your AI agent to 5,000+ apps with no code. Step-by-step setup guide." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:image:alt" content="learnopenclaw.org — OpenClaw AI Agent Documentation" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw + n8n & Zapier — Connect Your AI Agent to Any Tool",
+    "description": "How to connect OpenClaw to n8n, Zapier, and Make using webhooks. Covers webhook setup, trigger workflows, sending results back, and real automation examples.",
+    "url": "https://learnopenclaw.org/automation-tools.html",
+    "dateModified": "2026-03-23",
+    "author": { "@type": "Organization", "name": "LearnOpenClaw" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home",              "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn",             "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "n8n & Zapier",      "item": "https://learnopenclaw.org/automation-tools.html"}
+      ]
+    }
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:     #f97316;
+      --orange-dk:  #c2410c;
+      --orange-lt:  #fff7ed;
+      --orange-md:  #fed7aa;
+      --n8n:        #ea4b71;
+      --n8n-lt:     #fff0f3;
+      --zapier:     #ff4a00;
+      --zapier-lt:  #fff3ef;
+      --make:       #6d28d9;
+      --make-lt:    #f5f3ff;
+      --make-md:    #ddd6fe;
+      --green:      #16a34a;
+      --green-lt:   #f0fdf4;
+      --green-md:   #bbf7d0;
+      --amber:      #d97706;
+      --amber-lt:   #fffbeb;
+      --amber-md:   #fcd34d;
+      --blue:       #2563eb;
+      --blue-lt:    #eff6ff;
+      --gray-1:     #f9fafb;
+      --gray-2:     #f3f4f6;
+      --gray-3:     #e5e7eb;
+      --gray-5:     #6b7280;
+      --gray-7:     #374151;
+      --gray-8:     #1f2937;
+      --white:      #ffffff;
+      --radius:     12px;
+      --shadow:     0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--orange); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+    }
+    .skip-nav:focus { top: 8px; }
+    a:focus, button:focus { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 4px; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px; line-height: 1.65;
+      color: var(--gray-8); background: var(--white);
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white); border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .claw { font-size: 1.4rem; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: all .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column !important; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--orange); }
+    .nav-links a[aria-current="page"] { color: var(--orange-dk); font-weight: 700; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #7c2d12 0%, #c2410c 50%, #f97316 100%);
+      color: var(--white); padding: 72px 24px 60px;
+    }
+    .hero-inner { max-width: 820px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      color: var(--white); font-size: .75rem; font-weight: 700;
+      letter-spacing: .07em; padding: 4px 14px; border-radius: 100px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .hero h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+    .hero h1 em { font-style: normal; color: #fed7aa; }
+    .hero-sub { font-size: 1.05rem; color: #fed7aa; max-width: 640px; margin-bottom: 28px; }
+    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      color: #fff7ed; font-size: .82rem; font-weight: 600;
+      padding: 5px 14px; border-radius: 100px;
+    }
+
+    /* ── Main ── */
+    main { padding: 52px 24px 80px; }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 1.45rem; font-weight: 800; color: var(--gray-8);
+      margin: 56px 0 8px; padding-bottom: 12px;
+      border-bottom: 2px solid var(--gray-3);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title:first-of-type { margin-top: 0; }
+    .section-lead { font-size: .97rem; color: var(--gray-5); margin-bottom: 24px; max-width: 700px; }
+
+    /* ── Tool comparison cards ── */
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin: 20px 0 36px; }
+    .tool-card {
+      border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);
+      border: 2px solid transparent; transition: box-shadow .2s;
+    }
+    .tool-card.n8n    { background: var(--n8n-lt);    border-color: #f9a8ba; }
+    .tool-card.zapier { background: var(--zapier-lt); border-color: #fdba90; }
+    .tool-card.make   { background: var(--make-lt);   border-color: var(--make-md); }
+    .tool-card:hover  { box-shadow: 0 6px 24px rgba(0,0,0,.1); }
+    .tool-logo { font-size: 2rem; margin-bottom: 10px; }
+    .tool-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 6px; }
+    .tool-card.n8n    h3 { color: var(--n8n); }
+    .tool-card.zapier h3 { color: var(--zapier); }
+    .tool-card.make   h3 { color: var(--make); }
+    .tool-card .tool-tag {
+      display: inline-block; font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: 3px 10px; border-radius: 100px; margin-bottom: 10px;
+    }
+    .tool-card.n8n    .tool-tag { background: #fce7ef; color: var(--n8n); }
+    .tool-card.zapier .tool-tag { background: #ffe5db; color: var(--zapier); }
+    .tool-card.make   .tool-tag { background: var(--make-md); color: var(--make); }
+    .tool-card p { font-size: .9rem; color: var(--gray-7); line-height: 1.6; margin-bottom: 10px; }
+    .tool-card ul { margin-left: 1.1rem; font-size: .88rem; color: var(--gray-7); }
+    .tool-card li { margin-bottom: 4px; }
+
+    /* ── How it works diagram ── */
+    .flow-diagram {
+      display: flex; align-items: center; gap: 0;
+      flex-wrap: wrap; justify-content: center;
+      margin: 24px 0 36px; gap: 0;
+    }
+    .flow-box {
+      background: var(--gray-1); border: 2px solid var(--gray-3);
+      border-radius: var(--radius); padding: 16px 20px; text-align: center;
+      min-width: 130px; flex: 1;
+    }
+    .flow-box .fb-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .flow-box .fb-label { font-size: .8rem; font-weight: 700; color: var(--gray-8); }
+    .flow-box .fb-sub { font-size: .72rem; color: var(--gray-5); margin-top: 2px; }
+    .flow-box.accent { background: var(--orange-lt); border-color: var(--orange-md); }
+    .flow-arrow { font-size: 1.4rem; color: var(--gray-5); padding: 0 6px; flex-shrink: 0; }
+    @media (max-width: 600px) {
+      .flow-diagram { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+
+    /* ── Workflow example cards ── */
+    .wf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 20px 0 32px; }
+    .wf-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 20px; background: var(--white); box-shadow: var(--shadow);
+      transition: border-color .2s;
+    }
+    .wf-card:hover { border-color: var(--orange-md); }
+    .wf-card .wf-tool {
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; margin-bottom: 8px; color: var(--orange-dk);
+    }
+    .wf-card h3 { font-size: .95rem; font-weight: 800; color: var(--gray-8); margin-bottom: 8px; }
+    .wf-card .wf-flow { font-size: .85rem; color: var(--gray-7); line-height: 1.6; }
+    .wf-card .wf-flow .arrow { color: var(--orange); font-weight: 700; }
+
+    /* ── Steps ── */
+    .steps { list-style: none; counter-reset: step-ctr; padding: 0; margin: 16px 0 8px; }
+    .step-item { counter-increment: step-ctr; display: flex; gap: 16px; align-items: flex-start; margin-bottom: 28px; }
+    .step-num {
+      flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%;
+      background: var(--orange); color: var(--white);
+      font-size: .85rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-num::before { content: counter(step-ctr); }
+    .step-content { flex: 1; padding-top: 4px; }
+    .step-content strong { display: block; font-size: .97rem; font-weight: 700; color: var(--gray-8); margin-bottom: 6px; }
+    .step-content p { font-size: .93rem; color: var(--gray-7); margin-bottom: 8px; }
+    .step-content ul { margin-left: 1.2rem; margin-top: 6px; font-size: .92rem; color: var(--gray-7); }
+    .step-content li { margin-bottom: 5px; }
+
+    /* ── Tab bar ── */
+    .tab-bar { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 2px solid var(--gray-3); margin-bottom: 0; }
+    .tab-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: inherit; font-size: .88rem; font-weight: 600;
+      color: var(--gray-5); padding: 9px 20px;
+      border-bottom: 3px solid transparent; margin-bottom: -2px;
+      transition: color .15s, border-color .15s; border-radius: 4px 4px 0 0;
+    }
+    .tab-btn:hover { color: var(--orange); }
+    .tab-btn.active { color: var(--orange-dk); border-bottom-color: var(--orange); }
+    .tab-panel { display: none; padding: 28px 0; }
+    .tab-panel.active { display: block; }
+
+    /* ── Code ── */
+    code {
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .85em; background: var(--gray-2);
+      color: var(--gray-8); padding: 2px 6px; border-radius: 4px;
+    }
+    .code-block { background: #0d1117; border-radius: 10px; margin: 10px 0 20px; overflow: hidden; }
+    .code-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 16px; background: #161b22; border-bottom: 1px solid #30363d;
+    }
+    .code-label { font-size: .75rem; font-weight: 700; color: #8b949e; letter-spacing: .05em; text-transform: uppercase; }
+    .copy-btn {
+      background: none; border: 1px solid #30363d; color: #8b949e;
+      font-size: .75rem; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+      font-family: inherit; transition: border-color .2s, color .2s;
+    }
+    .copy-btn:hover { border-color: #8b949e; color: #c9d1d9; }
+    .code-block pre {
+      padding: 18px 20px; overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: .84rem; line-height: 1.65; color: #e6edf3; margin: 0;
+    }
+    .code-block pre .cm { color: #8b949e; }
+    .code-block pre .st { color: #a5d6ff; }
+    .code-block pre .kk { color: #ffa657; }
+    .code-block pre .nu { color: #79c0ff; }
+    .code-block pre .bo { color: #ff7b72; }
+
+    /* ── Callouts ── */
+    .callout {
+      display: flex; gap: 14px; align-items: flex-start;
+      border-radius: var(--radius); padding: 18px 20px; margin: 20px 0;
+    }
+    .callout.info    { background: var(--orange-lt); border: 1px solid var(--orange-md); }
+    .callout.warning { background: var(--amber-lt);  border: 1px solid var(--amber-md); }
+    .callout.success { background: var(--green-lt);  border: 1px solid var(--green-md); }
+    .callout-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .callout-body strong { display: block; font-size: .95rem; font-weight: 700; color: var(--gray-8); margin-bottom: 4px; }
+    .callout-body p, .callout-body ul { font-size: .9rem; color: var(--gray-7); line-height: 1.6; }
+    .callout-body ul { margin-left: 1.1rem; margin-top: 6px; }
+    .callout-body li { margin-bottom: 4px; }
+
+    /* ── Troubleshoot ── */
+    .trouble-list { list-style: none; padding: 0; margin: 16px 0 28px; }
+    .trouble-item { border: 1px solid var(--gray-3); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
+    .trouble-q {
+      width: 100%; text-align: left; background: var(--gray-1); border: none;
+      padding: 14px 18px; cursor: pointer; font-family: inherit;
+      font-size: .95rem; font-weight: 700; color: var(--gray-8);
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .trouble-q:hover { background: var(--gray-2); }
+    .trouble-q .chevron { transition: transform .25s; font-style: normal; flex-shrink: 0; }
+    .trouble-q[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+    .trouble-a { display: none; padding: 14px 18px 16px; font-size: .92rem; color: var(--gray-7); line-height: 1.65; border-top: 1px solid var(--gray-3); }
+    .trouble-a ul { margin-left: 1.2rem; margin-top: 6px; }
+    .trouble-a li { margin-bottom: 5px; }
+    .trouble-a.open { display: block; }
+
+    /* ── Sibling cards ── */
+    .sibling-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 20px; }
+    .sibling-card {
+      border: 1px solid var(--gray-3); border-radius: var(--radius);
+      padding: 18px; text-decoration: none; color: inherit;
+      box-shadow: var(--shadow); transition: border-color .2s, box-shadow .2s; display: block;
+    }
+    .sibling-card:hover { border-color: var(--orange-md); box-shadow: 0 4px 16px rgba(249,115,22,.12); text-decoration: none; }
+    .sibling-card .sc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .sibling-card h3 { font-size: .95rem; font-weight: 700; color: var(--gray-8); margin-bottom: 4px; }
+    .sibling-card p  { font-size: .83rem; color: var(--gray-5); }
+
+    /* ── Footer ── */
+    footer { background: #0c1a2e; color: #94a3b8; padding: 40px 24px; text-align: center; font-size: .88rem; }
+    footer a { color: #60a5fa; }
+    footer a:hover { color: var(--white); }
+    .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; }
+
+    @media (max-width: 640px) {
+      .hero { padding: 48px 20px 40px; }
+      main  { padding: 36px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="learn.html">Learn</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" role="banner">
+    <div class="hero-inner">
+      <div class="hero-badge"><span aria-hidden="true">⚡</span> Automation Tools</div>
+      <h1>OpenClaw + <em>n8n, Zapier &amp; Make</em></h1>
+      <p class="hero-sub">Connect your AI agent to 5,000+ apps with no code. Trigger OpenClaw from anything, send results anywhere, and build workflows that run themselves.</p>
+      <div class="hero-pills" role="list" aria-label="Topics covered">
+        <span class="pill" role="listitem">Webhooks</span>
+        <span class="pill" role="listitem">n8n Setup</span>
+        <span class="pill" role="listitem">Zapier Setup</span>
+        <span class="pill" role="listitem">Make Setup</span>
+        <span class="pill" role="listitem">Workflow Examples</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- Which tool should I use? -->
+      <h2 class="section-title" id="which-tool">
+        <span class="icon" aria-hidden="true">🤔</span> n8n, Zapier, or Make — which one?
+      </h2>
+      <p class="section-lead">All three work with OpenClaw via webhooks. Here's how they compare so you can pick the right one for your setup.</p>
+
+      <div class="tool-grid">
+        <div class="tool-card n8n">
+          <div class="tool-logo" aria-hidden="true">🔴</div>
+          <div class="tool-tag">Open Source · Self-hosted</div>
+          <h3>n8n</h3>
+          <p>Free, open-source, and self-hostable — meaning your data never leaves your machine. The most powerful option if you're comfortable with a bit of setup.</p>
+          <ul>
+            <li>Free forever on self-hosted</li>
+            <li>400+ integrations</li>
+            <li>Full workflow logic (if/else, loops)</li>
+            <li>Best for developers &amp; privacy-focused users</li>
+          </ul>
+        </div>
+        <div class="tool-card zapier">
+          <div class="tool-logo" aria-hidden="true">🟠</div>
+          <div class="tool-tag">Cloud · No-code</div>
+          <h3>Zapier</h3>
+          <p>The easiest to get started with. No installation, just log in and start connecting apps. Free tier covers basic use cases.</p>
+          <ul>
+            <li>Free plan available (100 tasks/month)</li>
+            <li>7,000+ app integrations</li>
+            <li>Easiest interface for beginners</li>
+            <li>Best for non-technical users</li>
+          </ul>
+        </div>
+        <div class="tool-card make">
+          <div class="tool-logo" aria-hidden="true">🟣</div>
+          <div class="tool-tag">Cloud · Visual builder</div>
+          <h3>Make (formerly Integromat)</h3>
+          <p>More powerful than Zapier with a visual drag-and-drop canvas. Great middle ground between Zapier's simplicity and n8n's power.</p>
+          <ul>
+            <li>Free plan available (1,000 ops/month)</li>
+            <li>1,500+ app integrations</li>
+            <li>Visual scenario builder</li>
+            <li>Best for complex multi-step flows</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <h2 class="section-title" id="how-it-works">
+        <span class="icon" aria-hidden="true">🔄</span> How the connection works
+      </h2>
+      <p class="section-lead">OpenClaw exposes a webhook URL. You point your automation tool at that URL, and OpenClaw receives the trigger, runs your agent, and sends a response back.</p>
+
+      <div class="flow-diagram" role="img" aria-label="Automation flow: trigger app sends to webhook, OpenClaw processes it, result goes back to destination app">
+        <div class="flow-box">
+          <div class="fb-icon" aria-hidden="true">📱</div>
+          <div class="fb-label">Trigger App</div>
+          <div class="fb-sub">Gmail, Slack, form, schedule…</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div class="flow-box">
+          <div class="fb-icon" aria-hidden="true">⚡</div>
+          <div class="fb-label">n8n / Zapier / Make</div>
+          <div class="fb-sub">Routes the data</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div class="flow-box accent">
+          <div class="fb-icon" aria-hidden="true">🦞</div>
+          <div class="fb-label">OpenClaw</div>
+          <div class="fb-sub">Your AI agent</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div class="flow-box">
+          <div class="fb-icon" aria-hidden="true">📤</div>
+          <div class="fb-label">Destination App</div>
+          <div class="fb-sub">Notion, Slack, email, sheet…</div>
+        </div>
+      </div>
+
+      <p style="font-size:.95rem; color: var(--gray-7); margin-bottom: 32px;">The automation tool is just a middleman — it receives the trigger, packages the data, sends it to OpenClaw's webhook, then takes the response and delivers it wherever you want. OpenClaw does all the thinking in the middle.</p>
+
+      <!-- Step 1: Enable webhook in OpenClaw -->
+      <h2 class="section-title" id="webhook-setup">
+        <span class="icon" aria-hidden="true">🔌</span> Step 1 — Enable the OpenClaw webhook
+      </h2>
+      <p class="section-lead">Before connecting any tool, turn on OpenClaw's webhook server and note your endpoint URL. This is the same for all three tools.</p>
+
+      <ol class="steps" aria-label="OpenClaw webhook setup steps">
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 1"></div>
+          <div class="step-content">
+            <strong>Enable the webhook in openclaw.json</strong>
+            <p>Open your <a href="config-json.html">openclaw.json</a> and add the webhook block:</p>
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-label">openclaw.json</span>
+                <button class="copy-btn" aria-label="Copy webhook config">Copy</button>
+              </div>
+              <pre>{
+  <span class="kk">"webhook"</span>: {
+    <span class="kk">"enabled"</span>: <span class="bo">true</span>,
+    <span class="kk">"port"</span>: <span class="nu">8080</span>,
+    <span class="kk">"secret"</span>: <span class="st">"your-secret-key"</span>,  <span class="cm">// optional auth token</span>
+    <span class="kk">"path"</span>: <span class="st">"/webhook"</span>             <span class="cm">// endpoint path</span>
+  }
+}</pre>
+            </div>
+            <p>Restart OpenClaw. Your webhook is now live at <code>http://localhost:8080/webhook</code>.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <div class="step-num" aria-label="Step 2"></div>
+          <div class="step-content">
+            <strong>Make it reachable from the internet (if using Zapier or Make)</strong>
+            <p>Zapier and Make are cloud services — they can't reach <code>localhost</code> on your machine. You need to expose your local webhook using a tunnel tool:</p>
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-label">Terminal — using ngrok (free)</span>
+                <button class="copy-btn" aria-label="Copy ngrok command">Copy</button>
+              </div>
+              <pre>ngrok http 8080</pre>
+            </div>
+            <p>ngrok gives you a public URL like <code>https://abc123.ngrok.io</code> that tunnels to your local machine. Use that URL in Zapier or Make instead of localhost. For n8n (self-hosted on the same machine), you can skip this step.</p>
+            <div class="callout warning" style="margin-top: 12px">
+              <div class="callout-icon" aria-hidden="true">⚠️</div>
+              <div class="callout-body">
+                <strong>ngrok URLs change on free plan</strong>
+                <p>The free ngrok URL changes every time you restart it. Upgrade to a paid ngrok plan or use a static domain to avoid having to update your Zaps every time.</p>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ol>
+
+      <!-- Per-tool setup with tabs -->
+      <h2 class="section-title" id="connect">
+        <span class="icon" aria-hidden="true">🛠️</span> Step 2 — Connect your automation tool
+      </h2>
+      <p class="section-lead">Choose your tool below for step-by-step setup instructions.</p>
+
+      <div class="tab-bar" role="tablist" aria-label="Automation tool setup guides">
+        <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="tab-n8n"    id="btn-n8n">n8n</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-zapier" id="btn-zapier">Zapier</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-make"   id="btn-make">Make</button>
+      </div>
+
+      <!-- n8n tab -->
+      <div class="tab-panel active" id="tab-n8n" role="tabpanel" aria-labelledby="btn-n8n">
+        <ol class="steps" aria-label="n8n setup steps">
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 1"></div>
+            <div class="step-content">
+              <strong>Create a new workflow in n8n</strong>
+              <p>Open your n8n instance and click <strong>+ New Workflow</strong>. Give it a name like "OpenClaw Trigger".</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 2"></div>
+            <div class="step-content">
+              <strong>Add a trigger node</strong>
+              <p>Click <strong>+</strong> to add a node. Choose your trigger — for example <strong>Schedule Trigger</strong> (run every morning), <strong>Gmail Trigger</strong> (on new email), or <strong>Webhook</strong> (manually triggered).</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 3"></div>
+            <div class="step-content">
+              <strong>Add an HTTP Request node to call OpenClaw</strong>
+              <p>After your trigger, add an <strong>HTTP Request</strong> node with these settings:</p>
+              <ul>
+                <li>Method: <code>POST</code></li>
+                <li>URL: <code>http://localhost:8080/webhook</code></li>
+                <li>Body: JSON — <code>{"message": "Your prompt here", "context": "{{ $json }}"}</code></li>
+                <li>Header: <code>Authorization: Bearer your-secret-key</code> (if you set one)</li>
+              </ul>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 4"></div>
+            <div class="step-content">
+              <strong>Handle the response</strong>
+              <p>OpenClaw returns a JSON response with a <code>reply</code> field. Add another node (Slack, Gmail, Notion, etc.) to send <code>{{ $json.reply }}</code> wherever you want the result to go.</p>
+              <div class="code-block">
+                <div class="code-header">
+                  <span class="code-label">OpenClaw webhook response</span>
+                </div>
+                <pre>{
+  <span class="kk">"status"</span>: <span class="st">"ok"</span>,
+  <span class="kk">"reply"</span>: <span class="st">"Your agent's response text here"</span>,
+  <span class="kk">"tokens_used"</span>: <span class="nu">342</span>
+}</pre>
+              </div>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 5"></div>
+            <div class="step-content">
+              <strong>Activate the workflow</strong>
+              <p>Toggle <strong>Active</strong> in the top right. n8n will now run the workflow on every trigger automatically.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Zapier tab -->
+      <div class="tab-panel" id="tab-zapier" role="tabpanel" aria-labelledby="btn-zapier">
+        <ol class="steps" aria-label="Zapier setup steps">
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 1"></div>
+            <div class="step-content">
+              <strong>Create a new Zap</strong>
+              <p>Log into <a href="https://zapier.com" target="_blank" rel="noopener">zapier.com</a> and click <strong>+ Create Zap</strong>.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 2"></div>
+            <div class="step-content">
+              <strong>Set your trigger</strong>
+              <p>Search for your trigger app — Gmail, Google Forms, Typeform, Slack, Airtable, or anything else. Choose the trigger event (e.g. "New Email" or "New Form Submission") and connect your account.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 3"></div>
+            <div class="step-content">
+              <strong>Add a Webhooks by Zapier action</strong>
+              <p>Click <strong>+</strong> to add an action. Search for <strong>Webhooks by Zapier</strong> → choose <strong>POST</strong>. Configure it:</p>
+              <ul>
+                <li>URL: your ngrok URL + <code>/webhook</code> (e.g. <code>https://abc123.ngrok.io/webhook</code>)</li>
+                <li>Payload Type: <code>json</code></li>
+                <li>Data — key: <code>message</code>, value: map a field from your trigger (e.g. email body)</li>
+                <li>Headers — key: <code>Authorization</code>, value: <code>Bearer your-secret-key</code></li>
+              </ul>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 4"></div>
+            <div class="step-content">
+              <strong>Add a destination action</strong>
+              <p>Add another action to send OpenClaw's response somewhere useful — a Slack message, a Gmail reply, a new Notion page, or a Google Sheet row. Map <code>reply</code> from the webhook response to the field you want.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 5"></div>
+            <div class="step-content">
+              <strong>Test and publish your Zap</strong>
+              <p>Click <strong>Test step</strong> on the webhook action to send a real request to OpenClaw and confirm it responds. Then click <strong>Publish Zap</strong> to go live.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Make tab -->
+      <div class="tab-panel" id="tab-make" role="tabpanel" aria-labelledby="btn-make">
+        <ol class="steps" aria-label="Make setup steps">
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 1"></div>
+            <div class="step-content">
+              <strong>Create a new scenario in Make</strong>
+              <p>Log into <a href="https://make.com" target="_blank" rel="noopener">make.com</a>, go to <strong>Scenarios</strong> and click <strong>+ Create a new scenario</strong>.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 2"></div>
+            <div class="step-content">
+              <strong>Add a trigger module</strong>
+              <p>Click the first circle and search for your trigger app. Make supports Gmail, Slack, Airtable, Google Sheets, and hundreds more. Pick your event and connect your account.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 3"></div>
+            <div class="step-content">
+              <strong>Add an HTTP module to call OpenClaw</strong>
+              <p>Click <strong>+</strong> after your trigger, search for <strong>HTTP</strong> → <strong>Make a request</strong>. Set:</p>
+              <ul>
+                <li>URL: your ngrok URL + <code>/webhook</code></li>
+                <li>Method: <code>POST</code></li>
+                <li>Body type: <code>Raw</code> / Content-type: <code>application/json</code></li>
+                <li>Request content: <code>{"message": "{{your trigger data}}"}</code></li>
+                <li>Add a header: <code>Authorization: Bearer your-secret-key</code></li>
+              </ul>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 4"></div>
+            <div class="step-content">
+              <strong>Parse the response and route it</strong>
+              <p>Add a <strong>JSON → Parse JSON</strong> module to extract <code>reply</code> from the response. Then add your destination module (Slack, email, Notion, etc.) and map <code>reply</code> to the message field.</p>
+            </div>
+          </li>
+          <li class="step-item">
+            <div class="step-num" aria-label="Step 5"></div>
+            <div class="step-content">
+              <strong>Schedule and activate</strong>
+              <p>Set the scheduling interval (immediately on trigger, or at set times), then click <strong>ON</strong> to activate the scenario.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <!-- Workflow examples -->
+      <h2 class="section-title" id="examples">
+        <span class="icon" aria-hidden="true">💡</span> Real workflow examples
+      </h2>
+      <p class="section-lead">Here are some workflows you can build today with OpenClaw and these tools.</p>
+
+      <div class="wf-grid">
+        <div class="wf-card">
+          <div class="wf-tool">n8n · Daily</div>
+          <h3>Morning briefing to Slack</h3>
+          <div class="wf-flow">
+            <span class="arrow">→</span> Schedule triggers at 8am<br>
+            <span class="arrow">→</span> OpenClaw: "Summarize today's news and my calendar"<br>
+            <span class="arrow">→</span> Post summary to #general in Slack
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-tool">Zapier · Triggered</div>
+          <h3>Auto-reply to support emails</h3>
+          <div class="wf-flow">
+            <span class="arrow">→</span> New email arrives in Gmail<br>
+            <span class="arrow">→</span> OpenClaw: "Draft a helpful reply to this email: [body]"<br>
+            <span class="arrow">→</span> Create a Gmail draft for review
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-tool">Make · Triggered</div>
+          <h3>Summarize form submissions</h3>
+          <div class="wf-flow">
+            <span class="arrow">→</span> New Typeform / Tally submission<br>
+            <span class="arrow">→</span> OpenClaw: "Summarize this feedback and extract action items"<br>
+            <span class="arrow">→</span> Add row to Google Sheet
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-tool">n8n · Triggered</div>
+          <h3>Slack message to task</h3>
+          <div class="wf-flow">
+            <span class="arrow">→</span> New message in #todo Slack channel<br>
+            <span class="arrow">→</span> OpenClaw: "Convert this into a structured task with priority"<br>
+            <span class="arrow">→</span> Create Notion task with extracted fields
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-tool">Zapier · Scheduled</div>
+          <h3>Weekly analytics summary</h3>
+          <div class="wf-flow">
+            <span class="arrow">→</span> Schedule triggers every Monday 9am<br>
+            <span class="arrow">→</span> OpenClaw: "Pull last week's data and write a summary report"<br>
+            <span class="arrow">→</span> Email report to team
+          </div>
+        </div>
+        <div class="wf-card">
+          <div class="wf-tool">Make · Triggered</div>
+          <h3>New lead to CRM note</h3>
+          <div class="wf-flow">
+            <span class="arrow">→</span> New contact added in HubSpot<br>
+            <span class="arrow">→</span> OpenClaw: "Research this company and write a one-paragraph briefing"<br>
+            <span class="arrow">→</span> Add as a note to the CRM record
+          </div>
+        </div>
+      </div>
+
+      <!-- Troubleshooting -->
+      <h2 class="section-title" id="troubleshooting">
+        <span class="icon" aria-hidden="true">🔧</span> Common problems &amp; fixes
+      </h2>
+
+      <ul class="trouble-list" aria-label="Troubleshooting accordion">
+        <li class="trouble-item">
+          <button class="trouble-q" id="t1-btn" aria-expanded="false" aria-controls="t1-panel">
+            Zapier / Make can't reach my webhook URL
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t1-panel" role="region" aria-labelledby="t1-btn">
+            <p>Cloud tools like Zapier and Make can't reach <code>localhost</code>. Make sure you:</p>
+            <ul>
+              <li>Have ngrok or a similar tunnel running (<code>ngrok http 8080</code>)</li>
+              <li>Are using the ngrok <strong>https</strong> URL (not localhost) in your Zap/scenario</li>
+              <li>Have OpenClaw running at the same time as ngrok</li>
+              <li>Haven't restarted ngrok (which changes the URL on the free plan)</li>
+            </ul>
+          </div>
+        </li>
+        <li class="trouble-item">
+          <button class="trouble-q" id="t2-btn" aria-expanded="false" aria-controls="t2-panel">
+            Getting a 401 Unauthorized error
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t2-panel" role="region" aria-labelledby="t2-btn">
+            <p>The secret key in your request doesn't match what's in openclaw.json. Check that:</p>
+            <ul>
+              <li>The <code>Authorization</code> header is set to exactly <code>Bearer your-secret-key</code></li>
+              <li>The key matches what you put in the <code>webhook.secret</code> field in openclaw.json</li>
+              <li>There are no extra spaces or quotes in either place</li>
+              <li>If you don't want auth, remove the <code>secret</code> field from openclaw.json entirely</li>
+            </ul>
+          </div>
+        </li>
+        <li class="trouble-item">
+          <button class="trouble-q" id="t3-btn" aria-expanded="false" aria-controls="t3-panel">
+            OpenClaw receives the request but reply is empty
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t3-panel" role="region" aria-labelledby="t3-btn">
+            <p>The <code>message</code> field in your POST body is probably empty or not mapped correctly. Check that:</p>
+            <ul>
+              <li>Your body is valid JSON: <code>{"message": "some text"}</code></li>
+              <li>You've mapped the trigger data correctly (e.g. the email body, not the subject)</li>
+              <li>The content-type header is set to <code>application/json</code></li>
+              <li>Check OpenClaw's logs for any parsing errors</li>
+            </ul>
+          </div>
+        </li>
+        <li class="trouble-item">
+          <button class="trouble-q" id="t4-btn" aria-expanded="false" aria-controls="t4-panel">
+            The workflow runs but takes too long and times out
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t4-panel" role="region" aria-labelledby="t4-btn">
+            <p>Zapier has a 30-second timeout and Make has a 40-second timeout. If OpenClaw's LLM response takes longer than that, the request will fail. To fix it:</p>
+            <ul>
+              <li>Use a faster or local model — see the <a href="local-llm.html">Local LLM guide</a></li>
+              <li>Keep your prompts shorter and more specific</li>
+              <li>Use an async pattern: OpenClaw queues the request and POSTs the result back to a second webhook endpoint</li>
+              <li>n8n has no timeout by default — switch to n8n for long-running tasks</li>
+            </ul>
+          </div>
+        </li>
+        <li class="trouble-item">
+          <button class="trouble-q" id="t5-btn" aria-expanded="false" aria-controls="t5-panel">
+            How do I pass context from the trigger into the prompt?
+            <em class="chevron" aria-hidden="true">▾</em>
+          </button>
+          <div class="trouble-a" id="t5-panel" role="region" aria-labelledby="t5-btn">
+            <p>Build the message string dynamically in your automation tool using the trigger data. For example in Zapier, set the message field to: <code>Summarize this email and extract action items: {{Email Body}}</code>. In n8n, use expressions: <code>{{"Summarize: " + $json.body}}</code>. The key is that the <code>message</code> value should contain everything OpenClaw needs to do its job.</p>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Related guides -->
+      <h2 class="section-title" id="related">
+        <span class="icon" aria-hidden="true">🔗</span> Related guides
+      </h2>
+      <div class="sibling-grid">
+        <a href="automation.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">⚡</div>
+          <h3>Automation</h3>
+          <p>Built-in OpenClaw scheduling and task automation</p>
+        </a>
+        <a href="gmail-calendar.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">📬</div>
+          <h3>Gmail &amp; Calendar</h3>
+          <p>Connect directly to Google without a middleman</p>
+        </a>
+        <a href="discord.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">🎮</div>
+          <h3>Discord Bot</h3>
+          <p>Talk to your agent inside Discord</p>
+        </a>
+        <a href="config-json.html" class="sibling-card">
+          <div class="sc-icon" aria-hidden="true">⚙️</div>
+          <h3>openclaw.json</h3>
+          <p>Full webhook and channel config reference</p>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn Hub</a>
+      <a href="gettingstarted.html">Getting Started</a>
+      <a href="troubleshooting.html">Troubleshooting</a>
+      <a href="faq.html">FAQ</a>
+      <a href="sitemap.xml">Sitemap</a>
+    </div>
+    <p>© 2026 learnopenclaw.org — Community documentation for the OpenClaw AI agent framework.</p>
+  </footer>
+
+  <script>
+    // ── Nav ───────────────────────────────────────────────────────────────────
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
+      }
+    });
+
+    // ── Tabs ──────────────────────────────────────────────────────────────────
+    const tabBtns   = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+        tabPanels.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('active');
+      });
+      btn.addEventListener('keydown', (e) => {
+        const idx  = [...tabBtns].indexOf(btn);
+        if (e.key === 'ArrowRight') { e.preventDefault(); tabBtns[(idx + 1) % tabBtns.length].click(); tabBtns[(idx + 1) % tabBtns.length].focus(); }
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); tabBtns[(idx - 1 + tabBtns.length) % tabBtns.length].click(); tabBtns[(idx - 1 + tabBtns.length) % tabBtns.length].focus(); }
+      });
+    });
+
+    // ── Accordion ─────────────────────────────────────────────────────────────
+    document.querySelectorAll('.trouble-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const panel  = document.getElementById(btn.getAttribute('aria-controls'));
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.trouble-q').forEach(b => {
+          b.setAttribute('aria-expanded', 'false');
+          const p = document.getElementById(b.getAttribute('aria-controls'));
+          if (p) p.classList.remove('open');
+        });
+        if (!isOpen) {
+          btn.setAttribute('aria-expanded', 'true');
+          panel.classList.add('open');
+        }
+      });
+    });
+
+    // ── Copy buttons ──────────────────────────────────────────────────────────
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pre = btn.closest('.code-block').querySelector('pre');
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = 'Copy', 2000);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
