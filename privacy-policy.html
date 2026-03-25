@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | learnopenclaw.org</title>
+  <meta name="description" content="Privacy policy for learnopenclaw.org — what data we collect, how we use it, and your rights.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://learnopenclaw.org/privacy-policy.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="Privacy Policy | learnopenclaw.org">
+  <meta property="og:description" content="Privacy policy for learnopenclaw.org — what data we collect, how we use it, and your rights.">
+  <meta property="og:url"         content="https://learnopenclaw.org/privacy-policy.html">
+  <meta property="og:site_name"   content="learnopenclaw.org">
+  <meta property="og:image"       content="https://learnopenclaw.org/og-image.png">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      content="Privacy Policy | learnopenclaw.org">
+  <meta name="twitter:description" content="Privacy policy for learnopenclaw.org — what data we collect, how we use it, and your rights.">
+  <meta name="twitter:image"      content="https://learnopenclaw.org/og-image.png">
+  <meta name="twitter:image:alt"  content="learnopenclaw.org privacy policy">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:    #2563eb;
+      --gray-1:  #f9fafb;
+      --gray-2:  #e5e7eb;
+      --gray-3:  #d1d5db;
+      --gray-5:  #6b7280;
+      --gray-7:  #374151;
+      --gray-8:  #1f2937;
+      --white:   #ffffff;
+      --radius:  10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--gray-8);
+      background: var(--white);
+      line-height: 1.7;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Skip nav ── */
+    .skip-nav {
+      position: absolute; left: -9999px; top: auto;
+      width: 1px; height: 1px; overflow: hidden;
+    }
+    .skip-nav:focus {
+      position: static; width: auto; height: auto;
+      padding: 8px 16px; background: var(--blue); color: #fff;
+      font-weight: 600; border-radius: 4px; z-index: 9999;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 0 24px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: flex-start;
+      height: 60px; position: relative;
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .nav-logo:hover { text-decoration: none; color: var(--blue); }
+    .claw { font-size: 1.3rem; }
+
+    .nav-links {
+      display: flex; gap: 28px; margin-left: 40px;
+    }
+    .nav-links a {
+      color: var(--gray-5); font-size: .95rem; font-weight: 500;
+    }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 8px;
+      margin-left: auto; flex-shrink: 0; position: relative;
+    }
+    .nav-search-form {
+      display: flex; align-items: center; gap: 7px;
+      background: #f3f4f6; border: 1.5px solid transparent;
+      border-radius: 22px; padding: 6px 14px 6px 10px;
+      width: 210px; transition: background .18s, border-color .18s, box-shadow .18s;
+      cursor: text;
+    }
+    .nav-search-form:focus-within {
+      background: #fff; border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99,102,241,.15);
+    }
+    .nav-search-icon { color: #9ca3af; flex-shrink: 0; }
+    .nav-search-input {
+      border: none; background: transparent; outline: none;
+      font-size: .875rem; color: #111; width: 100%; min-width: 0;
+    }
+    .nav-search-input::placeholder { color: #9ca3af; }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 780px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none; position: absolute;
+        top: 60px; right: 0;
+        background: var(--white); border: 1px solid var(--gray-2);
+        border-radius: 10px; padding: 12px 20px; gap: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,.1); z-index: 99;
+        flex-direction: column !important; min-width: 160px;
+        margin-left: 0;
+      }
+      .nav-links.open { display: flex; }
+      .nav-search-form { width: 130px; padding: 5px 10px 5px 8px; }
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+      color: #fff; padding: 60px 24px 50px; text-align: center;
+    }
+    .hero h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; margin-bottom: 12px; }
+    .hero p { font-size: 1rem; opacity: .85; max-width: 520px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-block; background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3); border-radius: 20px;
+      padding: 4px 14px; font-size: .78rem; font-weight: 600;
+      letter-spacing: .04em; text-transform: uppercase; margin-bottom: 18px;
+    }
+
+    /* ── Content ── */
+    .content {
+      max-width: 720px; margin: 0 auto; padding: 56px 24px 80px;
+    }
+
+    .content h2 {
+      font-size: 1.2rem; font-weight: 700; color: var(--gray-8);
+      margin: 40px 0 12px; padding-bottom: 8px;
+      border-bottom: 2px solid var(--gray-2);
+    }
+    .content h2:first-child { margin-top: 0; }
+
+    .content p { color: var(--gray-7); margin-bottom: 16px; }
+
+    .content ul {
+      list-style: disc; padding-left: 24px;
+      color: var(--gray-7); margin-bottom: 16px;
+    }
+    .content ul li { margin-bottom: 6px; }
+
+    .content a { color: var(--blue); }
+
+    .last-updated {
+      display: inline-block; background: var(--gray-1);
+      border: 1px solid var(--gray-2); border-radius: 6px;
+      padding: 6px 14px; font-size: .82rem; color: var(--gray-5);
+      margin-bottom: 36px;
+    }
+
+    .highlight-box {
+      background: #eff6ff; border: 1px solid #bfdbfe;
+      border-radius: var(--radius); padding: 20px 24px; margin-bottom: 32px;
+    }
+    .highlight-box p { margin-bottom: 0; color: #1e40af; font-size: .95rem; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8); color: #d1d5db;
+      text-align: center; padding: 32px 24px;
+      font-size: .85rem;
+    }
+    .footer-links {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 20px; margin-bottom: 16px;
+    }
+    .footer-links a { color: #9ca3af; text-decoration: none; }
+    .footer-links a:hover { color: #fff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="claw" aria-hidden="true">🦞</span> learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="blog.html">Blog</a>
+        <a href="learn.html">Learn</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+            aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="search" class="nav-search-input" placeholder="Search"
+            aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" role="banner">
+    <div class="hero-badge">Legal</div>
+    <h1>Privacy Policy</h1>
+    <p>Plain English — what we collect, what we don't, and how we handle your information.</p>
+  </header>
+
+  <main id="main-content">
+    <div class="content">
+
+      <span class="last-updated">Last updated: March 2026</span>
+
+      <div class="highlight-box">
+        <p>Short version: learnopenclaw.org is a static informational website. We don't run analytics, we don't track you, and we don't sell your data. The only personal information we collect is your email address if you voluntarily subscribe to our newsletter.</p>
+      </div>
+
+      <h2>Who we are</h2>
+      <p>learnopenclaw.org is an independent community learning resource about the OpenClaw AI agent framework. This site is not affiliated with or endorsed by the official OpenClaw project or Peter Steinberger.</p>
+      <p>If you have questions about this policy, you can reach us at <a href="mailto:hello@learnopenclaw.org">hello@learnopenclaw.org</a>.</p>
+
+      <h2>What data we collect</h2>
+      <p>We collect the minimum possible. Specifically:</p>
+      <ul>
+        <li><strong>Email address</strong> — only if you voluntarily subscribe to our newsletter using the signup form on the site. We use ConvertKit to manage subscriptions. Your email is never sold or shared with third parties for marketing purposes.</li>
+        <li><strong>Standard server logs</strong> — like most websites, our hosting provider may log basic request information such as your IP address, browser type, and the pages you visit. These logs are used only for security and operational purposes and are not used to identify or track individuals.</li>
+      </ul>
+      <p>We do <strong>not</strong> collect:</p>
+      <ul>
+        <li>Analytics or behavioral tracking (no Google Analytics, no tracking pixels)</li>
+        <li>Cookies beyond what is strictly necessary</li>
+        <li>Payment information (this site has no paid features)</li>
+        <li>Account information (there are no user accounts on this site)</li>
+      </ul>
+
+      <h2>Newsletter (ConvertKit)</h2>
+      <p>If you subscribe to our newsletter, your email address is stored and processed by ConvertKit (now called Kit). ConvertKit is a third-party email service provider. You can read their privacy policy at <a href="https://kit.com/privacy" target="_blank" rel="noopener">kit.com/privacy</a>.</p>
+      <p>We use your email address only to send you updates about OpenClaw. We will never spam you or share your email with other parties.</p>
+      <p>You can unsubscribe at any time using the unsubscribe link at the bottom of any email we send.</p>
+
+      <h2>Third-party links</h2>
+      <p>This site links to third-party websites including GitHub, openclaw.ai, and others. Once you leave learnopenclaw.org, this privacy policy no longer applies. We encourage you to review the privacy policies of any sites you visit.</p>
+
+      <h2>Search</h2>
+      <p>The search feature on this site runs entirely in your browser using <a href="https://lunrjs.com" target="_blank" rel="noopener">Lunr.js</a>. Your search queries are never sent to any server — all searching happens locally on your device.</p>
+
+      <h2>Children's privacy</h2>
+      <p>This site is not directed at children under the age of 13. We do not knowingly collect personal information from anyone under 13. If you believe we have inadvertently collected information from a child, please contact us so we can delete it.</p>
+
+      <h2>Your rights</h2>
+      <p>Depending on where you live, you may have rights regarding your personal data, including the right to access, correct, or delete information we hold about you. If you would like to exercise any of these rights, please contact us at <a href="mailto:hello@learnopenclaw.org">hello@learnopenclaw.org</a>.</p>
+      <p>If you are located in the European Union, you have rights under the GDPR. If you are a California resident, you have rights under the CCPA. We are happy to honor any requests under applicable law.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>We may update this privacy policy from time to time. When we do, we will update the "Last updated" date at the top of this page. We encourage you to review this page periodically.</p>
+
+      <h2>Contact</h2>
+      <p>If you have any questions about this privacy policy, please email us at <a href="mailto:hello@learnopenclaw.org">hello@learnopenclaw.org</a>.</p>
+
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="privacy-policy.html" aria-current="page">Privacy Policy</a>
+    </div>
+    <p>© 2026 learnopenclaw.org — Independent community documentation for OpenClaw. Not affiliated with the official project.</p>
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+  <script src="search.js"></script>
+</body>
+</html>
