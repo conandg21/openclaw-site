@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw SOUL.md Guide — Give Your AI Agent a Personality (2026)</title>
+  <meta name="description" content="Learn how to write SOUL.md for your OpenClaw agent. Covers identity, communication style, values, and boundaries — plus starter templates and pro tips." />
+  <meta name="keywords" content="OpenClaw SOUL.md, agent personality, SOUL.md template, OpenClaw identity, agent configuration, AI agent persona" />
+  <link rel="canonical" href="https://learnopenclaw.org/workspace-soul.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw SOUL.md Guide — Give Your AI Agent a Personality (2026)" />
+  <meta property="og:description" content="SOUL.md is the most important file in your OpenClaw workspace. It defines who your agent is, how it speaks, and what it will and won't do." />
+  <meta property="og:url" content="https://learnopenclaw.org/workspace-soul.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw SOUL.md Guide — Agent Personality &amp; Identity" />
+  <meta name="twitter:description" content="Write a SOUL.md that makes your OpenClaw agent actually feel like yours. Templates, tips, and common mistakes." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:image:alt" content="learnopenclaw.org — OpenClaw AI Agent Documentation" />
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "OpenClaw SOUL.md Guide — Give Your AI Agent a Personality (2026)",
+    "description": "Learn how to write SOUL.md for your OpenClaw agent. Covers identity, communication style, values, and boundaries — plus starter templates and pro tips.",
+    "url": "https://learnopenclaw.org/workspace-soul.html",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "dateModified": "2026-03-24",
+    "inLanguage": "en-US"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "learnopenclaw.org", "item": "https://learnopenclaw.org"},
+      {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+      {"@type": "ListItem", "position": 3, "name": "SOUL.md Guide", "item": "https://learnopenclaw.org/workspace-soul.html"}
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Write SOUL.md for Your OpenClaw Agent",
+    "description": "Step-by-step guide to writing an effective SOUL.md that gives your OpenClaw AI agent a consistent personality, communication style, and set of values.",
+    "url": "https://learnopenclaw.org/workspace-soul.html",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org"},
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "Open or create SOUL.md",
+        "text": "Navigate to ~/.openclaw/agents/default/SOUL.md. If the file doesn't exist yet, create it. It's a plain Markdown file — no special syntax required."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "Define your agent's identity",
+        "text": "Write an Identity section that names your agent, gives it a role, and states a one-line mission. Example: 'You are Max, a productivity assistant. Your mission is to keep my work organized and help me move faster.'"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "Set the communication style",
+        "text": "Define how your agent speaks. Be specific: 'Default to 2–3 sentence responses. Use bullet points for lists of 3+ items. Never use emojis unless the user does first.'"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 4,
+        "name": "Write your values",
+        "text": "List 3–6 principles your agent should follow. Values are what the agent prioritizes when it has to make a judgment call: clarity over cleverness, done over perfect, etc."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 5,
+        "name": "Add your boundaries",
+        "text": "Write clear hard rules — things the agent should never do. Examples: never impersonate you in messages, never delete files without confirmation, never send an email without showing a draft first."
+      },
+      {
+        "@type": "HowToStep",
+        "position": 6,
+        "name": "Start short and iterate",
+        "text": "Save your SOUL.md and use your agent for a few days. When you notice behavior you want to change, add a specific rule. Don't rewrite everything — refine incrementally."
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is SOUL.md in OpenClaw?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SOUL.md is a plain Markdown file in your OpenClaw workspace that defines your agent's personality, communication style, values, and behavioral boundaries. OpenClaw reads it on every session start and applies it as a persistent system-level context, so your agent always behaves consistently — same tone, same priorities, same guardrails."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is the SOUL.md file located?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For a single-agent setup (the default), SOUL.md lives at ~/.openclaw/agents/default/SOUL.md on macOS and Linux, or %USERPROFILE%\\.openclaw\\agents\\default\\SOUL.md on Windows. You can edit it in any text editor."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What should I put in SOUL.md?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A good SOUL.md covers five things: Identity (your agent's name and role), Communication Style (how it should speak and write), Values (what it should prioritize when making judgment calls), Boundaries (what it should never do), and optionally Example Responses to show the exact tone you want. Start with 10–15 lines and add rules only when you see behavior you want to change."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long should SOUL.md be?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Keep SOUL.md under 2,000 words. It gets loaded into every single prompt, so a bloated file wastes tokens and can dilute the important rules. Most effective SOUL.md files are 50–150 lines. The best ones have been refined over months, not written all at once."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's the difference between SOUL.md and AGENTS.md?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SOUL.md defines who your agent is — its personality, tone, and values. AGENTS.md defines how your agent operates — startup procedures, memory rules, and what actions require your approval. Think of SOUL.md as the agent's character and AGENTS.md as its operating manual. Both are loaded on startup; SOUL.md is applied first."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does SOUL.md work with local LLMs like Ollama?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, SOUL.md works with any LLM backend — Claude, GPT-4, Gemini, or local models via Ollama. However, smaller local models (7B–13B parameters) may not follow complex SOUL.md instructions as reliably as larger cloud models. If you're using a local LLM, keep your SOUL.md simpler and more directive."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens if I don't have a SOUL.md file?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "OpenClaw uses built-in defaults. Your agent will still work but will behave generically — no custom personality, no specific tone, and no tailored values. It takes about 10 minutes to write a basic SOUL.md, and the difference in how your agent feels is noticeable from the first conversation."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:    #7c3aed;
+      --purple-lt: #f5f3ff;
+      --purple-md: #ddd6fe;
+      --blue:      #2563eb;
+      --blue-lt:   #eff6ff;
+      --blue-md:   #bfdbfe;
+      --red:       #dc2626;
+      --red-lt:    #fef2f2;
+      --red-md:    #fecaca;
+      --green:     #16a34a;
+      --green-lt:  #f0fdf4;
+      --green-md:  #bbf7d0;
+      --amber:     #d97706;
+      --amber-lt:  #fffbeb;
+      --amber-md:  #fcd34d;
+      --gray-1:    #f9fafb;
+      --gray-2:    #f3f4f6;
+      --gray-3:    #e5e7eb;
+      --gray-5:    #6b7280;
+      --gray-7:    #374151;
+      --gray-8:    #1f2937;
+      --gray-9:    #111827;
+      --white:     #ffffff;
+      --radius:    12px;
+      --shadow:    0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ── Accessibility ── */
+    .skip-nav {
+      position: absolute; top: -100px; left: 16px;
+      background: var(--purple); color: var(--white);
+      padding: 8px 16px; border-radius: 6px;
+      font-weight: 700; font-size: .9rem;
+      z-index: 9999; transition: top .2s;
+      text-decoration: none;
+    }
+    .skip-nav:focus { top: 8px; }
+
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid var(--purple);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--gray-8);
+      background: var(--white);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    .section    { padding: 64px 0; }
+    .section--alt { background: var(--gray-1); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-3);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; position: relative;
+    }
+    .nav-logo {
+      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .nav-links {
+      display: none; position: absolute;
+      top: 60px; right: 0; left: auto;
+      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
+      flex-direction: column !important; padding: 20px 28px; gap: 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
+      min-width: 220px; border-radius: 0 0 12px 12px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--purple); text-decoration: none; }
+    @media (max-width: 600px) {
+      .nav-links { left: 0; min-width: unset; border-radius: 0; }
+    }
+
+    .nav-section {
+      display: flex; flex-direction: column; gap: 10px;
+      border-top: 1px solid var(--gray-2);
+      border-bottom: 1px solid var(--gray-2);
+      padding: 10px 0; margin: 2px 0;
+    }
+    .nav-section-label {
+      font-size: .68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .12em;
+      color: var(--gray-5);
+    }
+    .nav-section a {
+      padding-left: 10px;
+      border-left: 2px solid var(--purple-md);
+      font-size: .88rem;
+    }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 8px;
+      margin-left: auto; flex-shrink: 0; position: relative;
+    }
+    .hamburger {
+      display: flex; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gray-8); border-radius: 2px; transition: all .25s;
+    }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, #f5f3ff 0%, var(--white) 100%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--purple-md);
+      color: var(--purple);
+      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: normal; color: var(--purple); }
+    .hero p {
+      font-size: 1.1rem; color: var(--gray-5);
+      max-width: 580px; margin: 0 auto 28px;
+    }
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-block; padding: 12px 24px; border-radius: 8px;
+      font-weight: 700; font-size: .95rem; cursor: pointer; transition: all .15s;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--purple); color: var(--white); border: none; }
+    .btn-primary:hover { background: #6d28d9; text-decoration: none; }
+    .btn-outline { background: var(--white); color: var(--purple); border: 2px solid var(--purple-md); }
+    .btn-outline:hover { border-color: var(--purple); text-decoration: none; }
+
+    /* ── Section labels / titles ── */
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--purple);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 800; line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1.05rem; color: var(--gray-5);
+      max-width: 620px; margin-bottom: 40px;
+    }
+
+    /* ── Alerts ── */
+    .alert {
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex; gap: 14px; align-items: flex-start;
+      margin-bottom: 32px;
+    }
+    .alert--purple { background: var(--purple-lt); border: 1px solid var(--purple-md); }
+    .alert--yellow { background: var(--amber-lt);  border: 1px solid var(--amber-md); }
+    .alert--green  { background: var(--green-lt);  border: 1px solid var(--green-md); }
+    .alert--red    { background: var(--red-lt);    border: 1px solid var(--red-md); }
+    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+    .alert p { font-size: .95rem; }
+    .alert--purple p { color: #4c1d95; }
+    .alert--yellow p { color: #92400e; }
+    .alert--green  p { color: #14532d; }
+    .alert--red    p { color: #991b1b; }
+    .alert strong { font-weight: 700; }
+
+    /* ── Cards ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px; margin-bottom: 40px;
+    }
+    .card {
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: var(--radius); padding: 24px;
+      box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; color: var(--gray-9); }
+    .card p  { font-size: .875rem; color: var(--gray-5); }
+
+    /* ── Prose ── */
+    .prose { font-size: 1.025rem; color: var(--gray-7); line-height: 1.75; max-width: 720px; margin-bottom: 32px; }
+    .prose p  { margin-bottom: 16px; }
+    .prose ul { padding-left: 20px; margin-bottom: 16px; }
+    .prose li { margin-bottom: 6px; }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; position: relative; }
+    .steps::before {
+      content: '';
+      position: absolute; left: 23px; top: 28px;
+      width: 2px; height: calc(100% - 56px);
+      background: var(--gray-3);
+    }
+    .step {
+      display: flex; gap: 20px; align-items: flex-start;
+      position: relative; padding-bottom: 32px;
+    }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      flex-shrink: 0;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: var(--purple); color: var(--white);
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 4px var(--purple-lt);
+      position: relative; z-index: 1;
+    }
+    .step-body { min-width: 0; overflow: hidden; }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
+    .step-body p  { font-size: .95rem; color: var(--gray-5); line-height: 1.65; }
+    .step-body code {
+      display: inline-block;
+      background: var(--gray-2); border: 1px solid var(--gray-3);
+      border-radius: 6px;
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: .82rem; padding: 2px 8px; color: var(--purple);
+    }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: #0f172a; border-radius: var(--radius);
+      padding: 22px 24px; margin: 16px 0;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .code-block pre {
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: .84rem; line-height: 1.8; color: #e2e8f0;
+      white-space: pre; margin: 0;
+    }
+    .code-label {
+      font-size: .68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: #64748b; margin-bottom: 8px;
+    }
+    .cm  { color: #64748b; }   /* comment */
+    .hd  { color: #7dd3fc; }   /* heading */
+    .kw  { color: #c084fc; }   /* keyword */
+    .sv  { color: #86efac; }   /* string value */
+    .hl  { color: #fde68a; }   /* highlight */
+
+    /* ── Two-column comparison ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px; margin-bottom: 32px;
+    }
+    .compare-col {
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: var(--radius); padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .compare-col h3 {
+      font-size: .95rem; font-weight: 700; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .compare-col li {
+      font-size: .88rem; color: var(--gray-7);
+      padding-left: 20px; position: relative;
+    }
+    .compare-col li::before {
+      content: '✓'; position: absolute; left: 0;
+      color: var(--green); font-weight: 700;
+    }
+    .compare-col.bad li::before { content: '✗'; color: var(--red); }
+    @media (max-width: 600px) {
+      .compare-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .checklist li {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: 10px; padding: 16px 20px;
+      box-shadow: var(--shadow); font-size: .95rem;
+    }
+    .checklist li .ch-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+    .checklist li strong { display: block; font-weight: 700; margin-bottom: 3px; }
+    .checklist li span { color: var(--gray-5); font-size: .875rem; }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .faq-item { border: 1px solid var(--gray-3); border-radius: var(--radius); overflow: hidden; }
+    .faq-q {
+      width: 100%; background: var(--white); border: none; cursor: pointer;
+      padding: 18px 20px; font-size: .95rem; font-weight: 700;
+      color: var(--gray-8); text-align: left;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: inherit; transition: background .15s;
+    }
+    .faq-q:hover { background: var(--gray-1); }
+    .faq-q[aria-expanded="true"] { background: var(--purple-lt); color: var(--purple); }
+    .faq-chevron { font-size: .8rem; transition: transform .2s; color: var(--gray-5); flex-shrink: 0; margin-left: 12px; }
+    .faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); }
+    .faq-a {
+      display: none; padding: 0 20px 18px;
+      font-size: .9rem; color: var(--gray-5);
+      line-height: 1.7; border-top: 1px solid var(--gray-2); padding-top: 14px;
+    }
+    .faq-a.open { display: block; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-3); }
+
+    /* ── Sibling links ── */
+    .sibling-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px; margin-top: 40px;
+    }
+    .sibling-card {
+      background: var(--white); border: 1px solid var(--gray-3);
+      border-radius: var(--radius); padding: 24px;
+      box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s;
+    }
+    .sibling-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .sibling-card a { display: flex; flex-direction: column; gap: 8px; color: inherit; }
+    .sibling-card .sibling-icon { font-size: 2rem; }
+    .sibling-card h3 { font-size: .95rem; font-weight: 700; color: var(--gray-8); }
+    .sibling-card p { font-size: .85rem; color: var(--gray-5); }
+    .sibling-card:hover h3 { color: var(--purple); }
+
+    /* ── Newsletter ── */
+    .nl-section {
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+      border-top: 1px solid var(--purple-md);
+      border-bottom: 1px solid var(--purple-md);
+      padding: 48px 24px; text-align: center;
+    }
+    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .nl-section h2 em { font-style: normal; color: var(--purple); }
+    .nl-section p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
+    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .nl-form input[type="email"] {
+      flex: 1; min-width: 200px; padding: 12px 16px;
+      border: 1.5px solid var(--gray-3); border-radius: 8px;
+      font-size: .95rem; font-family: inherit;
+      background: var(--white); color: var(--gray-8);
+      transition: border-color .18s;
+    }
+    .nl-form input[type="email"]:focus { outline: none; border-color: var(--purple); }
+    .nl-form button {
+      background: var(--purple); color: var(--white);
+      border: none; border-radius: 8px;
+      padding: 12px 22px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+      white-space: nowrap;
+    }
+    .nl-form button:hover { background: #6d28d9; }
+    .nl-fine { font-size: .78rem; color: var(--gray-5); margin-top: 10px; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--gray-8); color: #9ca3af;
+      text-align: center; padding: 36px 24px; font-size: .875rem;
+    }
+    footer a { color: #60a5fa; }
+    .footer-nl { margin-bottom: 20px; }
+    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
+    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .footer-nl-form input[type="email"] {
+      padding: 9px 14px; border-radius: 7px;
+      border: 1px solid #374151; background: #374151;
+      color: #f9fafb; font-size: .88rem; font-family: inherit;
+      min-width: 200px; flex: 1; max-width: 280px;
+    }
+    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
+    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
+    .footer-nl-form button {
+      background: var(--purple); color: var(--white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: .88rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .18s;
+    }
+    .footer-nl-form button:hover { background: #6d28d9; }
+    footer .footer-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      .section { padding: 40px 0; }
+      .hero { padding: 40px 16px 32px; }
+      .container { padding: 0 16px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .sibling-links { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+      <div class="nav-section" role="group" aria-label="Workspace files">
+        <span class="nav-section-label">Workspace Files</span>
+        <a href="workspace-soul.html" role="listitem" aria-current="page">SOUL.md</a>
+        <a href="workspace-agents.html" role="listitem">AGENTS.md</a>
+        <a href="workspace-user.html" role="listitem">USER.md</a>
+        <a href="workspace-memory.html" role="listitem">MEMORY.md</a>
+        <a href="workspace-heartbeat.html" role="listitem">HEARTBEAT.md</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" onsubmit="return false;">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="search" class="nav-search-input" placeholder="Search"
+          aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+      </form>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- ── Hero ───────────────────────────────────────────────────────────── -->
+<header class="hero" role="banner">
+  <div class="hero-badge">🧬 SOUL.md</div>
+  <h1>Your Agent's <em>Personality File</em></h1>
+  <p>SOUL.md is the most important file in your OpenClaw workspace. It defines who your agent is, how it speaks, what it cares about, and what it will never do — loaded into every single conversation.</p>
+  <div class="hero-cta">
+    <a href="#template" class="btn btn-primary">Get the Template</a>
+    <a href="#how-to-write" class="btn btn-outline">How to Write It</a>
+  </div>
+</header>
+
+<!-- ── What is SOUL.md ─────────────────────────────────────────────────── -->
+<section class="section" id="what" aria-labelledby="what-heading">
+  <div class="container">
+    <div class="section-label">The Basics</div>
+    <h2 class="section-title" id="what-heading">What is SOUL.md?</h2>
+    <p class="section-subtitle">A plain Markdown file that defines your agent's entire identity — applied on every session start, forever.</p>
+
+    <div class="prose">
+      <p>OpenClaw reads SOUL.md when it starts and injects it as a persistent system context before any conversation begins. Unlike USER.md (which tells the agent about <em>you</em>) or AGENTS.md (which sets rules and procedures), SOUL.md is about who the <em>agent</em> is.</p>
+      <p>Without a SOUL.md, your agent is a blank slate — competent but generic. With one, it has a consistent character: the same tone whether you're asking it to write an email or debug Python, the same values when it has to make a judgment call, and the same guardrails in every situation.</p>
+    </div>
+
+    <div class="alert alert--purple" role="note">
+      <div class="alert-icon" aria-hidden="true">🧬</div>
+      <p><strong>File location:</strong> <code>~/.openclaw/agents/default/SOUL.md</code> on macOS/Linux, or <code>%USERPROFILE%\.openclaw\agents\default\SOUL.md</code> on Windows. Edit it in any text editor — Notepad, VS Code, whatever you prefer.</p>
+    </div>
+
+    <div class="cards-grid" role="list">
+      <div class="card" role="listitem">
+        <div class="card-icon" aria-hidden="true">🪪</div>
+        <h3>Identity</h3>
+        <p>Name, role, and a one-line mission. This anchors everything else — the agent knows what it's here to do.</p>
+      </div>
+      <div class="card" role="listitem">
+        <div class="card-icon" aria-hidden="true">💬</div>
+        <h3>Communication Style</h3>
+        <p>How it speaks. Formal or casual? Bullet points or prose? Short replies or detailed explanations? Be specific.</p>
+      </div>
+      <div class="card" role="listitem">
+        <div class="card-icon" aria-hidden="true">⚖️</div>
+        <h3>Values</h3>
+        <p>What to prioritize when there's no obvious right answer. Clarity over cleverness. Speed over perfection. Your call.</p>
+      </div>
+      <div class="card" role="listitem">
+        <div class="card-icon" aria-hidden="true">🚫</div>
+        <h3>Boundaries</h3>
+        <p>Hard rules the agent should never break. These override everything else — the most critical part of the file.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider" role="separator"></div>
+
+<!-- ── SOUL.md vs Others ──────────────────────────────────────────────── -->
+<section class="section section--alt" id="vs" aria-labelledby="vs-heading">
+  <div class="container">
+    <div class="section-label">Know the Difference</div>
+    <h2 class="section-title" id="vs-heading">SOUL.md vs AGENTS.md vs USER.md</h2>
+    <p class="section-subtitle">Three files work together to define your agent's complete context. Here's what each one does:</p>
+
+    <div class="compare-grid" role="list">
+      <div class="compare-col" role="listitem">
+        <h3><span aria-hidden="true">🧬</span> SOUL.md — <em>Who the agent is</em></h3>
+        <ul aria-label="SOUL.md responsibilities">
+          <li>Agent name and role</li>
+          <li>Personality and tone</li>
+          <li>Core values and priorities</li>
+          <li>Absolute behavioral limits</li>
+          <li>Communication style preferences</li>
+        </ul>
+      </div>
+      <div class="compare-col" role="listitem">
+        <h3><span aria-hidden="true">📋</span> AGENTS.md — <em>How the agent operates</em></h3>
+        <ul aria-label="AGENTS.md responsibilities">
+          <li>Startup reading order</li>
+          <li>Memory write rules</li>
+          <li>Permission rules (ask vs. act freely)</li>
+          <li>Git and file operation guardrails</li>
+          <li>Skill-specific behavior</li>
+        </ul>
+      </div>
+      <div class="compare-col" role="listitem">
+        <h3><span aria-hidden="true">👤</span> USER.md — <em>Who it's helping</em></h3>
+        <ul aria-label="USER.md responsibilities">
+          <li>Your name and timezone</li>
+          <li>Preferred reply language</li>
+          <li>Tools and accounts you use</li>
+          <li>Work context and role</li>
+          <li>Personal preferences and quirks</li>
+        </ul>
+      </div>
+      <div class="compare-col" role="listitem">
+        <h3><span aria-hidden="true">🧠</span> MEMORY.md — <em>What it remembers</em></h3>
+        <ul aria-label="MEMORY.md responsibilities">
+          <li>Persistent facts about you</li>
+          <li>Ongoing project context</li>
+          <li>Decisions made in past sessions</li>
+          <li>Preferences discovered over time</li>
+          <li>Things to never forget</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="alert alert--yellow" role="note">
+      <div class="alert-icon" aria-hidden="true">💡</div>
+      <p><strong>Loading order matters:</strong> OpenClaw reads SOUL.md first, then USER.md, then AGENTS.md, then today's memory files. SOUL.md sets the tone for everything that follows — which is why it's the most important file to get right.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider" role="separator"></div>
+
+<!-- ── Minimal starter template ───────────────────────────────────────── -->
+<section class="section" id="template" aria-labelledby="template-heading">
+  <div class="container">
+    <div class="section-label">Start Here</div>
+    <h2 class="section-title" id="template-heading">The Minimal Starter Template</h2>
+    <p class="section-subtitle">Copy this, swap out the bracketed parts, and you're done in 5 minutes. Refine it over time as you notice things you want to change.</p>
+
+    <div class="code-block" role="region" aria-label="Minimal SOUL.md template">
+      <div class="code-label">SOUL.md — starter template</div>
+      <pre><span class="hd"># SOUL.md</span>
+
+<span class="hd">## Identity</span>
+<span class="sv">You are [Name], a [role] assistant.</span>
+<span class="sv">Your mission: [one sentence — what you're here to do].</span>
+<span class="sv">Your primary user is [your name], [brief context about them].</span>
+
+<span class="hd">## Communication Style</span>
+<span class="sv">- Default to concise, clear responses</span>
+<span class="sv">- Use bullet points for lists of 3+ items</span>
+<span class="sv">- Ask one clarifying question at a time, never multiple</span>
+<span class="sv">- Lead with the direct answer, then explain if needed</span>
+
+<span class="hd">## Values</span>
+<span class="sv">- Clarity over cleverness</span>
+<span class="sv">- Done is better than perfect for small tasks</span>
+<span class="sv">- Flag uncertainty — don't guess silently</span>
+<span class="sv">- Reversible actions before irreversible ones</span>
+
+<span class="hd">## Boundaries</span>
+<span class="sv">- Never send a message or email without showing a draft first</span>
+<span class="sv">- Never delete files without explicit confirmation</span>
+<span class="sv">- Never sign anything as if you are the user</span>
+<span class="sv">- If unsure of intent, ask rather than assume</span></pre>
+    </div>
+
+    <div class="alert alert--green" role="note">
+      <div class="alert-icon" aria-hidden="true">✅</div>
+      <p><strong>That's all you need to start.</strong> Most people over-engineer their first SOUL.md. Four sections, under 30 lines, is more than enough to make a noticeable difference. You can always add more later.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider" role="separator"></div>
+
+<!-- ── How to write it (steps) ────────────────────────────────────────── -->
+<section class="section section--alt" id="how-to-write" aria-labelledby="howto-heading">
+  <div class="container">
+    <div class="section-label">Step by Step</div>
+    <h2 class="section-title" id="howto-heading">How to Write Your SOUL.md</h2>
+    <p class="section-subtitle">Follow these steps the first time. After that, refine incrementally — don't rewrite from scratch.</p>
+
+    <ol class="steps" aria-label="Steps to write SOUL.md">
+      <li class="step">
+        <div class="step-num" aria-label="Step 1">1</div>
+        <div class="step-body">
+          <h3>Open or create the file</h3>
+          <p>Navigate to your workspace folder and open <code>SOUL.md</code>. On macOS or Linux it's at <code>~/.openclaw/agents/default/SOUL.md</code>. On Windows: <code>%USERPROFILE%\.openclaw\agents\default\SOUL.md</code>. If it doesn't exist, create it — it's just a plain text file.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num" aria-label="Step 2">2</div>
+        <div class="step-body">
+          <h3>Write the Identity section</h3>
+          <p>Give your agent a name, a role description, and a one-line mission. The name is optional but helpful — it makes the agent feel like a specific tool rather than a generic assistant. The mission statement anchors every judgment call: <em>"Your mission is to keep my engineering projects moving and flag blockers early."</em></p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num" aria-label="Step 3">3</div>
+        <div class="step-body">
+          <h3>Define the communication style with specifics</h3>
+          <p>Vague instructions like "be concise" don't work as well as concrete rules. Write things like: <em>"Default to 2–3 sentence responses unless asked to elaborate"</em> or <em>"Never use emojis unless I use them first."</em> The more specific, the more reliably the agent follows them.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num" aria-label="Step 4">4</div>
+        <div class="step-body">
+          <h3>Add 3–6 values</h3>
+          <p>Values tell your agent what to do when it has to make a judgment call. A developer might write <em>"simplicity over cleverness, tests are not optional."</em> A writer might write <em>"voice consistency over grammatical perfection."</em> Values shape behavior in thousands of small decisions that don't have explicit rules.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num" aria-label="Step 5">5</div>
+        <div class="step-body">
+          <h3>Write your boundaries clearly</h3>
+          <p>Boundaries are what the agent should <em>never</em> do and they matter as much as what it should do. They override everything else — including values. Keep them short and unambiguous: <em>"Never commit code without showing a diff first."</em> Don't write conditional boundaries ("usually ask before…") — they'll be interpreted loosely.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-num" aria-label="Step 6">6</div>
+        <div class="step-body">
+          <h3>Start short, then refine</h3>
+          <p>Save your file and use the agent for a few days. When you notice behavior you want to change, diagnose the cause — was it a personality issue (SOUL.md), a context gap (USER.md), or a procedural issue (AGENTS.md)? Add one specific rule that fixes the exact problem. Don't rewrite everything. The best SOUL.md files are refined over months, not written all at once.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<div class="divider" role="separator"></div>
+
+<!-- ── Real examples ──────────────────────────────────────────────────── -->
+<section class="section" id="examples" aria-labelledby="examples-heading">
+  <div class="container">
+    <div class="section-label">Real Examples</div>
+    <h2 class="section-title" id="examples-heading">SOUL.md Templates for Different Use Cases</h2>
+    <p class="section-subtitle">Copy and adapt the template that best matches how you plan to use your agent.</p>
+
+    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 0;">👩‍💻 For Developers</h3>
+    <div class="code-block" role="region" aria-label="SOUL.md template for developers">
+      <pre><span class="hd"># SOUL.md — Dev Assistant</span>
+
+<span class="hd">## Identity</span>
+<span class="sv">You are Hex, a senior engineering assistant.</span>
+<span class="sv">Mission: help me write clean, well-tested code and keep projects moving.</span>
+
+<span class="hd">## Communication Style</span>
+<span class="sv">- Lead with the code, explain after</span>
+<span class="sv">- Use inline comments only where logic is non-obvious</span>
+<span class="sv">- Skip pleasantries — get straight to the answer</span>
+<span class="sv">- When reviewing code, list issues by severity (critical / warning / suggestion)</span>
+
+<span class="hd">## Values</span>
+<span class="sv">- Simplicity over cleverness</span>
+<span class="sv">- Tests are not optional — suggest test cases when writing functions</span>
+<span class="sv">- Prefer well-known patterns over clever one-liners</span>
+<span class="sv">- Documentation that explains WHY, not just WHAT</span>
+
+<span class="hd">## Boundaries</span>
+<span class="sv">- Always show a diff before committing</span>
+<span class="sv">- Never merge without at least a summary of what changed</span>
+<span class="sv">- Flag security concerns immediately, don't silently work around them</span></pre>
+    </div>
+
+    <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 12px;">✍️ For Writers &amp; Content Creators</h3>
+    <div class="code-block" role="region" aria-label="SOUL.md template for writers">
+      <pre><span class="hd"># SOUL.md — Writing Assistant</span>
+
+<span class="hd">## Identity</span>
+<span class="sv">You are Wren, a writing and editorial assistant.</span>
+<span class="sv">Mission: help me produce clear, engaging content without losing my voice.</span>
+
+<span class="hd">## Communication Style</span>
+<span class="sv">- Match the register of whatever I'm writing (casual blog = casual tone)</span>
+<span class="sv">- Suggest edits with brief explanations — don't just rewrite silently</span>
+<span class="sv">- When brainstorming, give 3–5 options, not one definitive answer</span>
+<span class="sv">- Flag passive voice and filler phrases (just, very, really, basically)</span>
+
+<span class="hd">## Values</span>
+<span class="sv">- Voice consistency over grammatical purity</span>
+<span class="sv">- Reader clarity is the top priority</span>
+<span class="sv">- Show, don't tell — replace abstractions with concrete examples</span>
+
+<span class="hd">## Boundaries</span>
+<span class="sv">- Never publish or submit anything without my explicit approval</span>
+<span class="sv">- Never write in a completely different style without asking first</span>
+<span class="sv">- Don't add affiliate links, promotions, or brand mentions unless I ask</span></pre>
+    </div>
+
+    <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 12px;">🏠 For Personal / Home Use</h3>
+    <div class="code-block" role="region" aria-label="SOUL.md template for personal use">
+      <pre><span class="hd"># SOUL.md — Personal Assistant</span>
+
+<span class="hd">## Identity</span>
+<span class="sv">You are Cleo, my personal assistant.</span>
+<span class="sv">Mission: keep my life organized, remember what matters, and help me get things done.</span>
+
+<span class="hd">## Communication Style</span>
+<span class="sv">- Warm and practical — not corporate</span>
+<span class="sv">- Use plain language, no jargon</span>
+<span class="sv">- Keep daily briefings under 200 words unless I ask for more</span>
+<span class="sv">- Ask one question at a time, never a list of questions at once</span>
+
+<span class="hd">## Values</span>
+<span class="sv">- My time is finite — flag anything that's not worth doing</span>
+<span class="sv">- Proactively surface things I might forget</span>
+<span class="sv">- Privacy matters — don't share personal details with external services</span>
+
+<span class="hd">## Boundaries</span>
+<span class="sv">- Never send a message to anyone without showing me the draft first</span>
+<span class="sv">- Never make purchases without confirming the exact amount and recipient</span>
+<span class="sv">- Never share my calendar, contacts, or location data with apps</span></pre>
+    </div>
+  </div>
+</section>
+
+<div class="divider" role="separator"></div>
+
+<!-- ── Common mistakes ────────────────────────────────────────────────── -->
+<section class="section section--alt" id="mistakes" aria-labelledby="mistakes-heading">
+  <div class="container">
+    <div class="section-label">Avoid These</div>
+    <h2 class="section-title" id="mistakes-heading">Common SOUL.md Mistakes</h2>
+    <p class="section-subtitle">These are the patterns that cause people to give up on SOUL.md before it has a chance to work.</p>
+
+    <ul class="checklist" aria-label="Common SOUL.md mistakes to avoid">
+      <li>
+        <span class="ch-icon" aria-hidden="true">❌</span>
+        <div>
+          <strong>Writing it too long on the first try</strong>
+          <span>SOUL.md is loaded into every prompt. A 500-line file wastes tokens and buries your most important rules. Start with 20–30 lines. Add more only when you see specific behavior you want to change.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon" aria-hidden="true">❌</span>
+        <div>
+          <strong>Using vague instructions</strong>
+          <span>"Be professional" and "be helpful" mean nothing to an LLM. Write concrete rules: "Use formal language, no contractions" or "Always include a next-step recommendation at the end of your response."</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon" aria-hidden="true">❌</span>
+        <div>
+          <strong>Contradicting yourself</strong>
+          <span>"Be concise" and "always explain your reasoning in detail" can't both be defaults. Pick one and treat the other as an exception you invoke when needed. Contradictions get interpreted unpredictably.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon" aria-hidden="true">❌</span>
+        <div>
+          <strong>Putting user context in SOUL.md</strong>
+          <span>Information about <em>you</em> — your job, your timezone, your preferences — belongs in USER.md, not SOUL.md. SOUL.md is about the agent. Mixing the two makes both files harder to maintain.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon" aria-hidden="true">❌</span>
+        <div>
+          <strong>Writing conditional boundaries</strong>
+          <span>"Usually ask before sending emails" will sometimes be ignored. If something is a true boundary, make it absolute: "Always show a draft before sending any email, no exceptions." Conditional safety rules get interpreted loosely.</span>
+        </div>
+      </li>
+      <li>
+        <span class="ch-icon" aria-hidden="true">❌</span>
+        <div>
+          <strong>Never revisiting it</strong>
+          <span>Your first SOUL.md will be wrong in ways you can't predict. Plan to edit it after the first week. The agents with the best behavior are the ones whose SOUL.md has been refined through real use — not written perfectly upfront.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<div class="divider" role="separator"></div>
+
+<!-- ── Local LLM note ─────────────────────────────────────────────────── -->
+<section class="section" id="local-llm" aria-labelledby="llm-heading">
+  <div class="container">
+    <div class="section-label">Important Note</div>
+    <h2 class="section-title" id="llm-heading">SOUL.md With Local LLMs</h2>
+
+    <div class="alert alert--yellow" role="note">
+      <div class="alert-icon" aria-hidden="true">⚠️</div>
+      <p><strong>Smaller models follow instructions less reliably.</strong> Cloud models (Claude, GPT-4o) are very good at following SOUL.md. Local models under 13B parameters — like Llama 3.2 8B or Mistral 7B — can follow it, but will sometimes drift. If you're using Ollama with a small model, keep your SOUL.md shorter, simpler, and more directive. Avoid nuanced rules that require interpretation.</p>
+    </div>
+
+    <div class="prose">
+      <p>Larger local models (Llama 3.1 70B, Mixtral 8x7B, Gemma 27B) follow SOUL.md instructions much more reliably. If instruction-following is important to you and you're on a local LLM, consider upgrading to a larger model before adding SOUL.md complexity.</p>
+      <p>See our <a href="local-llm.html">Local LLM guide</a> for model recommendations and Ollama setup instructions.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider" role="separator"></div>
+
+<!-- ── FAQ ────────────────────────────────────────────────────────────── -->
+<section class="section section--alt" id="faq" aria-labelledby="faq-heading">
+  <div class="container">
+    <div class="section-label">Common Questions</div>
+    <h2 class="section-title" id="faq-heading">Frequently Asked Questions</h2>
+
+    <div class="faq-list" role="list">
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq1" id="faq1-btn">
+          What's the difference between SOUL.md and a system prompt?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq1" role="region" aria-labelledby="faq1-btn">
+          SOUL.md <em>is</em> effectively a system prompt — OpenClaw reads it and includes it at the start of every conversation. The difference is that it's a file you own and edit with any text editor, not a settings field buried in an app. It also gets composed with USER.md, AGENTS.md, and memory files into a single coherent context, so the pieces all work together.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq2" id="faq2-btn">
+          Can I have different SOUL.md files for different agents?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq2" role="region" aria-labelledby="faq2-btn">
+          Yes. Each named agent in OpenClaw has its own workspace directory. If you create a second agent (e.g., <code>openclaw agent create work-agent</code>), it gets its own SOUL.md at <code>~/.openclaw/agents/work-agent/SOUL.md</code>. Many people maintain separate agents for work and personal use with completely different personalities.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq3" id="faq3-btn">
+          Does SOUL.md affect the Heartbeat (background tasks)?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq3" role="region" aria-labelledby="faq3-btn">
+          Yes — SOUL.md is loaded for every invocation, including heartbeat runs. This means your agent's values and boundaries apply to scheduled tasks as well as direct conversations. If your SOUL.md says "never delete files without confirmation," that rule applies during heartbeat tasks too. Be thoughtful about which boundaries make sense for autonomous background runs.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq4" id="faq4-btn">
+          How quickly do changes to SOUL.md take effect?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq4" role="region" aria-labelledby="faq4-btn">
+          Immediately on the next conversation or heartbeat run — OpenClaw reads SOUL.md fresh each time. You don't need to restart the agent. Save your changes, send a new message, and the new rules are active.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq5" id="faq5-btn">
+          Should I keep SOUL.md in version control?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq5" role="region" aria-labelledby="faq5-btn">
+          It's a great idea, especially if you iterate on it frequently. Keep it in a private Git repo alongside your other workspace files. Being able to diff SOUL.md versions helps you understand exactly what changed when your agent's behavior shifts. Just make sure the repo is private — SOUL.md can contain personal preferences you might not want public.
+        </div>
+      </div>
+
+      <div class="faq-item" role="listitem">
+        <button class="faq-q" aria-expanded="false" aria-controls="faq6" id="faq6-btn">
+          What's the maximum length SOUL.md should be?
+          <span class="faq-chevron" aria-hidden="true">▼</span>
+        </button>
+        <div class="faq-a" id="faq6" role="region" aria-labelledby="faq6-btn">
+          A practical ceiling is around 1,500–2,000 words (roughly 150–200 lines). SOUL.md gets included in every prompt, so very long files eat into your context window. More importantly, a long file often means you're over-specifying — trying to anticipate every situation instead of setting principles that generalize. If your SOUL.md is over 200 lines, look for rules that overlap or contradict and prune them.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider" role="separator"></div>
+
+<!-- ── Sibling workspace files ─────────────────────────────────────────── -->
+<section class="section" id="siblings" aria-labelledby="siblings-heading">
+  <div class="container">
+    <div class="section-label">Explore the Workspace</div>
+    <h2 class="section-title" id="siblings-heading">The Other Workspace Files</h2>
+    <p class="section-subtitle">SOUL.md works alongside four other files. Together they give your agent complete context.</p>
+
+    <div class="sibling-links" role="list">
+      <div class="sibling-card" role="listitem">
+        <a href="workspace-agents.html" aria-label="Read the AGENTS.md guide">
+          <div class="sibling-icon" aria-hidden="true">📋</div>
+          <h3>AGENTS.md</h3>
+          <p>Your agent's operating manual. Startup procedures, memory rules, and what needs your approval.</p>
+        </a>
+      </div>
+      <div class="sibling-card" role="listitem">
+        <a href="workspace-user.html" aria-label="Read the USER.md guide">
+          <div class="sibling-icon" aria-hidden="true">👤</div>
+          <h3>USER.md</h3>
+          <p>Tell your agent who you are — name, timezone, preferences, and communication style.</p>
+        </a>
+      </div>
+      <div class="sibling-card" role="listitem">
+        <a href="workspace-memory.html" aria-label="Read the MEMORY.md guide">
+          <div class="sibling-icon" aria-hidden="true">🧠</div>
+          <h3>MEMORY.md</h3>
+          <p>Long-term memory that persists across sessions. Facts your agent should never forget.</p>
+        </a>
+      </div>
+      <div class="sibling-card" role="listitem">
+        <a href="workspace-heartbeat.html" aria-label="Read the HEARTBEAT.md guide">
+          <div class="sibling-icon" aria-hidden="true">💓</div>
+          <h3>HEARTBEAT.md</h3>
+          <p>Schedule recurring tasks — daily briefings, monitoring alerts, weekly summaries.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ── Scripts ────────────────────────────────────────────────────────── -->
+<script>
+  // Hamburger menu
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.focus();
+    }
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      // Collapse all
+      document.querySelectorAll('.faq-q').forEach(b => {
+        b.setAttribute('aria-expanded', 'false');
+        document.getElementById(b.getAttribute('aria-controls')).classList.remove('open');
+      });
+      // Open clicked (if it was closed)
+      if (!expanded) {
+        btn.setAttribute('aria-expanded', 'true');
+        document.getElementById(btn.getAttribute('aria-controls')).classList.add('open');
+      }
+    });
+  });
+</script>
+
+<!-- ── Newsletter ────────────────────────────────────────────────────── -->
+<section class="nl-section" aria-labelledby="nl-heading">
+  <div class="container">
+    <h2 id="nl-heading">Get OpenClaw tips in your inbox <em>every week</em></h2>
+    <p>New guides, workspace templates, and pro tips for getting more out of your AI agent.</p>
+    <form class="nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank" aria-label="Newsletter signup">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" aria-required="true" />
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="nl-fine">We respect your inbox. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────────────── -->
+<footer role="contentinfo">
+  <div class="footer-nl">
+    <p>Get the latest OpenClaw tips straight to your inbox</p>
+    <form class="footer-nl-form" action="https://app.convertkit.com/forms/YOUR_FORM_ID/subscriptions" method="post" target="_blank" aria-label="Footer newsletter signup">
+      <input type="email" name="email_address" placeholder="your@email.com" required aria-label="Email address" aria-required="true" />
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+  <nav class="footer-links" aria-label="Footer navigation">
+    <a href="index.html">Home</a>
+    <a href="https://openclaw.ai" target="_blank" rel="noopener noreferrer">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+  </nav>
+  <p>This is an independent informational site about OpenClaw. Not affiliated with the OpenClaw project.</p>
+</footer>
+
+<script src="search.js"></script>
+</body>
+</html>
