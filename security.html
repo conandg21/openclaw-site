@@ -390,6 +390,18 @@
       cursor: pointer; font-family: inherit; transition: background .18s;
     }
     .footer-nl-form button:hover { background: #1d4ed8; }
+  
+    /* ── Mobile: table scroll ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; padding: 0 4px; }
+    .table-scroll table { min-width: 500px; }
+  
+    /* ── Small screen tweaks ── */
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .section { padding: 40px 0; }
+      .hero { padding: 40px 24px 36px; }
+      .tip-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>

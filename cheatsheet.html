@@ -129,6 +129,16 @@
       .nav-links { left: 0; min-width: unset; border-radius: 0; }
     }
 
+    /* ── Mobile: stack command rows vertically ── */
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: 1fr; }
+      .cmd-row { grid-template-columns: 1fr; }
+      .cmd-cell.code { border-right: none; border-bottom: 1px solid var(--gray-3); padding-bottom: 6px; }
+      .cmd-cell.desc { padding-top: 6px; }
+      .section-hero { padding: 40px 0 32px; }
+      .section-hero h1 { font-size: clamp(1.5rem, 7vw, 2rem); }
+    }
+
     /* ── Nav section grouping ── */
     .nav-section {
       display: flex; flex-direction: column; gap: 10px;

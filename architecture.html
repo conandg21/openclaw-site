@@ -469,6 +469,13 @@
       cursor: pointer; font-family: inherit; transition: background .18s;
     }
     .footer-nl-form button:hover { background: #1d4ed8; }
+  
+    /* ── Small screen tweaks ── */
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .section { padding: 40px 0; }
+      .two-col { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>

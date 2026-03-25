@@ -260,6 +260,15 @@
     .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
     .footer-nl-form input { padding: 8px 14px; border-radius: 6px; border: none; font-size: .9rem; min-width: 220px; }
     .footer-nl-form button { padding: 8px 18px; border-radius: 6px; border: none; background: var(--blue); color: var(--white); font-weight: 700; cursor: pointer; }
+  
+    /* ── Small screen tweaks ── */
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .glossary-hero { padding: 40px 0 32px; }
+      .glossary-hero h1 { font-size: clamp(1.6rem, 8vw, 2.4rem); }
+      .entry { flex-direction: column; gap: 4px; }
+      .alpha-bar { padding: 8px 12px; font-size: .8rem; gap: 6px; }
+    }
   </style>
 </head>
 <body>

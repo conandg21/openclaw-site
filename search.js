@@ -76,6 +76,13 @@
       @media (max-width: 420px) {
         .nav-search-form { width: 100px; }
       }
+      /* Very small screens (iPhone SE 320px) — hide text, show icon only */
+      @media (max-width: 360px) {
+        .nav-search-form { width: 34px; padding: 6px; background: transparent; border-color: transparent; }
+        .nav-search-form:focus-within { width: 130px; background: #fff; border-color: #6366f1; }
+        .nav-search-input { display: none; }
+        .nav-search-form:focus-within .nav-search-input { display: block; }
+      }
 
       /* ── Dropdown results ────────────────────────────────────── */
       .nav-search-dropdown {

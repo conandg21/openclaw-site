@@ -306,6 +306,17 @@
       main  { padding: 36px 16px 60px; }
       .btn-secondary { margin-left: 0; }
     }
+  
+    /* ── Mobile: table scroll ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; padding: 0 4px; }
+    .table-scroll table { min-width: 500px; }
+  
+    /* ── Extra small screen tweaks ── */
+    @media (max-width: 480px) {
+      main { padding: 28px 12px 48px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .loop-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
