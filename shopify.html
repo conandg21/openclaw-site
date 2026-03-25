@@ -207,6 +207,88 @@
     .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .18s; }
     .footer-nl-form button:hover { background: #1d4ed8; }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "OpenClaw + Shopify Integration Guide | learnopenclaw.org",
+  "description": "Connect OpenClaw to your Shopify store. Automate orders, inventory alerts, customer emails, and daily reporting with your AI agent.",
+  "url": "https://learnopenclaw.org/shopify.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Create a free Composio account Go to composio.dev and sign up for a free account",
+      "text": "Create a free Composio account Go to composio.dev and sign up for a free account. Composio is the MCP server that bridges OpenClaw and Shopify — it manages the OAuth handshake so you don't have to handle API tokens yourself."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Connect your Shopify store in Composio Inside Composio, find Shopify in the inte",
+      "text": "Connect your Shopify store in Composio Inside Composio, find Shopify in the integrations list and click Connect. You'll be redirected to Shopify to authorize access. Log in to the store you want to connect and approve the permissions."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Copy your Composio MCP server URL After connecting, Composio gives you a persona",
+      "text": "Copy your Composio MCP server URL After connecting, Composio gives you a personal MCP server URL. It looks like this: https://connect.composio.dev/mcp/YOUR_API_KEY"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Add the MCP server to OpenClaw Open your OpenClaw settings and add the Composio ",
+      "text": "Add the MCP server to OpenClaw Open your OpenClaw settings and add the Composio URL as an MCP server. OpenClaw will automatically discover all the Shopify tools Composio exposes and make them available to your agent."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Test the connection In your OpenClaw task panel, type a simple test prompt: List",
+      "text": "Test the connection In your OpenClaw task panel, type a simple test prompt: List the last 5 orders from my Shopify store. If you see real order data come back, you're connected."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Enable custom app development in Shopify In your Shopify Admin, go to Settings →",
+      "text": "Enable custom app development in Shopify In your Shopify Admin, go to Settings → Apps and sales channels . Click Develop apps , then click Allow custom app development . Confirm when prompted."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "name": "Create a new custom app Click Create an app .",
+      "text": "Create a new custom app Click Create an app . Name it something clear like OpenClaw AI and enter your email as the app developer. Click Create app ."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "name": "Set the API scopes you need Go to the Configuration tab of your new app and clic",
+      "text": "Set the API scopes you need Go to the Configuration tab of your new app and click Configure Admin API scopes . Enable only what you actually need — more on choosing scopes below. A typical OpenClaw setup needs: read_products write_products read_orders write_orders read_customers write_customers read_inventory write_inventory Click Save when done."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 9,
+      "name": "Install the app and get your API credentials Go to the API credentials tab and c",
+      "text": "Install the app and get your API credentials Go to the API credentials tab and click Install app . Once installed, you'll see your Admin API access token — copy it now, it's only shown once. Also note your API key and API secret key ."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 10,
+      "name": "Add credentials to your OpenClaw SOUL.md Add a section to your SOUL.md (or use O",
+      "text": "Add credentials to your OpenClaw SOUL.md Add a section to your SOUL.md (or use OpenClaw's config file) with your store credentials: # Shopify Integration shopify_store: your-store.myshopify.com shopify_token: shpat_xxxxxxxxxxxxxxxxxxxx # Never share this file with anyone Important: Treat your Admin API token like a password. Anyone with it has full access to your store based on the scopes you gran"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 11,
+      "name": "Install the Shopify skill from the Marketplace Open the OpenClaw Marketplace and",
+      "text": "Install the Shopify skill from the Marketplace Open the OpenClaw Marketplace and search for Shopify . Install the official Shopify Commerce skill — it gives your agent structured tools for products, orders, customers, and inventory using the credentials you just configured."
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main" class="skip-nav">Skip to main content</a>

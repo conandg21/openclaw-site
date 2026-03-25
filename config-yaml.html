@@ -171,6 +171,40 @@
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "config.yaml Explained — OpenClaw YAML Config Guide",
+  "description": "Learn what config.yaml is, how it differs from openclaw.json, and how to configure your OpenClaw agent using YAML — with beginner-friendly examples.",
+  "url": "https://learnopenclaw.org/config-yaml.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Same place as openclaw.json Put config.yaml in your project's root folder — the ",
+      "text": "Same place as openclaw.json Put config.yaml in your project's root folder — the same directory where you run openclaw start ."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Don't use both at once If both openclaw.json and config.yaml exist in the same f",
+      "text": "Don't use both at once If both openclaw.json and config.yaml exist in the same folder, OpenClaw will use openclaw.json and ignore the YAML file. Pick one format per project."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Global fallback works here too You can place a config.yaml at ~/.openclaw/config",
+      "text": "Global fallback works here too You can place a config.yaml at ~/.openclaw/config.yaml as a global default, just like with JSON."
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>

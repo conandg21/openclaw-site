@@ -19,25 +19,214 @@
   <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
   <meta name="twitter:image:alt" content="learnopenclaw.org — OpenClaw AI Agent Documentation" />
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {"@type":"Question","name":"Do I need to know how to code to use OpenClaw?","acceptedAnswer":{"@type":"Answer","text":"No. OpenClaw is designed to be set up through config files written in plain Markdown. You don't need to write any code."}},
-      {"@type":"Question","name":"Is OpenClaw free?","acceptedAnswer":{"@type":"Answer","text":"Yes. OpenClaw itself is completely free and open-source. You only pay for the AI model API you connect it to (e.g. Claude or GPT-4), or you can run a free local model with no API costs at all."}},
-      {"@type":"Question","name":"Is my data private with OpenClaw?","acceptedAnswer":{"@type":"Answer","text":"Yes. OpenClaw runs entirely on your own machine. Your files, messages, and memory are stored in a local SQLite database and never sent to any server unless you explicitly configure a cloud AI model."}},
-      {"@type":"Question","name":"What AI model should I use with OpenClaw?","acceptedAnswer":{"@type":"Answer","text":"OpenClaw works with any LLM — Claude, GPT-4, Gemini, or a local model like LLaMA. For most users, Claude or GPT-4 give the best results. For maximum privacy, a local model means zero data leaves your machine."}},
-      {"@type":"Question","name":"What is the difference between a tool and a skill?","acceptedAnswer":{"@type":"Answer","text":"Tools are built-in capabilities that ship with OpenClaw — like shell execution, web browsing, email, and calendar. Skills are community-built extensions installed from ClawHub that add new integrations like GitHub, Notion, or Spotify."}}
-    ],
-    "breadcrumb": {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
-        {"@type":"ListItem","position":2,"name":"FAQ","item":"https://learnopenclaw.org/faq.html"}
-      ]
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need to know how to code to use OpenClaw?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. OpenClaw is intentionally designed for non-developers. You configure it by editing plain Markdown files like SOUL.md and HEARTBEAT.md — no programming required. If you can write a text file, you can run OpenClaw. The only technical step is the initial setup — cloning the repo and running a start command — which takes about 5 minutes following the guide on our How to Use page."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What do I need to run OpenClaw?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "To get started you need: A computer running macOS, Windows, or Linux Node.js installed (free download from nodejs.org) An API key for your preferred AI model (Claude, GPT-4, Gemini, or a free local model) At least one messaging app to connect (WhatsApp, Telegram, Slack, Discord, or iMessage) No cloud account, subscription, or Docker required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does setup take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most people have OpenClaw up and running in 10–20 minutes. The bulk of the time is connecting your messaging app, which varies by platform. Telegram is the fastest (about 2 minutes). WhatsApp takes a little longer due to QR code authentication."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does OpenClaw work on Windows?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. OpenClaw runs on macOS, Windows, and Linux. Windows users should use PowerShell or Windows Terminal for the setup commands. Some users on Windows prefer running OpenClaw inside WSL2 (Windows Subsystem for Linux) for a smoother experience."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run OpenClaw on a phone or tablet?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "OpenClaw itself runs on a desktop or laptop computer — not directly on a phone. However, once it's set up, you control it entirely through your phone via WhatsApp, Telegram, or whichever messaging app you connect. So you interact with it on your phone, but it runs on your computer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is OpenClaw free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — OpenClaw itself is completely free and open-source forever. There are no subscriptions, no tiers, and no hidden fees. The only cost comes from the AI model API you connect it to. For example, using Claude or GPT-4 costs money per API call (typically fractions of a cent per message). If you want zero API costs, you can run a local model like LLaMA entirely for free."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What AI model should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on your priorities: Best performance: Claude (Anthropic) or GPT-4 (OpenAI) — both give excellent results for everyday tasks Best privacy (zero data leaves your machine): A local model like LLaMA 3 or Mistral via Ollama Best value: Claude Haiku or GPT-4o Mini — fast, cheap, and more than capable for most automation tasks You can switch models anytime by changing a single line in your .env file — no reinstalling needed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much will API costs be per month?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For typical personal use — a few dozen conversations and heartbeat checks per day — most users spend $1–5 per month on API costs. OpenClaw is one of the most token-efficient agents available, so costs are much lower than AutoGPT or similar tools. Heavy users running frequent heartbeats and complex automations might see $10–20/month. You can set hard spending limits in your API provider's dashboard to prevent surprises."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use a completely offline, local AI model?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. OpenClaw supports local models via Ollama, which lets you run models like LLaMA 3, Mistral, or Phi-3 entirely on your machine with no internet connection required for the AI brain. This means zero API costs and complete offline privacy. Local models are slightly less capable than frontier models like Claude or GPT-4, but for most everyday automation tasks they work very well — especially on modern hardware with a decent GPU."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my data private? Does OpenClaw send anything to the cloud?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "OpenClaw runs 100% locally on your machine. Your files, messages, conversation history, and memory are stored in a local SQLite database and never transmitted to any server by OpenClaw itself. The only exception is when the agent calls your configured AI model — for example, if you're using Claude or GPT-4, your messages are sent to Anthropic or OpenAI's API to generate a response. This is the same as using those services directly. If full offline privacy is critical, use a local model instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is my data stored?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Everything is stored in a single SQLite database file on your computer — typically in your OpenClaw installation directory. This includes conversation history, memories, heartbeat logs, and skill data. You can back it up, move it, or delete it just like any other file."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can OpenClaw read all my files?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "By default, OpenClaw can access your file system — that's what lets it organise files, read documents, and run scripts on your behalf. It operates with your user account's permissions, so it can access anything you can access. This is why running OpenClaw inside a virtual machine is strongly recommended for extra security. A VM limits what it can reach even if something goes wrong. See the Security Guide for details."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does OpenClaw access my WhatsApp or Telegram messages automatically?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "OpenClaw only reads messages that are directed to it through the connected account or bot. For Telegram and Slack, you typically create a dedicated bot — so it only sees messages in channels or DMs where the bot is present. For WhatsApp and iMessage, it operates through a linked session on a specific number. It does not have access to your entire messaging history unless you specifically ask it to retrieve it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between a tool and a skill?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tools are built-in capabilities that ship with OpenClaw — shell execution, file management, web browsing, email, and calendar access. These are always available with no extra installation. Skills are community-built extensions installed from ClawHub, the OpenClaw marketplace. They teach the agent new integrations — like controlling GitHub, writing to Notion, or playing Spotify. Think of skills as plugins that add new tools to the agent's repertoire."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are ClawHub skills safe to install?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not all of them. In early 2026, malicious skills were distributed through ClawHub that installed malware on users' machines. The OpenClaw team has since added signature verification, but risk still exists with unverified community skills. Always look for the green Verified badge from the OpenClaw team. Read the permissions a skill requests before installing — a recipe skill asking for shell access is a major red flag. See the Security Guide for the full safety checklist."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I uninstall a skill?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You can uninstall any skill from the OpenClaw dashboard or by running the CLI command: openclaw skills remove <skill-name> The skill will be removed and its tools will no longer be available to the agent immediately."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I build and publish my own skill?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Skills can be defined in YAML or JavaScript and published to ClawHub by anyone. The OpenClaw documentation has a full guide on skill development. Community skill building is actively encouraged — over 1,200 contributors have published skills so far."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is SOUL.md?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SOUL.md is a plain Markdown file where you define your agent's personality, name, communication style, values, and standing instructions. It's loaded into the AI's context at the start of every interaction, giving the agent a consistent identity that persists across sessions. Think of it as a permanent system prompt you write once and never have to repeat. You can make your agent formal or casual, verbose or brief, cautious or bold — entirely up to you. See the Architecture page for a full explanation and example."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the Heartbeat?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Heartbeat is what makes OpenClaw proactive rather than just reactive. Every 30 minutes (by default), OpenClaw automatically wakes up, reads your HEARTBEAT.md task checklist, and decides whether there's anything it should be doing — without you having to send a message. If there's nothing to do, it silently returns a HEARTBEAT_OK signal and you never see it. If something needs action, it acts and delivers the result to your messaging app. See the Architecture page for more detail."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does OpenClaw remember previous conversations?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. OpenClaw has persistent memory stored in a local SQLite database. It remembers everything you've told it, tasks it has completed, and context from previous conversations. Unlike a standard chatbot that forgets everything when you close the window, OpenClaw's memory persists indefinitely. When older memories would exceed the AI's context window, they are automatically compacted into summaries — preserving the meaning while reducing token usage. See Memory & Storage for the full breakdown."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is OpenClaw different from just using ChatGPT?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ChatGPT is a chatbot — it answers questions and generates text. OpenClaw is an agent — it takes real action. The key differences are: Actions: OpenClaw can run commands, send emails, manage files, and control apps. ChatGPT can only generate text. Proactivity: OpenClaw acts on its own via the Heartbeat. ChatGPT only responds when you talk to it. Memory: OpenClaw remembers everything persistently. ChatGPT's memory is limited and resets. Interface: You talk to OpenClaw through WhatsApp or Telegram. ChatGPT requires its own web app. Privacy: OpenClaw runs locally. ChatGPT sends everything to OpenA"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "OpenClaw isn't responding to my messages. What's wrong?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Check these things in order: Is OpenClaw still running? Check your terminal — the process may have crashed. Restart it with your start command. Is your API key valid? Open your .env file and verify your API key hasn't expired or hit its limit. Is the messaging connection active? For WhatsApp, the QR code session may have expired and need re-scanning. Check the logs — OpenClaw outputs detailed logs to the terminal. Look for error messages that point to the issue."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "The agent is acting strangely or ignoring my instructions. What should I do?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This is usually a SOUL.md issue. If the agent's personality or instructions are unclear or contradictory, it may behave unpredictably. Review your SOUL.md file and make sure your standing instructions are clear and unambiguous. It can also happen if the context memory has grown stale or contains conflicting information. You can reset the agent's working memory from the dashboard without losing your full history."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "My API costs are higher than expected. How do I reduce them?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A few things to try: Increase the Heartbeat interval — if it fires every 5 minutes, reduce it to 30 or 60 minutes. Switch to a cheaper model — Claude Haiku or GPT-4o Mini are much cheaper than their full-size counterparts and handle most tasks just as well. Shorten your SOUL.md — it's loaded on every loop. A very long SOUL.md uses more tokens per interaction. Set API spending limits — your model provider lets you set hard monthly caps so costs can never spiral."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I update OpenClaw to the latest version?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run the following command in your OpenClaw directory: git pull origin main This pulls the latest changes from GitHub. After updating, restart OpenClaw. Your SOUL.md, HEARTBEAT.md, .env, and SQLite database are not affected by updates."
+      }
     }
-  }
-  </script>
+  ]
+}
+</script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

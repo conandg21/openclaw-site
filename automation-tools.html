@@ -337,6 +337,94 @@
       .tools-grid { grid-template-columns: 1fr; }
     }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "OpenClaw + n8n & Zapier — Connect Your AI Agent to Any Tool",
+  "description": "Connect OpenClaw to n8n, Zapier, and Make. Trigger your AI agent from any app, send results anywhere, and build powerful no-code automation workflows.",
+  "url": "https://learnopenclaw.org/automation-tools.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Enable the webhook in openclaw.json Open your openclaw.json and add the webhook ",
+      "text": "Enable the webhook in openclaw.json Open your openclaw.json and add the webhook block: openclaw.json Copy { \"webhook\" : { \"enabled\" : true , \"port\" : 8080 , \"secret\" : \"your-secret-key\" , // optional auth token \"path\" : \"/webhook\" // endpoint path } } Restart OpenClaw. Your webhook is now live at http://localhost:8080/webhook ."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Make it reachable from the internet (if using Zapier or Make) Zapier and Make ar",
+      "text": "Make it reachable from the internet (if using Zapier or Make) Zapier and Make are cloud services — they can't reach localhost on your machine. You need to expose your local webhook using a tunnel tool: Terminal — using ngrok (free) Copy ngrok http 8080 ngrok gives you a public URL like https://abc123.ngrok.io that tunnels to your local machine. Use that URL in Zapier or Make instead of localhost. "
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Create a new workflow in n8n Open your n8n instance and click + New Workflow .",
+      "text": "Create a new workflow in n8n Open your n8n instance and click + New Workflow . Give it a name like \"OpenClaw Trigger\"."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Add a trigger node Click + to add a node.",
+      "text": "Add a trigger node Click + to add a node. Choose your trigger — for example Schedule Trigger (run every morning), Gmail Trigger (on new email), or Webhook (manually triggered)."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Add an HTTP Request node to call OpenClaw After your trigger, add an HTTP Reques",
+      "text": "Add an HTTP Request node to call OpenClaw After your trigger, add an HTTP Request node with these settings: Method: POST URL: http://localhost:8080/webhook Body: JSON — {\"message\": \"Your prompt here\", \"context\": \"{{ $json }}\"} Header: Authorization: Bearer your-secret-key (if you set one)"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Handle the response OpenClaw returns a JSON response with a reply field.",
+      "text": "Handle the response OpenClaw returns a JSON response with a reply field. Add another node (Slack, Gmail, Notion, etc.) to send {{ $json.reply }} wherever you want the result to go. OpenClaw webhook response { \"status\" : \"ok\" , \"reply\" : \"Your agent's response text here\" , \"tokens_used\" : 342 }"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "name": "Activate the workflow Toggle Active in the top right.",
+      "text": "Activate the workflow Toggle Active in the top right. n8n will now run the workflow on every trigger automatically."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "name": "Create a new Zap Log into zapier.com and click + Create Zap .",
+      "text": "Create a new Zap Log into zapier.com and click + Create Zap ."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 9,
+      "name": "Set your trigger Search for your trigger app — Gmail, Google Forms, Typeform, Sl",
+      "text": "Set your trigger Search for your trigger app — Gmail, Google Forms, Typeform, Slack, Airtable, or anything else. Choose the trigger event (e.g. \"New Email\" or \"New Form Submission\") and connect your account."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 10,
+      "name": "Add a Webhooks by Zapier action Click + to add an action.",
+      "text": "Add a Webhooks by Zapier action Click + to add an action. Search for Webhooks by Zapier → choose POST . Configure it: URL: your ngrok URL + /webhook (e.g. https://abc123.ngrok.io/webhook ) Payload Type: json Data — key: message , value: map a field from your trigger (e.g. email body) Headers — key: Authorization , value: Bearer your-secret-key"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 11,
+      "name": "Add a destination action Add another action to send OpenClaw's response somewher",
+      "text": "Add a destination action Add another action to send OpenClaw's response somewhere useful — a Slack message, a Gmail reply, a new Notion page, or a Google Sheet row. Map reply from the webhook response to the field you want."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 12,
+      "name": "Test and publish your Zap Click Test step on the webhook action to send a real r",
+      "text": "Test and publish your Zap Click Test step on the webhook action to send a real request to OpenClaw and confirm it responds. Then click Publish Zap to go live."
+    }
+  ]
+}
+</script>
 </head>
 <body>
 

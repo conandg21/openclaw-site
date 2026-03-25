@@ -320,6 +320,94 @@
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Run OpenClaw in Docker — Sandboxing Guide for Beginners 2026",
+  "description": "Run OpenClaw safely in Docker. Beginner-friendly guide: Docker installation, Dockerfile setup, Docker Compose, volumes, and environment variables.",
+  "url": "https://learnopenclaw.org/docker.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Download Docker Desktop for Mac Go to docker.com/products/docker-desktop and cli",
+      "text": "Download Docker Desktop for Mac Go to docker.com/products/docker-desktop and click Download for Mac . Make sure to pick the right chip — Apple Silicon (M1/M2/M3) or Intel . Not sure which? Click the Apple menu → About This Mac."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Install and launch Open the downloaded .dmg file, drag Docker to your Applicatio",
+      "text": "Install and launch Open the downloaded .dmg file, drag Docker to your Applications folder, and open it. Docker will ask for your admin password — this is needed to install the system components."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Wait for Docker to start You'll see a whale icon in your menu bar.",
+      "text": "Wait for Docker to start You'll see a whale icon in your menu bar. When it stops animating (becomes a solid whale), Docker is ready. This usually takes about 30 seconds on first launch."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Verify the install Open Terminal and run: $ docker --version Docker version 26.1",
+      "text": "Verify the install Open Terminal and run: $ docker --version Docker version 26.1.0, build a96... If you see a version number, you're ready."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Enable WSL 2 (Windows Subsystem for Linux) Docker Desktop on Windows uses WSL 2 ",
+      "text": "Enable WSL 2 (Windows Subsystem for Linux) Docker Desktop on Windows uses WSL 2 as its backend. Open PowerShell as Administrator and run: wsl --install Restart your computer when prompted. If you already have WSL, run wsl --update instead."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Download Docker Desktop for Windows Go to docker.com/products/docker-desktop , d",
+      "text": "Download Docker Desktop for Windows Go to docker.com/products/docker-desktop , download the Windows installer, and run it. Accept the defaults and click Install."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "name": "Launch Docker Desktop Open Docker Desktop from the Start menu.",
+      "text": "Launch Docker Desktop Open Docker Desktop from the Start menu. Accept the terms of service. Wait for the engine to start (the whale icon in the system tray will stop animating)."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "name": "Verify the install Open PowerShell or Command Prompt and run: > docker --version",
+      "text": "Verify the install Open PowerShell or Command Prompt and run: > docker --version"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 9,
+      "name": "Install Docker Engine using the official script The quickest way on Ubuntu / Deb",
+      "text": "Install Docker Engine using the official script The quickest way on Ubuntu / Debian: $ curl -fsSL https://get.docker.com | sudo sh This installs Docker Engine, CLI, and Compose in one go."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 10,
+      "name": "Run Docker without sudo (recommended) Add your user to the docker group so you d",
+      "text": "Run Docker without sudo (recommended) Add your user to the docker group so you don't need sudo every time: $ sudo usermod -aG docker $USER $ newgrp docker"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 11,
+      "name": "Start Docker and enable on boot $ sudo systemctl enable --now docker",
+      "text": "Start Docker and enable on boot $ sudo systemctl enable --now docker"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 12,
+      "name": "Verify $ docker run hello-world Hello from Docker!",
+      "text": "Verify $ docker run hello-world Hello from Docker! ✓"
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>

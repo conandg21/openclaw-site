@@ -19,420 +19,102 @@
   <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
   <meta name="twitter:image:alt" content="learnopenclaw.org — OpenClaw AI Agent Documentation" />
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "OpenClaw MCP Guide — Model Context Protocol for AI Agents",
-    "description": "How to connect OpenClaw to GitHub, Notion, Stripe, Slack, and 500+ apps using the Model Context Protocol (MCP).",
-    "url": "https://learnopenclaw.org/mcp.html",
-    "breadcrumb": {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org/"},
-        {"@type":"ListItem","position":2,"name":"Learn","item":"https://learnopenclaw.org/gettingstarted.html"},
-        {"@type":"ListItem","position":3,"name":"MCP","item":"https://learnopenclaw.org/mcp.html"}
-      ]
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What's the difference between MCP servers and ClawHub skills?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ClawHub skills are OpenClaw-specific packages — they include a SKILL.md with instructions, pre-configured prompts, and sometimes bundled MCP servers. An MCP server is lower-level: it exposes raw tools that any MCP-compatible AI agent can use. Many skills install and configure an MCP server behind the scenes. If there's a ClawHub skill for what you need, start there — it's easier. If not, install the MCP server directly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need Node.js installed to use MCP servers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most MCP servers are distributed as npm packages, so yes — Node.js is required for those. The npx -y command in the config examples downloads and runs the server without a permanent install. Install Node.js from nodejs.org if you don't have it. Python-based servers exist too and only need Python 3.x, which most systems already have."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I run multiple MCP servers at the same time?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — OpenClaw launches all configured servers simultaneously and makes all their tools available to the agent at once. Users commonly run 5–10 servers at the same time (filesystem, GitHub, Notion, Brave Search, Slack, memory) with no issues. Each server runs as a separate background process, so they're isolated from each other."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does OpenClaw know which MCP tool to use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The AI model decides. When you send a task, OpenClaw includes a list of all available tools (from all loaded MCP servers) in the context. The model reads the tool descriptions and picks the right one, or chains several together. You never need to specify which tool to use — just describe what you want in plain English."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I build my own MCP server?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, and it's well within reach for any developer. Anthropic provides official SDKs for TypeScript (@modelcontextprotocol/sdk) and Python (mcp). A minimal server that exposes two or three tools can be built in under 100 lines of code. The MCP protocol itself is JSON-RPC 2.0 over stdio or HTTP, so you can technically implement it in any language."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are MCP servers free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The MCP servers themselves are always free and open-source. You may need API keys for the underlying services — Brave Search has a free tier (2,000 queries/month), GitHub tokens are free, Notion API is free, Stripe's API is free to query (you pay per transaction, not per API call). Check the specific service's pricing for anything beyond basic usage."
+      }
     }
-  }
-  </script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --blue:     #2563eb;
-      --blue-lt:  #eff6ff;
-      --blue-md:  #bfdbfe;
-      --blue-dk:  #1d4ed8;
-      --indigo:   #4f46e5;
-      --indigo-lt:#eef2ff;
-      --indigo-md:#c7d2fe;
-      --teal:     #0d9488;
-      --teal-lt:  #f0fdfa;
-      --teal-md:  #99f6e4;
-      --green:    #16a34a;
-      --green-lt: #f0fdf4;
-      --green-md: #bbf7d0;
-      --purple:   #7c3aed;
-      --purple-lt:#f5f3ff;
-      --purple-md:#ddd6fe;
-      --amber:    #d97706;
-      --amber-lt: #fffbeb;
-      --amber-md: #fde68a;
-      --red:      #dc2626;
-      --red-lt:   #fef2f2;
-      --red-md:   #fecaca;
-      --gray-1:   #f9fafb;
-      --gray-2:   #f3f4f6;
-      --gray-3:   #e5e7eb;
-      --gray-5:   #6b7280;
-      --gray-8:   #1f2937;
-      --white:    #ffffff;
-      --radius:   12px;
-      --shadow:   0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "OpenClaw MCP Guide — Model Context Protocol for AI Agents",
+  "description": "Connect OpenClaw to 500+ tools with MCP (Model Context Protocol). Setup guides for filesystem, GitHub, Notion, Slack, Stripe, and more.",
+  "url": "https://learnopenclaw.org/mcp.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "dateModified": "2026-03-24",
+  "inLanguage": "en-US"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "learnopenclaw.org",
+      "item": "https://learnopenclaw.org"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "OpenClaw MCP Guide — Model Context Protocol for AI Agents",
+      "item": "https://learnopenclaw.org/mcp.html"
     }
-
-    html { scroll-behavior: smooth; }
-
-    .skip-nav {
-      position: absolute; top: -100px; left: 16px;
-      background: var(--indigo); color: var(--white);
-      padding: 8px 16px; border-radius: 6px;
-      font-weight: 700; font-size: .9rem;
-      z-index: 9999; transition: top .2s;
-    }
-    .skip-nav:focus { top: 8px; }
-
-    a:focus, button:focus {
-      outline: 3px solid var(--indigo);
-      outline-offset: 3px; border-radius: 4px;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      font-size: 16px; line-height: 1.65;
-      color: var(--gray-8); background: var(--white);
-    }
-
-    a { color: var(--blue); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
-    .section    { padding: 64px 0; }
-    .section--alt { background: var(--gray-1); }
-
-    /* ── Nav ── */
-    nav {
-      position: sticky; top: 0; z-index: 1000;
-      background: var(--white); border-bottom: 1px solid var(--gray-3);
-      padding: 0 24px;
-    }
-    .nav-inner {
-      max-width: 900px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 60px; position: relative;
-    }
-    .nav-logo {
-      font-size: 1.15rem; font-weight: 700; color: var(--gray-8);
-      display: flex; align-items: center; gap: 8px; text-decoration: none;
-    }
-    .hamburger {
-      display: flex; flex-direction: column; gap: 5px;
-      background: none; border: none; cursor: pointer; padding: 4px;
-    }
-    .hamburger span {
-      display: block; width: 24px; height: 2px;
-      background: var(--gray-8); border-radius: 2px; transition: all .25s;
-    }
-    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-    .nav-links {
-      display: none; position: absolute;
-      top: 60px; right: 0; left: auto;
-      background: var(--white); border: 1px solid var(--gray-3); border-top: none;
-      flex-direction: column !important; padding: 20px 28px; gap: 16px;
-      box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999;
-      min-width: 220px; border-radius: 0 0 12px 12px;
-    }
-    .nav-links.open { display: flex; }
-    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
-    .nav-links a:hover { color: var(--blue); text-decoration: none; }
-    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
-    .nav-section {
-      display: flex; flex-direction: column; gap: 10px;
-      border-top: 1px solid var(--gray-2); border-bottom: 1px solid var(--gray-2);
-      padding: 10px 0; margin: 2px 0;
-    }
-    .nav-section-label {
-      font-size: .68rem; font-weight: 800;
-      text-transform: uppercase; letter-spacing: .12em; color: var(--gray-5);
-    }
-    .nav-section a { padding-left: 10px; border-left: 2px solid var(--blue-md); font-size: .88rem; }
-
-    /* ── Hero ── */
-    .hero {
-      padding: 64px 24px 52px; text-align: center;
-      background: linear-gradient(160deg, var(--indigo-lt) 0%, var(--blue-lt) 60%, var(--white) 100%);
-    }
-    .hero-badge {
-      display: inline-block; background: var(--indigo-md); color: var(--indigo);
-      font-size: .78rem; font-weight: 700; letter-spacing: .06em;
-      padding: 4px 14px; border-radius: 100px; margin-bottom: 20px;
-      text-transform: uppercase;
-    }
-    .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
-    .hero h1 em { font-style: normal; color: var(--indigo); }
-    .hero p { font-size: 1.1rem; color: var(--gray-5); max-width: 580px; margin: 0 auto 32px; }
-    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 11px 22px; border-radius: 8px;
-      font-size: .95rem; font-weight: 700;
-      text-decoration: none; transition: all .18s;
-    }
-    .btn--indigo { background: var(--indigo); color: var(--white); }
-    .btn--indigo:hover { background: #4338ca; text-decoration: none; color: var(--white); }
-    .btn--ghost { background: transparent; color: var(--indigo); border: 2px solid var(--indigo); }
-    .btn--ghost:hover { background: var(--indigo-lt); text-decoration: none; }
-
-    /* ── Section headings ── */
-    .section-label {
-      font-size: .78rem; font-weight: 700; letter-spacing: .08em;
-      text-transform: uppercase; color: var(--indigo); margin-bottom: 10px;
-    }
-    .section-title { font-size: clamp(1.4rem, 3vw, 1.9rem); font-weight: 800; line-height: 1.25; margin-bottom: 16px; }
-    .section-subtitle { font-size: 1.05rem; color: var(--gray-5); max-width: 660px; margin-bottom: 40px; }
-
-    /* ── Alerts ── */
-    .alert {
-      border-radius: var(--radius); padding: 20px 24px;
-      display: flex; gap: 14px; align-items: flex-start; margin-bottom: 32px;
-    }
-    .alert--indigo { background: var(--indigo-lt); border: 1px solid var(--indigo-md); }
-    .alert--green  { background: var(--green-lt);  border: 1px solid var(--green-md); }
-    .alert--amber  { background: var(--amber-lt);  border: 1px solid var(--amber-md); }
-    .alert--blue   { background: var(--blue-lt);   border: 1px solid var(--blue-md); }
-    .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
-    .alert--indigo p { color: #312e81; font-size: .95rem; }
-    .alert--green  p { color: #14532d; font-size: .95rem; }
-    .alert--amber  p { color: #92400e; font-size: .95rem; }
-    .alert--blue   p { color: #1e3a8a; font-size: .95rem; }
-    .alert strong { font-weight: 700; }
-
-    /* ── How it works 3-step visual ── */
-    .flow-row {
-      display: flex; align-items: flex-start; gap: 0;
-      margin-bottom: 48px; flex-wrap: wrap;
-    }
-    .flow-node {
-      flex: 1; min-width: 160px;
-      background: var(--white); border: 1.5px solid var(--gray-3);
-      border-radius: var(--radius); padding: 22px 18px; text-align: center;
-      box-shadow: var(--shadow);
-    }
-    .flow-node .fn-icon { font-size: 2rem; margin-bottom: 10px; }
-    .flow-node h3 { font-size: .9rem; font-weight: 700; margin-bottom: 6px; }
-    .flow-node p  { font-size: .8rem; color: var(--gray-5); }
-    .flow-arrow {
-      display: flex; align-items: center; justify-content: center;
-      padding: 0 12px; font-size: 1.4rem; color: var(--indigo-md);
-      flex-shrink: 0; margin-top: 30px;
-    }
-    @media (max-width: 600px) {
-      .flow-arrow { transform: rotate(90deg); width: 100%; margin: 4px 0; }
-    }
-
-    /* ── Cards grid ── */
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px; }
-    .card {
-      background: var(--white); border: 1px solid var(--gray-3);
-      border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);
-      transition: transform .15s, box-shadow .15s;
-    }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
-    .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
-    .card h3   { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
-    .card p    { font-size: .875rem; color: var(--gray-5); }
-
-    /* ── Server catalogue ── */
-    .server-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
-    .server-card {
-      background: var(--white); border: 1px solid var(--gray-3);
-      border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
-      transition: transform .15s, box-shadow .15s;
-    }
-    .server-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
-    .sc-head {
-      display: flex; align-items: center; gap: 12px;
-      padding: 16px 20px; border-bottom: 1px solid var(--gray-3);
-    }
-    .sc-logo {
-      width: 38px; height: 38px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; flex-shrink: 0;
-    }
-    .sc-head h3 { font-size: .95rem; font-weight: 700; }
-    .sc-badge {
-      margin-left: auto; font-size: .68rem; font-weight: 700;
-      padding: 2px 8px; border-radius: 100px; text-transform: uppercase;
-    }
-    .badge-official { background: var(--indigo-lt); color: var(--indigo); }
-    .badge-popular  { background: var(--green-lt);  color: var(--green); }
-    .badge-free     { background: var(--blue-lt);   color: var(--blue); }
-    .sc-body { padding: 16px 20px; }
-    .sc-body p { font-size: .85rem; color: var(--gray-5); margin-bottom: 12px; }
-    .sc-tools { display: flex; gap: 6px; flex-wrap: wrap; }
-    .sc-tools span {
-      background: var(--gray-2); color: var(--gray-8);
-      font-size: .72rem; font-weight: 600; font-family: "SF Mono", monospace;
-      padding: 2px 8px; border-radius: 4px; border: 1px solid var(--gray-3);
-    }
-
-    /* ── Code blocks ── */
-    .code-block {
-      background: #0f172a; border-radius: var(--radius); padding: 22px 24px;
-      margin: 14px 0; overflow-x: auto;
-    }
-    .code-block pre {
-      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
-      font-size: .83rem; line-height: 1.8; color: #e2e8f0; white-space: pre;
-    }
-    .code-label {
-      font-size: .68rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .08em; color: var(--gray-5); margin-bottom: 6px;
-    }
-    .ck  { color: #94a3b8; }
-    .kw  { color: #7dd3fc; }
-    .sv  { color: #86efac; }
-    .pn  { color: #f9a8d4; }
-    .nm  { color: #fde68a; }
-    .br  { color: #c4b5fd; }
-
-    /* ── Steps ── */
-    .steps { display: flex; flex-direction: column; position: relative; }
-    .steps::before {
-      content: ''; position: absolute; left: 23px; top: 28px;
-      width: 2px; height: calc(100% - 56px); background: var(--gray-3);
-    }
-    .step { display: flex; gap: 20px; align-items: flex-start; position: relative; padding-bottom: 32px; }
-    .step:last-child { padding-bottom: 0; }
-    .step-num {
-      flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%;
-      background: var(--indigo); color: var(--white);
-      font-size: 1rem; font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 0 4px var(--indigo-lt); position: relative; z-index: 1;
-    }
-    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
-    .step-body p  { font-size: .9rem; color: var(--gray-5); margin-bottom: 8px; }
-    .step-body code {
-      display: inline-block; background: var(--gray-2); border: 1px solid var(--gray-3);
-      border-radius: 6px; font-family: "SF Mono", monospace;
-      font-size: .84rem; padding: 4px 10px; margin-top: 4px;
-    }
-
-    /* ── Use-case patterns ── */
-    .pattern {
-      border: 1px solid var(--gray-3); border-radius: var(--radius);
-      overflow: hidden; margin-bottom: 24px; box-shadow: var(--shadow);
-    }
-    .pattern-head {
-      display: flex; align-items: center; gap: 12px;
-      padding: 16px 20px; background: var(--gray-1); border-bottom: 1px solid var(--gray-3);
-    }
-    .pattern-head .ph-icon { font-size: 1.4rem; }
-    .pattern-head h3 { font-size: 1rem; font-weight: 700; }
-    .pattern-head .ph-tag {
-      margin-left: auto; font-size: .72rem; font-weight: 700;
-      padding: 2px 8px; border-radius: 100px; text-transform: uppercase;
-    }
-    .tag-indigo { background: var(--indigo-lt); color: var(--indigo); }
-    .tag-green  { background: var(--green-lt);  color: var(--green); }
-    .tag-blue   { background: var(--blue-lt);   color: var(--blue); }
-    .tag-amber  { background: var(--amber-lt);  color: var(--amber); }
-    .pattern-body { padding: 20px; }
-    .pattern-body p { font-size: .9rem; color: var(--gray-5); margin-bottom: 12px; }
-
-    /* ── Command row ── */
-    .cmd-row {
-      display: flex; gap: 12px; align-items: baseline;
-      padding: 10px 0; border-bottom: 1px solid var(--gray-2);
-    }
-    .cmd-row:last-child { border-bottom: none; }
-    .cmd-row code {
-      font-family: "SF Mono", monospace; font-size: .83rem;
-      background: var(--gray-2); border: 1px solid var(--gray-3);
-      padding: 3px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0;
-    }
-    .cmd-row span { font-size: .875rem; color: var(--gray-5); }
-    @media (max-width: 560px) {
-      .cmd-row { flex-wrap: wrap; gap: 6px; }
-      .cmd-row code { white-space: normal; word-break: break-all; flex-shrink: 1; }
-    }
-
-    /* ── Security checklist ── */
-    .checklist { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-    .checklist li {
-      display: flex; gap: 14px; align-items: flex-start;
-      background: var(--white); border: 1px solid var(--gray-3);
-      border-radius: 10px; padding: 16px 20px;
-      box-shadow: var(--shadow); font-size: .9rem;
-    }
-    .checklist li .ch-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
-    .checklist li strong { display: block; font-weight: 700; margin-bottom: 3px; }
-    .checklist li span   { color: var(--gray-5); font-size: .875rem; }
-
-    /* ── FAQ ── */
-    .faq-list { display: flex; flex-direction: column; gap: 16px; }
-    .faq-item { border: 1px solid var(--gray-3); border-radius: var(--radius); overflow: hidden; }
-    .faq-q {
-      width: 100%; text-align: left; background: var(--white); border: none; cursor: pointer;
-      padding: 18px 20px; font-size: .95rem; font-weight: 700; color: var(--gray-8);
-      display: flex; justify-content: space-between; align-items: center;
-      font-family: inherit; transition: background .15s;
-    }
-    .faq-q:hover { background: var(--gray-1); }
-    .faq-q[aria-expanded="true"] { background: var(--indigo-lt); color: var(--indigo); }
-    .faq-chevron { font-size: .75rem; transition: transform .2s; }
-    .faq-q[aria-expanded="true"] .faq-chevron { transform: rotate(180deg); }
-    .faq-a { display: none; padding: 0 20px 18px; font-size: .9rem; color: var(--gray-5); line-height: 1.65; }
-    .faq-a.open { display: block; }
-
-    /* ── Related ── */
-    .rel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-    .rel-card {
-      border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 22px;
-      box-shadow: var(--shadow); text-decoration: none; color: inherit; display: block;
-      transition: transform .15s, box-shadow .15s;
-    }
-    .rel-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); text-decoration: none; }
-    .rel-card .r-icon { font-size: 1.6rem; margin-bottom: 10px; }
-    .rel-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
-    .rel-card p  { font-size: .83rem; color: var(--gray-5); }
-
-    /* ── Newsletter / Footer ── */
-    .nl-section {
-      background: linear-gradient(135deg, var(--indigo-lt) 0%, var(--blue-lt) 100%);
-      border-top: 1px solid var(--indigo-md); border-bottom: 1px solid var(--indigo-md);
-      padding: 48px 24px; text-align: center;
-    }
-    .nl-section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
-    .nl-section h2 em { font-style: normal; color: var(--indigo); }
-    .nl-section > p { color: var(--gray-5); margin-bottom: 24px; font-size: .97rem; }
-    .nl-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
-    .nl-form input[type="email"] {
-      flex: 1; min-width: 200px; padding: 12px 16px;
-      border: 1.5px solid var(--gray-3); border-radius: 8px;
-      font-size: .95rem; font-family: inherit;
-      background: var(--white); color: var(--gray-8);
-    }
-    .nl-form input[type="email"]:focus { outline: none; border-color: var(--indigo); }
-    .nl-form button {
-      background: var(--indigo); color: var(--white); border: none; border-radius: 8px;
-      padding: 12px 22px; font-size: .95rem; font-weight: 700; cursor: pointer; font-family: inherit;
-    }
-    .nl-form button:hover { background: #4338ca; }
-    footer {
-      background: var(--gray-8); color: #9ca3af; text-align: center;
-      padding: 36px 24px; font-size: .875rem;
-    }
-    footer a { color: #60a5fa; }
-    footer .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
-    .footer-nl { margin-bottom: 20px; }
-    .footer-nl p { font-size: .85rem; color: #9ca3af; margin-bottom: 10px; }
-    .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-    .footer-nl-form input[type="email"] {
-      padding: 9px 14px; border-radius: 7px; border: 1px solid #374151;
-      background: #374151; color: #f9fafb; font-size: .88rem; font-family: inherit;
-      min-width: 200px; flex: 1; max-width: 280px;
-    }
-    .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
-    .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
-    .footer-nl-form button {
-      background: var(--blue); color: var(--white); border: none; border-radius: 7px;
-      padding: 9px 18px; font-size: .88rem; font-weight: 700;
-      cursor: pointer; font-family: inherit;
-    }
-  </style>
+  ]
+}
+</script>
 </head>
 <body>
 <a class="skip-nav" href="#main-content">Skip to main content</a>

@@ -316,6 +316,64 @@
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "OpenClaw + Gmail & Google Calendar Integration Guide",
+  "description": "Connect OpenClaw to Gmail and Google Calendar. Read, send, and search emails. Create events, check availability, and get reminders — step-by-step setup guide.",
+  "url": "https://learnopenclaw.org/gmail-calendar.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Go to Google Cloud Console Open console.cloud.google.com and sign in with your G",
+      "text": "Go to Google Cloud Console Open console.cloud.google.com and sign in with your Google account. This is Google's developer portal — it's free to use."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Create a new project Click the project dropdown at the top → New Project → name ",
+      "text": "Create a new project Click the project dropdown at the top → New Project → name it something like openclaw-integration → click Create ."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Enable the Gmail and Calendar APIs In the left menu go to APIs & Services → Libr",
+      "text": "Enable the Gmail and Calendar APIs In the left menu go to APIs & Services → Library . Search for and enable both: Gmail API — for email access Google Calendar API — for calendar access Click each one → Enable . Takes about 30 seconds each."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Create OAuth credentials Go to APIs & Services → Credentials → Create Credential",
+      "text": "Create OAuth credentials Go to APIs & Services → Credentials → Create Credentials → OAuth client ID . Application type: Desktop app Name: anything you like (e.g. OpenClaw Desktop ) Click Create Google will show you a Client ID and Client Secret . Copy both — you'll need them in the next step."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Configure the OAuth consent screen Go to APIs & Services → OAuth consent screen ",
+      "text": "Configure the OAuth consent screen Go to APIs & Services → OAuth consent screen . Set: User type: External (even if it's just you) App name: anything (e.g. My OpenClaw ) Support email: your email Add your email as a Test user You don't need to publish the app — keeping it in test mode is fine for personal use."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Add credentials to openclaw.json Open your openclaw.json file and add the Google",
+      "text": "Add credentials to openclaw.json Open your openclaw.json file and add the Google section: openclaw.json Copy { \"integrations\" : { \"google\" : { \"enabled\" : true , \"client_id\" : \"YOUR_CLIENT_ID.apps.googleusercontent.com\" , \"client_secret\" : \"YOUR_CLIENT_SECRET\" , \"scopes\" : [ \"https://www.googleapis.com/auth/gmail.modify\" , \"https://www.googleapis.com/auth/calendar\" ] } } } Replace YOUR_CLIENT_ID a"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "name": "Authorize OpenClaw Restart OpenClaw.",
+      "text": "Authorize OpenClaw Restart OpenClaw. The first time it tries to access Gmail or Calendar, it will open a browser window asking you to sign in with Google and grant permission. Click Allow . OpenClaw saves a token locally so you only need to do this once. The token is stored on your machine — it never leaves your computer."
+    }
+  ]
+}
+</script>
 </head>
 <body>
 

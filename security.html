@@ -403,6 +403,58 @@
       .tip-grid { grid-template-columns: 1fr; }
     }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "OpenClaw Security Guide — Stay Safe with AI Agents",
+  "description": "Keep your OpenClaw agent secure: API key management, permission rules, sandboxing, audit logs, and best practices for safe automation.",
+  "url": "https://learnopenclaw.org/security.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Run OpenClaw in a Virtual Machine The single most effective protection.",
+      "text": "Run OpenClaw in a Virtual Machine The single most effective protection. Install OpenClaw inside a VM (like VirtualBox or UTM on Mac). Even if a malicious skill runs, it's isolated from your real files and system."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Only Install Skills You Trust Treat skills like apps from an unknown developer.",
+      "text": "Only Install Skills You Trust Treat skills like apps from an unknown developer. Before installing any skill from ClawHub, check: Who published it? How many verified installs does it have? What permissions does it request? If anything looks off, skip it."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Protect Your .env File Your API keys and tokens live here.",
+      "text": "Protect Your .env File Your API keys and tokens live here. Make sure it's never committed to Git, never stored in a synced cloud folder, and has restricted file permissions. chmod 600 .env"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Use Scoped API Keys When generating API keys for OpenClaw, give them the minimum",
+      "text": "Use Scoped API Keys When generating API keys for OpenClaw, give them the minimum permissions needed. If possible, set usage limits and expiry dates so a stolen key can't do much damage."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Review Skill Permissions Before Installing Every OpenClaw skill declares what it",
+      "text": "Review Skill Permissions Before Installing Every OpenClaw skill declares what it can access. A recipe skill asking for shell access is a major red flag. Only approve permissions that make sense for what the skill does."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Keep OpenClaw Updated Security patches are released regularly.",
+      "text": "Keep OpenClaw Updated Security patches are released regularly. Stay on the latest version to benefit from signature verification, sandboxing improvements, and other fixes. git pull origin main"
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <a class="skip-nav" href="#main-content">Skip to main content</a>

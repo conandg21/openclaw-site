@@ -357,6 +357,94 @@
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Run OpenClaw Free with a Local LLM — No API Key Needed 2026",
+  "description": "Run OpenClaw free with a local LLM. Compare Ollama, LM Studio, Jan.ai, and Groq. Setup guides, hardware requirements, and model recommendations.",
+  "url": "https://learnopenclaw.org/local-llm.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Install Ollama Download from ollama.com and run the installer.",
+      "text": "Install Ollama Download from ollama.com and run the installer. On Mac, drag to Applications. On Linux, run the one-liner: curl -fsSL https://ollama.com/install.sh | sh"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Pull a model Open your terminal and pull a model.",
+      "text": "Pull a model Open your terminal and pull a model. For most machines, Llama 3.1 8B is the best starting point: ollama pull llama3.1:8b # For low-end hardware (under 8GB RAM), use a smaller model: ollama pull phi3:mini # For Apple Silicon / powerful GPU, try a larger model: ollama pull llama3.1:8b-instruct-q5_k_m"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Verify Ollama is running Ollama starts automatically after install.",
+      "text": "Verify Ollama is running Ollama starts automatically after install. Confirm it's running and your model responds: ollama run llama3.1:8b \"Say hello in one sentence\" You should get a response within a few seconds."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Configure OpenClaw to use Ollama Add this to your openclaw.json (or config.yaml ",
+      "text": "Configure OpenClaw to use Ollama Add this to your openclaw.json (or config.yaml ): { \"llm\" : { \"provider\" : \"ollama\" , \"model\" : \"llama3.1:8b\" , \"baseUrl\" : \"http://localhost:11434\" // No apiKey needed! } }"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Start OpenClaw Run openclaw start from your project folder.",
+      "text": "Start OpenClaw Run openclaw start from your project folder. Your agent is now running 100% locally at no cost."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Download and install LM Studio Go to lmstudio.ai , download for your OS, and ins",
+      "text": "Download and install LM Studio Go to lmstudio.ai , download for your OS, and install it. Launch the app."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "name": "Download a model Click the Search tab (magnifying glass icon).",
+      "text": "Download a model Click the Search tab (magnifying glass icon). Search for llama3.1 or mistral , pick a Q4_K_M quantized version for your RAM size, and click Download."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "name": "Start the local API server Go to the Local Server tab (the <-> icon).",
+      "text": "Start the local API server Go to the Local Server tab (the <-> icon). Select your downloaded model from the dropdown, then click Start Server . It runs on http://localhost:1234 by default."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 9,
+      "name": "Configure OpenClaw Add this to your openclaw.json : { \"llm\" : { \"provider\" : \"op",
+      "text": "Configure OpenClaw Add this to your openclaw.json : { \"llm\" : { \"provider\" : \"openai\" , \"model\" : \"local-model\" , \"apiKey\" : \"lm-studio\" , \"baseUrl\" : \"http://localhost:1234/v1\" } } LM Studio uses the OpenAI API format. The apiKey value doesn't matter — just set it to anything non-empty."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 10,
+      "name": "Download and install Jan.ai Go to jan.ai , download the installer for your OS, a",
+      "text": "Download and install Jan.ai Go to jan.ai , download the installer for your OS, and install it. Launch the Jan app."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 11,
+      "name": "Download a model from the Hub Click Hub in the left sidebar.",
+      "text": "Download a model from the Hub Click Hub in the left sidebar. Browse or search for a model (Llama 3.1 8B or Mistral 7B are good starting points). Click Download next to a Q4 variant."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 12,
+      "name": "Enable the local API server Go to Settings (gear icon) → Advanced → turn on API ",
+      "text": "Enable the local API server Go to Settings (gear icon) → Advanced → turn on API Server . The server starts on http://localhost:1337 ."
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>

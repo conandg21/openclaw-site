@@ -323,6 +323,70 @@
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "OpenClaw Discord Bot Setup — Talk to Your Agent in Discord",
+  "description": "Set up an OpenClaw Discord bot in under 15 minutes. Create the bot, connect it to your server, and talk to your AI agent directly from any Discord channel.",
+  "url": "https://learnopenclaw.org/discord.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Go to the Discord Developer Portal Open discord.com/developers/applications and ",
+      "text": "Go to the Discord Developer Portal Open discord.com/developers/applications and log in with your Discord account. This is Discord's free developer dashboard — no credit card needed."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Create a new application Click New Application in the top right.",
+      "text": "Create a new application Click New Application in the top right. Give it a name — this becomes the bot's display name in your server (you can change it later). Click Create ."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Add a bot to the application In the left sidebar, click Bot .",
+      "text": "Add a bot to the application In the left sidebar, click Bot . Then click Add Bot → Yes, do it! . Your application now has a bot account attached to it. On this page you can also: Upload a profile picture for the bot Toggle Public Bot off if you want to be the only one who can add it to servers"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Enable required Privileged Gateway Intents Still on the Bot page, scroll down to",
+      "text": "Enable required Privileged Gateway Intents Still on the Bot page, scroll down to Privileged Gateway Intents and enable: Message Content Intent — lets the bot read message text (required for OpenClaw to understand what you're saying) Server Members Intent — optional, needed if you want the bot to see member info Click Save Changes . ⚠️ Message Content Intent is required Without this, your bot will "
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Copy your bot token On the Bot page, click Reset Token → confirm → then click Co",
+      "text": "Copy your bot token On the Bot page, click Reset Token → confirm → then click Copy . This is your bot's password — treat it like one. 🚨 Never share your bot token Anyone with your token can control your bot. Never post it on GitHub, in a Discord message, or anywhere public. If it leaks, click Reset Token immediately to invalidate it."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Invite the bot to your server In the left sidebar, go to OAuth2 → URL Generator ",
+      "text": "Invite the bot to your server In the left sidebar, go to OAuth2 → URL Generator . Under Scopes , check bot . Under Bot Permissions , check: Read Messages / View Channels Send Messages Read Message History Use Slash Commands (optional but recommended) Copy the generated URL at the bottom of the page, open it in your browser, select your server, and click Authorize . Your bot will appear in your ser"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "name": "Add the token to openclaw.json Open your openclaw.json file and add the Discord ",
+      "text": "Add the token to openclaw.json Open your openclaw.json file and add the Discord section: openclaw.json Copy { \"channels\" : { \"discord\" : { \"enabled\" : true , \"token\" : \"YOUR_BOT_TOKEN_HERE\" , \"prefix\" : \"!\" , // optional command prefix \"allowed_channels\" : [], // empty = all channels \"allowed_users\" : [], // empty = all users \"respond_to_mentions\" : true , // @bot triggers a response \"respond_to_d"
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "name": "Restart OpenClaw and test it Save openclaw.json and restart OpenClaw.",
+      "text": "Restart OpenClaw and test it Save openclaw.json and restart OpenClaw. Your bot should now show as Online in your Discord server. Send it a message by mentioning it: @YourBot hello, are you there? If it replies, you're done. If not, check the troubleshooting section below."
+    }
+  ]
+}
+</script>
 </head>
 <body>
 

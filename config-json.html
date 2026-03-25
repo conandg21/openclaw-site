@@ -155,6 +155,40 @@
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
   </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "openclaw.json Config File Explained | OpenClaw",
+  "description": "Learn what openclaw.json does, where to put it, and how to configure every field. A beginner-friendly guide with annotated examples.",
+  "url": "https://learnopenclaw.org/config-json.html",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org",
+    "url": "https://learnopenclaw.org"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Your project folder Place openclaw.json in the root of your project — the same f",
+      "text": "Your project folder Place openclaw.json in the root of your project — the same folder where you'd run openclaw start ."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Global fallback (optional) You can also put a config in ~/.openclaw/openclaw.jso",
+      "text": "Global fallback (optional) You can also put a config in ~/.openclaw/openclaw.json to use as a default across all projects."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Project config wins If a project-level file exists, it takes priority over the g",
+      "text": "Project config wins If a project-level file exists, it takes priority over the global one. Great for testing different setups per project."
+    }
+  ]
+}
+</script>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
