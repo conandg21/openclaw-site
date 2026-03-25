@@ -240,6 +240,14 @@
     .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
     .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
     .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+  
+    /* ── Mobile: table scroll wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    .table-scroll table { min-width: 500px; width: 100%; }
+    @media (max-width: 480px) {
+      .section { padding: 48px 16px; }
+      .hero { padding: 48px 16px 40px; }
+    }
   </style>
 </head>
 <body>
@@ -327,6 +335,7 @@
     <p class="section-subtitle">OpenClaw works with any OpenAI-compatible API. Here's how the major options compare on price, quality, and speed. All prices as of early 2026 — check provider sites for current rates.</p>
 
     <div class="table-wrap">
+      <div class="table-scroll">
       <table aria-label="LLM API comparison table for OpenClaw">
         <thead>
           <tr>
@@ -414,6 +423,7 @@
           </tr>
         </tbody>
       </table>
+    </div>
     </div>
 
     <div class="alert alert--blue">
@@ -564,6 +574,7 @@ ollama pull llama3.3
 
     <h3 style="font-size:1.1rem;font-weight:800;color:var(--gray-9);margin:32px 0 12px;">Best free local models for OpenClaw tasks</h3>
     <div class="table-wrap">
+      <div class="table-scroll">
       <table aria-label="Recommended free local models for OpenClaw">
         <thead>
           <tr>
@@ -612,6 +623,7 @@ ollama pull llama3.3
           </tr>
         </tbody>
       </table>
+    </div>
     </div>
   </div>
 </section>
@@ -689,6 +701,7 @@ ollama pull llama3.3
     <p class="section-subtitle">Both options run on your own machine. The only difference is where the AI processing happens.</p>
 
     <div class="table-wrap">
+      <div class="table-scroll">
       <table class="compare-table" aria-label="Local model vs API comparison table">
         <thead>
           <tr>
@@ -750,6 +763,7 @@ ollama pull llama3.3
           </tr>
         </tbody>
       </table>
+    </div>
     </div>
 
     <div class="alert alert--amber">

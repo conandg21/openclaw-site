@@ -239,6 +239,7 @@
       box-shadow: 0 0 0 4px var(--purple-lt);
       position: relative; z-index: 1;
     }
+    .step-body { min-width: 0; overflow: hidden; }
     .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
     .step-body p  { font-size: .95rem; color: var(--gray-5); }
     .step-body code {
@@ -377,6 +378,11 @@
     .sibling-card h3 { font-size: .95rem; font-weight: 700; color: var(--gray-8); }
     .sibling-card p { font-size: .85rem; color: var(--gray-5); }
     .sibling-card:hover h3 { color: var(--purple); }
+    @media (max-width: 480px) {
+      .section { padding: 40px 16px !important; }
+      .hero { padding: 40px 16px 32px !important; }
+      .container { padding: 0 16px !important; }
+    }
   </style>
 </head>
 <body>

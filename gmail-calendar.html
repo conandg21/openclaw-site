@@ -311,6 +311,10 @@
       main { padding: 28px 12px 48px; }
       .use-case-grid { grid-template-columns: 1fr; }
     }
+  
+    /* ── Mobile: table scroll wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    .table-scroll table { min-width: 500px; width: 100%; }
   </style>
 </head>
 <body>
@@ -575,6 +579,7 @@
       <h2 class="section-title"><span class="icon" aria-hidden="true">🔒</span> What permissions does OpenClaw request?</h2>
       <p class="section-lead">Google requires apps to declare exactly what they can access. Here's what each scope means in plain English.</p>
 
+      <div class="table-scroll">
       <table class="perm-table" aria-label="Google permission scopes">
         <thead>
           <tr>
@@ -617,6 +622,7 @@
           </tr>
         </tbody>
       </table>
+    </div>
 
       <div class="callout warning">
         <div class="callout-icon" aria-hidden="true">⚠️</div>

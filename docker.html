@@ -277,6 +277,7 @@
       border: 1px solid var(--gray-3); border-radius: var(--radius);
       padding: 24px; background: var(--gray-1); margin: 16px 0 28px;
       font-size: .88rem; color: var(--gray-7);
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
     }
     .diagram-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .diagram-row:last-child { margin-bottom: 0; }
@@ -314,6 +315,10 @@
       .analogy { flex-direction: column; }
       .why-grid { grid-template-columns: 1fr; }
     }
+  
+    /* ── Mobile: table scroll wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    .table-scroll table { min-width: 500px; width: 100%; }
   </style>
 </head>
 <body>
@@ -833,7 +838,8 @@ openclaw-agent     running (healthy)   0.0.0.0:8080->8080/tcp</span></code></pre
       <p class="section-lead">A quick reference for everything you'll need day to day.</p>
 
       <div class="table-wrap">
-        <table class="cmd-table" aria-label="Essential Docker commands reference">
+        <div class="table-scroll">
+      <table class="cmd-table" aria-label="Essential Docker commands reference">
           <thead>
             <tr>
               <th scope="col">Command</th>
@@ -854,6 +860,7 @@ openclaw-agent     running (healthy)   0.0.0.0:8080->8080/tcp</span></code></pre
             <tr><td>docker image prune</td><td>Delete unused images to free up disk space</td></tr>
           </tbody>
         </table>
+    </div>
       </div>
 
       <!-- Updating OpenClaw -->

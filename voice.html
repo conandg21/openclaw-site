@@ -215,6 +215,7 @@
     .step { display: flex; gap: 20px; align-items: flex-start; position: relative; padding-bottom: 30px; }
     .step:last-child { padding-bottom: 0; }
     .step-num { flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; background: var(--green); color: var(--white); font-size: 1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 4px var(--green-lt); position: relative; z-index: 1; }
+    .step-body { min-width: 0; overflow: hidden; }
     .step-body h4 { font-size: .97rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
     .step-body p  { font-size: .9rem; color: var(--gray-5); }
 
@@ -283,6 +284,11 @@
     .footer-nl-form input[type="email"]::placeholder { color: #9ca3af; }
     .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
     .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    @media (max-width: 480px) {
+      .section { padding: 40px 0; }
+      .hero { padding: 40px 16px 32px; }
+    }
   </style>
 </head>
 <body>

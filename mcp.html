@@ -344,6 +344,10 @@
       padding: 3px 9px; border-radius: 5px; white-space: nowrap; flex-shrink: 0;
     }
     .cmd-row span { font-size: .875rem; color: var(--gray-5); }
+    @media (max-width: 560px) {
+      .cmd-row { flex-wrap: wrap; gap: 6px; }
+      .cmd-row code { white-space: normal; word-break: break-all; flex-shrink: 1; }
+    }
 
     /* ── Security checklist ── */
     .checklist { list-style: none; display: flex; flex-direction: column; gap: 12px; }

@@ -247,7 +247,7 @@
       display: flex; align-items: center; justify-content: center;
     }
     .step-num::before { content: counter(step-counter); }
-    .step-content { flex: 1; padding-top: 4px; }
+    .step-content { flex: 1; padding-top: 4px; min-width: 0; overflow: hidden; }
     .step-content strong { display: block; font-size: .97rem; margin-bottom: 4px; color: var(--gray-8); }
     .step-content p, .step-content li { font-size: .93rem; color: var(--gray-7); }
     .step-content ul { margin-left: 1.2rem; margin-top: 6px; }
@@ -352,6 +352,10 @@
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; margin-bottom: 16px; }
     .footer-links a { color: #9ca3af; }
     .footer-links a:hover { color: var(--white); }
+  
+    /* ── Mobile: table scroll wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    .table-scroll table { min-width: 500px; width: 100%; }
   </style>
 </head>
 <body>
@@ -457,7 +461,8 @@
       <p class="section-lead">What you need before picking a model. The key number is your available RAM (and VRAM if you have a GPU).</p>
 
       <div class="hw-table-wrap">
-        <table aria-label="Hardware requirements by tier">
+        <div class="table-scroll">
+      <table aria-label="Hardware requirements by tier">
           <thead>
             <tr>
               <th scope="col">Your Machine</th>
@@ -519,6 +524,7 @@
             </tr>
           </tbody>
         </table>
+    </div>
       </div>
 
       <div class="callout callout-amber">
@@ -837,7 +843,8 @@
       <p class="section-lead">The best model depends on your hardware and use case. Here are our picks for each situation.</p>
 
       <div class="model-table-wrap">
-        <table aria-label="Model recommendations by use case">
+        <div class="table-scroll">
+      <table aria-label="Model recommendations by use case">
           <thead>
             <tr>
               <th scope="col">Use Case</th>
@@ -897,6 +904,7 @@
             </tr>
           </tbody>
         </table>
+    </div>
       </div>
 
       <!-- Performance tips -->

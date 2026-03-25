@@ -300,6 +300,7 @@
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 0 0 4px var(--teal-lt); position: relative; z-index: 1;
     }
+    .step-body { min-width: 0; overflow: hidden; }
     .step-body h4 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
     .step-body p  { font-size: .9rem; color: var(--gray-5); }
 
@@ -451,6 +452,10 @@
       background: var(--blue); color: var(--white); border: none; border-radius: 7px;
       padding: 9px 18px; font-size: .88rem; font-weight: 700;
       cursor: pointer; font-family: inherit;
+    }
+    @media (max-width: 480px) {
+      .section { padding: 40px 0; }
+      .hero { padding: 40px 16px 32px; }
     }
   </style>
 </head>

@@ -318,6 +318,10 @@
       .use-case-grid { grid-template-columns: 1fr; }
       .step-grid { grid-template-columns: 1fr; }
     }
+  
+    /* ── Mobile: table scroll wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    .table-scroll table { min-width: 500px; width: 100%; }
   </style>
 </head>
 <body>
@@ -572,6 +576,7 @@
       </h2>
       <p class="section-lead">Fine-tune how your bot behaves using these openclaw.json settings.</p>
 
+      <div class="table-scroll">
       <table class="perm-table" aria-label="Discord configuration options">
         <thead>
           <tr>
@@ -632,6 +637,7 @@
           </tr>
         </tbody>
       </table>
+    </div>
 
       <!-- Restrict to one channel -->
       <h2 class="section-title" id="restrict">

@@ -449,6 +449,10 @@
       cursor: pointer; font-family: inherit; transition: background .18s;
     }
     .footer-nl-form button:hover { background: #1d4ed8; }
+  
+    /* ── Mobile: table scroll wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    .table-scroll table { min-width: 500px; width: 100%; }
   </style>
 </head>
 <body>
@@ -571,6 +575,7 @@
     <p class="section-subtitle">Every major dimension compared side by side.</p>
 
     <div class="comp-table-wrap">
+      <div class="table-scroll">
       <table class="comp-table" aria-label="Feature comparison table">
         <thead>
           <tr>
@@ -667,6 +672,7 @@
           </tr>
         </tbody>
       </table>
+    </div>
     </div>
   </div>
 </section>

@@ -259,6 +259,7 @@
       box-shadow: 0 0 0 4px var(--purple-lt);
       position: relative; z-index: 1;
     }
+    .step-body { min-width: 0; overflow: hidden; }
     .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; margin-top: 10px; }
     .step-body p  { font-size: .95rem; color: var(--gray-5); }
     .step-body code {
@@ -409,6 +410,15 @@
       overflow-x: auto;
       color: var(--gray-8);
       margin: 24px 0;
+    }
+  
+    /* ── Mobile: table scroll wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    .table-scroll table { min-width: 500px; width: 100%; }
+    @media (max-width: 480px) {
+      .section { padding: 40px 16px !important; }
+      .hero { padding: 40px 16px 32px !important; }
+      .container { padding: 0 16px !important; }
     }
   </style>
 </head>
@@ -633,7 +643,8 @@ Next session → loads updated MEMORY.md + recent notes
     <h2 class="section-title">How to Interact with Memory</h2>
     <p class="section-subtitle">These commands let you manage your agent's memory:</p>
 
-    <table class="command-table">
+    <div class="table-scroll">
+      <table class="command-table">
       <thead>
         <tr>
           <th scope="col">Command</th>
@@ -663,6 +674,7 @@ Next session → loads updated MEMORY.md + recent notes
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
 </section>
 

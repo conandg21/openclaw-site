@@ -166,6 +166,10 @@
       .hero { padding: 1.75rem 1.25rem; }
       pre { font-size: .8rem; padding: 1rem; }
     }
+  
+    /* ── Mobile: table scroll wrapper ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
+    .table-scroll table { min-width: 500px; width: 100%; }
   </style>
 </head>
 <body>
@@ -249,7 +253,8 @@
       </div>
     </div>
 
-    <table class="compare-table" aria-label="JSON vs YAML comparison">
+    <div class="table-scroll">
+      <table class="compare-table" aria-label="JSON vs YAML comparison">
       <thead>
         <tr><th scope="col">Feature</th><th scope="col">openclaw.json</th><th scope="col">config.yaml</th></tr>
       </thead>
@@ -262,6 +267,7 @@
         <tr><td>Supported by OpenClaw?</td><td>✅ Default format</td><td>✅ Fully supported</td></tr>
       </tbody>
     </table>
+    </div>
 
     <!-- Where does it live -->
     <h2 class="section-title" id="where">Where Does config.yaml Live?</h2>
@@ -446,7 +452,8 @@
       <summary>🤖 llm — Language Model Settings</summary>
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls which AI model powers your agent.</p>
-        <table class="field-table" aria-label="LLM configuration fields">
+        <div class="table-scroll">
+      <table class="field-table" aria-label="LLM configuration fields">
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>provider</code></td><td>string</td><td>—</td><td><span class="badge badge-req">required</span> AI provider: <code>anthropic</code>, <code>openai</code>, <code>ollama</code>, <code>groq</code></td></tr>
@@ -458,6 +465,7 @@
             <tr><td><code>baseUrl</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Override the API endpoint URL</td></tr>
           </tbody>
         </table>
+    </div>
       </div>
     </details>
 
@@ -465,7 +473,8 @@
       <summary>🌐 gateway — Server &amp; Port Settings</summary>
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls how OpenClaw exposes its HTTP gateway.</p>
-        <table class="field-table" aria-label="Gateway configuration fields">
+        <div class="table-scroll">
+      <table class="field-table" aria-label="Gateway configuration fields">
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>port</code></td><td>number</td><td>8080</td><td><span class="badge badge-opt">optional</span> Port to listen on</td></tr>
@@ -474,6 +483,7 @@
             <tr><td><code>cors</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Enable CORS headers for browser clients</td></tr>
           </tbody>
         </table>
+    </div>
       </div>
     </details>
 
@@ -481,7 +491,8 @@
       <summary>🧠 memory — Storage &amp; Persistence</summary>
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls how your agent remembers things between conversations.</p>
-        <table class="field-table" aria-label="Memory configuration fields">
+        <div class="table-scroll">
+      <table class="field-table" aria-label="Memory configuration fields">
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>type</code></td><td>string</td><td>memory</td><td><span class="badge badge-opt">optional</span> Storage backend: <code>memory</code>, <code>sqlite</code>, <code>postgres</code></td></tr>
@@ -491,6 +502,7 @@
             <tr><td><code>ttlSeconds</code></td><td>number</td><td>—</td><td><span class="badge badge-opt">optional</span> Auto-expire memories after N seconds</td></tr>
           </tbody>
         </table>
+    </div>
       </div>
     </details>
 
@@ -498,7 +510,8 @@
       <summary>🔧 tools — Capabilities &amp; Integrations</summary>
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Controls which tools your agent can use.</p>
-        <table class="field-table" aria-label="Tools configuration fields">
+        <div class="table-scroll">
+      <table class="field-table" aria-label="Tools configuration fields">
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>enabled</code></td><td>list</td><td>[]</td><td><span class="badge badge-opt">optional</span> Tool names to activate: <code>web_search</code>, <code>file_read</code>, <code>file_write</code>, <code>code_run</code>, <code>browser</code></td></tr>
@@ -507,6 +520,7 @@
             <tr><td><code>maxConcurrent</code></td><td>number</td><td>3</td><td><span class="badge badge-opt">optional</span> Max parallel tool calls</td></tr>
           </tbody>
         </table>
+    </div>
       </div>
     </details>
 
@@ -514,7 +528,8 @@
       <summary>💓 heartbeat — Keep-Alive Settings</summary>
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Keeps your agent active between requests.</p>
-        <table class="field-table" aria-label="Heartbeat configuration fields">
+        <div class="table-scroll">
+      <table class="field-table" aria-label="Heartbeat configuration fields">
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>enabled</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Turn keep-alive on or off</td></tr>
@@ -522,6 +537,7 @@
             <tr><td><code>onIdle</code></td><td>string</td><td>keep</td><td><span class="badge badge-opt">optional</span> Idle behavior: <code>keep</code>, <code>suspend</code>, <code>shutdown</code></td></tr>
           </tbody>
         </table>
+    </div>
       </div>
     </details>
 
@@ -529,7 +545,8 @@
       <summary>🎙️ voice — Voice Mode Settings</summary>
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Enables spoken interaction. See the <a href="voice.html">Voice Mode guide</a>.</p>
-        <table class="field-table" aria-label="Voice configuration fields">
+        <div class="table-scroll">
+      <table class="field-table" aria-label="Voice configuration fields">
           <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>enabled</code></td><td>boolean</td><td>false</td><td><span class="badge badge-opt">optional</span> Enable voice input/output</td></tr>
@@ -539,6 +556,7 @@
             <tr><td><code>sttProvider</code></td><td>string</td><td>—</td><td><span class="badge badge-opt">optional</span> Speech-to-text: <code>whisper</code>, <code>deepgram</code></td></tr>
           </tbody>
         </table>
+    </div>
       </div>
     </details>
 
@@ -555,7 +573,8 @@
       - <span class="yaml-str">/Users/you/docs</span>
     <span class="yaml-key">env</span>:
       <span class="yaml-key">MY_TOKEN</span>: <span class="yaml-str">$MY_TOKEN</span></code></pre>
-        <table class="field-table" aria-label="MCP server fields">
+        <div class="table-scroll">
+      <table class="field-table" aria-label="MCP server fields">
           <thead><tr><th scope="col">Field</th><th scope="col">Description</th></tr></thead>
           <tbody>
             <tr><td><code>command</code></td><td>Executable to launch the server (e.g. <code>npx</code>, <code>python</code>)</td></tr>
@@ -563,6 +582,7 @@
             <tr><td><code>env</code></td><td>Environment variables to inject into the server process</td></tr>
           </tbody>
         </table>
+    </div>
       </div>
     </details>
 
