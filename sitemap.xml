@@ -109,6 +109,18 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://learnopenclaw.org/blog/shipping-manager-openclaw.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://learnopenclaw.org/blog/self-host-vs-vps-openclaw.html</loc>
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://learnopenclaw.org/blog/maya-barista-openclaw-beginner.html</loc>
     <lastmod>2026-03-19</lastmod>
     <changefreq>monthly</changefreq>
