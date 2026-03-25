@@ -18,6 +18,10 @@
     const s = document.createElement('style');
     s.id = 'search-styles';
     s.textContent = `
+      /* ── Global: prevent any pre/code from causing horizontal page scroll ── */
+      pre { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; box-sizing: border-box; word-wrap: normal; }
+      .step-body, .step-content { min-width: 0; overflow: hidden; }
+
       /* ── Nav layout override: logo | links | search+hamburger ── */
       nav .nav-inner {
         display: flex !important;
