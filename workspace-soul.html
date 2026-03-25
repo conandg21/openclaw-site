@@ -254,23 +254,6 @@
       .nav-links { left: 0; min-width: unset; border-radius: 0; }
     }
 
-    .nav-section {
-      display: flex; flex-direction: column; gap: 10px;
-      border-top: 1px solid var(--gray-2);
-      border-bottom: 1px solid var(--gray-2);
-      padding: 10px 0; margin: 2px 0;
-    }
-    .nav-section-label {
-      font-size: .68rem; font-weight: 800;
-      text-transform: uppercase; letter-spacing: .12em;
-      color: var(--gray-5);
-    }
-    .nav-section a {
-      padding-left: 10px;
-      border-left: 2px solid var(--purple-md);
-      font-size: .88rem;
-    }
-
     .nav-right {
       display: flex; align-items: center; gap: 8px;
       margin-left: auto; flex-shrink: 0; position: relative;
@@ -345,13 +328,15 @@
       padding: 20px 24px;
       display: flex; gap: 14px; align-items: flex-start;
       margin-bottom: 32px;
+      min-width: 0;
     }
     .alert--purple { background: var(--purple-lt); border: 1px solid var(--purple-md); }
     .alert--yellow { background: var(--amber-lt);  border: 1px solid var(--amber-md); }
     .alert--green  { background: var(--green-lt);  border: 1px solid var(--green-md); }
     .alert--red    { background: var(--red-lt);    border: 1px solid var(--red-md); }
     .alert-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
-    .alert p { font-size: .95rem; }
+    .alert p { font-size: .95rem; min-width: 0; overflow-wrap: break-word; word-break: break-word; }
+    .alert code { overflow-wrap: break-word; word-break: break-all; white-space: normal; }
     .alert--purple p { color: #4c1d95; }
     .alert--yellow p { color: #92400e; }
     .alert--green  p { color: #14532d; }
@@ -597,14 +582,6 @@
       <a href="blog.html" role="listitem">Blog</a>
       <a href="learn.html" role="listitem">Learn</a>
       <a href="faq.html" role="listitem">FAQ</a>
-      <div class="nav-section" role="group" aria-label="Workspace files">
-        <span class="nav-section-label">Workspace Files</span>
-        <a href="workspace-soul.html" role="listitem" aria-current="page">SOUL.md</a>
-        <a href="workspace-agents.html" role="listitem">AGENTS.md</a>
-        <a href="workspace-user.html" role="listitem">USER.md</a>
-        <a href="workspace-memory.html" role="listitem">MEMORY.md</a>
-        <a href="workspace-heartbeat.html" role="listitem">HEARTBEAT.md</a>
-      </div>
     </div>
     <div class="nav-right">
       <form class="nav-search-form" role="search" onsubmit="return false;">
