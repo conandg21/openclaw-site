@@ -53,6 +53,16 @@
           "@type": "Question",
           "name": "Does OpenClaw need a static IP?",
           "acceptedAnswer": {"@type": "Answer", "text": "Not always. OpenClaw connects out to messaging APIs (WhatsApp, Telegram, Slack) — it doesn't need inbound connections in most cases. A static IP matters mainly if you're exposing a webhook or running a custom integration that requires inbound traffic."}
+        },
+        {
+          "@type": "Question",
+          "name": "How do I move OpenClaw from my laptop to a VPS?",
+          "acceptedAnswer": {"@type": "Answer", "text": "The cleanest approach is Docker: package your OpenClaw config, SOUL.md, AGENTS.md, and MEMORY.md into a container and deploy it to your VPS. Without Docker, copy your ~/.openclaw directory to the VPS via scp, install OpenClaw fresh, and run it as a systemd service."}
+        },
+        {
+          "@type": "Question",
+          "name": "What is the minimum VPS spec for OpenClaw?",
+          "acceptedAnswer": {"@type": "Answer", "text": "With a cloud API model, 1 vCPU and 2 GB RAM is workable for a single user. For multi-agent setups or multiple users sharing one instance, 2 vCPU and 4 GB RAM gives comfortable headroom. For local LLM inference on a VPS, plan for at least 16 GB RAM."}
         }
       ]
     }
@@ -75,8 +85,8 @@
   a { color: var(--blue); text-decoration: none; }
   a:hover { text-decoration: underline; }
 
-  /* Nav */
-  nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+  /* Nav — scoped to .site-nav only, NOT the TOC nav */
+  .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
   .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
   .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
   .nav-logo:hover { text-decoration: none; }
@@ -187,7 +197,7 @@
 
 <a href="#main-content" class="skip-nav">Skip to main content</a>
 
-<nav role="navigation" aria-label="Main navigation">
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
     <a href="../index.html" class="nav-logo"><span aria-hidden="true">🦞</span> learnopenclaw.org</a>
     <div class="nav-right">
@@ -240,9 +250,9 @@
 
     <p>You have two main options: run it yourself on hardware you own (self-hosting), or rent a small cloud server (VPS). Both work. Neither is universally better. The right answer depends on what you want out of the setup — and this post will help you figure out which one that is.</p>
 
-    <nav class="toc" aria-label="Table of contents">
-      <div class="toc-label">In this article</div>
-      <ol>
+    <div class="toc" role="navigation" aria-label="Table of contents" aria-labelledby="toc-heading">
+      <div class="toc-label" id="toc-heading">In this article</div>
+      <ol role="list">
         <li><a href="#why-it-matters">Why the hosting decision matters for OpenClaw</a></li>
         <li><a href="#self-hosting">Self-hosting: what it means and when it works</a></li>
         <li><a href="#vps">VPS: what it means and when it works</a></li>
@@ -251,7 +261,7 @@
         <li><a href="#verdicts">Who should pick what</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ol>
-    </nav>
+    </div>
 
     <h2 id="why-it-matters">Why the hosting decision matters for OpenClaw</h2>
 
@@ -324,9 +334,9 @@
       <table class="compare-table" aria-label="Self-host vs VPS comparison">
         <thead>
           <tr>
-            <th>Factor</th>
-            <th>Self-Host</th>
-            <th>VPS</th>
+            <th scope="col">Factor</th>
+            <th scope="col">Self-Host</th>
+            <th scope="col">VPS</th>
           </tr>
         </thead>
         <tbody>
@@ -357,20 +367,20 @@
 
     <h2 id="verdicts">Who should pick what</h2>
 
-    <div class="verdict" aria-label="Verdict: use a VPS">
-      <div class="verdict-label">Pick a VPS if…</div>
+    <div class="verdict" role="region" aria-labelledby="verdict-vps">
+      <div class="verdict-label" id="verdict-vps">Pick a VPS if…</div>
       <h3>You want something that just works</h3>
       <p>If reliability matters more than cost savings, you're running cloud API models (Claude, GPT-4), and you want to set it up once and forget about it — a $6/month VPS is the right call. Start with DigitalOcean or Hetzner, run OpenClaw in a Docker container, and you'll have a production-ready setup in an afternoon.</p>
     </div>
 
-    <div class="verdict" aria-label="Verdict: self-host">
-      <div class="verdict-label">Self-host if…</div>
+    <div class="verdict" role="region" aria-labelledby="verdict-selfhost">
+      <div class="verdict-label" id="verdict-selfhost">Self-host if…</div>
       <h3>Privacy or local LLMs are a priority</h3>
       <p>If you want all your data to stay on your network, you want to run local models for free, or you already have suitable hardware sitting idle — self-hosting makes total sense. Invest in a mini PC with 16 GB+ RAM (an Intel N100 system costs £150–200 and runs cool and silent) and you'll have a capable, permanent home for OpenClaw.</p>
     </div>
 
-    <div class="verdict" aria-label="Verdict: just try it first">
-      <div class="verdict-label">Just starting out?</div>
+    <div class="verdict" role="region" aria-labelledby="verdict-tryit">
+      <div class="verdict-label" id="verdict-tryit">Just starting out?</div>
       <h3>Run it on your existing machine first</h3>
       <p>There's no reason to commit to either option before you've used OpenClaw for a few weeks. Run it locally, see what tasks you actually use it for, and let that experience guide your infrastructure decision. Most people only move to a dedicated setup once they've found workflows they actually rely on.</p>
     </div>
@@ -442,7 +452,7 @@
     }
   });
   document.addEventListener('click', e => {
-    if (!e.target.closest('nav')) {
+    if (!e.target.closest('.site-nav')) {
       navLinks.classList.remove('open');
       hamburger.setAttribute('aria-expanded', 'false');
     }
