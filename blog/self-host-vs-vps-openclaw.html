@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Should You Self-Host OpenClaw or Use a VPS? | learnopenclaw.org</title>
+  <meta name="description" content="Self-hosting vs VPS for OpenClaw — a practical breakdown of cost, uptime, privacy, and local LLM support to help you pick the right setup." />
+  <meta name="keywords" content="OpenClaw self-host, OpenClaw VPS, run OpenClaw server, OpenClaw hosting, OpenClaw Raspberry Pi, OpenClaw DigitalOcean, OpenClaw Hetzner, self-hosted AI agent" />
+  <link rel="canonical" href="https://learnopenclaw.org/blog/self-host-vs-vps-openclaw.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Should You Self-Host OpenClaw or Use a VPS?" />
+  <meta property="og:description" content="Self-hosting vs VPS for OpenClaw — cost, uptime, privacy, and local LLM support compared. Find the right setup for your situation." />
+  <meta property="og:url" content="https://learnopenclaw.org/blog/self-host-vs-vps-openclaw.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Self-Host vs VPS for OpenClaw — Which is Right for You?" />
+  <meta name="twitter:description" content="Cost, uptime, privacy, and local LLMs compared. A practical guide to choosing where to run your OpenClaw agent." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Should You Self-Host OpenClaw or Use a VPS?",
+    "description": "A practical breakdown of self-hosting vs VPS for OpenClaw — cost, uptime, privacy, and local LLM support to help you pick the right setup.",
+    "url": "https://learnopenclaw.org/blog/self-host-vs-vps-openclaw.html",
+    "datePublished": "2026-03-25",
+    "dateModified": "2026-03-25",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://learnopenclaw.org/blog.html"},
+        {"@type": "ListItem", "position": 3, "name": "Self-Host vs VPS for OpenClaw", "item": "https://learnopenclaw.org/blog/self-host-vs-vps-openclaw.html"}
+      ]
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I run OpenClaw on a Raspberry Pi?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Yes, a Raspberry Pi 4 or 5 with 4–8 GB of RAM can run OpenClaw with a cloud API model (Claude, GPT-4). Local LLMs are too large for Pi hardware in most cases."}
+        },
+        {
+          "@type": "Question",
+          "name": "What is the cheapest VPS for OpenClaw?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Hetzner's CX22 (2 vCPU, 4 GB RAM) at around €4–5/month is the best value for OpenClaw in Europe. In the US, Vultr and DigitalOcean both offer 2 GB RAM droplets from $6/month. Oracle Cloud also has a generous always-free tier with 4 ARM cores and 24 GB RAM."}
+        },
+        {
+          "@type": "Question",
+          "name": "Does OpenClaw need a static IP?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Not always. OpenClaw connects out to messaging APIs (WhatsApp, Telegram, Slack) — it doesn't need inbound connections in most cases. A static IP matters mainly if you're exposing a webhook or running a custom integration that requires inbound traffic."}
+        }
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+    --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+    --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+    --amber: #d97706; --amber-lt: #fffbeb; --amber-md: #fde68a;
+    --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+    --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+    --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+  html { scroll-behavior: smooth; }
+  .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--blue); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+  .skip-nav:focus { top: 8px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+  .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+  .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo:hover { text-decoration: none; }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+  .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-links { display: none; position: absolute; top: 60px; right: 0; left: auto; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+  .nav-links.open { display: flex; }
+  .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+  .nav-links a:hover { color: var(--blue); text-decoration: none; }
+  @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+
+  /* Nav right */
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+  .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+  .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+  .nav-search-input:focus { outline: none; }
+  .nav-search-input::placeholder { color: var(--gray-5); }
+  @media (max-width: 480px) { .nav-search-form { display: none; } }
+
+  /* Disclaimer */
+  .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid #fde68a; padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+  .disclaimer-bar a { color: #92400e; font-weight: 600; }
+
+  /* Post header */
+  .post-header { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1e40af 100%); padding: 60px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+  .post-header::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+  .breadcrumb { font-size: .82rem; color: rgba(255,255,255,.6); margin-bottom: 20px; position: relative; }
+  .breadcrumb a { color: rgba(255,255,255,.7); }
+  .breadcrumb a:hover { color: #fff; text-decoration: none; }
+  .breadcrumb span { color: rgba(255,255,255,.45); margin: 0 6px; }
+  .post-cat { display: inline-block; background: rgba(255,255,255,.15); color: #bfdbfe; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 4px 14px; border-radius: 100px; margin-bottom: 18px; position: relative; border: 1px solid rgba(255,255,255,.2); }
+  .post-header h1 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 900; line-height: 1.2; max-width: 720px; margin: 0 auto 22px; color: var(--white); position: relative; }
+  .post-meta { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: .88rem; color: rgba(255,255,255,.65); flex-wrap: wrap; position: relative; }
+  .post-meta span::before { content: '·'; margin-right: 6px; }
+  .post-meta span:first-child::before { content: ''; margin: 0; }
+
+  /* Article body */
+  .post-body { max-width: 720px; margin: 0 auto; padding: 52px 24px 80px; }
+
+  /* TOC */
+  .toc { background: var(--blue-lt); border: 1px solid var(--blue-md); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 44px; }
+  .toc-label { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 7px; font-size: .95rem; }
+  .toc a { color: var(--blue); font-weight: 500; }
+
+  /* Typography */
+  .post-body h2 { font-size: 1.45rem; font-weight: 800; margin: 52px 0 16px; padding-top: 8px; border-top: 2px solid var(--blue-md); color: var(--gray-8); }
+  .post-body h3 { font-size: 1.05rem; font-weight: 700; margin: 28px 0 10px; color: var(--gray-8); }
+  .post-body p { margin-bottom: 18px; }
+  .post-body ul, .post-body ol { padding-left: 22px; margin-bottom: 18px; }
+  .post-body li { margin-bottom: 7px; }
+  .post-body strong { font-weight: 700; }
+  .post-body code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+
+  /* Comparison table */
+  .compare-table { width: 100%; border-collapse: collapse; margin: 28px 0 36px; font-size: .9rem; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .compare-table th { background: #1e3a5f; color: var(--white); padding: 12px 16px; text-align: left; font-weight: 700; font-size: .85rem; letter-spacing: .03em; }
+  .compare-table td { padding: 11px 16px; border-bottom: 1px solid var(--gray-3); }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td { background: var(--gray-1); }
+  .compare-table tr:nth-child(odd) td { background: var(--white); }
+  .yes { color: #16a34a; font-weight: 700; }
+  .no  { color: #dc2626; font-weight: 700; }
+  .maybe { color: var(--amber); font-weight: 700; }
+
+  /* Callout variants */
+  .callout { border-left: 4px solid var(--blue); background: var(--blue-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 28px 0; font-size: .95rem; }
+  .callout strong { color: var(--blue); }
+  .callout--green { border-left-color: var(--green); background: var(--green-lt); }
+  .callout--green strong { color: var(--green); }
+  .callout--amber { border-left-color: var(--amber); background: var(--amber-lt); }
+  .callout--amber strong { color: var(--amber); }
+
+  /* Verdict card */
+  .verdict { background: #0f172a; color: var(--white); border-radius: var(--radius); padding: 28px 32px; margin: 36px 0; }
+  .verdict-label { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: #93c5fd; margin-bottom: 10px; }
+  .verdict h3 { font-size: 1.1rem; font-weight: 800; color: var(--white); margin: 0 0 10px; }
+  .verdict p { font-size: .93rem; color: #cbd5e1; margin: 0; line-height: 1.65; }
+
+  /* Related posts */
+  .related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; margin-top: 64px; }
+  .related-inner { max-width: 720px; margin: 0 auto; }
+  .related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+  .related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--blue); margin-bottom: 8px; }
+  .related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+  .related-card a { font-size: .85rem; font-weight: 600; }
+
+  footer { background: var(--gray-8); color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+  footer a { color: #60a5fa; }
+  .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+
+  @media (max-width: 480px) {
+    .post-header { padding: 44px 20px 36px; }
+    .post-body { padding: 36px 20px 60px; }
+    .compare-table { font-size: .82rem; }
+    .compare-table th, .compare-table td { padding: 9px 10px; }
+  }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><span aria-hidden="true">🦞</span> learnopenclaw.org</a>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" onsubmit="return false;">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="search" class="nav-search-input" placeholder="Search"
+          aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+      </form>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="../index.html" role="listitem">Home</a>
+      <a href="../blog.html" role="listitem">Blog</a>
+      <a href="../learn.html" role="listitem">Learn</a>
+      <a href="../faq.html" role="listitem">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note" aria-label="Site disclaimer">
+  <strong>learnopenclaw.org</strong> is an independent community resource. Not the official OpenClaw site. Visit <a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a> for the official project.
+</div>
+
+<main id="main-content">
+
+  <header class="post-header" role="banner">
+    <div class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Home</a><span aria-hidden="true">›</span>
+      <a href="../blog.html">Blog</a><span aria-hidden="true">›</span>
+      Self-Host vs VPS
+    </div>
+    <div class="post-cat">Infrastructure</div>
+    <h1>Should You Self-Host OpenClaw or Use a VPS?</h1>
+    <div class="post-meta" aria-label="Article details">
+      <span>March 25, 2026</span>
+      <span>7 min read</span>
+      <span>By learnopenclaw.org</span>
+    </div>
+  </header>
+
+  <article class="post-body" id="article-content">
+
+    <p>OpenClaw is designed to run as a persistent process — always on, always listening, always ready to act. That raises an immediate question most new users hit within the first week: <strong>where should it actually live?</strong></p>
+
+    <p>You have two main options: run it yourself on hardware you own (self-hosting), or rent a small cloud server (VPS). Both work. Neither is universally better. The right answer depends on what you want out of the setup — and this post will help you figure out which one that is.</p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <div class="toc-label">In this article</div>
+      <ol>
+        <li><a href="#why-it-matters">Why the hosting decision matters for OpenClaw</a></li>
+        <li><a href="#self-hosting">Self-hosting: what it means and when it works</a></li>
+        <li><a href="#vps">VPS: what it means and when it works</a></li>
+        <li><a href="#comparison">Side-by-side comparison</a></li>
+        <li><a href="#local-llms">What about local LLMs?</a></li>
+        <li><a href="#verdicts">Who should pick what</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="why-it-matters">Why the hosting decision matters for OpenClaw</h2>
+
+    <p>OpenClaw isn't a desktop app you open when you need it. It's a server process that handles incoming messages from WhatsApp, Telegram, or Slack; fires scheduled HEARTBEAT.md tasks; and maintains a persistent connection to your AI model. If the process dies, your agent goes silent.</p>
+
+    <p>That's why most users eventually move beyond running OpenClaw in a terminal window on their laptop. The question is whether you move to your own always-on hardware or to a rented cloud server.</p>
+
+    <div class="callout">
+      <strong>Quick note:</strong> If you're just evaluating OpenClaw or running occasional one-off tasks, running it on your existing machine is completely fine. This guide is for people who want it running reliably, 24/7.
+    </div>
+
+    <h2 id="self-hosting">Self-hosting: what it means and when it works</h2>
+
+    <p>Self-hosting means running OpenClaw on hardware you own and control — a spare laptop, a mini PC, a Raspberry Pi, an old desktop, or a home server. The process runs on your network, your electricity, your hardware.</p>
+
+    <h3>The case for self-hosting</h3>
+    <ul>
+      <li><strong>Zero ongoing cost</strong> — after the hardware, you only pay for electricity (a Raspberry Pi 5 costs about £2–3/month to run 24/7).</li>
+      <li><strong>Total privacy</strong> — your data, your files, your conversations never touch a third-party server. Everything stays on your home network.</li>
+      <li><strong>Local LLM support</strong> — if you have a machine with 16 GB+ RAM or a decent GPU, you can run Llama 3, Mistral, or Phi-3 locally at zero per-query cost. This is the <em>only</em> way to get genuinely free, fully private AI.</li>
+      <li><strong>Full hardware control</strong> — add an SSD, upgrade RAM, attach external drives for large memory stores.</li>
+    </ul>
+
+    <h3>The downsides of self-hosting</h3>
+    <ul>
+      <li><strong>Uptime depends on your setup</strong> — your home internet going down, a power cut, or a router reboot will take OpenClaw with it.</li>
+      <li><strong>Dynamic IP issues</strong> — most home internet connections use a changing IP address. If you're exposing webhooks (for some messaging integrations), you'll need a DDNS service to keep things working.</li>
+      <li><strong>CGNAT and ISP blocking</strong> — many ISPs put home users behind carrier-grade NAT, making it hard or impossible to accept inbound connections without a workaround like a reverse tunnel (Cloudflare Tunnel, ngrok).</li>
+      <li><strong>Hardware failures are your problem</strong> — no SLA, no support. If the drive dies at 2am, your agent is down until you fix it.</li>
+      <li><strong>Raspberry Pi limitations</strong> — a Pi 4 with 4 GB RAM can run OpenClaw with a cloud API model, but it will struggle with local LLMs and multi-agent setups.</li>
+    </ul>
+
+    <div class="callout--amber callout">
+      <strong>Watch out for CGNAT:</strong> Before committing to self-hosting with inbound webhooks, check whether your ISP puts you behind CGNAT. If they do, you'll need a Cloudflare Tunnel or similar workaround to receive incoming connections reliably.
+    </div>
+
+    <h2 id="vps">VPS: what it means and when it works</h2>
+
+    <p>A VPS (Virtual Private Server) is a rented Linux server in a data centre. You get root access, a static IP, and a guaranteed slice of CPU, RAM, and storage. The server runs 24/7 regardless of what's happening at your house.</p>
+
+    <h3>Good VPS options for OpenClaw</h3>
+    <p>For OpenClaw with a cloud API model, you need at least 2 GB RAM. For multi-agent setups or heavier workloads, 4 GB is more comfortable.</p>
+    <ul>
+      <li><strong>Hetzner CX22</strong> — 2 vCPU, 4 GB RAM, €4.35/month. Best value in Europe, excellent performance.</li>
+      <li><strong>Vultr Cloud Compute</strong> — 1 vCPU, 2 GB RAM, $6/month. Solid US option with 25+ data centre locations.</li>
+      <li><strong>DigitalOcean Basic Droplet</strong> — 1 vCPU, 2 GB RAM, $6/month. Great documentation and community for beginners.</li>
+      <li><strong>Oracle Cloud Free Tier</strong> — 4 ARM cores, 24 GB RAM, always free. Excellent for OpenClaw — the free tier is genuinely generous, though setup is more involved.</li>
+    </ul>
+
+    <h3>The case for a VPS</h3>
+    <ul>
+      <li><strong>Reliable uptime</strong> — data centres offer 99.9%+ uptime SLAs, UPS power, and redundant connections. Your agent won't go down because your cat unplugged the router.</li>
+      <li><strong>Static IP out of the box</strong> — every VPS comes with a static public IP, making webhooks and messaging integrations straightforward.</li>
+      <li><strong>No CGNAT headaches</strong> — full inbound and outbound connectivity, no tunnels needed.</li>
+      <li><strong>SSH from anywhere</strong> — manage, update, or debug your agent from any device, anywhere.</li>
+      <li><strong>Easy Docker support</strong> — running OpenClaw in a container is the cleanest deployment approach, and VPS providers make this trivially easy.</li>
+    </ul>
+
+    <h3>The downsides of a VPS</h3>
+    <ul>
+      <li><strong>Monthly cost</strong> — small but real. Budget $5–10/month for a usable setup.</li>
+      <li><strong>Your data is on someone else's hardware</strong> — you trust the provider. For most use cases this is fine; for highly sensitive data it's worth thinking about.</li>
+      <li><strong>Local LLMs are limited by RAM</strong> — cheap VPS tiers cap out at 2–4 GB RAM, which isn't enough for most local models. You'd need a $20–40/month tier to run even a small quantised model.</li>
+      <li><strong>Requires basic Linux knowledge</strong> — you need to be comfortable with SSH, systemd, and package management. Not a high bar, but it is a bar.</li>
+    </ul>
+
+    <h2 id="comparison">Side-by-side comparison</h2>
+
+    <div style="overflow-x:auto;">
+      <table class="compare-table" aria-label="Self-host vs VPS comparison">
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th>Self-Host</th>
+            <th>VPS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Monthly cost</strong></td><td>Electricity only (~£2–5)</td><td>$5–10/month</td></tr>
+          <tr><td><strong>Uptime reliability</strong></td><td class="maybe">Depends on your setup</td><td class="yes">99.9%+ SLA</td></tr>
+          <tr><td><strong>Static IP</strong></td><td class="no">Usually no (DDNS needed)</td><td class="yes">Yes, always</td></tr>
+          <tr><td><strong>Inbound webhooks</strong></td><td class="maybe">CGNAT workaround often needed</td><td class="yes">Works out of the box</td></tr>
+          <tr><td><strong>Data privacy</strong></td><td class="yes">Maximum — stays at home</td><td class="maybe">Depends on your trust in the provider</td></tr>
+          <tr><td><strong>Local LLM support</strong></td><td class="yes">Yes (with enough RAM/GPU)</td><td class="no">Only on expensive tiers</td></tr>
+          <tr><td><strong>Setup complexity</strong></td><td class="maybe">Medium (hardware + OS)</td><td class="maybe">Medium (Linux + SSH)</td></tr>
+          <tr><td><strong>Maintenance</strong></td><td>You own all the problems</td><td>Provider handles hardware</td></tr>
+          <tr><td><strong>Scalability</strong></td><td class="no">Constrained by hardware</td><td class="yes">Resize with one click</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="local-llms">What about local LLMs?</h2>
+
+    <p>This is the biggest technical fork in the road. If running a local model (Llama 3, Mistral, Phi-3) matters to you — either for cost, privacy, or offline use — your hosting choice is essentially made for you: <strong>you need to self-host</strong>.</p>
+
+    <p>A useful local model needs at minimum 8 GB of RAM (for a small quantised model like Phi-3-mini), and realistically 16 GB for anything capable enough to handle complex tasks reliably. VPS plans at that memory tier cost $20–40/month, at which point you've lost the cost advantage entirely.</p>
+
+    <p>The exception is Oracle Cloud's always-free tier: 4 ARM cores and 24 GB RAM, completely free. It can run quantised models, though ARM inference is slower than x86. It's worth trying if you want a free cloud setup with local model support.</p>
+
+    <div class="callout--green callout">
+      <strong>Hybrid approach:</strong> Some users run a cheap VPS ($5/month) for always-on availability and messaging integrations, and point OpenClaw's model config at a local Ollama instance running on their home machine for actual inference. You get the uptime of a VPS with the privacy and cost of a local model — at the cost of some added complexity.
+    </div>
+
+    <h2 id="verdicts">Who should pick what</h2>
+
+    <div class="verdict" aria-label="Verdict: use a VPS">
+      <div class="verdict-label">Pick a VPS if…</div>
+      <h3>You want something that just works</h3>
+      <p>If reliability matters more than cost savings, you're running cloud API models (Claude, GPT-4), and you want to set it up once and forget about it — a $6/month VPS is the right call. Start with DigitalOcean or Hetzner, run OpenClaw in a Docker container, and you'll have a production-ready setup in an afternoon.</p>
+    </div>
+
+    <div class="verdict" aria-label="Verdict: self-host">
+      <div class="verdict-label">Self-host if…</div>
+      <h3>Privacy or local LLMs are a priority</h3>
+      <p>If you want all your data to stay on your network, you want to run local models for free, or you already have suitable hardware sitting idle — self-hosting makes total sense. Invest in a mini PC with 16 GB+ RAM (an Intel N100 system costs £150–200 and runs cool and silent) and you'll have a capable, permanent home for OpenClaw.</p>
+    </div>
+
+    <div class="verdict" aria-label="Verdict: just try it first">
+      <div class="verdict-label">Just starting out?</div>
+      <h3>Run it on your existing machine first</h3>
+      <p>There's no reason to commit to either option before you've used OpenClaw for a few weeks. Run it locally, see what tasks you actually use it for, and let that experience guide your infrastructure decision. Most people only move to a dedicated setup once they've found workflows they actually rely on.</p>
+    </div>
+
+    <h2 id="faq">Frequently asked questions</h2>
+
+    <h3>Can I run OpenClaw on a Raspberry Pi?</h3>
+    <p>Yes — a Raspberry Pi 4 or 5 with 4–8 GB of RAM handles OpenClaw comfortably when using a cloud API model. It's not powerful enough for meaningful local LLM inference, but for scheduling tasks, managing messages, and running automations via Claude or GPT-4, it works well and draws very little power.</p>
+
+    <h3>Does OpenClaw need a static IP?</h3>
+    <p>Not always. OpenClaw connects <em>out</em> to messaging platforms (Telegram's API, WhatsApp Business API, Slack webhooks) — it doesn't need inbound connections for basic use. A static IP only becomes necessary if you're running a custom webhook endpoint or exposing the OpenClaw API directly to the internet.</p>
+
+    <h3>How do I move OpenClaw from my laptop to a VPS?</h3>
+    <p>The cleanest way is to use the Docker setup guide — package your OpenClaw config, SOUL.md, AGENTS.md, and MEMORY.md into a container and deploy it to your VPS. If you're not using Docker, the simplest migration is to copy your <code>~/.openclaw</code> directory to the VPS via <code>scp</code>, install OpenClaw fresh, and run it as a systemd service.</p>
+
+    <h3>What's the minimum VPS spec for OpenClaw?</h3>
+    <p>With a cloud API model: 1 vCPU and 2 GB RAM is workable for a single user. For multi-agent setups or multiple users sharing one instance, 2 vCPU and 4 GB RAM gives you comfortable headroom. For local LLM inference on a VPS, don't go below 16 GB RAM.</p>
+
+  </article>
+
+  <section class="related" aria-label="Related articles">
+    <div class="related-inner">
+      <h2>Keep reading</h2>
+      <div class="related-grid">
+        <div class="related-card">
+          <div class="rc-cat">Tutorial</div>
+          <h3>Run OpenClaw in Docker — Sandboxing Guide</h3>
+          <a href="../docker.html">Read →</a>
+        </div>
+        <div class="related-card">
+          <div class="rc-cat">Tutorial</div>
+          <h3>Run OpenClaw Free with a Local LLM</h3>
+          <a href="../local-llm.html">Read →</a>
+        </div>
+        <div class="related-card">
+          <div class="rc-cat">Tutorial</div>
+          <h3>Getting Started with OpenClaw: Complete Setup Guide</h3>
+          <a href="getting-started-openclaw-2026.html">Read →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../learn.html">All Guides</a>
+    <a href="../privacy-policy.html">Privacy Policy</a>
+  </div>
+  <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+</footer>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+<script src="../search.js"></script>
+</body>
+</html>
