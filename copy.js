@@ -22,13 +22,38 @@
     ].filter(Boolean).join(';');
   }
 
-  function attachCopyBtn(pre) {
+  function attachCopyBtn(el) {
     /* Skip if already has a button */
-    if (pre.querySelector('.copy-btn')) return;
+    if (el.querySelector('.copy-btn') || (el.parentNode && el.parentNode.querySelector('.copy-btn') === el.previousSibling)) return;
 
-    /* Make sure <pre> is position:relative so the button can sit inside it */
-    var pos = window.getComputedStyle(pre).position;
-    if (pos === 'static') pre.style.position = 'relative';
+    /* For elements with overflow (overflow-x: auto/scroll), the absolutely-positioned
+       button gets pushed into the scroll area and becomes invisible at the normal
+       viewport width. Fix: wrap the element in a position:relative container that
+       does NOT have overflow, then append the button to that wrapper instead. */
+    var overflowX = window.getComputedStyle(el).overflowX;
+    var hasOverflow = overflowX === 'auto' || overflowX === 'scroll';
+
+    var container;
+    if (hasOverflow) {
+      /* Check if already wrapped (idempotent re-runs) */
+      if (el.parentNode && el.parentNode.classList && el.parentNode.classList.contains('copy-wrap')) {
+        container = el.parentNode;
+      } else {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'copy-wrap';
+        wrapper.style.cssText = 'position:relative;display:block;';
+        el.parentNode.insertBefore(wrapper, el);
+        wrapper.appendChild(el);
+        container = wrapper;
+      }
+    } else {
+      var pos = window.getComputedStyle(el).position;
+      if (pos === 'static') el.style.position = 'relative';
+      container = el;
+    }
+
+    /* Skip if wrapper already has a button */
+    if (container.querySelector('.copy-btn')) return;
 
     var btn = document.createElement('button');
     btn.className = 'copy-btn';
@@ -51,11 +76,11 @@
       }
     });
 
-    /* Click — copy text */
+    /* Click — copy text from the code element, not the wrapper */
     btn.addEventListener('click', function () {
-      var text = pre.innerText || pre.textContent || '';
-      /* Strip trailing newlines from the button label itself */
-      text = text.replace(/\s*Copy\s*$/, '').trimEnd();
+      var text = el.innerText || el.textContent || '';
+      /* Strip the button label text that gets picked up by innerText */
+      text = text.replace(/\s*(Copy|Copied!)\s*$/, '').trimEnd();
 
       var doSuccess = function () {
         btn.dataset.copied = '1';
@@ -92,7 +117,7 @@
       }
     });
 
-    pre.appendChild(btn);
+    container.appendChild(btn);
   }
 
   function init() {
