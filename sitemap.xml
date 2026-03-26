@@ -253,6 +253,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://learnopenclaw.org/openclaw-for-developers.html</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://learnopenclaw.org/dev-github.html</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://learnopenclaw.org/dev-monitoring.html</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://learnopenclaw.org/dev-cicd.html</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://learnopenclaw.org/dev-dependencies.html</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://learnopenclaw.org/workspace-soul.html</loc>
     <lastmod>2026-03-24</lastmod>
     <changefreq>monthly</changefreq>
