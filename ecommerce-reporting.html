@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Sales Reporting &amp; Forecasting — Automated Revenue Reports, Best Sellers &amp; Trend Detection | learnopenclaw.org</title>
+  <meta name="description" content="Use OpenClaw to automate daily revenue briefs, weekly comparative reports, best and worst performers, revenue vs target tracking, slow mover identification, and seasonal trend detection — step by step for Shopify and WooCommerce." />
+  <meta name="keywords" content="OpenClaw sales reporting, Shopify revenue dashboard automation, WooCommerce sales analytics, revenue forecasting, seasonal trend detection, OpenClaw HEARTBEAT reporting" />
+  <link rel="canonical" href="https://learnopenclaw.org/ecommerce-reporting.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Sales Reporting &amp; Forecasting — Automated Revenue Reports &amp; Trend Detection" />
+  <meta property="og:description" content="Automate daily revenue briefs, weekly reports, best sellers, and seasonal forecasting for Shopify and WooCommerce with OpenClaw." />
+  <meta property="og:url" content="https://learnopenclaw.org/ecommerce-reporting.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Sales Reporting — Automated Revenue Reports &amp; Best Sellers" />
+  <meta name="twitter:description" content="Track revenue, forecast trends, and identify best sellers automatically with OpenClaw." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OpenClaw Sales Reporting and Forecasting",
+    "description": "Use OpenClaw to automate daily revenue briefs, weekly comparative reports, identify best and worst performers, track revenue vs targets, spot slow movers, and detect seasonal trends for Shopify and WooCommerce stores.",
+    "url": "https://learnopenclaw.org/ecommerce-reporting.html",
+    "datePublished": "2026-03-25",
+    "dateModified": "2026-03-25",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "OpenClaw for E-commerce", "item": "https://learnopenclaw.org/openclaw-for-ecommerce.html"},
+        {"@type": "ListItem", "position": 4, "name": "Sales Reporting", "item": "https://learnopenclaw.org/ecommerce-reporting.html"}
+      ]
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can OpenClaw connect to Shopify Analytics or Google Analytics?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Shopify order data via Admin API covers the core sales metrics. For full analytics including sessions and conversion rates, use the Google Analytics Data API (GA4) — OpenClaw can connect to this with a service account."}
+        },
+        {
+          "@type": "Question",
+          "name": "Can OpenClaw send the daily report to Slack or email?",
+          "acceptedAnswer": {"@type": "Answer", "text": "OpenClaw can write the report to a file or trigger a webhook. Sending to Slack requires configuring a Slack incoming webhook URL in your agent config. Email sending requires an SMTP tool or an email API like Resend or SendGrid."}
+        },
+        {
+          "@type": "Question",
+          "name": "How do I set revenue targets in OpenClaw?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Create a targets.json file with monthly_target and the agent reads it. You can also pass targets as environment variables."}
+        },
+        {
+          "@type": "Question",
+          "name": "Does OpenClaw calculate profit or just revenue?",
+          "acceptedAnswer": {"@type": "Answer", "text": "By default, revenue (from order totals). Profit calculation requires your cost-of-goods data, which Shopify stores at the variant level if you enter it. Add read_products scope to your token and the reporting agent can pull cost prices to calculate gross margin."}
+        }
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+    --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe; --blue-dk: #1d4ed8;
+    --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+    --amber: #d97706; --amber-lt: #fffbeb; --amber-md: #fde68a;
+    --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+    --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe;
+    --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+    --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+    --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+  html { scroll-behavior: smooth; }
+  .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--green); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+  .skip-nav:focus { top: 8px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+  .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+  .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo:hover { text-decoration: none; }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+  .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+  .nav-links.open { display: flex; }
+  .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+  .nav-links a:hover { color: var(--green); text-decoration: none; }
+  @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+  .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+  .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+  .nav-search-input:focus { outline: none; }
+  .nav-search-input::placeholder { color: var(--gray-5); }
+  @media (max-width: 480px) { .nav-search-form { display: none; } }
+  .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid var(--amber-md); padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+  .disclaimer-bar a { color: #92400e; font-weight: 600; }
+  .post-header { background: linear-gradient(135deg, #064e3b 0%, #065f46 55%, #047857 100%); padding: 60px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+  .post-header::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+  .breadcrumb { font-size: .82rem; color: rgba(255,255,255,.6); margin-bottom: 20px; position: relative; }
+  .breadcrumb a { color: rgba(255,255,255,.7); }
+  .breadcrumb a:hover { color: #fff; text-decoration: none; }
+  .breadcrumb span { color: rgba(255,255,255,.45); margin: 0 6px; }
+  .series-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 100px; padding: 5px 14px; margin-bottom: 18px; position: relative; }
+  .series-badge span { color: #a7f3d0; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .series-badge strong { color: #fff; font-size: .75rem; }
+  .post-header h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.2; max-width: 760px; margin: 0 auto 22px; color: var(--white); position: relative; }
+  .post-meta { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: .88rem; color: rgba(255,255,255,.65); flex-wrap: wrap; position: relative; }
+  .post-meta span::before { content: '·'; margin-right: 6px; }
+  .post-meta span:first-child::before { content: ''; margin: 0; }
+  .series-nav { background: #f1f5f9; border-bottom: 1px solid var(--gray-3); padding: 0 24px; overflow-x: auto; }
+  .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 0; }
+  .series-nav a { display: flex; align-items: center; gap: 7px; padding: 12px 16px; font-size: .83rem; font-weight: 600; color: var(--gray-5); border-bottom: 3px solid transparent; white-space: nowrap; text-decoration: none; transition: color .15s, border-color .15s; }
+  .series-nav a:hover { color: var(--green); text-decoration: none; }
+  .series-nav a[aria-current="page"] { color: var(--green); border-bottom-color: var(--green); }
+  .series-nav a .sn-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--green-lt); border: 1px solid var(--green-md); font-size: .72rem; font-weight: 800; color: var(--green); }
+  .series-nav a[aria-current="page"] .sn-num { background: var(--green); color: #fff; border-color: #15803d; }
+  .post-body { max-width: 780px; margin: 0 auto; padding: 52px 24px 80px; }
+  .post-body h2 { font-size: 1.45rem; font-weight: 800; margin: 52px 0 16px; padding-top: 8px; border-top: 2px solid var(--green-md); color: var(--gray-8); }
+  .post-body h3 { font-size: 1.05rem; font-weight: 700; margin: 28px 0 10px; color: var(--gray-8); }
+  .post-body p { margin-bottom: 18px; }
+  .post-body ul, .post-body ol { padding-left: 22px; margin-bottom: 18px; }
+  .post-body li { margin-bottom: 7px; }
+  .post-body strong { font-weight: 700; }
+  .post-body code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+  pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 22px 24px; overflow-x: auto; font-size: .88rem; line-height: 1.65; margin: 24px 0 32px; position: relative; }
+  .post-body pre code { background: none !important; color: #e2e8f0 !important; padding: 0; border-radius: 0; font-size: inherit; }
+  .toc { background: var(--green-lt); border: 1px solid var(--green-md); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 44px; }
+  .toc-label { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 7px; font-size: .95rem; }
+  .toc a { color: var(--green); font-weight: 500; }
+  .callout { border-left: 4px solid var(--green); background: var(--green-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 28px 0; font-size: .95rem; }
+  .callout strong { color: var(--green); }
+  .callout--amber { border-left-color: var(--amber); background: var(--amber-lt); }
+  .callout--amber strong { color: var(--amber); }
+  .callout--blue { border-left-color: var(--blue); background: var(--blue-lt); }
+  .callout--blue strong { color: var(--blue); }
+  .callout--red { border-left-color: var(--red); background: var(--red-lt); }
+  .callout--red strong { color: var(--red); }
+  .use-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin: 24px 0 36px; }
+  .use-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--green); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .use-card.amber { border-top-color: var(--amber); }
+  .use-card.red { border-top-color: var(--red); }
+  .use-card.blue { border-top-color: var(--blue); }
+  .use-card .uc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .use-card h3 { font-size: .93rem; font-weight: 800; margin-bottom: 5px; }
+  .use-card p { font-size: .84rem; color: var(--gray-5); margin: 0; line-height: 1.5; }
+  .step-list { list-style: none; padding: 0; margin: 20px 0 32px; counter-reset: steps; }
+  .step-list li { counter-increment: steps; display: flex; gap: 16px; margin-bottom: 22px; align-items: flex-start; }
+  .step-list li::before { content: counter(steps); display: flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; background: var(--green); color: var(--white); border-radius: 50%; font-weight: 800; font-size: .85rem; flex-shrink: 0; margin-top: 2px; }
+  .step-list li div strong { display: block; font-weight: 700; margin-bottom: 4px; }
+  .step-list li div span { font-size: .9rem; color: var(--gray-5); }
+  .report-preview { background: #0f172a; border-radius: var(--radius); padding: 24px 28px; margin: 28px 0; font-family: "SF Mono", "Fira Code", monospace; font-size: .84rem; line-height: 1.7; color: #e2e8f0; }
+  .report-preview .rp-head { color: #6ee7b7; font-weight: 700; margin-bottom: 12px; }
+  .report-preview .rp-good { color: #86efac; }
+  .report-preview .rp-warn { color: #fde68a; }
+  .report-preview .rp-bad  { color: #fca5a5; }
+  .report-preview .rp-info { color: #c4b5fd; }
+  .related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; }
+  .related-inner { max-width: 780px; margin: 0 auto; }
+  .related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+  .related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--green); margin-bottom: 8px; }
+  .related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+  .related-card a { font-size: .85rem; font-weight: 600; color: var(--green); }
+  footer { background: #1f2937; color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+  footer a { color: #60a5fa; }
+  .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+  @media (max-width: 480px) {
+    .post-header { padding: 44px 20px 36px; }
+    .post-body { padding: 36px 20px 60px; }
+    pre { padding: 16px; font-size: .82rem; }
+    .use-grid { grid-template-columns: 1fr; }
+  }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo" aria-label="learnopenclaw.org home">🦞 <span>learnopenclaw.org</span></a>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" action="search.html" method="get" aria-label="Site search">
+        <svg class="nav-search-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="M15 15l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input class="nav-search-input" type="search" name="q" placeholder="Search guides…" aria-label="Search" />
+      </form>
+      <button class="hamburger" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  Independent community resource — not affiliated with the official OpenClaw project. <a href="about.html">Learn more</a>
+</div>
+
+<main id="main-content">
+
+  <header class="post-header">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a><span aria-hidden="true">›</span>
+      <a href="learn.html">Learn</a><span aria-hidden="true">›</span>
+      <a href="openclaw-for-ecommerce.html">OpenClaw for E-commerce</a><span aria-hidden="true">›</span>
+      <span aria-current="page">Sales Reporting</span>
+    </nav>
+    <div class="series-badge" aria-label="Part 5 of the OpenClaw for E-commerce series">
+      <span>Part 5 of 5</span><strong>OpenClaw for E-commerce</strong>
+    </div>
+    <h1>Sales Reporting &amp; Forecasting with OpenClaw</h1>
+    <div class="post-meta">
+      <span>March 25, 2026</span><span>11 min read</span><span>Step-by-step guide</span>
+    </div>
+  </header>
+
+  <nav class="series-nav" aria-label="E-commerce series navigation">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-ecommerce.html"><span class="sn-num">0</span> Overview</a>
+      <a href="ecommerce-inventory.html"><span class="sn-num">1</span> Inventory</a>
+      <a href="ecommerce-orders.html"><span class="sn-num">2</span> Orders</a>
+      <a href="ecommerce-pricing.html"><span class="sn-num">3</span> Pricing</a>
+      <a href="ecommerce-reviews.html"><span class="sn-num">4</span> Reviews</a>
+      <a href="ecommerce-reporting.html" aria-current="page"><span class="sn-num">5</span> Reporting</a>
+    </div>
+  </nav>
+
+  <article class="post-body">
+
+    <div class="toc" role="navigation" aria-labelledby="toc-heading">
+      <div class="toc-label" id="toc-heading">In this article</div>
+      <ol role="list">
+        <li><a href="#use-cases">What you can report on</a></li>
+        <li><a href="#daily-brief">Daily revenue summary agent</a></li>
+        <li><a href="#weekly-report">Weekly comparative report</a></li>
+        <li><a href="#best-worst">Best and worst performers</a></li>
+        <li><a href="#targets">Revenue vs target tracking</a></li>
+        <li><a href="#slow-movers">Slow mover identification</a></li>
+        <li><a href="#seasonal">Seasonal trend detection</a></li>
+        <li><a href="#heartbeat">HEARTBEAT.md templates</a></li>
+        <li><a href="#sample-report">What the daily report looks like</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </div>
+
+    <h2 id="use-cases">What you can report on</h2>
+
+    <p>Revenue data is only useful if it reaches you in a digestible form, at the right time, with context and comparisons. OpenClaw automates the assembly of daily, weekly, and monthly reports so you can spot trends, identify winners and losers, and track progress against targets — without logging into your e-commerce dashboard.</p>
+
+    <div class="use-grid" role="list" aria-label="Sales reporting use cases">
+      <div class="use-card" role="listitem">
+        <div class="uc-icon" aria-hidden="true">💰</div>
+        <h3>Daily revenue brief</h3>
+        <p>Yesterday's orders, revenue, AOV, units sold — delivered every morning with comparisons to last week and last year.</p>
+      </div>
+      <div class="use-card amber" role="listitem">
+        <div class="uc-icon" aria-hidden="true">📊</div>
+        <h3>Weekly comparative report</h3>
+        <p>This week vs last week vs same week last year, with percentage deltas and trend indicators.</p>
+      </div>
+      <div class="use-card blue" role="listitem">
+        <div class="uc-icon" aria-hidden="true">🏆</div>
+        <h3>Best &amp; worst performers</h3>
+        <p>Top and bottom products by revenue and units sold, ranked and segmented by category if available.</p>
+      </div>
+      <div class="use-card red" role="listitem">
+        <div class="uc-icon" aria-hidden="true">🎯</div>
+        <h3>Revenue vs target tracking</h3>
+        <p>Track cumulative revenue against your monthly or weekly target, calculate pacing, and alert if you're falling behind.</p>
+      </div>
+      <div class="use-card" role="listitem">
+        <div class="uc-icon" aria-hidden="true">📉</div>
+        <h3>Slow mover alerts</h3>
+        <p>Products whose sales velocity is declining week over week — different from dead stock, these are selling but losing momentum.</p>
+      </div>
+      <div class="use-card amber" role="listitem">
+        <div class="uc-icon" aria-hidden="true">🌊</div>
+        <h3>Seasonal trend detection</h3>
+        <p>Flag when you're ahead of or behind last year's seasonal curve, with context on why.</p>
+      </div>
+    </div>
+
+    <h2 id="daily-brief">Daily revenue summary agent</h2>
+
+    <p>The simplest and most impactful report: yesterday's summary with key metrics and comparisons. Run this every morning and you'll spot anomalies before they cascade.</p>
+
+    <pre><code># AGENTS.md — daily-reporter agent
+
+agents:
+  daily-reporter:
+    description: "Summarize yesterday's sales with key metrics and YoY/WoW comparisons"
+    tools:
+      - shopify-admin-api   # or woocommerce-api
+    config:
+      platform: shopify     # or: woocommerce
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      date_range: yesterday
+      metrics:
+        - order_count
+        - gross_revenue
+        - net_revenue        # after discounts
+        - avg_order_value
+        - units_sold
+        - new_customers_count
+        - returning_customers_count
+      comparisons:
+        - same_day_last_week
+        - same_day_last_year
+      top_products_n: 3
+      top_by: [revenue, units_sold]
+    output:
+      format: markdown
+      include_summary: true
+      include_top_products: true
+      sort_by: revenue</code></pre>
+
+    <p>For <strong>WooCommerce</strong>, use the <code>/wp-json/wc/v3/reports/sales</code> endpoint, which aggregates sales data by date. You can filter by date range and break down by product or category.</p>
+
+    <h2 id="weekly-report">Weekly comparative report</h2>
+
+    <p>A week-over-week comparison contextualises today's performance. Is this week strong because of a campaign, or weak because of seasonality? The weekly report answers that.</p>
+
+    <pre><code># AGENTS.md — weekly-reporter agent
+
+agents:
+  weekly-reporter:
+    description: "Comparative analysis: this week vs last week vs same week last year"
+    tools:
+      - shopify-admin-api
+    config:
+      platform: shopify
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      date_range: last_7_days
+      comparison_periods: [previous_7_days, same_7_days_last_year]
+      metrics:
+        - revenue
+        - orders
+        - avg_order_value
+        - units_sold
+        - new_customers
+        - returning_customers
+      top_products_n: 10
+    output:
+      format: markdown_table
+      columns: [metric, this_week, last_week, delta_pct, last_year, yoy_delta_pct]
+      include_trend_arrows: true  # ▲ / ▼ indicators
+      sort_by: revenue</code></pre>
+
+    <div class="callout callout--blue">
+      <strong>💡 Conversion data:</strong> Shopify Analytics requires a different endpoint than Admin API. For conversion rates, session counts, and bounce rates, you'll need to integrate with Google Analytics Data API (GA4) or use Shopify's GraphQL API with the analytics scope enabled.
+    </div>
+
+    <h2 id="best-worst">Best and worst performers</h2>
+
+    <p>Which products are carrying the business? Which are dragging? The best/worst finder ranks products by revenue, units sold, and profit margin so you know where to double down and where to cut.</p>
+
+    <pre><code># AGENTS.md — best-worst-finder agent
+
+agents:
+  best-worst-finder:
+    description: "Identify best and worst performing products by revenue and units"
+    tools:
+      - shopify-admin-api
+    config:
+      platform: shopify
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      date_range: last_30_days
+      metrics: [revenue, units_sold, margin]
+      top_n: 10              # top 10 best and worst
+      segment_by: category   # optional: break down by product tag or collection
+    output:
+      format: markdown_table
+      columns: [rank, sku, product_title, revenue, units_sold, margin_pct]
+      include_best: true
+      include_worst: true
+      sort_by: revenue</code></pre>
+
+    <h2 id="targets">Revenue vs target tracking</h2>
+
+    <p>Tracking progress against a target keeps the team aligned. The pacing alert calculates whether you're on track for your monthly goal, and surfaces a warning if you fall behind early in the month.</p>
+
+    <pre><code># AGENTS.md — revenue-vs-target agent
+
+agents:
+  revenue-vs-target:
+    description: "Calculate cumulative revenue pacing against monthly target"
+    tools:
+      - shopify-admin-api
+      - file-reader           # reads targets.json
+    config:
+      platform: shopify
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      targets_file: "targets.json"  # format: {"monthly_target": 90000, "weekly_target": 20000}
+      date_range: month_to_date
+    output:
+      format: markdown
+      include_fields:
+        - revenue_to_date
+        - target_amount
+        - pacing_percentage
+        - projected_month_end
+        - pace_category        # "on_track" / "ahead" / "behind"
+      alert_threshold: 85     # alert if pacing drops below 85% by day 15</code></pre>
+
+    <p>The pacing calculation is simple but powerful: <code>pacing = (revenue_to_date / (days_elapsed / days_in_month)) / target</code>. If you're on day 12 of 31 and have done 30% of your target revenue, you're at 100% pacing. If you've only done 25%, you're at 81% pacing and should be alerted.</p>
+
+    <h2 id="slow-movers">Slow mover identification</h2>
+
+    <p>Different from dead stock (which doesn't sell at all), slow movers are products that ARE selling but whose sales velocity is declining. Catch these early and you can adjust marketing or pricing before the product becomes dead stock.</p>
+
+    <pre><code># AGENTS.md — slow-mover-finder agent
+
+agents:
+  slow-mover-finder:
+    description: "Identify products whose sales velocity is declining week over week"
+    tools:
+      - shopify-admin-api
+    config:
+      platform: shopify
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      current_window_days: 14       # sales in last 14 days
+      prior_window_days: 14         # 15-28 days ago
+      velocity_decline_threshold: -25  # flag if velocity drops >25%
+      min_absolute_sales: 5         # only flag products with >5 units in current window
+    output:
+      format: markdown_table
+      columns: [sku, product_title, current_velocity, prior_velocity, velocity_change_pct, revenue_trend]
+      sort_by: revenue_trend        # highest revenue first (high-value declines matter more)
+      include_summary: true</code></pre>
+
+    <div class="callout">
+      <strong>📍 Ranking by impact:</strong> A 30% decline on a £2,000/week product is worth more attention than a 40% decline on a £100/week product. Sort slow movers by absolute revenue lost, not percentage decline.
+    </div>
+
+    <h2 id="seasonal">Seasonal trend detection</h2>
+
+    <p>E-commerce is seasonal. The tool that matters most is knowing whether your current performance matches historical patterns. A week that looks weak might actually be strong if it's typically your slowest week of the year.</p>
+
+    <pre><code># AGENTS.md — seasonal-trend-finder agent
+
+agents:
+  seasonal-trend-finder:
+    description: "Compare current week's performance to same period last year and seasonal index"
+    tools:
+      - shopify-admin-api
+      - file-reader             # reads seasonal_index.json
+    config:
+      platform: shopify
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      seasonal_index_file: "seasonal_index.json"  # format: {"week_12": 1.15, "week_13": 0.92}
+      date_range: current_week
+      comparison_year_offset: 52 weeks
+    output:
+      format: markdown
+      include_fields:
+        - current_week_revenue
+        - same_week_last_year
+        - yoy_growth_pct
+        - expected_seasonal_index
+        - ahead_behind_baseline
+      include_alert: true</code></pre>
+
+    <p>The seasonal index is user-configurable. If you don't have historical data yet, use a flat baseline (every week = 100%) and build the index as data accumulates. Common patterns: holidays spike in November/December, summer slows in August, Easter affects March/April depending on the calendar.</p>
+
+    <h2 id="heartbeat">HEARTBEAT.md templates</h2>
+
+    <h3>Daily morning brief</h3>
+
+    <pre><code># HEARTBEAT.md — daily revenue brief
+
+schedule:
+  - name: "Daily Morning Brief"
+    cron: "0 7 * * *"           # every day at 7 AM
+    agents:
+      - daily-reporter
+    output:
+      file: "daily_brief.md"
+      notify: true
+    prompt: |
+      Generate a brief morning summary of yesterday's sales.
+      Include: order count, revenue (gross and net), AOV, units sold,
+      new vs returning customers, and the top 3 products by revenue.
+      Compare to: same day last week (% delta), same day last year (% delta).
+      Format for quick scanning. If performance is >10% down vs last week, flag it.</code></pre>
+
+    <h3>Weekly performance report</h3>
+
+    <pre><code># HEARTBEAT.md — weekly performance
+
+schedule:
+  - name: "Weekly Performance Report"
+    cron: "0 7 * * 1"           # Monday at 7 AM
+    agents:
+      - weekly-reporter
+      - best-worst-finder
+      - slow-mover-finder
+    output:
+      file: "weekly_report.md"
+      notify: true
+    prompt: |
+      Combine three reports into a weekly overview:
+      1. Weekly comparison: this week vs last week vs same week last year
+      2. Best 10 products by revenue and units sold
+      3. Slow movers: products with >25% velocity decline
+      Include a one-line summary at the top: "Week pacing:" or "Week strength:"</code></pre>
+
+    <h3>Monthly pacing alert</h3>
+
+    <pre><code># HEARTBEAT.md — monthly pacing alert
+
+schedule:
+  - name: "Monthly Pacing Check"
+    cron: "0 9 15 * *"          # 15th of month at 9 AM
+    agents:
+      - revenue-vs-target
+    output:
+      file: "pacing_alert.md"
+      notify: true
+    prompt: |
+      On the 15th of each month, report pacing towards the monthly target.
+      Format: "Day 15 of 31: £[revenue_to_date] of £[target] — [pacing]%"
+      If pacing < 85%, issue an alert: "⚠️  Behind pace. Projected month-end: £[projected]"
+      Otherwise, output: "✓ On pace for £[projected] at month-end"</code></pre>
+
+    <h2 id="sample-report">What the daily report looks like</h2>
+
+    <div class="report-preview" role="region" aria-label="Sample daily sales report">
+      <div class="rp-head">━━ Morning Brief — 25 Mar 2026 ━━</div>
+
+      <div class="rp-good">📊 Yesterday's Summary</div>
+      <div class="rp-info">  · Orders: 63 ▲12% vs last week</div>
+      <div class="rp-info">  · Revenue: £5,240 ▲12% vs last week</div>
+      <div class="rp-info">  · AOV: £83.17 (↔ flat vs last week)</div>
+      <div class="rp-info">  · Units: 156 ▲8% vs last week</div>
+      <div class="rp-info">  · New customers: 18 ▲15% vs last week</div>
+      <br>
+      <div class="rp-good">🏆 Top Products</div>
+      <div class="rp-good">  · 1. Embroidered Hoodie — Sage: £1,240 (28 units)</div>
+      <div class="rp-good">  · 2. Classic Tee — White: £684 (38 units)</div>
+      <div class="rp-good">  · 3. Canvas Tote — Natural: £412 (16 units)</div>
+      <br>
+      <div class="rp-warn">📉 SLOW MOVER ALERT</div>
+      <div class="rp-warn">  · Crew Neck Sweatshirt — Black: 4 units yesterday (-32% vs prev week)</div>
+      <br>
+      <div class="rp-info">💰 Month Pacing</div>
+      <div class="rp-info">  · Day 11 of 31 — £32,100 / £90,000 target</div>
+      <div class="rp-info">  · On pace for £88,000 (98% of target)</div>
+    </div>
+
+    <h2 id="faq">Frequently asked questions</h2>
+
+    <h3>Can OpenClaw connect to Shopify Analytics or Google Analytics?</h3>
+    <p>Shopify order data via Admin API covers the core sales metrics (orders, revenue, average order value). For full analytics including sessions, traffic, and conversion rates, use the <strong>Google Analytics Data API (GA4)</strong> — OpenClaw can connect to this with a service account credentials file. This is essential if you want conversion rate trends or traffic-to-revenue correlation.</p>
+
+    <h3>Can OpenClaw send the daily report to Slack or email?</h3>
+    <p>OpenClaw can write the report to a file or trigger a webhook. <strong>Sending to Slack</strong> requires configuring a Slack incoming webhook URL in your agent config and calling the webhook-post tool. <strong>Email sending</strong> requires an SMTP tool or an email API like Resend or SendGrid integrated into your OpenClaw environment.</p>
+
+    <h3>How do I set revenue targets in OpenClaw?</h3>
+    <p>Create a <code>targets.json</code> file in your project root with the format: <code>{"monthly_target": 90000, "weekly_target": 20000}</code>. The revenue-vs-target agent reads this file and calculates pacing. You can also pass targets as environment variables: <code>MONTHLY_TARGET=90000</code> and reference them in your config with <code>${MONTHLY_TARGET}</code>.</p>
+
+    <h3>Does OpenClaw calculate profit or just revenue?</h3>
+    <p>By default, OpenClaw reports revenue (from order totals). <strong>Profit calculation</strong> requires your cost-of-goods data, which Shopify stores at the variant level. To enable cost tracking, add <code>read_products</code> scope to your API token and the reporting agent can pull cost prices and calculate gross margin per product. WooCommerce stores cost in the product metafield; ensure your WooCommerce API key has product read access.</p>
+
+  </article>
+
+  <section class="related" aria-label="Continue the series">
+    <div class="related-inner">
+      <h2>Continue the series</h2>
+      <div class="related-grid">
+        <div class="related-card">
+          <div class="rc-cat">Part 4</div>
+          <h3>Customer Reviews &amp; Feedback</h3>
+          <a href="ecommerce-reviews.html">Read guide →</a>
+        </div>
+        <div class="related-card">
+          <div class="rc-cat">Overview</div>
+          <h3>OpenClaw for E-commerce</h3>
+          <a href="openclaw-for-ecommerce.html">Read overview →</a>
+        </div>
+        <div class="related-card">
+          <div class="rc-cat">Part 1</div>
+          <h3>Inventory &amp; Stock Monitoring</h3>
+          <a href="ecommerce-inventory.html">Read guide →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+    <a href="blog.html">Blog</a><a href="learn.html">All Guides</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+  </div>
+  <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+</footer>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.site-nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+<script src="copy.js"></script>
+<script src="search.js"></script>
+</body>
+</html>

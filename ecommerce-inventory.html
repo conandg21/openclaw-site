@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Inventory &amp; Stock Monitoring — Low Stock Alerts, Reorder Automation &amp; Dead Stock Reports | learnopenclaw.org</title>
+  <meta name="description" content="Use OpenClaw to automate low stock alerts, detect out-of-stock products, calculate reorder points, identify dead stock, and draft supplier messages — step by step for Shopify and WooCommerce." />
+  <meta name="keywords" content="OpenClaw inventory monitoring, Shopify low stock alert automation, WooCommerce stock monitoring, reorder point automation, dead stock detection, OpenClaw HEARTBEAT inventory" />
+  <link rel="canonical" href="https://learnopenclaw.org/ecommerce-inventory.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Inventory &amp; Stock Monitoring — Automated Alerts &amp; Reorder Reports" />
+  <meta property="og:description" content="Automate low stock alerts, reorder point detection, and dead stock identification for Shopify and WooCommerce with OpenClaw." />
+  <meta property="og:url" content="https://learnopenclaw.org/ecommerce-inventory.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Inventory Monitoring — Low Stock Alerts &amp; Reorder Automation" />
+  <meta name="twitter:description" content="Never be caught out of stock. Automate inventory monitoring and reorder alerts with OpenClaw." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OpenClaw Inventory and Stock Monitoring",
+    "description": "Use OpenClaw to automate low stock alerts, detect out-of-stock products, calculate reorder points, identify dead stock, and draft supplier messages for Shopify and WooCommerce stores.",
+    "url": "https://learnopenclaw.org/ecommerce-inventory.html",
+    "datePublished": "2026-03-25",
+    "dateModified": "2026-03-25",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "OpenClaw for E-commerce", "item": "https://learnopenclaw.org/openclaw-for-ecommerce.html"},
+        {"@type": "ListItem", "position": 4, "name": "Inventory Monitoring", "item": "https://learnopenclaw.org/ecommerce-inventory.html"}
+      ]
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does OpenClaw connect to Shopify inventory?",
+          "acceptedAnswer": {"@type": "Answer", "text": "OpenClaw connects to the Shopify Admin REST API using a private app access token. You create the token in Shopify admin under Settings → Apps → Develop apps, grant it the read_inventory and read_products scopes, and store the token in your secrets.env file. OpenClaw then calls the /admin/api/2024-01/inventory_levels.json endpoint to pull current stock levels for all locations."}
+        },
+        {
+          "@type": "Question",
+          "name": "Can OpenClaw alert me when a product goes out of stock?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Yes. You configure a threshold of 0 (or any number) in the stock-monitor agent config. When OpenClaw detects a variant with inventory_quantity at or below your threshold, it includes it in the alert output. You can set different thresholds for different product tags — for example, alert at 5 units for fast-moving items and at 1 unit for slow movers."}
+        },
+        {
+          "@type": "Question",
+          "name": "What is a reorder point and how does OpenClaw calculate it?",
+          "acceptedAnswer": {"@type": "Answer", "text": "A reorder point is the stock level at which you should place a new order to avoid running out before the next delivery arrives. The basic formula is: reorder point = (average daily sales × supplier lead time in days) + safety stock. OpenClaw calculates this using your Shopify order history to derive average daily sales per SKU, combined with lead time values you configure per supplier."}
+        },
+        {
+          "@type": "Question",
+          "name": "How does OpenClaw identify dead stock?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Dead stock is inventory that has not sold in a defined period — typically 60 or 90 days — while stock is still on hand. OpenClaw queries your order history to find variants with zero sales in the window, cross-references against current inventory to confirm stock exists, and outputs a report ranked by the quantity on hand multiplied by the product cost (if available), so you can prioritise the highest-value dead stock first."}
+        }
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+    --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe; --blue-dk: #1d4ed8;
+    --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+    --amber: #d97706; --amber-lt: #fffbeb; --amber-md: #fde68a;
+    --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+    --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe;
+    --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+    --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+    --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+  html { scroll-behavior: smooth; }
+  .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--green); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+  .skip-nav:focus { top: 8px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+  .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+  .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo:hover { text-decoration: none; }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+  .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+  .nav-links.open { display: flex; }
+  .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+  .nav-links a:hover { color: var(--green); text-decoration: none; }
+  @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+  .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+  .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+  .nav-search-input:focus { outline: none; }
+  .nav-search-input::placeholder { color: var(--gray-5); }
+  @media (max-width: 480px) { .nav-search-form { display: none; } }
+  .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid var(--amber-md); padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+  .disclaimer-bar a { color: #92400e; font-weight: 600; }
+  .post-header { background: linear-gradient(135deg, #064e3b 0%, #065f46 55%, #047857 100%); padding: 60px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+  .post-header::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+  .breadcrumb { font-size: .82rem; color: rgba(255,255,255,.6); margin-bottom: 20px; position: relative; }
+  .breadcrumb a { color: rgba(255,255,255,.7); }
+  .breadcrumb a:hover { color: #fff; text-decoration: none; }
+  .breadcrumb span { color: rgba(255,255,255,.45); margin: 0 6px; }
+  .series-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 100px; padding: 5px 14px; margin-bottom: 18px; position: relative; }
+  .series-badge span { color: #a7f3d0; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .series-badge strong { color: #fff; font-size: .75rem; }
+  .post-header h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.2; max-width: 760px; margin: 0 auto 22px; color: var(--white); position: relative; }
+  .post-meta { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: .88rem; color: rgba(255,255,255,.65); flex-wrap: wrap; position: relative; }
+  .post-meta span::before { content: '·'; margin-right: 6px; }
+  .post-meta span:first-child::before { content: ''; margin: 0; }
+  .series-nav { background: #f1f5f9; border-bottom: 1px solid var(--gray-3); padding: 0 24px; overflow-x: auto; }
+  .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 0; }
+  .series-nav a { display: flex; align-items: center; gap: 7px; padding: 12px 16px; font-size: .83rem; font-weight: 600; color: var(--gray-5); border-bottom: 3px solid transparent; white-space: nowrap; text-decoration: none; transition: color .15s, border-color .15s; }
+  .series-nav a:hover { color: var(--green); text-decoration: none; }
+  .series-nav a[aria-current="page"] { color: var(--green); border-bottom-color: var(--green); }
+  .series-nav a .sn-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--green-lt); border: 1px solid var(--green-md); font-size: .72rem; font-weight: 800; color: var(--green); }
+  .series-nav a[aria-current="page"] .sn-num { background: var(--green); color: #fff; border-color: #15803d; }
+  .post-body { max-width: 780px; margin: 0 auto; padding: 52px 24px 80px; }
+  .post-body h2 { font-size: 1.45rem; font-weight: 800; margin: 52px 0 16px; padding-top: 8px; border-top: 2px solid var(--green-md); color: var(--gray-8); }
+  .post-body h3 { font-size: 1.05rem; font-weight: 700; margin: 28px 0 10px; color: var(--gray-8); }
+  .post-body p { margin-bottom: 18px; }
+  .post-body ul, .post-body ol { padding-left: 22px; margin-bottom: 18px; }
+  .post-body li { margin-bottom: 7px; }
+  .post-body strong { font-weight: 700; }
+  .post-body code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+  pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 22px 24px; overflow-x: auto; font-size: .88rem; line-height: 1.65; margin: 24px 0 32px; position: relative; }
+  .post-body pre code { background: none !important; color: #e2e8f0 !important; padding: 0; border-radius: 0; font-size: inherit; }
+  .toc { background: var(--green-lt); border: 1px solid var(--green-md); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 44px; }
+  .toc-label { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 7px; font-size: .95rem; }
+  .toc a { color: var(--green); font-weight: 500; }
+  .callout { border-left: 4px solid var(--green); background: var(--green-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 28px 0; font-size: .95rem; }
+  .callout strong { color: var(--green); }
+  .callout--amber { border-left-color: var(--amber); background: var(--amber-lt); }
+  .callout--amber strong { color: var(--amber); }
+  .callout--blue { border-left-color: var(--blue); background: var(--blue-lt); }
+  .callout--blue strong { color: var(--blue); }
+  .callout--red { border-left-color: var(--red); background: var(--red-lt); }
+  .callout--red strong { color: var(--red); }
+  .use-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin: 24px 0 36px; }
+  .use-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--green); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .use-card.amber { border-top-color: var(--amber); }
+  .use-card.red { border-top-color: var(--red); }
+  .use-card.blue { border-top-color: var(--blue); }
+  .use-card .uc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .use-card h3 { font-size: .93rem; font-weight: 800; margin-bottom: 5px; }
+  .use-card p { font-size: .84rem; color: var(--gray-5); margin: 0; line-height: 1.5; }
+  .step-list { list-style: none; padding: 0; margin: 20px 0 32px; counter-reset: steps; }
+  .step-list li { counter-increment: steps; display: flex; gap: 16px; margin-bottom: 22px; align-items: flex-start; }
+  .step-list li::before { content: counter(steps); display: flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; background: var(--green); color: var(--white); border-radius: 50%; font-weight: 800; font-size: .85rem; flex-shrink: 0; margin-top: 2px; }
+  .step-list li div strong { display: block; font-weight: 700; margin-bottom: 4px; }
+  .step-list li div span { font-size: .9rem; color: var(--gray-5); }
+  .report-preview { background: #0f172a; border-radius: var(--radius); padding: 24px 28px; margin: 28px 0; font-family: "SF Mono", "Fira Code", monospace; font-size: .84rem; line-height: 1.7; color: #e2e8f0; }
+  .report-preview .rp-head { color: #6ee7b7; font-weight: 700; margin-bottom: 12px; }
+  .report-preview .rp-good { color: #86efac; }
+  .report-preview .rp-warn { color: #fde68a; }
+  .report-preview .rp-bad  { color: #fca5a5; }
+  .report-preview .rp-info { color: #c4b5fd; }
+  .related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; }
+  .related-inner { max-width: 780px; margin: 0 auto; }
+  .related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+  .related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--green); margin-bottom: 8px; }
+  .related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+  .related-card a { font-size: .85rem; font-weight: 600; color: var(--green); }
+  footer { background: #1f2937; color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+  footer a { color: #60a5fa; }
+  .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+  @media (max-width: 480px) {
+    .post-header { padding: 44px 20px 36px; }
+    .post-body { padding: 36px 20px 60px; }
+    pre { padding: 16px; font-size: .82rem; }
+    .use-grid { grid-template-columns: 1fr; }
+  }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo" aria-label="learnopenclaw.org home">🦞 <span>learnopenclaw.org</span></a>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" action="search.html" method="get" aria-label="Site search">
+        <svg class="nav-search-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="M15 15l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input class="nav-search-input" type="search" name="q" placeholder="Search guides…" aria-label="Search" />
+      </form>
+      <button class="hamburger" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  Independent community resource — not affiliated with the official OpenClaw project. <a href="about.html">Learn more</a>
+</div>
+
+<main id="main-content">
+
+  <header class="post-header">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a><span aria-hidden="true">›</span>
+      <a href="learn.html">Learn</a><span aria-hidden="true">›</span>
+      <a href="openclaw-for-ecommerce.html">OpenClaw for E-commerce</a><span aria-hidden="true">›</span>
+      <span aria-current="page">Inventory Monitoring</span>
+    </nav>
+    <div class="series-badge" aria-label="Part 1 of the OpenClaw for E-commerce series">
+      <span>Part 1 of 5</span><strong>OpenClaw for E-commerce</strong>
+    </div>
+    <h1>Inventory &amp; Stock Monitoring with OpenClaw</h1>
+    <div class="post-meta">
+      <span>March 25, 2026</span><span>10 min read</span><span>Step-by-step guide</span>
+    </div>
+  </header>
+
+  <nav class="series-nav" aria-label="E-commerce series navigation">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-ecommerce.html"><span class="sn-num">0</span> Overview</a>
+      <a href="ecommerce-inventory.html" aria-current="page"><span class="sn-num">1</span> Inventory</a>
+      <a href="ecommerce-orders.html"><span class="sn-num">2</span> Orders</a>
+      <a href="ecommerce-pricing.html"><span class="sn-num">3</span> Pricing</a>
+      <a href="ecommerce-reviews.html"><span class="sn-num">4</span> Reviews</a>
+      <a href="ecommerce-reporting.html"><span class="sn-num">5</span> Reporting</a>
+    </div>
+  </nav>
+
+  <article class="post-body">
+
+    <div class="toc" role="navigation" aria-labelledby="toc-heading">
+      <div class="toc-label" id="toc-heading">In this article</div>
+      <ol role="list">
+        <li><a href="#use-cases">What you can monitor</a></li>
+        <li><a href="#shopify-setup">Connecting to Shopify</a></li>
+        <li><a href="#woocommerce-setup">Connecting to WooCommerce</a></li>
+        <li><a href="#stock-monitor">Low stock and out-of-stock alerts</a></li>
+        <li><a href="#reorder-points">Reorder point calculation</a></li>
+        <li><a href="#dead-stock">Dead stock identification</a></li>
+        <li><a href="#supplier-drafts">Drafting supplier reorder messages</a></li>
+        <li><a href="#heartbeat">HEARTBEAT.md templates</a></li>
+        <li><a href="#sample-report">What the daily report looks like</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </div>
+
+    <h2 id="use-cases">What you can monitor</h2>
+
+    <p>Stock problems come in two forms: moving too fast (stockouts) and not moving at all (dead stock). Both cost money — one through lost sales, the other through tied-up capital and storage costs. OpenClaw automates the monitoring for both, so you catch them before they become expensive.</p>
+
+    <div class="use-grid" role="list" aria-label="Inventory monitoring use cases">
+      <div class="use-card" role="listitem">
+        <div class="uc-icon" aria-hidden="true">🔴</div>
+        <h3>Low stock alerts</h3>
+        <p>Alert when any SKU falls below your configured threshold — different thresholds per product tag or category.</p>
+      </div>
+      <div class="use-card red" role="listitem">
+        <div class="uc-icon" aria-hidden="true">⛔</div>
+        <h3>Out-of-stock detection</h3>
+        <p>Immediately flag products that hit zero so you can decide whether to hide them, backorder them, or rush a reorder.</p>
+      </div>
+      <div class="use-card amber" role="listitem">
+        <div class="uc-icon" aria-hidden="true">📦</div>
+        <h3>Reorder point calculation</h3>
+        <p>Calculate the ideal reorder point per SKU based on actual sales velocity and your supplier lead times.</p>
+      </div>
+      <div class="use-card blue" role="listitem">
+        <div class="uc-icon" aria-hidden="true">🪦</div>
+        <h3>Dead stock identification</h3>
+        <p>Find products with stock on hand but no sales in the past 60 or 90 days — ranked by capital tied up.</p>
+      </div>
+      <div class="use-card" role="listitem">
+        <div class="uc-icon" aria-hidden="true">✉️</div>
+        <h3>Supplier message drafts</h3>
+        <p>Auto-generate a draft reorder message for any SKU that has hit its reorder point, ready for you to review and send.</p>
+      </div>
+      <div class="use-card amber" role="listitem">
+        <div class="uc-icon" aria-hidden="true">🏪</div>
+        <h3>Multi-location stock</h3>
+        <p>Monitor inventory levels across multiple Shopify locations and flag when one location is critically low while another has surplus.</p>
+      </div>
+    </div>
+
+    <h2 id="shopify-setup">Connecting to Shopify</h2>
+
+    <p>You need a private app access token with read scopes for inventory and products. The token is created once and stored in your <code>secrets.env</code> file — OpenClaw never sees your Shopify admin password.</p>
+
+    <ol class="step-list" aria-label="Shopify setup steps">
+      <li>
+        <div>
+          <strong>Create a custom app</strong>
+          <span>In your Shopify admin go to <strong>Settings → Apps → Develop apps → Create an app</strong>. Give it a name like "OpenClaw Monitor".</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Configure API scopes</strong>
+          <span>Under <strong>Configuration → Admin API integration</strong>, enable: <code>read_inventory</code>, <code>read_products</code>, <code>read_orders</code>, <code>read_fulfillments</code>. Save.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Install and reveal the token</strong>
+          <span>Click <strong>Install app</strong>, then <strong>Reveal token once</strong>. Copy it immediately — Shopify only shows it once.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Store credentials securely</strong>
+          <span>Add to your <code>secrets.env</code>: <code>SHOPIFY_STORE=yourstore.myshopify.com</code> and <code>SHOPIFY_TOKEN=shpat_xxxxxxxxxxxx</code>. Never commit this file to git.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Test the connection</strong>
+          <span>Run: <code>curl -H "X-Shopify-Access-Token: $SHOPIFY_TOKEN" https://$SHOPIFY_STORE/admin/api/2024-01/products/count.json</code>. A JSON response with a count confirms it works.</span>
+        </div>
+      </li>
+    </ol>
+
+    <h2 id="woocommerce-setup">Connecting to WooCommerce</h2>
+
+    <p>WooCommerce uses a consumer key/secret pair rather than a single token. Generate these from <strong>WooCommerce → Settings → Advanced → REST API → Add key</strong>. Set permissions to <strong>Read</strong> — you don't need write access for monitoring.</p>
+
+    <pre><code># secrets.env — WooCommerce credentials
+WOO_URL=https://yourstore.com
+WOO_CONSUMER_KEY=ck_xxxxxxxxxxxxxxxxxxxx
+WOO_CONSUMER_SECRET=cs_xxxxxxxxxxxxxxxxxxxx</code></pre>
+
+    <p>WooCommerce REST API base URL is <code>/wp-json/wc/v3/</code>. Authentication uses Basic Auth with the key and secret. All configs in this guide include a <code>platform: woocommerce</code> option that switches the endpoint and auth method automatically.</p>
+
+    <h2 id="stock-monitor">Low stock and out-of-stock alerts</h2>
+
+    <p>The core agent queries your inventory levels, filters by threshold, and outputs an alert report. You define different thresholds per product tag so fast-moving items get earlier warnings than slow movers.</p>
+
+    <pre><code># AGENTS.md — stock-monitor agent
+
+agents:
+  stock-monitor:
+    description: "Check inventory levels and alert on low or out-of-stock products"
+    tools:
+      - shopify-admin-api   # swap for woocommerce-api if needed
+    config:
+      platform: shopify     # or: woocommerce
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      thresholds:
+        default: 10           # alert when stock ≤ 10 units
+        tag_overrides:
+          fast-mover: 25      # alert earlier for fast-moving products
+          slow-mover: 3       # alert later for slow movers
+          seasonal: 5
+        out_of_stock: 0       # always flag at zero
+      locations: all          # or list specific location IDs
+      ignore_tags:
+        - discontinued
+        - bundle
+    output:
+      format: markdown
+      sections:
+        - out_of_stock        # zero stock — highest priority
+        - below_threshold     # above zero but at/below threshold
+        - reorder_suggested   # items at calculated reorder point
+      sort_by: stock_qty      # lowest first
+      include_fields:
+        - sku
+        - product_title
+        - variant_title
+        - stock_qty
+        - threshold
+        - avg_daily_sales
+        - days_remaining      # stock_qty / avg_daily_sales</code></pre>
+
+    <div class="callout callout--amber">
+      <strong>⚠️ Variants matter:</strong> Shopify products often have multiple variants (size, colour). The stock-monitor agent checks inventory at the variant level, not the product level. A product showing "in stock" at the product level may have individual variants at zero. Make sure your thresholds apply to variants, not just parent products.
+    </div>
+
+    <h2 id="reorder-points">Reorder point calculation</h2>
+
+    <p>A reorder point tells you when to place a new order so you don't run out before the next delivery arrives. The formula is straightforward:</p>
+
+    <pre><code># Reorder point formula
+# reorder_point = (avg_daily_sales × lead_time_days) + safety_stock
+#
+# Example:
+#   avg_daily_sales = 4 units/day
+#   lead_time = 7 days
+#   safety_stock = 10 units (buffer for demand spikes)
+#   reorder_point = (4 × 7) + 10 = 38 units
+#
+# When stock hits 38 → place new order immediately</code></pre>
+
+    <p>OpenClaw calculates <code>avg_daily_sales</code> from your order history automatically. You supply lead times per supplier in your config:</p>
+
+    <pre><code># AGENTS.md — reorder-calculator agent
+
+agents:
+  reorder-calculator:
+    description: "Calculate reorder points and identify SKUs that need ordering"
+    tools:
+      - shopify-admin-api
+    config:
+      platform: shopify
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      sales_window_days: 30        # use last 30 days to calculate avg daily sales
+      supplier_lead_times:         # days from order to delivery, by supplier tag
+        default: 7
+        overseas: 21
+        local: 3
+      safety_stock_multiplier: 1.5 # safety stock = avg_daily_sales × lead_time × 0.5
+      ignore_tags:
+        - discontinued
+        - print-on-demand          # no inventory to manage
+    output:
+      format: markdown_table
+      columns: [sku, product_title, current_stock, avg_daily_sales, lead_time, reorder_point, days_until_stockout, action]
+      filter: reorder_point_reached  # only show SKUs needing action
+      sort_by: days_until_stockout   # most urgent first</code></pre>
+
+    <h2 id="dead-stock">Dead stock identification</h2>
+
+    <p>Dead stock ties up cash and storage space. OpenClaw identifies it by cross-referencing sales history with current inventory: if stock exists but nothing has sold in your defined window, it's flagged. The report ranks by estimated capital value so you address the most expensive dead stock first.</p>
+
+    <pre><code># AGENTS.md — dead-stock-finder agent
+
+agents:
+  dead-stock-finder:
+    description: "Find products with stock on hand and no recent sales"
+    tools:
+      - shopify-admin-api
+    config:
+      platform: shopify
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      no_sales_window_days: 60      # flag if no sales in last 60 days
+      min_stock_qty: 1              # must have stock on hand to be flagged
+      ignore_tags:
+        - seasonal                  # seasonal items may be expected to be dormant
+        - new-arrival               # new products get 30 days grace
+      new_arrival_grace_days: 30
+    output:
+      format: markdown_table
+      columns: [sku, product_title, stock_qty, cost_price, estimated_value, last_sale_date, days_dormant]
+      sort_by: estimated_value      # highest capital tied up first
+      include_summary:
+        total_skus_flagged: true
+        total_estimated_value: true
+    schedule: weekly</code></pre>
+
+    <div class="callout">
+      <strong>💡 What to do with dead stock:</strong> Once identified, common actions are a targeted discount, a bundle with a fast-moving product, liquidation to a clearance marketplace, or a donation write-off. OpenClaw can't make that decision — but having the list reliably every week means you actually act on it rather than leaving it to pile up.
+    </div>
+
+    <h2 id="supplier-drafts">Drafting supplier reorder messages</h2>
+
+    <p>When the reorder calculator flags a SKU, OpenClaw can draft a purchase order message using your supplier contact details and the quantity calculation. You review and send it — OpenClaw never sends messages autonomously.</p>
+
+    <pre><code># AGENTS.md — po-drafter agent
+
+agents:
+  po-drafter:
+    description: "Draft supplier purchase order messages for SKUs at reorder point"
+    tools:
+      - shopify-admin-api
+      - file-reader              # reads supplier_contacts.csv
+    config:
+      platform: shopify
+      credentials:
+        store: "${SHOPIFY_STORE}"
+        token: "${SHOPIFY_TOKEN}"
+      supplier_contacts_file: "supplier_contacts.csv"  # columns: supplier_tag, name, email
+      order_quantity_multiplier: 3   # order 3× avg monthly sales by default
+    prompt: |
+      For each SKU at its reorder point, draft a professional purchase order email.
+      Include:
+      - Subject: "Purchase Order — [product name] — [date]"
+      - Greeting to the supplier by name
+      - The SKU, product name, and variant clearly stated
+      - The quantity requested (calculated from order_quantity_multiplier)
+      - A request for lead time confirmation and invoice
+      - Your store name as the sender
+      Keep the tone professional and concise.
+      Output each draft as a separate section with a clear "DRAFT FOR [supplier name]" header.
+      Do NOT send the email — output drafts only.</code></pre>
+
+    <h2 id="heartbeat">HEARTBEAT.md templates</h2>
+
+    <h3>Daily morning stock check</h3>
+
+    <pre><code># HEARTBEAT.md — daily stock check
+
+schedule:
+  - name: "Morning Stock Check"
+    cron: "0 7 * * *"           # every day at 7 AM
+    agents:
+      - stock-monitor
+      - reorder-calculator
+    output:
+      file: "daily_stock_report.md"
+      notify: true
+    prompt: |
+      Combine the low-stock alert and reorder calculator outputs into a single
+      morning briefing. Format:
+      1. URGENT — Out of stock (zero inventory): list with SKU and product name
+      2. WARNING — Below threshold: list with current qty and days remaining
+      3. ACTION NEEDED — At reorder point: list with suggested order quantity
+      Keep it scannable. If everything is fine, output a single line:
+      "✓ All stock levels healthy — no action needed."</code></pre>
+
+    <h3>Weekly dead stock report</h3>
+
+    <pre><code># HEARTBEAT.md — weekly dead stock
+
+schedule:
+  - name: "Weekly Dead Stock Report"
+    cron: "0 8 * * 1"           # Mondays at 8 AM
+    agents:
+      - dead-stock-finder
+    output:
+      file: "weekly_dead_stock.md"
+      notify: true</code></pre>
+
+    <h2 id="sample-report">What the daily report looks like</h2>
+
+    <div class="report-preview" role="region" aria-label="Sample daily stock report">
+      <div class="rp-head">━━ Morning Stock Check — 25 Mar 2026 ━━</div>
+
+      <div class="rp-bad">🔴 OUT OF STOCK (2 SKUs)</div>
+      <div class="rp-bad">  · SKU-0042 | Classic Tee — Black / XL | 0 units</div>
+      <div class="rp-bad">  · SKU-0078 | Hoodie — Navy / S       | 0 units</div>
+      <br>
+      <div class="rp-warn">⚠️  BELOW THRESHOLD (3 SKUs)</div>
+      <div class="rp-warn">  · SKU-0015 | Classic Tee — White / M | 6 units | ~2 days remaining</div>
+      <div class="rp-warn">  · SKU-0033 | Cap — Logo Black        | 4 units | ~5 days remaining</div>
+      <div class="rp-warn">  · SKU-0091 | Tote Bag — Natural      | 8 units | ~4 days remaining</div>
+      <br>
+      <div class="rp-info">📦 REORDER SUGGESTED (2 SKUs)</div>
+      <div class="rp-info">  · SKU-0019 | Classic Tee — Grey / L  | 18 units | reorder point: 20 | suggest: order 60</div>
+      <div class="rp-info">  · SKU-0055 | Hoodie — Forest / M     | 22 units | reorder point: 25 | suggest: order 75</div>
+      <br>
+      <div class="rp-good">✓ All other 147 SKUs within healthy stock levels.</div>
+    </div>
+
+    <h2 id="faq">Frequently asked questions</h2>
+
+    <h3>How does OpenClaw connect to Shopify inventory?</h3>
+    <p>Via the Shopify Admin REST API using a private app access token with <code>read_inventory</code> and <code>read_products</code> scopes. You generate the token once in your Shopify admin, store it in <code>secrets.env</code>, and OpenClaw calls the inventory levels endpoint on schedule.</p>
+
+    <h3>Can OpenClaw alert me when a product goes out of stock?</h3>
+    <p>Yes. Set your threshold to <code>0</code> in the <code>stock-monitor</code> config. Any variant at zero inventory is flagged in the highest-priority section of the daily report. You can also set per-tag thresholds so fast-moving products get earlier warnings.</p>
+
+    <h3>What is a reorder point and how does OpenClaw calculate it?</h3>
+    <p>A reorder point is the stock level that triggers a new order — calculated as <code>(avg_daily_sales × lead_time_days) + safety_stock</code>. OpenClaw derives average daily sales from your actual order history and combines it with the lead times you configure per supplier tag.</p>
+
+    <h3>How does OpenClaw identify dead stock?</h3>
+    <p>It queries your order history for the defined window (e.g. 60 days), finds variants with zero sales during that period, and cross-references against current inventory to confirm stock exists. Results are ranked by estimated tied-up capital (quantity × cost price) so you prioritise the most expensive dead stock first.</p>
+
+  </article>
+
+  <section class="related" aria-label="Continue the series">
+    <div class="related-inner">
+      <h2>Continue the series</h2>
+      <div class="related-grid">
+        <div class="related-card">
+          <div class="rc-cat">Overview</div>
+          <h3>OpenClaw for E-commerce</h3>
+          <a href="openclaw-for-ecommerce.html">Read overview →</a>
+        </div>
+        <div class="related-card">
+          <div class="rc-cat">Part 2</div>
+          <h3>Order &amp; Fulfillment Monitoring</h3>
+          <a href="ecommerce-orders.html">Read guide →</a>
+        </div>
+        <div class="related-card">
+          <div class="rc-cat">Part 3</div>
+          <h3>Competitor Price Watching</h3>
+          <a href="ecommerce-pricing.html">Read guide →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+    <a href="blog.html">Blog</a><a href="learn.html">All Guides</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+  </div>
+  <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+</footer>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.site-nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+<script src="copy.js"></script>
+<script src="search.js"></script>
+</body>
+</html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Review & Reputation Monitoring — Negative Review Alerts, Sentiment Tracking & Response Drafts | learnopenclaw.org</title>
+  <meta name="description" content="Use OpenClaw to monitor customer reviews across Trustpilot, Google, Amazon, and Etsy. Get instant alerts on negative reviews, track sentiment trends, and auto-draft professional responses — step by step." />
+  <meta name="keywords" content="OpenClaw review monitoring, reputation management, Trustpilot API, negative review alerts, sentiment tracking, review response automation, Google Business Profile reviews" />
+  <link rel="canonical" href="https://learnopenclaw.org/ecommerce-reviews.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="OpenClaw Review & Reputation Monitoring — Alerts, Sentiment & Response Drafts" />
+  <meta property="og:description" content="Monitor reviews across all platforms with OpenClaw. Get negative review alerts, sentiment tracking, and auto-draft responses to protect your reputation." />
+  <meta property="og:url" content="https://learnopenclaw.org/ecommerce-reviews.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OpenClaw Review & Reputation Monitoring" />
+  <meta name="twitter:description" content="Monitor customer reviews, sentiment trends, and auto-draft responses with OpenClaw." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Review & Reputation Monitoring with OpenClaw",
+    "description": "Use OpenClaw to monitor customer reviews across multiple platforms, receive instant alerts on negative reviews, track sentiment trends, and auto-draft professional review responses.",
+    "url": "https://learnopenclaw.org/ecommerce-reviews.html",
+    "datePublished": "2026-03-25",
+    "dateModified": "2026-03-25",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "OpenClaw for E-commerce", "item": "https://learnopenclaw.org/openclaw-for-ecommerce.html"},
+        {"@type": "ListItem", "position": 4, "name": "Review Monitoring", "item": "https://learnopenclaw.org/ecommerce-reviews.html"}
+      ]
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can OpenClaw post review responses automatically?",
+          "acceptedAnswer": {"@type": "Answer", "text": "No, it drafts responses for human review. Auto-posting review responses is not recommended as tone errors are costly to reputation."}
+        },
+        {
+          "@type": "Question",
+          "name": "What if I don't have a Trustpilot account?",
+          "acceptedAnswer": {"@type": "Answer", "text": "You can use http-crawler to scrape your public Trustpilot page as a fallback, though this is less reliable than the API and may break if Trustpilot changes their layout."}
+        },
+        {
+          "@type": "Question",
+          "name": "Can OpenClaw monitor Google reviews?",
+          "acceptedAnswer": {"@type": "Answer", "text": "Yes via the Google My Business API (now called Google Business Profile API), which requires OAuth setup with a Google Cloud project."}
+        },
+        {
+          "@type": "Question",
+          "name": "How does sentiment tracking work without an NLP model?",
+          "acceptedAnswer": {"@type": "Answer", "text": "OpenClaw uses its underlying language model to classify review text into POSITIVE/NEUTRAL/NEGATIVE. This is reasonably accurate for most short review text."}
+        }
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+    --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe; --blue-dk: #1d4ed8;
+    --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+    --amber: #d97706; --amber-lt: #fffbeb; --amber-md: #fde68a;
+    --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+    --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe;
+    --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+    --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+    --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+  html { scroll-behavior: smooth; }
+  .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--green); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+  .skip-nav:focus { top: 8px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+  .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+  .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo:hover { text-decoration: none; }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+  .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+  .nav-links.open { display: flex; }
+  .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+  .nav-links a:hover { color: var(--green); text-decoration: none; }
+  @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+  .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+  .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+  .nav-search-input:focus { outline: none; }
+  .nav-search-input::placeholder { color: var(--gray-5); }
+  @media (max-width: 480px) { .nav-search-form { display: none; } }
+  .disclaimer-bar { background: #fef9c3; border-bottom: 1px solid var(--amber-md); padding: 8px 24px; text-align: center; font-size: .85rem; color: #92400e; }
+  .disclaimer-bar a { color: #92400e; font-weight: 600; }
+  .post-header { background: linear-gradient(135deg, #064e3b 0%, #065f46 55%, #047857 100%); padding: 60px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+  .post-header::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+  .breadcrumb { font-size: .82rem; color: rgba(255,255,255,.6); margin-bottom: 20px; position: relative; }
+  .breadcrumb a { color: rgba(255,255,255,.7); }
+  .breadcrumb a:hover { color: #fff; text-decoration: none; }
+  .breadcrumb span { color: rgba(255,255,255,.45); margin: 0 6px; }
+  .series-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 100px; padding: 5px 14px; margin-bottom: 18px; position: relative; }
+  .series-badge span { color: #a7f3d0; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .series-badge strong { color: #fff; font-size: .75rem; }
+  .post-header h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.2; max-width: 760px; margin: 0 auto 22px; color: var(--white); position: relative; }
+  .post-meta { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: .88rem; color: rgba(255,255,255,.65); flex-wrap: wrap; position: relative; }
+  .post-meta span::before { content: '·'; margin-right: 6px; }
+  .post-meta span:first-child::before { content: ''; margin: 0; }
+  .series-nav { background: #f1f5f9; border-bottom: 1px solid var(--gray-3); padding: 0 24px; overflow-x: auto; }
+  .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 0; }
+  .series-nav a { display: flex; align-items: center; gap: 7px; padding: 12px 16px; font-size: .83rem; font-weight: 600; color: var(--gray-5); border-bottom: 3px solid transparent; white-space: nowrap; text-decoration: none; transition: color .15s, border-color .15s; }
+  .series-nav a:hover { color: var(--green); text-decoration: none; }
+  .series-nav a[aria-current="page"] { color: var(--green); border-bottom-color: var(--green); }
+  .series-nav a .sn-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--green-lt); border: 1px solid var(--green-md); font-size: .72rem; font-weight: 800; color: var(--green); }
+  .series-nav a[aria-current="page"] .sn-num { background: var(--green); color: #fff; border-color: #15803d; }
+  .post-body { max-width: 780px; margin: 0 auto; padding: 52px 24px 80px; }
+  .post-body h2 { font-size: 1.45rem; font-weight: 800; margin: 52px 0 16px; padding-top: 8px; border-top: 2px solid var(--green-md); color: var(--gray-8); }
+  .post-body h3 { font-size: 1.05rem; font-weight: 700; margin: 28px 0 10px; color: var(--gray-8); }
+  .post-body p { margin-bottom: 18px; }
+  .post-body ul, .post-body ol { padding-left: 22px; margin-bottom: 18px; }
+  .post-body li { margin-bottom: 7px; }
+  .post-body strong { font-weight: 700; }
+  .post-body code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+  pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 22px 24px; overflow-x: auto; font-size: .88rem; line-height: 1.65; margin: 24px 0 32px; position: relative; }
+  .post-body pre code { background: none !important; color: #e2e8f0 !important; padding: 0; border-radius: 0; font-size: inherit; }
+  .toc { background: var(--green-lt); border: 1px solid var(--green-md); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 44px; }
+  .toc-label { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--green); margin-bottom: 12px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 7px; font-size: .95rem; }
+  .toc a { color: var(--green); font-weight: 500; }
+  .callout { border-left: 4px solid var(--green); background: var(--green-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 28px 0; font-size: .95rem; }
+  .callout strong { color: var(--green); }
+  .callout--amber { border-left-color: var(--amber); background: var(--amber-lt); }
+  .callout--amber strong { color: var(--amber); }
+  .callout--blue { border-left-color: var(--blue); background: var(--blue-lt); }
+  .callout--blue strong { color: var(--blue); }
+  .callout--red { border-left-color: var(--red); background: var(--red-lt); }
+  .callout--red strong { color: var(--red); }
+  .use-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; margin: 24px 0 36px; }
+  .use-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--green); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .use-card.amber { border-top-color: var(--amber); }
+  .use-card.red { border-top-color: var(--red); }
+  .use-card.blue { border-top-color: var(--blue); }
+  .use-card .uc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .use-card h3 { font-size: .93rem; font-weight: 800; margin-bottom: 5px; }
+  .use-card p { font-size: .84rem; color: var(--gray-5); margin: 0; line-height: 1.5; }
+  .step-list { list-style: none; padding: 0; margin: 20px 0 32px; counter-reset: steps; }
+  .step-list li { counter-increment: steps; display: flex; gap: 16px; margin-bottom: 22px; align-items: flex-start; }
+  .step-list li::before { content: counter(steps); display: flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; background: var(--green); color: var(--white); border-radius: 50%; font-weight: 800; font-size: .85rem; flex-shrink: 0; margin-top: 2px; }
+  .step-list li div strong { display: block; font-weight: 700; margin-bottom: 4px; }
+  .step-list li div span { font-size: .9rem; color: var(--gray-5); }
+  .platform-table { width: 100%; border-collapse: collapse; margin: 24px 0 32px; }
+  .platform-table thead { background: var(--green-lt); border: 1px solid var(--green-md); }
+  .platform-table th { padding: 12px 16px; text-align: left; font-weight: 700; font-size: .9rem; color: var(--green); }
+  .platform-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-3); font-size: .9rem; }
+  .platform-table tbody tr:hover { background: var(--gray-1); }
+  .table-wrapper { overflow-x: auto; margin: 24px 0 32px; border-radius: var(--radius); border: 1px solid var(--gray-3); }
+  .table-wrapper table { width: 100%; border-collapse: collapse; margin: 0; }
+  .table-wrapper th { background: var(--green-lt); border: none; padding: 12px 16px; text-align: left; font-weight: 700; font-size: .9rem; color: var(--green); border-bottom: 1px solid var(--green-md); }
+  .table-wrapper td { padding: 12px 16px; border-bottom: 1px solid var(--gray-3); font-size: .9rem; }
+  .table-wrapper tbody tr:hover { background: var(--gray-1); }
+  .report-preview { background: #0f172a; border-radius: var(--radius); padding: 24px 28px; margin: 28px 0; font-family: "SF Mono", "Fira Code", monospace; font-size: .84rem; line-height: 1.7; color: #e2e8f0; }
+  .report-preview .rp-head { color: #6ee7b7; font-weight: 700; margin-bottom: 12px; }
+  .report-preview .rp-good { color: #86efac; }
+  .report-preview .rp-warn { color: #fde68a; }
+  .report-preview .rp-bad  { color: #fca5a5; }
+  .report-preview .rp-info { color: #c4b5fd; }
+  .related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; }
+  .related-inner { max-width: 780px; margin: 0 auto; }
+  .related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+  .related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+  .related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--green); margin-bottom: 8px; }
+  .related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+  .related-card a { font-size: .85rem; font-weight: 600; color: var(--green); }
+  footer { background: #1f2937; color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+  footer a { color: #60a5fa; }
+  .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+  @media (max-width: 480px) {
+    .post-header { padding: 44px 20px 36px; }
+    .post-body { padding: 36px 20px 60px; }
+    pre { padding: 16px; font-size: .82rem; }
+    .use-grid { grid-template-columns: 1fr; }
+    .table-wrapper { overflow-x: auto; }
+  }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo" aria-label="learnopenclaw.org home">🦞 <span>learnopenclaw.org</span></a>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" action="search.html" method="get" aria-label="Site search">
+        <svg class="nav-search-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="M15 15l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input class="nav-search-input" type="search" name="q" placeholder="Search guides…" aria-label="Search" />
+      </form>
+      <button class="hamburger" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  Independent community resource — not affiliated with the official OpenClaw project. <a href="about.html">Learn more</a>
+</div>
+
+<main id="main-content">
+
+  <header class="post-header">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a><span aria-hidden="true">›</span>
+      <a href="learn.html">Learn</a><span aria-hidden="true">›</span>
+      <a href="openclaw-for-ecommerce.html">OpenClaw for E-commerce</a><span aria-hidden="true">›</span>
+      <span aria-current="page">Review Monitoring</span>
+    </nav>
+    <div class="series-badge" aria-label="Part 4 of the OpenClaw for E-commerce series">
+      <span>Part 4 of 5</span><strong>OpenClaw for E-commerce</strong>
+    </div>
+    <h1>Review &amp; Reputation Monitoring with OpenClaw</h1>
+    <div class="post-meta">
+      <span>March 25, 2026</span><span>10 min read</span><span>Step-by-step guide</span>
+    </div>
+  </header>
+
+  <nav class="series-nav" aria-label="E-commerce series navigation">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-ecommerce.html"><span class="sn-num">0</span> Overview</a>
+      <a href="ecommerce-inventory.html"><span class="sn-num">1</span> Inventory</a>
+      <a href="ecommerce-orders.html"><span class="sn-num">2</span> Orders</a>
+      <a href="ecommerce-pricing.html"><span class="sn-num">3</span> Pricing</a>
+      <a href="ecommerce-reviews.html" aria-current="page"><span class="sn-num">4</span> Reviews</a>
+      <a href="ecommerce-reporting.html"><span class="sn-num">5</span> Reporting</a>
+    </div>
+  </nav>
+
+  <article class="post-body">
+
+    <div class="toc" role="navigation" aria-labelledby="toc-heading">
+      <div class="toc-label" id="toc-heading">In this article</div>
+      <ol role="list">
+        <li><a href="#use-cases">What you can monitor</a></li>
+        <li><a href="#platforms">Review platforms and APIs</a></li>
+        <li><a href="#trustpilot-setup">Trustpilot API setup</a></li>
+        <li><a href="#review-monitor">Core review monitor agent</a></li>
+        <li><a href="#sentiment-tracking">Sentiment trend analysis</a></li>
+        <li><a href="#response-drafts">Auto-drafting review responses</a></li>
+        <li><a href="#heartbeat">HEARTBEAT.md templates</a></li>
+        <li><a href="#sample-report">What the daily report looks like</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </div>
+
+    <h2 id="use-cases">What you can monitor</h2>
+
+    <p>Your reputation is built on the reviews customers leave. A single negative review can deter new buyers, but so can a silent rating — if you're not monitoring, you won't respond, and that counts as indifference. OpenClaw automates the monitoring and drafting so you catch problems early and fix them publicly.</p>
+
+    <div class="use-grid" role="list" aria-label="Review monitoring use cases">
+      <div class="use-card red" role="listitem">
+        <div class="uc-icon" aria-hidden="true">🔴</div>
+        <h3>Negative review alerts</h3>
+        <p>Instant alert when a 1 or 2-star review is posted anywhere — on Trustpilot, Google, Amazon, or your own store.</p>
+      </div>
+      <div class="use-card" role="listitem">
+        <div class="uc-icon" aria-hidden="true">📋</div>
+        <h3>Daily review digest</h3>
+        <p>Morning summary of all new reviews across all platforms, segmented by platform and rating for quick scanning.</p>
+      </div>
+      <div class="use-card amber" role="listitem">
+        <div class="uc-icon" aria-hidden="true">📊</div>
+        <h3>Sentiment trend tracking</h3>
+        <p>Weekly rolling average rating and sentiment score — so you see whether your recent changes are working or not.</p>
+      </div>
+      <div class="use-card blue" role="listitem">
+        <div class="uc-icon" aria-hidden="true">✍️</div>
+        <h3>Response draft generation</h3>
+        <p>Draft a personalised response for flagged reviews — auto-categorise the complaint type and suggest resolution.</p>
+      </div>
+      <div class="use-card" role="listitem">
+        <div class="uc-icon" aria-hidden="true">📈</div>
+        <h3>Review volume monitoring</h3>
+        <p>Alert if review volume drops sharply — signals a platform issue or a change in customer engagement.</p>
+      </div>
+      <div class="use-card amber" role="listitem">
+        <div class="uc-icon" aria-hidden="true">👀</div>
+        <h3>Competitor review watching</h3>
+        <p>Monitor competitor ratings for context — if your average has dropped but theirs is stable, understand why.</p>
+      </div>
+    </div>
+
+    <h2 id="platforms">Review platforms and APIs</h2>
+
+    <p>Customer reviews are scattered across multiple platforms. OpenClaw unifies them by calling each platform's API on a schedule and storing results in a consistent format. Here's what's available:</p>
+
+    <div class="table-wrapper">
+      <table role="grid" aria-label="Review platforms and API details">
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Access</th>
+            <th>What OpenClaw reads</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Trustpilot</strong></td>
+            <td>Free API (business account required)</td>
+            <td>Reviews, ratings, dates, response status</td>
+            <td>Best documented review API</td>
+          </tr>
+          <tr>
+            <td><strong>Google Business Profile</strong></td>
+            <td>Free (Google My Business API)</td>
+            <td>Reviews, ratings, reviewer name</td>
+            <td>Requires OAuth setup</td>
+          </tr>
+          <tr>
+            <td><strong>Amazon Seller Feedback</strong></td>
+            <td>Free (Amazon SP-API)</td>
+            <td>Seller feedback ratings and comments</td>
+            <td>Product reviews require a different endpoint</td>
+          </tr>
+          <tr>
+            <td><strong>Etsy</strong></td>
+            <td>Free (Etsy Open API)</td>
+            <td>Shop reviews and ratings</td>
+            <td>Good for handmade/craft stores</td>
+          </tr>
+          <tr>
+            <td><strong>Your own store (Shopify/WooCommerce)</strong></td>
+            <td>Free with store</td>
+            <td>Product reviews if using native reviews or apps like Judge.me</td>
+            <td>May require app-specific API</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="trustpilot-setup">Trustpilot API setup</h2>
+
+    <p>Trustpilot is the easiest to set up. Follow these steps to connect:</p>
+
+    <ul class="step-list" role="list">
+      <li role="listitem">
+        <div>
+          <strong>Create a Trustpilot Business account and claim your profile</strong>
+          <span>If you don't have one, sign up at trustpilot.com, then claim your business. This is free and takes 5 minutes.</span>
+        </div>
+      </li>
+      <li role="listitem">
+        <div>
+          <strong>Go to Trustpilot Developers and create an API application</strong>
+          <span>Visit developers.trustpilot.com, log in with your account, and create a new API application. You'll get your API key immediately.</span>
+        </div>
+      </li>
+      <li role="listitem">
+        <div>
+          <strong>Store your credentials in secrets.env</strong>
+          <span>Add two lines: <code>TRUSTPILOT_API_KEY=your_key_here</code> and <code>TRUSTPILOT_BUSINESS_UNIT_ID=your_business_unit_id</code>. Find your Business Unit ID in your Trustpilot settings.</span>
+        </div>
+      </li>
+      <li role="listitem">
+        <div>
+          <strong>Test: fetch your recent reviews</strong>
+          <span>Run a quick test query to the reviews endpoint to confirm your key works and you're pulling reviews successfully.</span>
+        </div>
+      </li>
+    </ul>
+
+    <h2 id="review-monitor">Core review monitor agent</h2>
+
+    <p>The review monitor is the heart of the system. It queries one or more review APIs on a schedule, filters for new reviews, and outputs alerts and summaries. It maintains a state file to avoid re-reporting the same review twice.</p>
+
+    <pre><code># AGENTS.md — review-monitor agent
+
+agents:
+  review-monitor:
+    description: "Fetch new reviews from all platforms and alert on negatives"
+    tools:
+      - trustpilot-api
+      - google-mybusiness-api
+      # fallback: http-crawler if API not available
+    credentials:
+      trustpilot_api_key: "${TRUSTPILOT_API_KEY}"
+      trustpilot_business_unit_id: "${TRUSTPILOT_BUSINESS_UNIT_ID}"
+      google_oauth_token: "${GOOGLE_OAUTH_TOKEN}"
+    config:
+      alert_on_stars: [1, 2]      # negative = 1 or 2 star reviews
+      lookback_hours: 24          # check for reviews posted in last 24 hours
+      state_file: "reviews_seen.json"  # track already-processed reviews
+      deduplication: true         # skip reviews already in state_file
+      platforms: [trustpilot, google, amazon, etsy]
+    output:
+      format: markdown
+      sections:
+        - new_negative_reviews    # 1-2 star, highest priority
+        - new_positive_reviews    # 4-5 star, summarised count
+        - overall_stats           # total count, avg rating
+      sort_by: stars              # negatives first
+      include_fields:
+        - platform
+        - reviewer_name
+        - rating_stars
+        - review_text
+        - review_date
+        - response_status         # has merchant responded?</code></pre>
+
+    <div class="callout">
+      <strong>💡 State file deduplication:</strong> OpenClaw stores review IDs in <code>reviews_seen.json</code> as it processes them. This ensures that a review posted on Monday and still active on Tuesday doesn't trigger two alerts. The state file is your single source of truth for which reviews you've already acted on.
+    </div>
+
+    <h2 id="sentiment-tracking">Sentiment trend analysis</h2>
+
+    <p>A single bad review is noise. But if your 30-day average rating drops from 4.7 to 4.2, that's a signal. OpenClaw tracks these rolling windows so you spot trends early.</p>
+
+    <pre><code># AGENTS.md — sentiment-tracker agent
+
+agents:
+  sentiment-tracker:
+    description: "Calculate rolling sentiment and alert on significant drops"
+    tools:
+      - trustpilot-api
+      - google-mybusiness-api
+    config:
+      rolling_window_days: 30
+      metrics:
+        - avg_rating                    # average star rating
+        - review_count                  # number of reviews posted
+        - sentiment_score               # POSITIVE / NEUTRAL / NEGATIVE classification
+      classification: text_based        # classify by review text, not just stars
+      alert_thresholds:
+        rating_drop_week_over_week: 0.3 # alert if avg drops >0.3 points vs last week
+        sentiment_shift: true            # alert if POSITIVE → NEUTRAL shift
+      platforms: [trustpilot, google]
+    prompt: |
+      For each review, classify the text as POSITIVE, NEUTRAL, or NEGATIVE based on language.
+      A 3-star review with positive language ("Great product, slow shipping") counts as POSITIVE.
+      A 5-star review with concerns ("Works fine but wish it had X") counts as NEUTRAL.
+      This text-based classification is separate from the star rating.</code></pre>
+
+    <div class="callout callout--amber">
+      <strong>⚠️ Sentiment vs. stars:</strong> A customer may leave a 3-star review with genuinely positive language because the product is good but the packaging was poor. By classifying text separately from the star rating, you get a more accurate picture of actual sentiment. Use this for trend analysis, not as a substitute for responding to negative feedback.
+    </div>
+
+    <h2 id="response-drafts">Auto-drafting review responses</h2>
+
+    <p>When OpenClaw flags a negative review, it can draft a response. You always review and approve before posting — OpenClaw never posts automatically. The drafts are categorised by complaint type so responses are specific and helpful.</p>
+
+    <pre><code># AGENTS.md — response-drafter agent
+
+agents:
+  response-drafter:
+    description: "Draft personalised responses to flagged reviews"
+    tools:
+      - trustpilot-api
+      - google-mybusiness-api
+    config:
+      trigger: negative_review         # draft on reviews with 1-2 stars
+      complaint_categories:
+        - shipping_delay
+        - product_quality
+        - wrong_item
+        - customer_service
+        - packaging
+        - missing_item
+      state_file: "responses_drafted.json"
+    prompt: |
+      For each negative review, perform these steps:
+      1. Classify the complaint into one of the categories above
+      2. Acknowledge the specific issue mentioned in the review
+      3. Apologise sincerely (tone: warm, professional, never defensive)
+      4. Offer a concrete resolution:
+         - For shipping delays: offer a discount on next order
+         - For product quality: offer a replacement or refund
+         - For wrong/missing item: offer replacement with priority shipping
+         - For customer service: acknowledge and take responsibility
+      5. Invite them to contact support directly for faster resolution
+      6. End with gratitude for their feedback
+
+      Output format for each response:
+      ─────────────────────────────────────
+      REVIEW ID: [id]
+      PLATFORM: [platform]
+      COMPLAINT TYPE: [category]
+      REVIEWER: [name]
+      RATING: [stars]
+      ─────────────────────────────────────
+      DRAFT RESPONSE:
+      [your response here]
+      ─────────────────────────────────────
+
+      IMPORTANT: Add a note at the top:
+      "⚠️ DRAFT — review before posting. Do not post automatically."</code></pre>
+
+    <div class="callout callout--blue">
+      <strong>💡 Response template patterns:</strong> Different complaint types need different approaches. A shipping delay is not the customer's fault — apologise and fix it quickly. A product quality issue requires honesty about standards. A customer service failure is an opportunity to show you care about relationships. Use the complaint category to shape your response accordingly.
+    </div>
+
+    <h2 id="heartbeat">HEARTBEAT.md templates</h2>
+
+    <h3>Daily review digest</h3>
+
+    <pre><code># HEARTBEAT.md — daily review digest
+
+schedule:
+  - name: "Daily Review Digest"
+    cron: "0 7 * * *"             # every day at 7 AM
+    agents:
+      - review-monitor
+    output:
+      file: "daily_review_digest.md"
+      notify: true
+    prompt: |
+      Summarise all reviews from the last 24 hours across all platforms.
+      Format as:
+      1. URGENT NEGATIVES (1-2 star reviews) — if any exist, list each with platform,
+         reviewer name, and first 100 chars of review text
+      2. NEW POSITIVES — summary line: "X new 5-star, Y new 4-star reviews"
+      3. SUMMARY — "Total: X reviews, average rating: 4.5 across all platforms"
+      If no new reviews: "No new reviews in the last 24 hours."</code></pre>
+
+    <h3>Immediate negative alert</h3>
+
+    <pre><code># HEARTBEAT.md — instant negative alert
+
+schedule:
+  - name: "Negative Review Alert"
+    trigger: on_new_review
+    filter: stars <= 2
+    agents:
+      - review-monitor
+    output:
+      notify: true
+      notify_channels: [email, slack]
+    prompt: |
+      A negative review has just been posted. Send an immediate alert with:
+      - Platform and reviewer name
+      - Full review text
+      - Current store rating (for context)
+      - A link to the review (so the user can respond directly)</code></pre>
+
+    <h3>Weekly sentiment report</h3>
+
+    <pre><code># HEARTBEAT.md — weekly sentiment report
+
+schedule:
+  - name: "Weekly Sentiment Report"
+    cron: "0 8 * * 1"             # Mondays at 8 AM
+    agents:
+      - sentiment-tracker
+    output:
+      file: "weekly_sentiment_report.md"
+      notify: true
+    prompt: |
+      Generate a 30-day rolling sentiment report with:
+      1. Average rating (30-day window): [X.X stars]
+      2. Week-over-week change: +/- [X.X] points
+      3. Sentiment breakdown: X POSITIVE, Y NEUTRAL, Z NEGATIVE (% each)
+      4. Top complaint category if sentiment is down
+      5. Action suggestion if rating dropped >0.3 points vs last week</code></pre>
+
+    <h2 id="sample-report">What the daily report looks like</h2>
+
+    <div class="report-preview" role="region" aria-label="Sample daily review digest">
+      <div class="rp-head">━━ Daily Review Digest — 25 Mar 2026 ━━</div>
+
+      <div class="rp-bad">🔴 URGENT NEGATIVES (1 review)</div>
+      <div class="rp-bad">  Trustpilot | Sarah K. | ★ | "Ordered last week, still no shipping. This is unacceptable."</div>
+      <div class="rp-bad">  → Draft response ready. Review at: [link]</div>
+      <br>
+      <div class="rp-info">📋 NEW POSITIVES</div>
+      <div class="rp-info">  3 new 5-star reviews | 2 new 4-star reviews</div>
+      <br>
+      <div class="rp-good">✓ SUMMARY</div>
+      <div class="rp-good">  Total new: 6 reviews | 30-day avg: 4.6 stars</div>
+    </div>
+
+    <h2 id="faq">Frequently asked questions</h2>
+
+    <h3>Can OpenClaw post review responses automatically?</h3>
+    <p>No, it drafts responses for human review. Auto-posting review responses is not recommended as tone errors are costly to reputation.</p>
+
+    <h3>What if I don't have a Trustpilot account?</h3>
+    <p>You can use http-crawler to scrape your public Trustpilot page as a fallback, though this is less reliable than the API and may break if Trustpilot changes their layout.</p>
+
+    <h3>Can OpenClaw monitor Google reviews?</h3>
+    <p>Yes via the Google My Business API (now called Google Business Profile API), which requires OAuth setup with a Google Cloud project.</p>
+
+    <h3>How does sentiment tracking work without an NLP model?</h3>
+    <p>OpenClaw uses its underlying language model to classify review text into POSITIVE/NEUTRAL/NEGATIVE. This is reasonably accurate for most short review text.</p>
+
+  </article>
+
+  <section class="related" aria-label="Continue the series">
+    <div class="related-inner">
+      <h2>Continue the series</h2>
+      <div class="related-grid">
+        <div class="related-card">
+          <div class="rc-cat">Part 3</div>
+          <h3>Competitor Price Watching</h3>
+          <a href="ecommerce-pricing.html">Read guide →</a>
+        </div>
+        <div class="related-card">
+          <div class="rc-cat">Part 5</div>
+          <h3>Reporting &amp; Analytics</h3>
+          <a href="ecommerce-reporting.html">Read guide →</a>
+        </div>
+        <div class="related-card">
+          <div class="rc-cat">Overview</div>
+          <h3>OpenClaw for E-commerce</h3>
+          <a href="openclaw-for-ecommerce.html">Read overview →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-links" aria-label="Footer navigation">
+    <a href="https://openclaw.ai" target="_blank" rel="noopener">Official Site</a>
+    <a href="https://github.com/OpenClaw/openclaw" target="_blank" rel="noopener">GitHub</a>
+    <a href="blog.html">Blog</a><a href="learn.html">All Guides</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+  </div>
+  <p>Independent community resource. Not affiliated with the OpenClaw project.</p>
+</footer>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks  = document.getElementById('nav-links');
+  hamburger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburger.focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.site-nav')) {
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+<script src="copy.js"></script>
+<script src="search.js"></script>
+</body>
+</html>
