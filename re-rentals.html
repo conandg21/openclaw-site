@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Monitor rental rates, vacancy signals, and market trends automatically with OpenClaw. Pull data from Rentcast to track average rents by bedroom count, spot rent growth, and benchmark your own units against the market.">
   <meta name="keywords" content="OpenClaw, real estate, rental market, Rentcast API, vacancy rates, rent analysis">
-  <meta name="canonical" content="https://learnopenclaw.org/re-rentals.html">
+  <link rel="canonical" href="https://learnopenclaw.org/re-rentals.html" />
   <meta property="og:title" content="Rental Market Monitoring with OpenClaw — Real Estate Part 3 of 5">
   <meta property="og:description" content="Monitor rental rates, vacancy signals, and market trends automatically with OpenClaw.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://learnopenclaw.org/re-rentals.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Rental Market Monitoring with OpenClaw">
-  <meta name="twitter:description" content="Automated rental market monitoring using Rentcast and OpenClaw agents.">
+  <meta name="twitter:title" content="Rental Market Monitoring — OpenClaw Real Estate Part 3" />
+  <meta name="twitter:description" content="Track rental rates, vacancy signals, and market trends automatically with OpenClaw and Rentcast. Benchmark your own units against market averages every week." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
   <title>Rental Market Monitoring with OpenClaw — Real Estate Part 3 of 5 | learnopenclaw.org</title>
   <style>
     :root {
@@ -305,12 +308,12 @@ job: |
 
       <div class="api-table-wrap">
         <table class="api-table">
-          <thead>
+          <th scope="col"ead>
             <tr>
-              <th>Endpoint</th>
-              <th>Data Returned</th>
-              <th>Update Frequency</th>
-              <th>Free Tier Calls</th>
+              <th scope="col">Endpoint</th>
+              <th scope="col">Data Returned</th>
+              <th scope="col">Update Frequency</th>
+              <th scope="col">Free Tier Calls</th>
             </tr>
           </thead>
           <tbody>
@@ -530,6 +533,16 @@ elif data.avg_dom < 7:
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
+    ,
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "OpenClaw for Real Estate", "item": "https://learnopenclaw.org/openclaw-for-real-estate.html"},
+        {"@type": "ListItem", "position": 4, "name": "Part 3: Rental Market Monitoring", "item": "https://learnopenclaw.org/re-rentals.html"}
+      ]
+    },
     "mainEntity": {
       "@type": "FAQPage",
       "mainEntity": [

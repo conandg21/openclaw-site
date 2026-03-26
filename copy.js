@@ -1,4 +1,4 @@
-/* copy.js — adds a "Copy" button to every <pre> block on the page */
+/* copy.js — adds a "Copy" button to every <pre> block and .code-block div on the page */
 (function () {
   'use strict';
 
@@ -96,7 +96,7 @@
   }
 
   function init() {
-    document.querySelectorAll('pre').forEach(attachCopyBtn);
+    document.querySelectorAll('pre, .code-block').forEach(attachCopyBtn);
   }
 
   if (document.readyState === 'loading') {

@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Track the estimated value of your entire real estate portfolio automatically with OpenClaw. Pull Zestimates for every property, calculate equity positions, monitor value changes, and generate monthly portfolio reports.">
   <meta name="keywords" content="OpenClaw, real estate, portfolio, Zestimate, net worth, equity tracking">
-  <meta name="canonical" content="https://learnopenclaw.org/re-portfolio.html">
+  <link rel="canonical" href="https://learnopenclaw.org/re-portfolio.html" />
   <meta property="og:title" content="Portfolio Valuation Monitoring with OpenClaw — Real Estate Part 5 of 5">
   <meta property="og:description" content="Track the estimated value of your entire real estate portfolio automatically with OpenClaw.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://learnopenclaw.org/re-portfolio.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Portfolio Valuation Monitoring with OpenClaw">
-  <meta name="twitter:description" content="Automated portfolio valuation tracking using Zillow and OpenClaw agents.">
+  <meta name="twitter:title" content="Portfolio Valuation Monitoring — OpenClaw Real Estate Part 5" />
+  <meta name="twitter:description" content="Track your entire real estate portfolio value automatically with OpenClaw. Monthly Zestimate snapshots, equity calculations, appreciation tracking, and gross yield analysis." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
   <title>Portfolio Valuation Monitoring with OpenClaw — Real Estate Part 5 of 5 | learnopenclaw.org</title>
   <style>
     :root {
@@ -346,15 +349,15 @@ job: |
 
       <div class="api-table-wrap">
         <table class="api-table">
-          <thead>
+          <th scope="col"ead>
             <tr>
-              <th>Property</th>
-              <th>Zestimate</th>
-              <th>Mortgage</th>
-              <th>Equity</th>
-              <th>Equity %</th>
-              <th>Monthly Rent</th>
-              <th>Gross Yield</th>
+              <th scope="col">Property</th>
+              <th scope="col">Zestimate</th>
+              <th scope="col">Mortgage</th>
+              <th scope="col">Equity</th>
+              <th scope="col">Equity %</th>
+              <th scope="col">Monthly Rent</th>
+              <th scope="col">Gross Yield</th>
             </tr>
           </thead>
           <tbody>
@@ -612,6 +615,16 @@ Dollar Gain: ${yoy_appreciation['total_portfolio_value']['change']:+,.0f}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
+    ,
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "OpenClaw for Real Estate", "item": "https://learnopenclaw.org/openclaw-for-real-estate.html"},
+        {"@type": "ListItem", "position": 4, "name": "Part 5: Portfolio Valuation Monitoring", "item": "https://learnopenclaw.org/re-portfolio.html"}
+      ]
+    },
     "mainEntity": {
       "@type": "FAQPage",
       "mainEntity": [

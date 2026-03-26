@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Set up automated new listing alerts with OpenClaw. Pull fresh listings from Zillow via RapidAPI, filter by price, beds, baths, and days-on-market, and get instant Slack or email alerts when deals hit your target market.">
   <meta name="keywords" content="OpenClaw, real estate, listings, alerts, Zillow API, RapidAPI, automation">
-  <meta name="canonical" content="https://learnopenclaw.org/re-listings.html">
+  <link rel="canonical" href="https://learnopenclaw.org/re-listings.html" />
   <meta property="og:title" content="New Listing Alerts with OpenClaw — Real Estate Part 1 of 5">
   <meta property="og:description" content="Set up automated new listing alerts with OpenClaw. Pull fresh listings from Zillow via RapidAPI.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://learnopenclaw.org/re-listings.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="New Listing Alerts with OpenClaw">
-  <meta name="twitter:description" content="Automated new listing alerts using Zillow API and OpenClaw agents.">
+  <meta name="twitter:title" content="New Listing Alerts with OpenClaw — Real Estate Part 1" />
+  <meta name="twitter:description" content="Automate new listing alerts with OpenClaw. Filter Zillow listings by price, beds, baths, and days-on-market — get notified within hours of a deal hitting your target market." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
   <title>New Listing Alerts with OpenClaw — Real Estate Part 1 of 5 | learnopenclaw.org</title>
   <style>
     :root {
@@ -257,11 +260,11 @@
 
       <div class="api-table-wrap">
         <table class="api-table">
-          <thead>
+          <th scope="col"ead>
             <tr>
-              <th>Filter</th>
-              <th>Example Value</th>
-              <th>Notes</th>
+              <th scope="col">Filter</th>
+              <th scope="col">Example Value</th>
+              <th scope="col">Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -588,6 +591,16 @@ Next Check: 03-25-2026 17:00 UTC
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
+    ,
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "OpenClaw for Real Estate", "item": "https://learnopenclaw.org/openclaw-for-real-estate.html"},
+        {"@type": "ListItem", "position": 4, "name": "Part 1: New Listing Alerts", "item": "https://learnopenclaw.org/re-listings.html"}
+      ]
+    },
     "mainEntity": {
       "@type": "FAQPage",
       "mainEntity": [

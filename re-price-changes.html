@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Track price reductions and stale listings automatically with OpenClaw. Get alerted when properties in your target market drop price or sit too long — surface motivated sellers before the competition.">
   <meta name="keywords" content="OpenClaw, real estate, price changes, days on market, motivated sellers, DOM">
-  <meta name="canonical" content="https://learnopenclaw.org/re-price-changes.html">
+  <link rel="canonical" href="https://learnopenclaw.org/re-price-changes.html" />
   <meta property="og:title" content="Price Change Alerts & Days-on-Market Tracking with OpenClaw — Real Estate Part 2 of 5">
   <meta property="og:description" content="Track price reductions and stale listings automatically with OpenClaw.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://learnopenclaw.org/re-price-changes.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Price Change Alerts & Days-on-Market Tracking with OpenClaw">
-  <meta name="twitter:description" content="Automated price change and DOM alerts using OpenClaw agents.">
+  <meta name="twitter:description" content="Automatically track price drops and stale listings with OpenClaw. Surface motivated sellers before the competition using dual-threshold price change detection." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
   <title>Price Change Alerts & Days-on-Market Tracking with OpenClaw — Real Estate Part 2 of 5 | learnopenclaw.org</title>
   <style>
     :root {
@@ -299,12 +302,12 @@ job: |
 
       <div class="api-table-wrap">
         <table class="api-table">
-          <thead>
+          <th scope="col"ead>
             <tr>
-              <th>Market Tier</th>
-              <th>Median DOM</th>
-              <th>Alert Threshold</th>
-              <th>Interpretation</th>
+              <th scope="col">Market Tier</th>
+              <th scope="col">Median DOM</th>
+              <th scope="col">Alert Threshold</th>
+              <th scope="col">Interpretation</th>
             </tr>
           </thead>
           <tbody>
@@ -495,6 +498,16 @@ job: |
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
+    ,
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html"},
+        {"@type": "ListItem", "position": 3, "name": "OpenClaw for Real Estate", "item": "https://learnopenclaw.org/openclaw-for-real-estate.html"},
+        {"@type": "ListItem", "position": 4, "name": "Part 2: Price Changes & Days on Market", "item": "https://learnopenclaw.org/re-price-changes.html"}
+      ]
+    },
     "mainEntity": {
       "@type": "FAQPage",
       "mainEntity": [
