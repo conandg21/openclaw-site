@@ -647,5 +647,119 @@
       "FAQ"
     ],
     "body": "portfolio valuation Zestimate equity net worth appreciation gross yield cap rate cash on cash return monthly snapshot OpenClaw real estate mortgage balance rental income investment property tracking"
+  },
+  {
+    "id": "openclaw-for-options.html",
+    "url": "https://learnopenclaw.org/openclaw-for-options.html",
+    "title": "OpenClaw for Options Trading \u2014 Automate Flow Alerts, IV Monitoring & Market Prep",
+    "description": "Use OpenClaw to automate options trading research: pre-market scans, unusual flow alerts, IV rank monitoring, earnings play setup, and end-of-day debriefs. Guides for day traders, swing traders, and premium sellers.",
+    "headings": [
+      "What OpenClaw does for options traders",
+      "Who this series is for",
+      "What it can and can't do",
+      "Data sources and APIs",
+      "A note on data and disclaimer",
+      "The full series",
+      "FAQ"
+    ],
+    "body": "OpenClaw options trading automation day traders swing traders premium sellers earnings players Tradier Polygon CBOE Unusual Whales IV rank Greeks monitoring flow alerts pre-market scanner debrief"
+  },
+  {
+    "id": "options-premarket.html",
+    "url": "https://learnopenclaw.org/options-premarket.html",
+    "title": "Pre-Market Options Scanner with OpenClaw \u2014 Options Trading Part 1 of 5",
+    "description": "Build an automated pre-market options scanner with OpenClaw. Pull overnight options activity, check VIX levels, flag high-OI strikes near current price, and get your morning brief delivered before the open.",
+    "headings": [
+      "Use cases at a glance",
+      "Tradier API setup",
+      "VIX morning check",
+      "OI concentration scan",
+      "Overnight unusual activity check",
+      "Economic calendar pull",
+      "Assembling the morning brief",
+      "HEARTBEAT schedule",
+      "Sample morning brief output",
+      "FAQ"
+    ],
+    "body": "pre-market scanner options OpenClaw Tradier VIX OI open interest concentration max pain morning brief economic calendar overnight sweep activity 9:30 open day trader swing trader"
+  },
+  {
+    "id": "options-flow.html",
+    "url": "https://learnopenclaw.org/options-flow.html",
+    "title": "Unusual Options Flow & Volume Alerts with OpenClaw \u2014 Options Trading Part 2 of 5",
+    "description": "Detect unusual options flow, sweep orders, and volume spikes automatically with OpenClaw. Monitor call/put imbalances and large block trades on your watchlist tickers in real time during market hours.",
+    "headings": [
+      "Use cases at a glance",
+      "Understanding options flow signals",
+      "Polygon.io setup for flow data",
+      "Volume spike detection agent",
+      "Sweep order detection",
+      "Call/put ratio imbalance alert",
+      "Dark pool integration",
+      "Filtering noise",
+      "HEARTBEAT schedule",
+      "Sample flow alert output",
+      "FAQ"
+    ],
+    "body": "unusual options flow sweep orders volume spikes call put ratio dark pool Polygon Unusual Whales institutional block trades intraday alert watchlist OpenClaw options trading"
+  },
+  {
+    "id": "options-iv.html",
+    "url": "https://learnopenclaw.org/options-iv.html",
+    "title": "IV Rank, IV Percentile & Greeks Monitoring with OpenClaw \u2014 Options Trading Part 3 of 5",
+    "description": "Track implied volatility rank, IV percentile, and options Greeks automatically with OpenClaw. Get alerts when IV rank crosses key thresholds, monitor theta decay on held positions, and detect IV crush after earnings.",
+    "headings": [
+      "Use cases at a glance",
+      "IV rank vs IV percentile",
+      "Setting up historical IV data",
+      "IV rank scanner",
+      "Premium selling alert",
+      "Monitoring Greeks on held positions",
+      "Theta decay tracker",
+      "IV crush detection",
+      "HEARTBEAT schedule",
+      "Sample IV dashboard output",
+      "FAQ"
+    ],
+    "body": "IV rank implied volatility percentile Greeks delta gamma theta vega decay premium selling covered call CSP iron condor IV crush earnings Polygon Tradier OpenClaw options monitoring"
+  },
+  {
+    "id": "options-earnings.html",
+    "url": "https://learnopenclaw.org/options-earnings.html",
+    "title": "Earnings Play Automation with OpenClaw \u2014 Options Trading Part 4 of 5",
+    "description": "Automate earnings play research with OpenClaw. Track the earnings calendar, calculate expected moves from options chains, monitor IV rank into earnings, and detect IV crush immediately after the report.",
+    "headings": [
+      "Use cases at a glance",
+      "Building your earnings watchlist",
+      "Earnings calendar agent",
+      "Expected move calculator",
+      "IV rank into earnings",
+      "Post-earnings IV crush monitor",
+      "Historical earnings move analysis",
+      "HEARTBEAT schedule",
+      "Sample earnings brief output",
+      "FAQ"
+    ],
+    "body": "earnings play automation OpenClaw options earnings calendar expected move ATM straddle IV rank IV crush post earnings monitoring historical earnings analysis entry timing"
+  },
+  {
+    "id": "options-debrief.html",
+    "url": "https://learnopenclaw.org/options-debrief.html",
+    "title": "End-of-Day Options Debrief with OpenClaw \u2014 Options Trading Part 5 of 5",
+    "description": "Automate your end-of-day trading debrief with OpenClaw. Get a daily summary of notable flow, market structure changes, P&L on tracked positions, and your next-day watchlist \u2014 delivered at the close every trading day.",
+    "headings": [
+      "Use cases at a glance",
+      "Debrief agent architecture",
+      "Day's notable flow recap",
+      "Position P&L summary",
+      "IV rank end-of-day snapshot",
+      "VIX close and regime note",
+      "Next-day watchlist builder",
+      "Weekly debrief",
+      "HEARTBEAT schedule",
+      "Sample end-of-day debrief output",
+      "FAQ"
+    ],
+    "body": "end of day debrief options trading OpenClaw P&L position summary IV rank VIX regime next day watchlist weekly debrief flow recap Greeks summary trading journal automation"
   }
 ]
