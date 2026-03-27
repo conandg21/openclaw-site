@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Intelligence & Price Monitoring with OpenClaw — Alternative Data Part 5 of 5 | learnopenclaw.org</title>
+  <meta name="description" content="Build web scraping pipelines with OpenClaw for competitive price monitoring, Amazon product rank tracking, and inventory signal detection. Covers responsible scraping practices, robots.txt compliance, and rate limiting.">
+  <meta name="theme-color" content="#2563eb">
+
+  <link rel="canonical" href="https://learnopenclaw.org/altdata-web.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Web Intelligence & Price Monitoring with OpenClaw — Alternative Data Part 5 of 5">
+  <meta property="og:description" content="Build web scraping pipelines with OpenClaw for competitive price monitoring, Amazon product rank tracking, and inventory signal detection. Covers responsible scraping practices, robots.txt compliance, and rate limiting.">
+  <meta property="og:url" content="https://learnopenclaw.org/altdata-web.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Web Intelligence & Price Monitoring with OpenClaw — Alternative Data Part 5 of 5">
+  <meta name="twitter:description" content="Build web scraping pipelines with OpenClaw for competitive price monitoring, Amazon product rank tracking, and inventory signal detection. Covers responsible scraping practices, robots.txt compliance, and rate limiting.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+
+  <style>
+    :root {
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe; --blue-dk: #1e40af;
+      --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+      --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+      --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--blue); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+    .skip-nav:focus { top: 8px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); text-decoration: none; }
+    .nav-logo:hover { text-decoration: none; }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+    .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+    .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+    .nav-search-input:focus { outline: none; }
+    .nav-search-input::placeholder { color: var(--gray-5); }
+    @media (max-width: 480px) { .nav-search-form { display: none; } }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .post-header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%); padding: 60px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+    .post-header::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+    .post-header-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+    .post-badge { display: inline-block; background: rgba(255,255,255,.15); color: var(--white); padding: 6px 14px; border-radius: 20px; font-size: .8rem; font-weight: 600; letter-spacing: .05em; margin-bottom: 16px; }
+    .post-header h1 { font-size: 2.2rem; font-weight: 700; color: var(--white); margin: 0 0 16px; line-height: 1.2; }
+    .post-meta { color: rgba(255,255,255,.8); font-size: .95rem; }
+
+    .disclaimer-bar { background: var(--blue-lt); border-left: 4px solid var(--blue-md); padding: 14px 20px; margin: 32px 0; border-radius: 8px; color: var(--blue-dk); font-size: .95rem; }
+
+    .series-nav { background: var(--gray-1); padding: 16px 24px; margin-bottom: 32px; }
+    .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 12px; flex-wrap: wrap; }
+    .series-nav a { padding: 10px 14px; border-radius: 6px; font-size: .9rem; font-weight: 500; color: var(--gray-5); border-bottom: 2px solid transparent; transition: .2s; }
+    .series-nav a:hover { color: var(--blue); background: rgba(37,99,235,.05); text-decoration: none; }
+    .series-nav a[aria-current="page"] { color: var(--blue); border-bottom-color: var(--blue); }
+
+    main { max-width: 800px; margin: 0 auto; padding: 0 24px 48px; }
+    h2 { font-size: 1.6rem; font-weight: 700; margin: 40px 0 20px; color: var(--gray-8); }
+    h3 { font-size: 1.2rem; font-weight: 600; margin: 28px 0 12px; color: var(--gray-8); }
+    p { margin: 0 0 16px; }
+    ul, ol { margin: 0 0 16px; padding-left: 24px; }
+    li { margin: 8px 0; }
+
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--gray-3); }
+    th { background: var(--gray-1); font-weight: 600; color: var(--gray-8); }
+    tr:hover { background: var(--gray-1); }
+
+    .callout { background: var(--red-lt); border-left: 4px solid var(--red); padding: 16px; border-radius: 8px; margin: 20px 0; }
+    .callout strong { color: var(--red); }
+
+    pre { background: var(--gray-2); border: 1px solid var(--gray-3); border-radius: 8px; padding: 16px; overflow-x: auto; font-size: .85rem; line-height: 1.5; margin: 20px 0; position: relative; }
+    code { font-family: 'Courier New', monospace; color: var(--gray-8); }
+
+    .faq-section { margin: 40px 0; }
+    .faq-item { margin: 20px 0; padding: 16px; background: var(--gray-1); border-radius: 8px; }
+    .faq-item strong { color: var(--gray-8); display: block; margin-bottom: 8px; }
+
+    footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
+    footer a { color: #d1d5db; font-weight: 700; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Web Intelligence & Price Monitoring with OpenClaw — Alternative Data Part 5 of 5",
+    "description": "Build web scraping pipelines with OpenClaw for competitive price monitoring, Amazon product rank tracking, and inventory signal detection. Covers responsible scraping practices, robots.txt compliance, and rate limiting.",
+    "image": "https://learnopenclaw.org/og-image.png",
+    "datePublished": "2026-03-27",
+    "dateModified": "2026-03-27",
+    "author": { "@type": "Organization", "name": "learnopenclaw.org" },
+    "publisher": { "@type": "Organization", "name": "learnopenclaw.org" }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is BeautifulSoup still the right tool?",
+        "acceptedAnswer": { "@type": "Answer", "text": "For simple HTML parsing, yes. For JavaScript-rendered pages, use playwright or selenium — but check if a static API endpoint exists first." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I avoid getting blocked?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Rotate User-Agent strings, add delays, cache aggressively, and don't hammer pages. If a site rate-limits you, back off." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I scrape Amazon?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Amazon's ToS prohibits scraping. The Product Advertising API (PA API) is the official route and requires an Associates account. Use cautiously." }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/" },
+      { "@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html" },
+      { "@type": "ListItem", "position": 3, "name": "Alternative Data", "item": "https://learnopenclaw.org/openclaw-for-altdata.html" },
+      { "@type": "ListItem", "position": 4, "name": "Part 5: Web Intelligence", "item": "https://learnopenclaw.org/altdata-web.html" }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+      <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" onsubmit="return false;">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+      </form>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="post-header">
+  <div class="post-header-inner">
+    <div class="post-badge">🌐 PART 5 OF 5</div>
+    <h1>Web Intelligence & Price Monitoring — Responsible Scraping for Market Signals</h1>
+    <div class="post-meta">Competitive pricing, inventory signals, and ethical data collection</div>
+  </div>
+</header>
+
+<nav class="series-nav" aria-label="Alternative Data series">
+  <div class="series-nav-inner">
+    <a href="openclaw-for-altdata.html">🗺️ Overview</a>
+    <a href="altdata-trends.html">📈 Part 1: Google Trends</a>
+    <a href="altdata-jobs.html">💼 Part 2: Job Intelligence</a>
+    <a href="altdata-sentiment.html">💬 Part 3: Sentiment</a>
+    <a href="altdata-appstore.html">📱 Part 4: App & GitHub</a>
+    <a href="altdata-web.html" aria-current="page">🌐 Part 5: Web Intelligence</a>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<div class="disclaimer-bar" role="note">
+  ℹ️ <strong>Informational only.</strong> Alternative data sources vary in accuracy and timeliness. Nothing here is investment advice. Always verify data independently before making any decisions.
+</div>
+
+<h2>Ethics & Responsibility First</h2>
+
+<div class="callout">
+  <strong>Critical:</strong> Web scraping occupies a legal and ethical gray zone. Before building any scraper, always:
+</div>
+
+<ol>
+  <li><strong>Check robots.txt</strong> — if a path is disallowed, don't scrape it</li>
+  <li><strong>Respect rate limits</strong> — add delays between requests, use caching</li>
+  <li><strong>Read Terms of Service</strong> — some sites explicitly prohibit automated access</li>
+  <li><strong>Never circumvent authentication or paywalls</strong></li>
+  <li><strong>Don't collect personal data</strong></li>
+</ol>
+
+<p>The data in this guide is from public-facing pages with no login required.</p>
+
+<h2>Four Scraping Targets</h2>
+
+<h3>Target 1: Amazon Product Rankings</h3>
+
+<ul>
+  <li>Amazon Best Seller rank is public, no auth required</li>
+  <li>Track rank changes for competitor products weekly</li>
+  <li>Review count growth as a proxy for sales velocity</li>
+</ul>
+
+<h3>Target 2: Competitor Pricing</h3>
+
+<ul>
+  <li>Public pricing pages (SaaS pricing, retail product pages)</li>
+  <li>Track price changes over time</li>
+  <li>Alert on promotions, price drops, or increases</li>
+</ul>
+
+<h3>Target 3: Job Board Aggregate Count</h3>
+
+<ul>
+  <li>Company career pages often show total open roles without needing Greenhouse</li>
+  <li>Track headcount direction via total job count</li>
+</ul>
+
+<h3>Target 4: Press Release & IR Page Monitoring</h3>
+
+<ul>
+  <li>Company investor relations pages publish press releases, earnings dates, events</li>
+  <li>Monitor for new content without relying on SEC filings alone</li>
+</ul>
+
+<h2>HEARTBEAT Configuration</h2>
+
+<pre>name: web_intel_monitor
+schedule: "0 7 * * 1,4"
+steps:
+  - scrape:
+      targets:
+        - name: "Competitor A pricing"
+          url: "https://competitor-a.com/pricing"
+          selector: ".pricing-card .price"
+        - name: "Amazon product rank"
+          url: "https://www.amazon.com/dp/B0EXAMPLE"
+          selector: "#SalesRank"
+      respect_robots_txt: true
+      delay_seconds: 3
+      cache_ttl_hours: 12
+  - compare:
+      to: last_run
+      alert_on_change: true
+  - llm:
+      prompt: |
+        Summarize what changed across these web intelligence targets since last check.
+        Flag: price changes, rank movements, new content on IR pages.
+        Data: {{ scrape_results }}
+  - notify:
+      subject: "🌐 Web Intel Update — {{ date }}"
+      condition: changes_detected</pre>
+
+<h2>Responsible Scraping Implementation</h2>
+
+<h3>Check robots.txt Before Scraping</h3>
+
+<pre>import httpx
+import time
+import urllib.robotparser
+
+def can_scrape(url: str, user_agent: str = "*") -> bool:
+    """Check robots.txt before scraping."""
+    from urllib.parse import urlparse
+    parsed = urlparse(url)
+    robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
+    rp = urllib.robotparser.RobotFileParser()
+    rp.set_url(robots_url)
+    rp.read()
+    return rp.can_fetch(user_agent, url)
+
+def scrape_with_respect(url: str, selector: str, delay: float = 3.0) -> str:
+    """Scrape a single element with robots.txt check and rate limiting."""
+    if not can_scrape(url):
+        raise PermissionError(f"robots.txt disallows scraping: {url}")
+    time.sleep(delay)
+    from bs4 import BeautifulSoup
+    r = httpx.get(url, headers={"User-Agent": "AltDataBot/1.0 contact@youremail.com"},
+                  follow_redirects=True, timeout=10)
+    soup = BeautifulSoup(r.text, "html.parser")
+    el = soup.select_one(selector)
+    return el.get_text(strip=True) if el else ""</pre>
+
+<h3>Price Change Detection with Caching</h3>
+
+<pre>import json, os
+from datetime import datetime
+
+CACHE_FILE = "price_cache.json"
+
+def detect_price_change(product_id: str, current_price: float) -> dict:
+    cache = {}
+    if os.path.exists(CACHE_FILE):
+        with open(CACHE_FILE) as f:
+            cache = json.load(f)
+    prior = cache.get(product_id, {}).get("price")
+    cache[product_id] = {"price": current_price, "updated": datetime.now().isoformat()}
+    with open(CACHE_FILE, "w") as f:
+        json.dump(cache, f)
+    if prior is None:
+        return {"status": "first_observation", "price": current_price}
+    change_pct = ((current_price - prior) / prior) * 100
+    return {"status": "changed" if abs(change_pct) > 0.01 else "unchanged",
+            "prior": prior, "current": current_price, "change_pct": round(change_pct, 2)}</pre>
+
+<h2>Multi-Signal Aggregation: Bringing It All Together</h2>
+
+<p>The real edge comes from combining signals. Example: a company showing (1) rising Google Trends brand interest, (2) aggressive engineering hiring, (3) improving App Store ratings, and (4) competitor price drops on Amazon — that's a convergent signal worth deeper research. Build a weekly "alternative data scorecard" that pulls from all five pipelines.</p>
+
+<p>OpenClaw's scheduling and LLM steps make this natural: fetch all five data sources in parallel each Monday, aggregate into a single narrative, and alert only on multi-signal convergences. This dramatically reduces noise compared to single-source alerts.</p>
+
+<h2>Frequently Asked Questions</h2>
+
+<div class="faq-section">
+  <div class="faq-item">
+    <strong>Q: Is BeautifulSoup still the right tool?</strong>
+    <p>For simple HTML parsing, yes. For JavaScript-rendered pages, use playwright or selenium — but check if a static API endpoint exists first.</p>
+  </div>
+
+  <div class="faq-item">
+    <strong>Q: How do I avoid getting blocked?</strong>
+    <p>Rotate User-Agent strings, add delays, cache aggressively, and don't hammer pages. If a site rate-limits you, back off.</p>
+  </div>
+
+  <div class="faq-item">
+    <strong>Q: Can I scrape Amazon?</strong>
+    <p>Amazon's ToS prohibits scraping. The Product Advertising API (PA API) is the official route and requires an Associates account. Use cautiously.</p>
+  </div>
+</div>
+
+<h2>What's Next?</h2>
+
+<p>You now have five complete alternative data pipelines. The next step is automation: deploy these as HEARTBEAT schedules on a recurring basis (weekly, daily, or as-needed). Aggregate the outputs into a unified dashboard or weekly brief. The companies that win at alternative data aren't the ones with access to expensive data — they're the ones who can coordinate multiple free signals into a coherent narrative. OpenClaw makes that coordination straightforward.</p>
+
+</main>
+
+<footer role="contentinfo">
+  <div style="max-width:700px;margin:0 auto;">
+    <p style="margin:0 0 8px;"><a href="index.html">&#x1F99E; learnopenclaw.org</a></p>
+    <p style="margin:0 0 8px;">
+      <a href="learn.html">Learn</a> ·
+      <a href="blog.html">Blog</a> ·
+      <a href="faq.html">FAQ</a> ·
+      <a href="privacy-policy.html">Privacy</a> ·
+      <a href="claw-street-terminal.html">Terminal</a>
+    </p>
+    <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or investment advice. For educational and informational purposes only.</p>
+  </div>
+</footer>
+
+<script>
+const btn = document.querySelector('.hamburger');
+const menu = document.getElementById('nav-links');
+btn.addEventListener('click', () => {
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!open));
+  menu.classList.toggle('open');
+});
+</script>
+<script src="copy.js"></script>
+
+</body>
+</html>

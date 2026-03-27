@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Posting Intelligence with OpenClaw — Alternative Data Part 2 of 5 | learnopenclaw.org</title>
+  <meta name="description" content="Automate job posting monitoring with OpenClaw. Track hiring direction, department-level headcount trends, and WARN Act layoff filings as leading indicators of company strategy and financial health.">
+  <meta name="theme-color" content="#2563eb">
+
+  <link rel="canonical" href="https://learnopenclaw.org/altdata-jobs.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Job Posting Intelligence with OpenClaw — Alternative Data Part 2 of 5">
+  <meta property="og:description" content="Automate job posting monitoring with OpenClaw. Track hiring direction, department-level headcount trends, and WARN Act layoff filings as leading indicators of company strategy and financial health.">
+  <meta property="og:url" content="https://learnopenclaw.org/altdata-jobs.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Job Posting Intelligence with OpenClaw — Alternative Data Part 2 of 5">
+  <meta name="twitter:description" content="Automate job posting monitoring with OpenClaw. Track hiring direction, department-level headcount trends, and WARN Act layoff filings as leading indicators of company strategy and financial health.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+
+  <style>
+    :root {
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe; --blue-dk: #1e40af;
+      --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+      --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+      --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--blue); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+    .skip-nav:focus { top: 8px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); text-decoration: none; }
+    .nav-logo:hover { text-decoration: none; }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+    .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+    .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+    .nav-search-input:focus { outline: none; }
+    .nav-search-input::placeholder { color: var(--gray-5); }
+    @media (max-width: 480px) { .nav-search-form { display: none; } }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .post-header { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #2563eb 100%); padding: 60px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+    .post-header::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+    .post-header-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+    .post-badge { display: inline-block; background: rgba(255,255,255,.15); color: var(--white); padding: 6px 14px; border-radius: 20px; font-size: .8rem; font-weight: 600; letter-spacing: .05em; margin-bottom: 16px; }
+    .post-header h1 { font-size: 2.2rem; font-weight: 700; color: var(--white); margin: 0 0 16px; line-height: 1.2; }
+    .post-meta { color: rgba(255,255,255,.8); font-size: .95rem; }
+
+    .disclaimer-bar { background: var(--blue-lt); border-left: 4px solid var(--blue-md); padding: 14px 20px; margin: 32px 0; border-radius: 8px; color: var(--blue-dk); font-size: .95rem; }
+
+    .series-nav { background: var(--gray-1); padding: 16px 24px; margin-bottom: 32px; }
+    .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 12px; flex-wrap: wrap; }
+    .series-nav a { padding: 10px 14px; border-radius: 6px; font-size: .9rem; font-weight: 500; color: var(--gray-5); border-bottom: 2px solid transparent; transition: .2s; }
+    .series-nav a:hover { color: var(--blue); background: rgba(37,99,235,.05); text-decoration: none; }
+    .series-nav a[aria-current="page"] { color: var(--blue); border-bottom-color: var(--blue); }
+
+    main { max-width: 800px; margin: 0 auto; padding: 0 24px 48px; }
+    h2 { font-size: 1.6rem; font-weight: 700; margin: 40px 0 20px; color: var(--gray-8); }
+    h3 { font-size: 1.2rem; font-weight: 600; margin: 28px 0 12px; color: var(--gray-8); }
+    p { margin: 0 0 16px; }
+    ul, ol { margin: 0 0 16px; padding-left: 24px; }
+    li { margin: 8px 0; }
+
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--gray-3); }
+    th { background: var(--gray-1); font-weight: 600; color: var(--gray-8); }
+    tr:hover { background: var(--gray-1); }
+
+    .callout { background: var(--amber-lt); border-left: 4px solid var(--amber); padding: 16px; border-radius: 8px; margin: 20px 0; }
+    .callout strong { color: var(--amber); }
+
+    pre { background: var(--gray-2); border: 1px solid var(--gray-3); border-radius: 8px; padding: 16px; overflow-x: auto; font-size: .85rem; line-height: 1.5; margin: 20px 0; position: relative; }
+    code { font-family: 'Courier New', monospace; color: var(--gray-8); }
+
+    .faq-section { margin: 40px 0; }
+    .faq-item { margin: 20px 0; padding: 16px; background: var(--gray-1); border-radius: 8px; }
+    .faq-item strong { color: var(--gray-8); display: block; margin-bottom: 8px; }
+
+    footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
+    footer a { color: #d1d5db; font-weight: 700; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Job Posting Intelligence with OpenClaw — Alternative Data Part 2 of 5",
+    "description": "Automate job posting monitoring with OpenClaw. Track hiring direction, department-level headcount trends, and WARN Act layoff filings as leading indicators of company strategy and financial health.",
+    "image": "https://learnopenclaw.org/og-image.png",
+    "datePublished": "2026-03-27",
+    "dateModified": "2026-03-27",
+    "author": { "@type": "Organization", "name": "learnopenclaw.org" },
+    "publisher": { "@type": "Organization", "name": "learnopenclaw.org" }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can I scrape LinkedIn for job data?",
+        "acceptedAnswer": { "@type": "Answer", "text": "LinkedIn's ToS prohibits scraping. Use their official APIs or manual validation only." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I find a company's Greenhouse board token?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Visit jobs.greenhouse.io/{company-name} — many companies use Greenhouse for public job boards." }
+      },
+      {
+        "@type": "Question",
+        "name": "Are WARN filings timely?",
+        "acceptedAnswer": { "@type": "Answer", "text": "By law, companies must file 60 days before a layoff. But some companies pay fines rather than comply. They're a signal, not a guarantee." }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/" },
+      { "@type": "ListItem", "position": 2, "name": "Learn", "item": "https://learnopenclaw.org/learn.html" },
+      { "@type": "ListItem", "position": 3, "name": "Alternative Data", "item": "https://learnopenclaw.org/openclaw-for-altdata.html" },
+      { "@type": "ListItem", "position": 4, "name": "Part 2: Job Intelligence", "item": "https://learnopenclaw.org/altdata-jobs.html" }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+      <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" onsubmit="return false;">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+      </form>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="post-header">
+  <div class="post-header-inner">
+    <div class="post-badge">💼 PART 2 OF 5</div>
+    <h1>Job Posting Intelligence — Hiring as a Capital Allocation Signal</h1>
+    <div class="post-meta">Track hiring direction and department-level headcount trends</div>
+  </div>
+</header>
+
+<nav class="series-nav" aria-label="Alternative Data series">
+  <div class="series-nav-inner">
+    <a href="openclaw-for-altdata.html">🗺️ Overview</a>
+    <a href="altdata-trends.html">📈 Part 1: Google Trends</a>
+    <a href="altdata-jobs.html" aria-current="page">💼 Part 2: Job Intelligence</a>
+    <a href="altdata-sentiment.html">💬 Part 3: Sentiment</a>
+    <a href="altdata-appstore.html">📱 Part 4: App & GitHub</a>
+    <a href="altdata-web.html">🌐 Part 5: Web Intelligence</a>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<div class="disclaimer-bar" role="note">
+  ℹ️ <strong>Informational only.</strong> Alternative data sources vary in accuracy and timeliness. Nothing here is investment advice. Always verify data independently before making any decisions.
+</div>
+
+<h2>Why Job Posting Data Matters</h2>
+
+<p>Companies telegraph their strategic priorities through job postings 6–12 months before they show up in financial results. A company posting 80 AI engineering roles is pivoting to AI. One posting 80 sales roles is pushing revenue. One filing WARN Act notices is cutting headcount before earnings. These are all publicly available signals that most investors never systematically track.</p>
+
+<h2>Three Data Layers</h2>
+
+<h3>Layer 1: Job Postings (Indeed/Greenhouse/Lever)</h3>
+
+<ul>
+  <li>Track total open roles per company weekly</li>
+  <li>Break down by department: Engineering, Sales, Marketing, Operations</li>
+  <li>Flag 20%+ increases in any category week-over-week</li>
+  <li>Greenhouse and Lever have public job board JSON APIs (no key required for public boards)</li>
+</ul>
+
+<h3>Layer 2: WARN Act Filings (Free, Public)</h3>
+
+<ul>
+  <li>Worker Adjustment and Retraining Notification Act requires 60-day notice of mass layoffs</li>
+  <li>Filed with state labor departments, most are publicly accessible</li>
+  <li>Signals: layoffs before they're announced, geographic concentration of cuts</li>
+</ul>
+
+<h3>Layer 3: LinkedIn (Signal Only, No Scraping)</h3>
+
+<ul>
+  <li>LinkedIn's Terms of Service prohibit scraping. Use LinkedIn as a manual validation layer only.</li>
+  <li>The HiQ vs LinkedIn case established some protections for public data, but ToS violations remain a risk.</li>
+</ul>
+
+<h2>HEARTBEAT Configuration</h2>
+
+<pre>name: job_intel_monitor
+schedule: "0 9 * * 1"
+steps:
+  - fetch_jobs:
+      companies:
+        - name: "Stripe"
+          greenhouse_board: "stripe"
+        - name: "Notion"
+          greenhouse_board: "notion"
+      departments:
+        - Engineering
+        - Sales
+        - Marketing
+        - Operations
+  - compare:
+      to: last_week
+      flag_if_change_pct_exceeds: 20
+  - fetch_warn:
+      states: ["CA", "NY", "TX", "WA"]
+      since: "{{ 30_days_ago }}"
+  - llm:
+      prompt: |
+        Analyze these job posting trends and WARN filings.
+        Identify: companies hiring aggressively in specific departments,
+        companies showing headcount contraction, any WARN filings for watchlist companies.
+        Data: {{ job_data }} {{ warn_data }}
+  - notify:
+      subject: "💼 Weekly Hiring Intel — {{ date }}"</pre>
+
+<h2>Greenhouse API Implementation</h2>
+
+<h3>Fetch Public Job Board</h3>
+
+<pre>import httpx
+
+def get_greenhouse_jobs(board_token: str) -> list:
+    """Fetch all open jobs from a Greenhouse job board (public, no auth required)."""
+    url = f"https://boards-api.greenhouse.io/v1/boards/{board_token}/jobs"
+    r = httpx.get(url, headers={"User-Agent": "AltDataBot contact@youremail.com"})
+    data = r.json()
+    jobs = data.get("jobs", [])
+    return [{
+        "id": j["id"],
+        "title": j["title"],
+        "department": j.get("departments", [{}])[0].get("name", "Unknown"),
+        "location": j.get("location", {}).get("name", ""),
+        "updated_at": j.get("updated_at", "")
+    } for j in jobs]
+
+def count_by_department(jobs: list) -> dict:
+    from collections import Counter
+    return dict(Counter(j["department"] for j in jobs))</pre>
+
+<h3>WARN Act Data Fetching</h3>
+
+<pre>def fetch_california_warn(since_days: int = 30) -> list:
+    """
+    California WARN notices are published at edd.ca.gov.
+    This fetches the public CSV dataset.
+    """
+    url = "https://www.edd.ca.gov/jobs_and_training/warn/WARN-Report.xlsx"
+    # Note: check edd.ca.gov for current URL — they update periodically
+    import httpx, io
+    import pandas as pd
+    r = httpx.get(url)
+    df = pd.read_excel(io.BytesIO(r.content))
+    df["Notice Date"] = pd.to_datetime(df["Notice Date"], errors="coerce")
+    cutoff = pd.Timestamp.now() - pd.Timedelta(days=since_days)
+    return df[df["Notice Date"] > cutoff].to_dict("records")</pre>
+
+<h2>Frequently Asked Questions</h2>
+
+<div class="faq-section">
+  <div class="faq-item">
+    <strong>Q: Can I scrape LinkedIn for job data?</strong>
+    <p>LinkedIn's ToS prohibits scraping. Use their official APIs or manual validation only.</p>
+  </div>
+
+  <div class="faq-item">
+    <strong>Q: How do I find a company's Greenhouse board token?</strong>
+    <p>Visit jobs.greenhouse.io/{company-name} — many companies use Greenhouse for public job boards.</p>
+  </div>
+
+  <div class="faq-item">
+    <strong>Q: Are WARN filings timely?</strong>
+    <p>By law, companies must file 60 days before a layoff. But some companies pay fines rather than comply. They're a signal, not a guarantee.</p>
+  </div>
+</div>
+
+<h2>Next Steps</h2>
+
+<p>Now that you can track hiring momentum and layoff signals, move to <a href="altdata-sentiment.html">Part 3: Reddit & News Sentiment</a> to monitor how social conversations and news tone shift in response to these hiring and layoff events.</p>
+
+</main>
+
+<footer role="contentinfo">
+  <div style="max-width:700px;margin:0 auto;">
+    <p style="margin:0 0 8px;"><a href="index.html">&#x1F99E; learnopenclaw.org</a></p>
+    <p style="margin:0 0 8px;">
+      <a href="learn.html">Learn</a> ·
+      <a href="blog.html">Blog</a> ·
+      <a href="faq.html">FAQ</a> ·
+      <a href="privacy-policy.html">Privacy</a> ·
+      <a href="claw-street-terminal.html">Terminal</a>
+    </p>
+    <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or investment advice. For educational and informational purposes only.</p>
+  </div>
+</footer>
+
+<script>
+const btn = document.querySelector('.hamburger');
+const menu = document.getElementById('nav-links');
+btn.addEventListener('click', () => {
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!open));
+  menu.classList.toggle('open');
+});
+</script>
+<script src="copy.js"></script>
+
+</body>
+</html>

@@ -1051,5 +1051,143 @@
       "FAQ"
     ],
     "body": "Schedule 13D 13G 13F ownership activism Elliott Starboard Icahn ValueAct Pershing Square activist investor institutional holdings ownership change EDGAR OpenClaw monitoring"
+  },
+  {
+    "url": "openclaw-for-altdata.html",
+    "title": "OpenClaw for Alternative Data \u2014 Build Your Own Edge",
+    "description": "Automate alternative data collection with OpenClaw: Google Trends signals, job posting intelligence, Reddit & news sentiment, app store metrics, and web scraping. Most sources free.",
+    "tags": [
+      "alternative data",
+      "Google Trends",
+      "Reddit",
+      "sentiment",
+      "job postings",
+      "app store",
+      "GitHub",
+      "web scraping"
+    ],
+    "series": "Alternative Data",
+    "headings": [
+      "Overview",
+      "What counts as alternative data",
+      "Free vs paid reality check",
+      "Series roadmap",
+      "FAQ"
+    ],
+    "body": "alternative data Google Trends pytrends Reddit GDELT sentiment job postings WARN Act app store iTunes GitHub web scraping competitor pricing OpenClaw hedge fund free data"
+  },
+  {
+    "url": "altdata-trends.html",
+    "title": "Google Trends Intelligence with OpenClaw \u2014 Alternative Data Part 1 of 5",
+    "description": "Automate Google Trends monitoring with OpenClaw. Track brand search velocity, detect interest spikes before earnings, and compare watchlist companies weekly.",
+    "tags": [
+      "Google Trends",
+      "pytrends",
+      "brand search",
+      "leading indicator",
+      "earnings signal"
+    ],
+    "series": "Alternative Data",
+    "headings": [
+      "Why Google Trends",
+      "What to track",
+      "HEARTBEAT config",
+      "pytrends snippet",
+      "Competitor comparison",
+      "FAQ"
+    ],
+    "body": "Google Trends pytrends brand search velocity leading indicator earnings signal competitor comparison weekly automation OpenClaw free API"
+  },
+  {
+    "url": "altdata-jobs.html",
+    "title": "Job Posting Intelligence with OpenClaw \u2014 Alternative Data Part 2 of 5",
+    "description": "Automate job posting monitoring with OpenClaw. Track hiring direction, department headcount trends, and WARN Act layoff filings as leading indicators.",
+    "tags": [
+      "job postings",
+      "WARN Act",
+      "Greenhouse",
+      "hiring signal",
+      "headcount",
+      "layoffs"
+    ],
+    "series": "Alternative Data",
+    "headings": [
+      "The signal",
+      "Three data layers",
+      "HEARTBEAT config",
+      "Greenhouse API",
+      "WARN Act data",
+      "FAQ"
+    ],
+    "body": "job postings WARN Act Greenhouse Lever hiring signal headcount direction layoffs capital allocation engineering sales department OpenClaw automation"
+  },
+  {
+    "url": "altdata-sentiment.html",
+    "title": "Reddit & News Sentiment with OpenClaw \u2014 Alternative Data Part 3 of 5",
+    "description": "Automate Reddit mention tracking and news sentiment analysis with OpenClaw. Detect mention velocity spikes and monitor GDELT for global news events.",
+    "tags": [
+      "Reddit",
+      "sentiment",
+      "GDELT",
+      "WSB",
+      "news",
+      "mention velocity",
+      "tone analysis"
+    ],
+    "series": "Alternative Data",
+    "headings": [
+      "The signal",
+      "Reddit API",
+      "GDELT",
+      "Velocity calculation",
+      "FAQ"
+    ],
+    "body": "Reddit sentiment GDELT mention velocity wallstreetbets WSB news tone analysis LLM classification OpenClaw automation watchlist spike detection"
+  },
+  {
+    "url": "altdata-appstore.html",
+    "title": "App Store & GitHub Intelligence with OpenClaw \u2014 Alternative Data Part 4 of 5",
+    "description": "Automate app store rating monitoring and GitHub activity tracking with OpenClaw. Digital health metrics that often lead earnings by 1\u20132 quarters.",
+    "tags": [
+      "App Store",
+      "iTunes",
+      "GitHub",
+      "app ratings",
+      "commit activity",
+      "digital health"
+    ],
+    "series": "Alternative Data",
+    "headings": [
+      "The signal",
+      "iTunes API",
+      "GitHub API",
+      "Review sentiment",
+      "Commit velocity",
+      "FAQ"
+    ],
+    "body": "app store iTunes API GitHub commit activity app ratings review sentiment version cadence contributor growth digital health leading indicator OpenClaw automation"
+  },
+  {
+    "url": "altdata-web.html",
+    "title": "Web Intelligence & Price Monitoring with OpenClaw \u2014 Alternative Data Part 5 of 5",
+    "description": "Build responsible web scraping pipelines with OpenClaw for competitive price monitoring, Amazon product rank tracking, and inventory signal detection.",
+    "tags": [
+      "web scraping",
+      "price monitoring",
+      "Amazon",
+      "robots.txt",
+      "BeautifulSoup",
+      "competitor pricing"
+    ],
+    "series": "Alternative Data",
+    "headings": [
+      "Ethics & responsibility",
+      "Amazon rankings",
+      "Competitor pricing",
+      "Press release monitoring",
+      "Multi-signal aggregation",
+      "FAQ"
+    ],
+    "body": "web scraping price monitoring Amazon product rank robots.txt BeautifulSoup competitor pricing inventory signals IR page monitoring responsible scraping OpenClaw"
   }
 ]
