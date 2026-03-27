@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8-K Real-Time Alert System with OpenClaw — Corporate Filings Part 1 of 5</title>
+  <meta name="description" content="Automate 8-K filing alerts with OpenClaw. Get notified the moment companies on your watchlist file material event disclosures: earnings, CEO changes, M&A, bankruptcy, restatements.">
+  <link rel="canonical" href="https://learnopenclaw.org/filings-8k.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="8-K Real-Time Alert System with OpenClaw — Corporate Filings Part 1">
+  <meta property="og:description" content="Automate 8-K filing alerts with OpenClaw. Get notified the moment companies on your watchlist file material event disclosures: earnings, CEO changes, M&A, bankruptcy, restatements.">
+  <meta property="og:url" content="https://learnopenclaw.org/filings-8k.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="8-K Real-Time Alert System with OpenClaw — Corporate Filings Part 1">
+  <meta property="twitter:description" content="Automate 8-K filing alerts with OpenClaw. Get notified the moment companies on your watchlist file material event disclosures: earnings, CEO changes, M&A, bankruptcy, restatements.">
+  <meta property="twitter:image" content="https://learnopenclaw.org/og-image.png">
+
+  <meta name="datePublished" content="2026-03-26">
+  <meta name="dateModified" content="2026-03-26">
+
+  <style>
+    :root {
+      --orange: #c2410c;
+      --orange-lt: #fff7ed;
+      --orange-md: #fed7aa;
+      --orange-dk: #7c2d12;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border: #e5e7eb;
+      --bg-light: #f9fafb;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: #fff;
+    }
+
+    a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .skip-nav {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--orange);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .skip-nav:focus {
+      top: 0;
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-logo:hover {
+      text-decoration: none;
+      color: var(--orange);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-search-form {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-search-icon {
+      position: absolute;
+      left: 12px;
+      pointer-events: none;
+      color: var(--text-secondary);
+    }
+
+    .nav-search-input {
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      width: 180px;
+    }
+
+    .nav-search-input:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.1);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      gap: 6px;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-search-form {
+        display: none;
+      }
+    }
+
+    /* Disclaimer bar */
+    .disclaimer-bar {
+      background: var(--orange-lt);
+      border-top: 2px solid var(--orange-md);
+      border-bottom: 2px solid var(--orange-md);
+      padding: 12px 24px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--orange-dk);
+    }
+
+    .disclaimer-bar strong {
+      font-weight: 600;
+    }
+
+    /* Post header */
+    .post-header {
+      background: linear-gradient(135deg, #431407 0%, #7c2d12 55%, #c2410c 100%);
+      color: #fff;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+
+    .breadcrumb a {
+      color: #fff;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--orange-md);
+      color: var(--orange-dk);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .post-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .post-meta {
+      font-size: 0.95rem;
+      opacity: 0.95;
+      letter-spacing: 0.05em;
+    }
+
+    /* Series nav */
+    .series-nav {
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border);
+      sticky-top: 0;
+      z-index: 40;
+    }
+
+    .series-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      list-style: none;
+    }
+
+    .series-nav a {
+      white-space: nowrap;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .series-nav a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .series-nav a[aria-current="page"] {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+    }
+
+    /* Main content */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .container {
+      padding: 48px 24px;
+    }
+
+    article {
+      line-height: 1.8;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 40px 0 20px;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 30px 0 16px;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-light);
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background: var(--orange-lt);
+    }
+
+    /* Code blocks */
+    pre {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 16px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 24px 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    }
+
+    /* Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .card {
+      background: var(--orange-lt);
+      border: 1px solid var(--orange-md);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: var(--orange-dk);
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* FAQ */
+    .faq {
+      margin: 40px 0;
+    }
+
+    .faq-item {
+      margin-bottom: 24px;
+      border-left: 3px solid var(--orange-md);
+      padding-left: 16px;
+    }
+
+    .faq-item strong {
+      color: var(--orange-dk);
+    }
+
+    /* Footer */
+    footer {
+      background: #1f2937;
+      color: #9ca3af;
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      margin-top: 64px;
+    }
+
+    footer a {
+      color: #d1d5db;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note">
+    ℹ️ <strong>Informational only.</strong> This series shows how to automate SEC EDGAR data retrieval. Nothing here is investment or legal advice. Always consult a qualified professional before making investment decisions.
+  </div>
+
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="https://learnopenclaw.org/">Home</a> / <a href="https://learnopenclaw.org/learn.html">Learn</a> / <a href="https://learnopenclaw.org/openclaw-for-filings.html">Corporate Filings</a> / Part 1
+    </div>
+    <div class="badge">📢 PART 1 OF 5</div>
+    <h1>8-K Alert System — Know About Material Events Within Minutes</h1>
+    <div class="post-meta">Real-Time Material Event Monitoring · Free EDGAR RSS Feed</div>
+  </div>
+
+  <nav class="series-nav" aria-label="Corporate Filings series">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-filings.html">🗺️ Overview</a>
+      <a href="filings-8k.html" aria-current="page">📢 Part 1: 8-K Alerts</a>
+      <a href="filings-insider.html">👁️ Part 2: Insider Trading</a>
+      <a href="filings-10q.html">📋 Part 3: 10-Q Tracker</a>
+      <a href="filings-10k.html">📚 Part 4: 10-K Deep Dive</a>
+      <a href="filings-ownership.html">🏛️ Part 5: Ownership & Activism</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <article>
+      <div class="container">
+        <h2>What is an 8-K?</h2>
+        <p>8-Ks are filed within 4 business days of any "material event." The most important items:</p>
+        <ul style="margin-bottom: 24px; color: var(--text-secondary);">
+          <li><strong>Item 1.01:</strong> Entry into material agreement (M&A, major contracts)</li>
+          <li><strong>Item 1.03:</strong> Bankruptcy / receivership</li>
+          <li><strong>Item 2.02:</strong> Results of operations (earnings releases)</li>
+          <li><strong>Item 4.02:</strong> Non-reliance on financial statements (restatements)</li>
+          <li><strong>Item 5.02:</strong> Director/officer departure or appointment (CEO changes)</li>
+          <li><strong>Item 8.01:</strong> Other material events</li>
+        </ul>
+
+        <h2>Architecture</h2>
+        <p>The 8-K monitoring system fetches the EDGAR RSS feed every 15 minutes, filters by your watchlist CIK numbers, extracts key filing metadata, summarizes with an LLM, and sends notifications:</p>
+        <p style="text-align: center; font-size: 0.95rem; color: var(--text-secondary);">EDGAR RSS feed → OpenClaw HEARTBEAT (every 15 min) → filter by watchlist + item number → LLM summarization → notification</p>
+
+        <h2>HEARTBEAT Configuration</h2>
+        <p>Here's the OpenClaw HEARTBEAT config to monitor 8-Ks on a recurring schedule:</p>
+        <pre>name: edgar_8k_monitor
+schedule: "*/15 * * * *"
+steps:
+  - fetch:
+      url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=8-K&dateb=&owner=include&count=40&search_text=&output=atom"
+      headers:
+        User-Agent: "YourName your@email.com"
+  - filter:
+      field: cik
+      values: "{{ watchlist_ciks }}"
+  - llm:
+      prompt: |
+        Summarize this 8-K filing in 3 bullet points.
+        Focus on: what happened, what item number, material impact.
+        Filing content: {{ content }}
+  - notify:
+      channel: email
+      subject: "🚨 8-K Alert: {{ company_name }} — {{ item_description }}"</pre>
+
+        <h2>Watchlist Configuration</h2>
+        <p>Define your watchlist with ticker symbols and CIK numbers:</p>
+        <pre>watchlist:
+  - ticker: AAPL
+    cik: "0000320193"
+  - ticker: MSFT
+    cik: "0000789019"
+  - ticker: NVDA
+    cik: "0001045810"</pre>
+
+        <h2>Python: Fetching Latest 8-Ks for a CIK</h2>
+        <p>This Python function retrieves recent 8-K filings for a specific company CIK:</p>
+        <pre>import httpx
+
+def get_recent_8ks(cik: str, count: int = 10):
+    padded = cik.zfill(10)
+    url = f"https://data.sec.gov/submissions/CIK{padded}.json"
+    headers = {"User-Agent": "YourName your@email.com"}
+    r = httpx.get(url, headers=headers)
+    data = r.json()
+    filings = data["filings"]["recent"]
+    results = []
+    for i, form in enumerate(filings["form"]):
+        if form == "8-K":
+            results.append({
+                "date": filings["filingDate"][i],
+                "accession": filings["accessionNumber"][i],
+                "description": filings["primaryDocument"][i]
+            })
+        if len(results) >= count:
+            break
+    return results</pre>
+
+        <h2>Noise Filtering</h2>
+        <p>Not all 8-Ks are equal. Filter by item number to prioritize signal over noise:</p>
+        <table>
+          <th scope="col"ead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Signal Strength</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2.02 (Earnings)</td>
+              <td>⭐⭐⭐⭐⭐</td>
+              <td>Highest priority — material financial results</td>
+            </tr>
+            <tr>
+              <td>5.02 (Executive Changes)</td>
+              <td>⭐⭐⭐⭐⭐</td>
+              <td>CEO/CFO departure or appointment</td>
+            </tr>
+            <tr>
+              <td>1.01 (Material Agreement)</td>
+              <td>⭐⭐⭐⭐</td>
+              <td>M&A, major contracts, partnerships</td>
+            </tr>
+            <tr>
+              <td>1.03 (Bankruptcy)</td>
+              <td>⭐⭐⭐⭐</td>
+              <td>Extreme events — always material</td>
+            </tr>
+            <tr>
+              <td>4.02 (Restatement)</td>
+              <td>⭐⭐⭐⭐</td>
+              <td>Accounting corrections — review immediately</td>
+            </tr>
+            <tr>
+              <td>7.01 / 8.01 (Other)</td>
+              <td>⭐</td>
+              <td>Often routine press releases — low signal</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>FAQ</h2>
+        <div class="faq">
+          <div class="faq-item">
+            <p><strong>Q: How do I find a company's CIK number?</strong></p>
+            <p>A: Search at sec.gov/cgi-bin/browse-edgar or hit data.sec.gov/submissions/CIK{padded}.json directly with a ticker symbol search.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: Can I monitor all 8-Ks, not just my watchlist?</strong></p>
+            <p>A: Yes, use the full RSS feed and filter by sector using SIC codes. Note: This generates high volume — be ready to filter or you'll be overwhelmed.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: What User-Agent is required?</strong></p>
+            <p>A: SEC requires identifying yourself: "CompanyName contact@email.com" format. This helps them track usage patterns and contact you if needed.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer role="contentinfo" style="background:#1f2937;color:#9ca3af;text-align:center;padding:32px 24px;font-size:.85rem;">
+    <div style="max-width:700px;margin:0 auto;">
+      <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+      <p style="margin:0 0 8px;">
+        <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+        <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+        <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+        <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+        <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+      </p>
+      <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or legal advice. For educational and informational purposes only.</p>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "8-K Real-Time Alert System with OpenClaw — Corporate Filings Part 1",
+    "description": "Automate 8-K filing alerts with OpenClaw. Get notified the moment companies on your watchlist file material event disclosures.",
+    "datePublished": "2026-03-26",
+    "dateModified": "2026-03-26",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I find a company's CIK number?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Search at sec.gov/cgi-bin/browse-edgar or hit data.sec.gov/submissions/CIK{padded}.json directly with a ticker symbol search."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I monitor all 8-Ks, not just my watchlist?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, use the full RSS feed and filter by sector using SIC codes. Note: This generates high volume — be ready to filter or you'll be overwhelmed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What User-Agent is required?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SEC requires identifying yourself: \"CompanyName contact@email.com\" format. This helps them track usage patterns and contact you if needed."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Corporate Filings",
+        "item": "https://learnopenclaw.org/openclaw-for-filings.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Part 1: 8-K Alerts",
+        "item": "https://learnopenclaw.org/filings-8k.html"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu.classList.toggle('open');
+  });
+  </script>
+  <script src="copy.js"></script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10-Q Earnings Filing Tracker with OpenClaw — Corporate Filings Part 3 of 5</title>
+  <meta name="description" content="Automate 10-Q monitoring with OpenClaw. Get instant alerts when quarterly reports file, extract revenue, EPS, and free cash flow, and compare to prior quarter automatically.">
+  <link rel="canonical" href="https://learnopenclaw.org/filings-10q.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="10-Q Earnings Filing Tracker with OpenClaw — Corporate Filings Part 3">
+  <meta property="og:description" content="Automate 10-Q monitoring with OpenClaw. Get instant alerts when quarterly reports file, extract revenue, EPS, and free cash flow, and compare to prior quarter automatically.">
+  <meta property="og:url" content="https://learnopenclaw.org/filings-10q.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="10-Q Earnings Filing Tracker with OpenClaw — Corporate Filings Part 3">
+  <meta property="twitter:description" content="Automate 10-Q monitoring with OpenClaw. Get instant alerts when quarterly reports file, extract revenue, EPS, and free cash flow, and compare to prior quarter automatically.">
+  <meta property="twitter:image" content="https://learnopenclaw.org/og-image.png">
+
+  <meta name="datePublished" content="2026-03-26">
+  <meta name="dateModified" content="2026-03-26">
+
+  <style>
+    :root {
+      --orange: #c2410c;
+      --orange-lt: #fff7ed;
+      --orange-md: #fed7aa;
+      --orange-dk: #7c2d12;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border: #e5e7eb;
+      --bg-light: #f9fafb;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: #fff;
+    }
+
+    a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .skip-nav {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--orange);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .skip-nav:focus {
+      top: 0;
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-logo:hover {
+      text-decoration: none;
+      color: var(--orange);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-search-form {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-search-icon {
+      position: absolute;
+      left: 12px;
+      pointer-events: none;
+      color: var(--text-secondary);
+    }
+
+    .nav-search-input {
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      width: 180px;
+    }
+
+    .nav-search-input:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.1);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      gap: 6px;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-search-form {
+        display: none;
+      }
+    }
+
+    /* Disclaimer bar */
+    .disclaimer-bar {
+      background: var(--orange-lt);
+      border-top: 2px solid var(--orange-md);
+      border-bottom: 2px solid var(--orange-md);
+      padding: 12px 24px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--orange-dk);
+    }
+
+    .disclaimer-bar strong {
+      font-weight: 600;
+    }
+
+    /* Post header */
+    .post-header {
+      background: linear-gradient(135deg, #431407 0%, #7c2d12 55%, #c2410c 100%);
+      color: #fff;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+
+    .breadcrumb a {
+      color: #fff;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--orange-md);
+      color: var(--orange-dk);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .post-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .post-meta {
+      font-size: 0.95rem;
+      opacity: 0.95;
+      letter-spacing: 0.05em;
+    }
+
+    /* Series nav */
+    .series-nav {
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border);
+      sticky-top: 0;
+      z-index: 40;
+    }
+
+    .series-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      list-style: none;
+    }
+
+    .series-nav a {
+      white-space: nowrap;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .series-nav a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .series-nav a[aria-current="page"] {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+    }
+
+    /* Main content */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .container {
+      padding: 48px 24px;
+    }
+
+    article {
+      line-height: 1.8;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 40px 0 20px;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 30px 0 16px;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-light);
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background: var(--orange-lt);
+    }
+
+    /* Code blocks */
+    pre {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 16px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 24px 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    }
+
+    /* FAQ */
+    .faq {
+      margin: 40px 0;
+    }
+
+    .faq-item {
+      margin-bottom: 24px;
+      border-left: 3px solid var(--orange-md);
+      padding-left: 16px;
+    }
+
+    .faq-item strong {
+      color: var(--orange-dk);
+    }
+
+    /* Footer */
+    footer {
+      background: #1f2937;
+      color: #9ca3af;
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      margin-top: 64px;
+    }
+
+    footer a {
+      color: #d1d5db;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note">
+    ℹ️ <strong>Informational only.</strong> This series shows how to automate SEC EDGAR data retrieval. Nothing here is investment or legal advice. Always consult a qualified professional before making investment decisions.
+  </div>
+
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="https://learnopenclaw.org/">Home</a> / <a href="https://learnopenclaw.org/learn.html">Learn</a> / <a href="https://learnopenclaw.org/openclaw-for-filings.html">Corporate Filings</a> / Part 3
+    </div>
+    <div class="badge">📋 PART 3 OF 5</div>
+    <h1>10-Q Tracker — Extract Quarterly Financials the Moment They Drop</h1>
+    <div class="post-meta">Quarterly Financial Monitoring · XBRL Extraction · Automated Comparisons</div>
+  </div>
+
+  <nav class="series-nav" aria-label="Corporate Filings series">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-filings.html">🗺️ Overview</a>
+      <a href="filings-8k.html">📢 Part 1: 8-K Alerts</a>
+      <a href="filings-insider.html">👁️ Part 2: Insider Trading</a>
+      <a href="filings-10q.html" aria-current="page">📋 Part 3: 10-Q Tracker</a>
+      <a href="filings-10k.html">📚 Part 4: 10-K Deep Dive</a>
+      <a href="filings-ownership.html">🏛️ Part 5: Ownership & Activism</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <article>
+      <div class="container">
+        <h2>What is a 10-Q?</h2>
+        <p>Companies file 10-Qs within 40–45 days of each quarter end (Q1, Q2, Q3 — Q4 is covered by the 10-K). Contains:</p>
+        <ul style="margin-bottom: 24px; color: var(--text-secondary);">
+          <li><strong>Income statement, balance sheet, cash flow statement</strong></li>
+          <li><strong>MD&A (Management Discussion & Analysis)</strong> — management's narrative of results and outlook</li>
+          <li><strong>Risk factor updates</strong> — changes to company risk profile</li>
+          <li><strong>Legal proceedings</strong> — litigation and regulatory matters</li>
+        </ul>
+
+        <h2>Architecture</h2>
+        <p>The 10-Q monitor detects new filings, extracts standardized XBRL financial data, compares to the prior quarter, flags significant changes, and notifies you:</p>
+        <p style="text-align: center; font-size: 0.95rem; color: var(--text-secondary);">EDGAR submissions API → detect new 10-Q filing → extract XBRL financial data → compare to prior quarter → generate summary → notify</p>
+
+        <h2>HEARTBEAT Configuration</h2>
+        <pre>name: tenq_tracker
+schedule: "0 8 * * 1-5"
+steps:
+  - fetch_filings:
+      type: "10-Q"
+      ciks: "{{ watchlist_ciks }}"
+      since: "{{ last_run_date }}"
+  - extract_xbrl:
+      metrics:
+        - Revenues
+        - NetIncomeLoss
+        - OperatingIncomeLoss
+        - CashAndCashEquivalentsAtCarryingValue
+        - EarningsPerShareDiluted
+  - compare:
+      to: prior_quarter
+      flag_if_change_pct_exceeds: 10
+  - llm:
+      prompt: |
+        Summarize this 10-Q filing in a structured brief:
+        - Revenue vs prior quarter
+        - Key changes in operating income
+        - Notable MD&A language
+        - Any new or changed risk factors
+        Data: {{ xbrl_data }}
+  - notify:
+      channel: email
+      subject: "📋 10-Q Filed: {{ ticker }} Q{{ quarter }} {{ year }}"</pre>
+
+        <h2>XBRL Extraction with Python</h2>
+        <p>Extract standardized financial metrics from SEC XBRL data using the SEC's Company Facts API:</p>
+        <pre>import httpx
+
+def get_company_facts(cik: str, metric: str):
+    padded = cik.zfill(10)
+    url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{padded}.json"
+    headers = {"User-Agent": "YourName your@email.com"}
+    r = httpx.get(url, headers=headers)
+    facts = r.json()
+    # Navigate to the metric
+    us_gaap = facts.get("facts", {}).get("us-gaap", {})
+    if metric not in us_gaap:
+        return []
+    units = us_gaap[metric].get("units", {})
+    # Get USD values, filter for 10-Q form
+    usd = units.get("USD", [])
+    quarterly = [v for v in usd if v.get("form") == "10-Q"]
+    return sorted(quarterly, key=lambda x: x["end"], reverse=True)</pre>
+
+        <h2>Earnings Season Calendar</h2>
+        <p>10-Qs cluster around quarter-end filing deadlines. Adjust your monitoring intensity:</p>
+        <table>
+          <th scope="col"ead>
+            <tr>
+              <th scope="col">Quarter</th>
+              <th scope="col">Period Ends</th>
+              <th scope="col">Filing Window</th>
+              <th scope="col">Recommended Schedule</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Q1</td>
+              <td>March 31</td>
+              <td>Mid-April to mid-May</td>
+              <td>Daily during April–May</td>
+            </tr>
+            <tr>
+              <td>Q2</td>
+              <td>June 30</td>
+              <td>Mid-July to mid-August</td>
+              <td>Daily during July–Aug</td>
+            </tr>
+            <tr>
+              <td>Q3</td>
+              <td>Sept 30</td>
+              <td>Mid-October to mid-November</td>
+              <td>Daily during Oct–Nov</td>
+            </tr>
+            <tr>
+              <td>Off-season</td>
+              <td>—</td>
+              <td>—</td>
+              <td>Weekly</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>FAQ</h2>
+        <div class="faq">
+          <div class="faq-item">
+            <p><strong>Q: What's XBRL?</strong></p>
+            <p>A: eXtensible Business Reporting Language — a standardized tagging system the SEC requires for financial data. Makes extraction programmatic instead of manual PDF parsing.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: Can I get EPS estimates to compare against?</strong></p>
+            <p>A: EPS estimates require a paid provider (Visible Alpha, FactSet). EDGAR only has actuals. But you can track consensus estimates separately.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: How do I handle companies that are late filers?</strong></p>
+            <p>A: Late 10-Q filers get NT 10-Q notices in EDGAR. You can monitor those too. Track filing delays as a signal of operational stress.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer role="contentinfo" style="background:#1f2937;color:#9ca3af;text-align:center;padding:32px 24px;font-size:.85rem;">
+    <div style="max-width:700px;margin:0 auto;">
+      <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+      <p style="margin:0 0 8px;">
+        <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+        <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+        <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+        <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+        <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+      </p>
+      <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or legal advice. For educational and informational purposes only.</p>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "10-Q Earnings Filing Tracker with OpenClaw — Corporate Filings Part 3",
+    "description": "Automate 10-Q monitoring with OpenClaw. Get instant alerts when quarterly reports file, extract revenue, EPS, and free cash flow.",
+    "datePublished": "2026-03-26",
+    "dateModified": "2026-03-26",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What's XBRL?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "eXtensible Business Reporting Language — a standardized tagging system the SEC requires for financial data. Makes extraction programmatic instead of manual PDF parsing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I get EPS estimates to compare against?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "EPS estimates require a paid provider (Visible Alpha, FactSet). EDGAR only has actuals. But you can track consensus estimates separately."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle companies that are late filers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Late 10-Q filers get NT 10-Q notices in EDGAR. You can monitor those too. Track filing delays as a signal of operational stress."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Corporate Filings",
+        "item": "https://learnopenclaw.org/openclaw-for-filings.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Part 3: 10-Q Tracker",
+        "item": "https://learnopenclaw.org/filings-10q.html"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu.classList.toggle('open');
+  });
+  </script>
+  <script src="copy.js"></script>
+</body>
+</html>

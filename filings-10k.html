@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10-K Annual Deep Dive with OpenClaw — Corporate Filings Part 4 of 5</title>
+  <meta name="description" content="Use OpenClaw to automate 10-K annual report monitoring. Extract financials, detect risk factor changes with NLP diff, track debt maturity schedules, and compare segment revenue year-over-year.">
+  <link rel="canonical" href="https://learnopenclaw.org/filings-10k.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="10-K Annual Deep Dive with OpenClaw — Corporate Filings Part 4">
+  <meta property="og:description" content="Use OpenClaw to automate 10-K annual report monitoring. Extract financials, detect risk factor changes with NLP diff, track debt maturity schedules, and compare segment revenue year-over-year.">
+  <meta property="og:url" content="https://learnopenclaw.org/filings-10k.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="10-K Annual Deep Dive with OpenClaw — Corporate Filings Part 4">
+  <meta property="twitter:description" content="Use OpenClaw to automate 10-K annual report monitoring. Extract financials, detect risk factor changes with NLP diff, track debt maturity schedules, and compare segment revenue year-over-year.">
+  <meta property="twitter:image" content="https://learnopenclaw.org/og-image.png">
+
+  <meta name="datePublished" content="2026-03-26">
+  <meta name="dateModified" content="2026-03-26">
+
+  <style>
+    :root {
+      --orange: #c2410c;
+      --orange-lt: #fff7ed;
+      --orange-md: #fed7aa;
+      --orange-dk: #7c2d12;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border: #e5e7eb;
+      --bg-light: #f9fafb;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: #fff;
+    }
+
+    a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .skip-nav {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--orange);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .skip-nav:focus {
+      top: 0;
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-logo:hover {
+      text-decoration: none;
+      color: var(--orange);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-search-form {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-search-icon {
+      position: absolute;
+      left: 12px;
+      pointer-events: none;
+      color: var(--text-secondary);
+    }
+
+    .nav-search-input {
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      width: 180px;
+    }
+
+    .nav-search-input:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.1);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      gap: 6px;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-search-form {
+        display: none;
+      }
+    }
+
+    /* Disclaimer bar */
+    .disclaimer-bar {
+      background: var(--orange-lt);
+      border-top: 2px solid var(--orange-md);
+      border-bottom: 2px solid var(--orange-md);
+      padding: 12px 24px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--orange-dk);
+    }
+
+    .disclaimer-bar strong {
+      font-weight: 600;
+    }
+
+    /* Post header */
+    .post-header {
+      background: linear-gradient(135deg, #431407 0%, #7c2d12 55%, #c2410c 100%);
+      color: #fff;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+
+    .breadcrumb a {
+      color: #fff;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--orange-md);
+      color: var(--orange-dk);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .post-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .post-meta {
+      font-size: 0.95rem;
+      opacity: 0.95;
+      letter-spacing: 0.05em;
+    }
+
+    /* Series nav */
+    .series-nav {
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border);
+      sticky-top: 0;
+      z-index: 40;
+    }
+
+    .series-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      list-style: none;
+    }
+
+    .series-nav a {
+      white-space: nowrap;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .series-nav a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .series-nav a[aria-current="page"] {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+    }
+
+    /* Main content */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .container {
+      padding: 48px 24px;
+    }
+
+    article {
+      line-height: 1.8;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 40px 0 20px;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 30px 0 16px;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-light);
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background: var(--orange-lt);
+    }
+
+    /* Code blocks */
+    pre {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 16px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 24px 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    }
+
+    /* Callout */
+    .callout {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: var(--radius);
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
+
+    .callout strong {
+      color: #92400e;
+    }
+
+    /* FAQ */
+    .faq {
+      margin: 40px 0;
+    }
+
+    .faq-item {
+      margin-bottom: 24px;
+      border-left: 3px solid var(--orange-md);
+      padding-left: 16px;
+    }
+
+    .faq-item strong {
+      color: var(--orange-dk);
+    }
+
+    /* Footer */
+    footer {
+      background: #1f2937;
+      color: #9ca3af;
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      margin-top: 64px;
+    }
+
+    footer a {
+      color: #d1d5db;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note">
+    ℹ️ <strong>Informational only.</strong> This series shows how to automate SEC EDGAR data retrieval. Nothing here is investment or legal advice. Always consult a qualified professional before making investment decisions.
+  </div>
+
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="https://learnopenclaw.org/">Home</a> / <a href="https://learnopenclaw.org/learn.html">Learn</a> / <a href="https://learnopenclaw.org/openclaw-for-filings.html">Corporate Filings</a> / Part 4
+    </div>
+    <div class="badge">📚 PART 4 OF 5</div>
+    <h1>10-K Deep Dive — Automate Annual Report Intelligence</h1>
+    <div class="post-meta">Annual Report Monitoring · Risk Factor Change Detection · NLP Diff Analysis</div>
+  </div>
+
+  <nav class="series-nav" aria-label="Corporate Filings series">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-filings.html">🗺️ Overview</a>
+      <a href="filings-8k.html">📢 Part 1: 8-K Alerts</a>
+      <a href="filings-insider.html">👁️ Part 2: Insider Trading</a>
+      <a href="filings-10q.html">📋 Part 3: 10-Q Tracker</a>
+      <a href="filings-10k.html" aria-current="page">📚 Part 4: 10-K Deep Dive</a>
+      <a href="filings-ownership.html">🏛️ Part 5: Ownership & Activism</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <article>
+      <div class="container">
+        <h2>What is a 10-K?</h2>
+        <p>The 10-K is the comprehensive annual report. Filed within 60–90 days of fiscal year end depending on company size. Key sections:</p>
+        <ul style="margin-bottom: 24px; color: var(--text-secondary);">
+          <li><strong>Item 1:</strong> Business description — what the company does</li>
+          <li><strong>Item 1A:</strong> Risk factors — most important for change detection</li>
+          <li><strong>Item 7:</strong> MD&A — management discussion & analysis</li>
+          <li><strong>Item 8:</strong> Financial statements — full GAAP audited financials</li>
+          <li><strong>Item 9A:</strong> Internal controls — management's assessment of controls</li>
+        </ul>
+
+        <h2>The Killer Feature: Risk Factor Diff</h2>
+        <p>Item 1A risk factors change year-over-year. New risk factors often signal things management is worried about before they show up in financials: new litigation, regulatory scrutiny, supply chain issues, competitive threats. OpenClaw can diff this year's risk factors against last year's and flag new language with semantic NLP, not just string matching.</p>
+
+        <h2>Risk Factor Diff Configuration</h2>
+        <pre>name: tenk_risk_diff
+schedule: "0 9 * * 1"
+steps:
+  - fetch_10k:
+      ciks: "{{ watchlist_ciks }}"
+      since: "{{ 90_days_ago }}"
+  - extract_section:
+      section: "Item 1A"
+      method: text_extraction
+  - compare:
+      to: prior_year_10k
+      method: semantic_diff
+      threshold: 0.15
+  - llm:
+      prompt: |
+        Compare these two versions of Item 1A Risk Factors.
+        Identify: new risks added, risks removed, material language changes.
+        Be specific about what changed and why it might matter.
+        Prior year: {{ prior_risk_factors }}
+        Current year: {{ current_risk_factors }}
+  - notify:
+      subject: "📚 10-K Risk Factor Changes: {{ ticker }} {{ fiscal_year }}"</pre>
+
+        <h2>Segment Revenue Extraction</h2>
+        <p>Extract segment-level revenue data from XBRL to track business mix changes:</p>
+        <pre>def get_segment_revenue(cik: str):
+    """Extract segment revenue from XBRL company facts."""
+    padded = cik.zfill(10)
+    url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{padded}.json"
+    headers = {"User-Agent": "YourName your@email.com"}
+    r = httpx.get(url, headers=headers)
+    facts = r.json()
+    # RevenueFromContractWithCustomerExcludingAssessedTax
+    # or Revenues — try both
+    us_gaap = facts["facts"].get("us-gaap", {})
+    for tag in ["RevenueFromContractWithCustomerExcludingAssessedTax", "Revenues"]:
+        if tag in us_gaap:
+            annual = [v for v in us_gaap[tag]["units"].get("USD", [])
+                      if v.get("form") == "10-K"]
+            return sorted(annual, key=lambda x: x["end"], reverse=True)
+    return []</pre>
+
+        <h2>Debt Maturity Schedule Extraction</h2>
+        <p>10-K note disclosures include future debt maturities. Extract and alert on large maturities within 18 months with questionable refinancing capacity:</p>
+        <div class="callout">
+          <strong>Debt maturity cliff detection:</strong> Companies with large debt maturities in the near term + declining free cash flow + rising interest rates = refinancing risk. This is findable in the debt schedule notes.
+        </div>
+
+        <h2>Annual vs Quarterly Comparison</h2>
+        <table>
+          <th scope="col"ead>
+            <tr>
+              <th scope="col">Aspect</th>
+              <th scope="col">10-K (Annual)</th>
+              <th scope="col">10-Q (Quarterly)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Filing frequency</td>
+              <td>Once per year</td>
+              <td>3 times per year (Q1, Q2, Q3)</td>
+            </tr>
+            <tr>
+              <td>Audit status</td>
+              <td>Fully audited by external auditor</td>
+              <td>Reviewed (not audited)</td>
+            </tr>
+            <tr>
+              <td>Risk factors section</td>
+              <td>Detailed Item 1A</td>
+              <td>Updates only (Item 1A.Risk Factors)</td>
+            </tr>
+            <tr>
+              <td>Internal controls assessment</td>
+              <td>Full Item 9A with auditor opinion</td>
+              <td>Management assessment only</td>
+            </tr>
+            <tr>
+              <td>Use case</td>
+              <td>Comprehensive annual review, risk monitoring</td>
+              <td>Timely operational updates, trend tracking</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>FAQ</h2>
+        <div class="faq">
+          <div class="faq-item">
+            <p><strong>Q: How long are 10-Ks?</strong></p>
+            <p>A: Large accelerated filers often file 100–300 page 10-Ks. You don't read them — OpenClaw extracts and summarizes what changed from last year.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: Can I compare across companies?</strong></p>
+            <p>A: XBRL makes cross-company comparison possible for standardized metrics. Segment data is less standardized because reporting structures vary.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: How do I handle fiscal years that don't end in December?</strong></p>
+            <p>A: Filter by the `period` field in the EDGAR API response, not calendar year. Walmart's fiscal year ends January 31, for example.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer role="contentinfo" style="background:#1f2937;color:#9ca3af;text-align:center;padding:32px 24px;font-size:.85rem;">
+    <div style="max-width:700px;margin:0 auto;">
+      <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+      <p style="margin:0 0 8px;">
+        <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+        <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+        <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+        <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+        <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+      </p>
+      <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or legal advice. For educational and informational purposes only.</p>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "10-K Annual Deep Dive with OpenClaw — Corporate Filings Part 4",
+    "description": "Use OpenClaw to automate 10-K annual report monitoring. Extract financials, detect risk factor changes with NLP diff, track debt maturity schedules.",
+    "datePublished": "2026-03-26",
+    "dateModified": "2026-03-26",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long are 10-Ks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Large accelerated filers often file 100–300 page 10-Ks. You don't read them — OpenClaw extracts and summarizes what changed from last year."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I compare across companies?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "XBRL makes cross-company comparison possible for standardized metrics. Segment data is less standardized because reporting structures vary."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle fiscal years that don't end in December?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Filter by the `period` field in the EDGAR API response, not calendar year. Walmart's fiscal year ends January 31, for example."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Corporate Filings",
+        "item": "https://learnopenclaw.org/openclaw-for-filings.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Part 4: 10-K Deep Dive",
+        "item": "https://learnopenclaw.org/filings-10k.html"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu.classList.toggle('open');
+  });
+  </script>
+  <script src="copy.js"></script>
+</body>
+</html>

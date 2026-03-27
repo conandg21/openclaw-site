@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insider Trading Monitor with OpenClaw — Corporate Filings Part 2 of 5</title>
+  <meta name="description" content="Automate Form 4 insider trading monitoring with OpenClaw. Detect cluster buying, unusual transaction sizes, and director vs officer distinctions — all from free SEC EDGAR data.">
+  <link rel="canonical" href="https://learnopenclaw.org/filings-insider.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Insider Trading Monitor with OpenClaw — Corporate Filings Part 2">
+  <meta property="og:description" content="Automate Form 4 insider trading monitoring with OpenClaw. Detect cluster buying, unusual transaction sizes, and director vs officer distinctions — all from free SEC EDGAR data.">
+  <meta property="og:url" content="https://learnopenclaw.org/filings-insider.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Insider Trading Monitor with OpenClaw — Corporate Filings Part 2">
+  <meta property="twitter:description" content="Automate Form 4 insider trading monitoring with OpenClaw. Detect cluster buying, unusual transaction sizes, and director vs officer distinctions — all from free SEC EDGAR data.">
+  <meta property="twitter:image" content="https://learnopenclaw.org/og-image.png">
+
+  <meta name="datePublished" content="2026-03-26">
+  <meta name="dateModified" content="2026-03-26">
+
+  <style>
+    :root {
+      --orange: #c2410c;
+      --orange-lt: #fff7ed;
+      --orange-md: #fed7aa;
+      --orange-dk: #7c2d12;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border: #e5e7eb;
+      --bg-light: #f9fafb;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: #fff;
+    }
+
+    a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .skip-nav {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--orange);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .skip-nav:focus {
+      top: 0;
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-logo:hover {
+      text-decoration: none;
+      color: var(--orange);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-search-form {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-search-icon {
+      position: absolute;
+      left: 12px;
+      pointer-events: none;
+      color: var(--text-secondary);
+    }
+
+    .nav-search-input {
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      width: 180px;
+    }
+
+    .nav-search-input:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.1);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      gap: 6px;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-search-form {
+        display: none;
+      }
+    }
+
+    /* Disclaimer bar */
+    .disclaimer-bar {
+      background: var(--orange-lt);
+      border-top: 2px solid var(--orange-md);
+      border-bottom: 2px solid var(--orange-md);
+      padding: 12px 24px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--orange-dk);
+    }
+
+    .disclaimer-bar strong {
+      font-weight: 600;
+    }
+
+    /* Post header */
+    .post-header {
+      background: linear-gradient(135deg, #431407 0%, #7c2d12 55%, #c2410c 100%);
+      color: #fff;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+
+    .breadcrumb a {
+      color: #fff;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--orange-md);
+      color: var(--orange-dk);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .post-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .post-meta {
+      font-size: 0.95rem;
+      opacity: 0.95;
+      letter-spacing: 0.05em;
+    }
+
+    /* Series nav */
+    .series-nav {
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border);
+      sticky-top: 0;
+      z-index: 40;
+    }
+
+    .series-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      list-style: none;
+    }
+
+    .series-nav a {
+      white-space: nowrap;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .series-nav a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .series-nav a[aria-current="page"] {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+    }
+
+    /* Main content */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .container {
+      padding: 48px 24px;
+    }
+
+    article {
+      line-height: 1.8;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 40px 0 20px;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 30px 0 16px;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-light);
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background: var(--orange-lt);
+    }
+
+    /* Code blocks */
+    pre {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 16px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 24px 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    }
+
+    /* FAQ */
+    .faq {
+      margin: 40px 0;
+    }
+
+    .faq-item {
+      margin-bottom: 24px;
+      border-left: 3px solid var(--orange-md);
+      padding-left: 16px;
+    }
+
+    .faq-item strong {
+      color: var(--orange-dk);
+    }
+
+    /* Footer */
+    footer {
+      background: #1f2937;
+      color: #9ca3af;
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      margin-top: 64px;
+    }
+
+    footer a {
+      color: #d1d5db;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note">
+    ℹ️ <strong>Informational only.</strong> This series shows how to automate SEC EDGAR data retrieval. Nothing here is investment or legal advice. Always consult a qualified professional before making investment decisions.
+  </div>
+
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="https://learnopenclaw.org/">Home</a> / <a href="https://learnopenclaw.org/learn.html">Learn</a> / <a href="https://learnopenclaw.org/openclaw-for-filings.html">Corporate Filings</a> / Part 2
+    </div>
+    <div class="badge">👁️ PART 2 OF 5</div>
+    <h1>Insider Trading Monitor — Track Every Form 4 on Your Watchlist</h1>
+    <div class="post-meta">Insider Activity Monitoring · Cluster Buying Detection</div>
+  </div>
+
+  <nav class="series-nav" aria-label="Corporate Filings series">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-filings.html">🗺️ Overview</a>
+      <a href="filings-8k.html">📢 Part 1: 8-K Alerts</a>
+      <a href="filings-insider.html" aria-current="page">👁️ Part 2: Insider Trading</a>
+      <a href="filings-10q.html">📋 Part 3: 10-Q Tracker</a>
+      <a href="filings-10k.html">📚 Part 4: 10-K Deep Dive</a>
+      <a href="filings-ownership.html">🏛️ Part 5: Ownership & Activism</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <article>
+      <div class="container">
+        <h2>What is a Form 4?</h2>
+        <p>Insiders (officers, directors, 10%+ shareholders) must file Form 4 within 2 business days of any transaction. Includes:</p>
+        <ul style="margin-bottom: 24px; color: var(--text-secondary);">
+          <li><strong>Transaction type:</strong> purchase (P), sale (S), gift (G), option exercise (M)</li>
+          <li><strong>Share count and price</strong></li>
+          <li><strong>Post-transaction ownership</strong></li>
+          <li><strong>Relationship to company:</strong> CEO, director, 10% owner, etc.</li>
+        </ul>
+
+        <h2>Why It Matters</h2>
+        <p>Insiders can sell for many reasons: diversification, taxes, mortgages, life events. But insiders only buy for one reason — they think the stock is going up. <strong>Cluster buying</strong> (multiple insiders buying in the same 1–2 week window) is one of the highest-signal events in public markets.</p>
+
+        <h2>Architecture</h2>
+        <p>The Form 4 monitor fetches the EDGAR feed every 2 hours, filters filings by your watchlist, classifies transaction types, checks for cluster signals, and notifies you:</p>
+        <p style="text-align: center; font-size: 0.95rem; color: var(--text-secondary);">EDGAR Form 4 feed → OpenClaw HEARTBEAT (every 2 hours) → filter by watchlist → classify transaction → check for cluster signal → notify if threshold met</p>
+
+        <h2>HEARTBEAT Configuration</h2>
+        <pre>name: form4_monitor
+schedule: "0 */2 * * *"
+steps:
+  - fetch:
+      url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=4&dateb=&owner=include&count=40&output=atom"
+      headers:
+        User-Agent: "YourName your@email.com"
+  - filter:
+      field: cik
+      values: "{{ watchlist_ciks }}"
+  - classify:
+      field: transaction_type
+      map:
+        P: "Open market purchase 🟢"
+        S: "Open market sale 🔴"
+        M: "Option exercise"
+        G: "Gift"
+  - cluster_check:
+      window_days: 14
+      min_insiders: 2
+      alert_on_match: true
+  - notify:
+      channel: email
+      subject: "👁️ Insider Activity: {{ ticker }} — {{ insider_name }} {{ transaction_type }}"</pre>
+
+        <h2>Cluster Signal Detection</h2>
+        <p>Python function to detect cluster buying — multiple insiders purchasing within a 14-day window:</p>
+        <pre>from collections import defaultdict
+from datetime import datetime, timedelta
+
+def detect_cluster_buying(transactions: list, window_days: int = 14) -> bool:
+    cutoff = datetime.now() - timedelta(days=window_days)
+    buyers = set()
+    for t in transactions:
+        if t["type"] == "P" and datetime.fromisoformat(t["date"]) > cutoff:
+            buyers.add(t["insider_name"])
+    return len(buyers) >= 2  # Two or more distinct insiders buying = cluster</pre>
+
+        <h2>Signal Quality by Role</h2>
+        <table>
+          <th scope="col"ead>
+            <tr>
+              <th scope="col">Signal</th>
+              <th scope="col">Strength</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CEO open market purchase</td>
+              <td>⭐⭐⭐⭐⭐</td>
+              <td>Highest conviction — CEO has full visibility</td>
+            </tr>
+            <tr>
+              <td>Multiple directors buying same week</td>
+              <td>⭐⭐⭐⭐⭐</td>
+              <td>Cluster signal — board sees opportunity</td>
+            </tr>
+            <tr>
+              <td>CFO purchase</td>
+              <td>⭐⭐⭐⭐</td>
+              <td>Strong — CFO knows the numbers intimately</td>
+            </tr>
+            <tr>
+              <td>Director purchase</td>
+              <td>⭐⭐⭐</td>
+              <td>Good signal — but less insider info than C-suite</td>
+            </tr>
+            <tr>
+              <td>Any insider sale</td>
+              <td>⭐</td>
+              <td>Low signal — many reasons to sell (taxes, diversification)</td>
+            </tr>
+            <tr>
+              <td>Option exercise + immediate sale</td>
+              <td>⭐</td>
+              <td>Typically compensation — not conviction</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>FAQ</h2>
+        <div class="faq">
+          <div class="faq-item">
+            <p><strong>Q: Are Form 4s always filed within 2 days?</strong></p>
+            <p>A: Required within 2 business days. Late filers are flagged in EDGAR — itself a signal worth tracking. Delays can indicate disorganization or intentional concealment.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: What's the difference between a 10% owner and a director?</strong></p>
+            <p>A: 10% owners file based on economic ownership percentage; directors and officers file based on their role regardless of ownership percentage. A director who owns 0.1% still files.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: Should I alert on sales?</strong></p>
+            <p>A: Sales are low signal. But track them for context — if the CEO is selling, you should know. Focus automation on purchases and cluster detection.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer role="contentinfo" style="background:#1f2937;color:#9ca3af;text-align:center;padding:32px 24px;font-size:.85rem;">
+    <div style="max-width:700px;margin:0 auto;">
+      <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+      <p style="margin:0 0 8px;">
+        <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+        <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+        <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+        <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+        <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+      </p>
+      <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or legal advice. For educational and informational purposes only.</p>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Insider Trading Monitor with OpenClaw — Corporate Filings Part 2",
+    "description": "Automate Form 4 insider trading monitoring with OpenClaw. Detect cluster buying, unusual transaction sizes, and director vs officer distinctions.",
+    "datePublished": "2026-03-26",
+    "dateModified": "2026-03-26",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Are Form 4s always filed within 2 days?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Required within 2 business days. Late filers are flagged in EDGAR — itself a signal worth tracking. Delays can indicate disorganization or intentional concealment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's the difference between a 10% owner and a director?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "10% owners file based on economic ownership percentage; directors and officers file based on their role regardless of ownership percentage. A director who owns 0.1% still files."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I alert on sales?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sales are low signal. But track them for context — if the CEO is selling, you should know. Focus automation on purchases and cluster detection."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Corporate Filings",
+        "item": "https://learnopenclaw.org/openclaw-for-filings.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Part 2: Insider Trading",
+        "item": "https://learnopenclaw.org/filings-insider.html"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu.classList.toggle('open');
+  });
+  </script>
+  <script src="copy.js"></script>
+</body>
+</html>

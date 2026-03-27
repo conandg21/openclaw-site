@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw for Corporate Filings — Never Miss a Material Filing Again</title>
+  <meta name="description" content="Use OpenClaw to automate SEC EDGAR monitoring: 8-K material event alerts, insider trading Form 4 tracking, 10-Q/10-K financial parsing, and ownership change detection. All free APIs.">
+  <link rel="canonical" href="https://learnopenclaw.org/openclaw-for-filings.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="OpenClaw for Corporate Filings — Never Miss a Material Filing Again">
+  <meta property="og:description" content="Use OpenClaw to automate SEC EDGAR monitoring: 8-K material event alerts, insider trading Form 4 tracking, 10-Q/10-K financial parsing, and ownership change detection. All free APIs.">
+  <meta property="og:url" content="https://learnopenclaw.org/openclaw-for-filings.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="OpenClaw for Corporate Filings — Never Miss a Material Filing Again">
+  <meta property="twitter:description" content="Use OpenClaw to automate SEC EDGAR monitoring: 8-K material event alerts, insider trading Form 4 tracking, 10-Q/10-K financial parsing, and ownership change detection. All free APIs.">
+  <meta property="twitter:image" content="https://learnopenclaw.org/og-image.png">
+
+  <meta name="datePublished" content="2026-03-26">
+  <meta name="dateModified" content="2026-03-26">
+
+  <style>
+    :root {
+      --orange: #c2410c;
+      --orange-lt: #fff7ed;
+      --orange-md: #fed7aa;
+      --orange-dk: #7c2d12;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border: #e5e7eb;
+      --bg-light: #f9fafb;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: #fff;
+    }
+
+    a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .skip-nav {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--orange);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .skip-nav:focus {
+      top: 0;
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-logo:hover {
+      text-decoration: none;
+      color: var(--orange);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-search-form {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-search-icon {
+      position: absolute;
+      left: 12px;
+      pointer-events: none;
+      color: var(--text-secondary);
+    }
+
+    .nav-search-input {
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      width: 180px;
+    }
+
+    .nav-search-input:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.1);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      gap: 6px;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-search-form {
+        display: none;
+      }
+    }
+
+    /* Disclaimer bar */
+    .disclaimer-bar {
+      background: var(--orange-lt);
+      border-top: 2px solid var(--orange-md);
+      border-bottom: 2px solid var(--orange-md);
+      padding: 12px 24px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--orange-dk);
+    }
+
+    .disclaimer-bar strong {
+      font-weight: 600;
+    }
+
+    /* Post header */
+    .post-header {
+      background: linear-gradient(135deg, #431407 0%, #7c2d12 55%, #c2410c 100%);
+      color: #fff;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+
+    .breadcrumb a {
+      color: #fff;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--orange-md);
+      color: var(--orange-dk);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .post-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .post-meta {
+      font-size: 0.95rem;
+      opacity: 0.95;
+      letter-spacing: 0.05em;
+    }
+
+    /* Series nav */
+    .series-nav {
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border);
+      sticky-top: 0;
+      z-index: 40;
+    }
+
+    .series-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      list-style: none;
+    }
+
+    .series-nav a {
+      white-space: nowrap;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .series-nav a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .series-nav a[aria-current="page"] {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+    }
+
+    /* Main content */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .container {
+      padding: 48px 24px;
+    }
+
+    article {
+      line-height: 1.8;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 40px 0 20px;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 30px 0 16px;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-light);
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background: var(--orange-lt);
+    }
+
+    /* Code blocks */
+    pre {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 16px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 24px 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    }
+
+    /* Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 32px 0;
+    }
+
+    .card {
+      background: var(--orange-lt);
+      border: 1px solid var(--orange-md);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: var(--orange-dk);
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* FAQ */
+    .faq {
+      margin: 40px 0;
+    }
+
+    .faq-item {
+      margin-bottom: 24px;
+      border-left: 3px solid var(--orange-md);
+      padding-left: 16px;
+    }
+
+    .faq-item strong {
+      color: var(--orange-dk);
+    }
+
+    /* Footer */
+    footer {
+      background: #1f2937;
+      color: #9ca3af;
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      margin-top: 64px;
+    }
+
+    footer a {
+      color: #d1d5db;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note">
+    ℹ️ <strong>Informational only.</strong> This series shows how to automate SEC EDGAR data retrieval. Nothing here is investment or legal advice. Always consult a qualified professional before making investment decisions.
+  </div>
+
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="https://learnopenclaw.org/">Home</a> / <a href="https://learnopenclaw.org/learn.html">Learn</a> / Corporate Filings
+    </div>
+    <div class="badge">📂 CORPORATE FILINGS SERIES · 6 PARTS</div>
+    <h1>Never Miss a Material Filing Again</h1>
+    <div class="post-meta">Free Data Sources · SEC EDGAR API · No Paid Subscriptions Required</div>
+  </div>
+
+  <nav class="series-nav" aria-label="Corporate Filings series">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-filings.html" aria-current="page">🗺️ Overview</a>
+      <a href="filings-8k.html">📢 Part 1: 8-K Alerts</a>
+      <a href="filings-insider.html">👁️ Part 2: Insider Trading</a>
+      <a href="filings-10q.html">📋 Part 3: 10-Q Tracker</a>
+      <a href="filings-10k.html">📚 Part 4: 10-K Deep Dive</a>
+      <a href="filings-ownership.html">🏛️ Part 5: Ownership & Activism</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <article>
+      <div class="container">
+        <p>EDGAR receives over 3,000 filings per day. Most investors check them manually — if they check at all. OpenClaw turns EDGAR into a live intelligence feed: instant 8-K alerts, insider transaction summaries, quarterly financial extracts, annual risk factor diffs, and ownership change notifications — all automated, all free.</p>
+
+        <h2>Who This Is For</h2>
+        <table>
+          <th scope="col"ead>
+            <tr>
+              <th scope="col">Role</th>
+              <th scope="col">What you get</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Individual investor</td>
+              <td>8-K alerts + insider signals on your watchlist</td>
+            </tr>
+            <tr>
+              <td>Analyst / researcher</td>
+              <td>10-Q/10-K data extraction pipelines</td>
+            </tr>
+            <tr>
+              <td>Journalist</td>
+              <td>Real-time material event notifications</td>
+            </tr>
+            <tr>
+              <td>Competitive intelligence</td>
+              <td>Ownership change + activist tracking</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Data Sources & Latency</h2>
+        <table>
+          <th scope="col"ead>
+            <tr>
+              <th scope="col">Filing Type</th>
+              <th scope="col">API / Source</th>
+              <th scope="col">Cost</th>
+              <th scope="col">Latency</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>All EDGAR filings</td>
+              <td>data.sec.gov/submissions</td>
+              <td>Free</td>
+              <td>~15 min after filing</td>
+            </tr>
+            <tr>
+              <td>Full-text search</td>
+              <td>efts.sec.gov/LATEST/search-index</td>
+              <td>Free</td>
+              <td>~15 min</td>
+            </tr>
+            <tr>
+              <td>Company facts</td>
+              <td>data.sec.gov/api/xbrl/companyfacts</td>
+              <td>Free</td>
+              <td>Daily</td>
+            </tr>
+            <tr>
+              <td>Insider trades</td>
+              <td>data.sec.gov (Form 4)</td>
+              <td>Free</td>
+              <td>~2 business days</td>
+            </tr>
+            <tr>
+              <td>RSS feed</td>
+              <td>sec.gov/cgi-bin/browse-edgar (RSS)</td>
+              <td>Free</td>
+              <td>Near real-time</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>The Series Roadmap</h2>
+        <div class="cards">
+          <div class="card">
+            <h3>📢 Part 1: 8-K Real-Time Alerts</h3>
+            <p>Material events as they happen. Earnings, CEO changes, M&A, bankruptcies — get notified within minutes of filing.</p>
+          </div>
+          <div class="card">
+            <h3>👁️ Part 2: Insider Trading Monitor</h3>
+            <p>Track Form 4 filings. Detect cluster buying, classify transaction types, and separate noise from signal.</p>
+          </div>
+          <div class="card">
+            <h3>📋 Part 3: 10-Q Quarterly Tracker</h3>
+            <p>Extract quarterly financials on autopilot. Revenue, EPS, free cash flow — comparable quarter-over-quarter.</p>
+          </div>
+          <div class="card">
+            <h3>📚 Part 4: 10-K Annual Deep Dive</h3>
+            <p>Annual report intelligence. Risk factor diffs, debt maturity schedules, segment revenue trends.</p>
+          </div>
+          <div class="card">
+            <h3>🏛️ Part 5: Ownership & Activism</h3>
+            <p>13D/13G/13F monitoring. Track activist positions, large ownership shifts, and institutional holdings.</p>
+          </div>
+        </div>
+
+        <h2>FAQ</h2>
+        <div class="faq">
+          <div class="faq-item">
+            <p><strong>Q: Is SEC EDGAR data really free?</strong></p>
+            <p>A: Yes. The SEC provides free API access at data.sec.gov with no key required. Rate limits are 10 requests/second.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: How fast does EDGAR data update?</strong></p>
+            <p>A: Most filings appear within 15 minutes. The RSS feed updates near-instantly.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: Can OpenClaw parse the actual text of filings?</strong></p>
+            <p>A: OpenClaw can extract structured XBRL data and pass filing text to an LLM for summarization.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: What's the difference between an 8-K and a 10-Q?</strong></p>
+            <p>A: 8-Ks are event-driven (filed within 4 business days of material events). 10-Qs are periodic (quarterly financials).</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer role="contentinfo" style="background:#1f2937;color:#9ca3af;text-align:center;padding:32px 24px;font-size:.85rem;">
+    <div style="max-width:700px;margin:0 auto;">
+      <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+      <p style="margin:0 0 8px;">
+        <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+        <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+        <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+        <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+        <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+      </p>
+      <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or legal advice. For educational and informational purposes only.</p>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OpenClaw for Corporate Filings — Never Miss a Material Filing Again",
+    "description": "Use OpenClaw to automate SEC EDGAR monitoring: 8-K material event alerts, insider trading Form 4 tracking, 10-Q/10-K financial parsing, and ownership change detection.",
+    "datePublished": "2026-03-26",
+    "dateModified": "2026-03-26",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is SEC EDGAR data really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The SEC provides free API access at data.sec.gov with no key required. Rate limits are 10 requests/second."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How fast does EDGAR data update?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most filings appear within 15 minutes. The RSS feed updates near-instantly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can OpenClaw parse the actual text of filings?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "OpenClaw can extract structured XBRL data and pass filing text to an LLM for summarization."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's the difference between an 8-K and a 10-Q?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "8-Ks are event-driven (filed within 4 business days of material events). 10-Qs are periodic (quarterly financials)."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Corporate Filings",
+        "item": "https://learnopenclaw.org/openclaw-for-filings.html"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu.classList.toggle('open');
+  });
+  </script>
+  <script src="copy.js"></script>
+</body>
+</html>

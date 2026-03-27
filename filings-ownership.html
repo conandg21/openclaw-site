@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ownership & Activism Monitor with OpenClaw — Corporate Filings Part 5 of 5</title>
+  <meta name="description" content="Automate 13D, 13G, and 13F ownership monitoring with OpenClaw. Detect activist investors, large ownership changes, and institutional position shifts before they hit the news.">
+  <link rel="canonical" href="https://learnopenclaw.org/filings-ownership.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Ownership & Activism Monitor with OpenClaw — Corporate Filings Part 5">
+  <meta property="og:description" content="Automate 13D, 13G, and 13F ownership monitoring with OpenClaw. Detect activist investors, large ownership changes, and institutional position shifts before they hit the news.">
+  <meta property="og:url" content="https://learnopenclaw.org/filings-ownership.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Ownership & Activism Monitor with OpenClaw — Corporate Filings Part 5">
+  <meta property="twitter:description" content="Automate 13D, 13G, and 13F ownership monitoring with OpenClaw. Detect activist investors, large ownership changes, and institutional position shifts before they hit the news.">
+  <meta property="twitter:image" content="https://learnopenclaw.org/og-image.png">
+
+  <meta name="datePublished" content="2026-03-26">
+  <meta name="dateModified" content="2026-03-26">
+
+  <style>
+    :root {
+      --orange: #c2410c;
+      --orange-lt: #fff7ed;
+      --orange-md: #fed7aa;
+      --orange-dk: #7c2d12;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --border: #e5e7eb;
+      --bg-light: #f9fafb;
+      --radius: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: #fff;
+    }
+
+    a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .skip-nav {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--orange);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .skip-nav:focus {
+      top: 0;
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .nav-logo:hover {
+      text-decoration: none;
+      color: var(--orange);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-search-form {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-search-icon {
+      position: absolute;
+      left: 12px;
+      pointer-events: none;
+      color: var(--text-secondary);
+    }
+
+    .nav-search-input {
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      width: 180px;
+    }
+
+    .nav-search-input:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.1);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      gap: 6px;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 1px;
+      transition: all 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-search-form {
+        display: none;
+      }
+    }
+
+    /* Disclaimer bar */
+    .disclaimer-bar {
+      background: var(--orange-lt);
+      border-top: 2px solid var(--orange-md);
+      border-bottom: 2px solid var(--orange-md);
+      padding: 12px 24px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--orange-dk);
+    }
+
+    .disclaimer-bar strong {
+      font-weight: 600;
+    }
+
+    /* Post header */
+    .post-header {
+      background: linear-gradient(135deg, #431407 0%, #7c2d12 55%, #c2410c 100%);
+      color: #fff;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+
+    .breadcrumb a {
+      color: #fff;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--orange-md);
+      color: var(--orange-dk);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .post-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .post-meta {
+      font-size: 0.95rem;
+      opacity: 0.95;
+      letter-spacing: 0.05em;
+    }
+
+    /* Series nav */
+    .series-nav {
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border);
+      sticky-top: 0;
+      z-index: 40;
+    }
+
+    .series-nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      list-style: none;
+    }
+
+    .series-nav a {
+      white-space: nowrap;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .series-nav a:hover {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
+    .series-nav a[aria-current="page"] {
+      color: var(--orange);
+      border-bottom-color: var(--orange);
+    }
+
+    /* Main content */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .container {
+      padding: 48px 24px;
+    }
+
+    article {
+      line-height: 1.8;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 40px 0 20px;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 30px 0 16px;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-light);
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background: var(--orange-lt);
+    }
+
+    /* Code blocks */
+    pre {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 16px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin: 24px 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    }
+
+    /* Callout */
+    .callout {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: var(--radius);
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
+
+    .callout strong {
+      color: #92400e;
+    }
+
+    /* FAQ */
+    .faq {
+      margin: 40px 0;
+    }
+
+    .faq-item {
+      margin-bottom: 24px;
+      border-left: 3px solid var(--orange-md);
+      padding-left: 16px;
+    }
+
+    .faq-item strong {
+      color: var(--orange-dk);
+    }
+
+    /* Footer */
+    footer {
+      background: #1f2937;
+      color: #9ca3af;
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+      margin-top: 64px;
+    }
+
+    footer a {
+      color: #d1d5db;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar" role="note">
+    ℹ️ <strong>Informational only.</strong> This series shows how to automate SEC EDGAR data retrieval. Nothing here is investment or legal advice. Always consult a qualified professional before making investment decisions.
+  </div>
+
+  <div class="post-header">
+    <div class="breadcrumb">
+      <a href="https://learnopenclaw.org/">Home</a> / <a href="https://learnopenclaw.org/learn.html">Learn</a> / <a href="https://learnopenclaw.org/openclaw-for-filings.html">Corporate Filings</a> / Part 5
+    </div>
+    <div class="badge">🏛️ PART 5 OF 5</div>
+    <h1>Ownership & Activism — Track Who's Building Positions and Why</h1>
+    <div class="post-meta">Activist Investor Detection · Ownership Change Monitoring · Institutional Position Tracking</div>
+  </div>
+
+  <nav class="series-nav" aria-label="Corporate Filings series">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-filings.html">🗺️ Overview</a>
+      <a href="filings-8k.html">📢 Part 1: 8-K Alerts</a>
+      <a href="filings-insider.html">👁️ Part 2: Insider Trading</a>
+      <a href="filings-10q.html">📋 Part 3: 10-Q Tracker</a>
+      <a href="filings-10k.html">📚 Part 4: 10-K Deep Dive</a>
+      <a href="filings-ownership.html" aria-current="page">🏛️ Part 5: Ownership & Activism</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <article>
+      <div class="container">
+        <h2>Filing Types: 13D, 13G, and 13F</h2>
+        <table>
+          <th scope="col"ead>
+            <tr>
+              <th scope="col">Filing</th>
+              <th scope="col">Trigger</th>
+              <th scope="col">Filer</th>
+              <th scope="col">Key Signal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Schedule 13D</strong></td>
+              <td>&gt;5% ownership WITH intent to influence</td>
+              <td>Any investor</td>
+              <td>Activist alert 🚨</td>
+            </tr>
+            <tr>
+              <td><strong>Schedule 13G</strong></td>
+              <td>&gt;5% ownership, passive</td>
+              <td>Institutions only</td>
+              <td>Large accumulation</td>
+            </tr>
+            <tr>
+              <td><strong>Form 13F</strong></td>
+              <td>Quarterly holdings report</td>
+              <td>Institutions &gt;$100M AUM</td>
+              <td>Broad position tracking</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>13D vs 13G: The Critical Distinction</h2>
+        <p>This is the key insight. Both are triggered at 5% ownership. But 13D filers declare <strong>intent to influence</strong> the company — board seats, strategic direction, breakup, sale. When a known activist (Elliott, Starboard, Icahn, ValueAct) files a 13D, price impact is typically immediate. OpenClaw monitors EDGAR for new 13D filings and cross-references filer names against a known activist list.</p>
+
+        <h2>Architecture</h2>
+        <p>The ownership monitor detects new large ownership filings, checks filers against an activist watchlist, extracts ownership metadata, and sends notifications:</p>
+        <p style="text-align: center; font-size: 0.95rem; color: var(--text-secondary);">EDGAR submissions API → scan for new Schedule 13D/13G/13F → check filer against activist watchlist → extract ownership percentage + target company → notify</p>
+
+        <h2>HEARTBEAT Configuration</h2>
+        <pre>name: ownership_monitor
+schedule: "0 */4 * * 1-5"
+steps:
+  - fetch_filings:
+      types: ["SC 13D", "SC 13G", "13F-HR"]
+      since: "{{ last_run_date }}"
+  - check_activist_list:
+      filers: "{{ known_activists }}"
+      alert_priority: high
+  - extract_ownership:
+      fields:
+        - beneficial_owner
+        - shares_owned
+        - percent_of_class
+        - purpose_of_transaction
+  - notify:
+      channel: email
+      subject: "🏛️ Ownership Change: {{ target_company }} — {{ filer }} filed {{ form_type }}"</pre>
+
+        <h2>Known Activist Seed List</h2>
+        <p>Start with this list and expand based on your focus. Many of these investors have consistent playbooks:</p>
+        <pre>known_activists:
+  - "Elliott Investment Management"
+  - "Starboard Value"
+  - "Carl Icahn"
+  - "ValueAct Capital"
+  - "Third Point"
+  - "Pershing Square"
+  - "Jana Partners"
+  - "Trian Fund Management"</pre>
+
+        <h2>13F Quarterly Holdings Extraction</h2>
+        <p>13F filings are 45 days after quarter end — the data is stale by definition. But they're useful for tracking long-term conviction positions and institutional ownership concentration:</p>
+        <pre>import httpx
+
+def get_13f_holdings(cik: str):
+    """Get latest 13F institutional holdings filing."""
+    padded = cik.zfill(10)
+    url = f"https://data.sec.gov/submissions/CIK{padded}.json"
+    headers = {"User-Agent": "YourName your@email.com"}
+    r = httpx.get(url, headers=headers)
+    data = r.json()
+    filings = data["filings"]["recent"]
+    for i, form in enumerate(filings["form"]):
+        if form == "13F-HR":
+            return {
+                "date": filings["filingDate"][i],
+                "accession": filings["accessionNumber"][i].replace("-", ""),
+                "url": f"https://www.sec.gov/Archives/edgar/full-index/"
+            }
+    return None</pre>
+
+        <h2>13F Data Quality Note</h2>
+        <div class="callout">
+          <strong>13F filings are 45 days stale by design.</strong> Filed after quarter-end, so the positions you see are already 6+ weeks old. Use them for building a picture of institutional ownership concentration and tracking long-term conviction positions, not for timing trades. The value is in trend analysis and understanding who thinks long-term about the company.
+        </div>
+
+        <h2>FAQ</h2>
+        <div class="faq">
+          <div class="faq-item">
+            <p><strong>Q: How quickly do 13D filers have to disclose?</strong></p>
+            <p>A: Within 10 days of crossing 5%. Short-sellers and activists sometimes accumulate to just under 5% to avoid early disclosure. Once they cross 5%, the clock starts and they have 10 calendar days to file.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: Can I track every 13F filing?</strong></p>
+            <p>A: There are thousands per quarter. Better to build a watchlist of institutions whose judgment you track and monitor their changes quarter-over-quarter. Focus on mega-cap managers (Berkshire, Vanguard) or thematic investors.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Q: What's a "wolf pack"?</strong></p>
+            <p>A: Multiple hedge funds coordinating accumulation without formal disclosure. They each stay below 5% individually. Not detectable from EDGAR alone, but cross-referencing 13Fs across known coordinated funds can surface patterns.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer role="contentinfo" style="background:#1f2937;color:#9ca3af;text-align:center;padding:32px 24px;font-size:.85rem;">
+    <div style="max-width:700px;margin:0 auto;">
+      <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+      <p style="margin:0 0 8px;">
+        <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+        <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+        <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+        <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+        <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+      </p>
+      <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or legal advice. For educational and informational purposes only.</p>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Ownership & Activism Monitor with OpenClaw — Corporate Filings Part 5",
+    "description": "Automate 13D, 13G, and 13F ownership monitoring with OpenClaw. Detect activist investors, large ownership changes, and institutional position shifts.",
+    "datePublished": "2026-03-26",
+    "dateModified": "2026-03-26",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How quickly do 13D filers have to disclose?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Within 10 days of crossing 5%. Short-sellers and activists sometimes accumulate to just under 5% to avoid early disclosure. Once they cross 5%, the clock starts and they have 10 calendar days to file."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I track every 13F filing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There are thousands per quarter. Better to build a watchlist of institutions whose judgment you track and monitor their changes quarter-over-quarter. Focus on mega-cap managers (Berkshire, Vanguard) or thematic investors."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What's a \"wolf pack\"?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Multiple hedge funds coordinating accumulation without formal disclosure. They each stay below 5% individually. Not detectable from EDGAR alone, but cross-referencing 13Fs across known coordinated funds can surface patterns."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Corporate Filings",
+        "item": "https://learnopenclaw.org/openclaw-for-filings.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Part 5: Ownership & Activism",
+        "item": "https://learnopenclaw.org/filings-ownership.html"
+      }
+    ]
+  }
+  </script>
+
+  <script>
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu.classList.toggle('open');
+  });
+  </script>
+  <script src="copy.js"></script>
+</body>
+</html>

@@ -905,5 +905,151 @@
       "FAQ"
     ],
     "body": "Claw Street Terminal finance masterclass OpenClaw automation hub options trading economic indicators corporate filings SEC EDGAR transcripts earnings calls alternative data risk portfolio crypto DeFi day trader swing trader long-term investor CFO business owner automated briefing market intelligence"
+  },
+  {
+    "url": "openclaw-for-filings.html",
+    "title": "OpenClaw for Corporate Filings \u2014 Automate SEC EDGAR Monitoring",
+    "description": "Use OpenClaw to automate SEC EDGAR monitoring: 8-K material event alerts, insider trading Form 4 tracking, 10-Q/10-K financial parsing, and ownership change detection. All free APIs.",
+    "tags": [
+      "corporate filings",
+      "SEC",
+      "EDGAR",
+      "8-K",
+      "10-K",
+      "10-Q",
+      "Form 4",
+      "insider trading"
+    ],
+    "series": "Corporate Filings",
+    "headings": [
+      "Overview",
+      "Who this is for",
+      "Data sources",
+      "Series roadmap",
+      "FAQ"
+    ],
+    "body": "SEC EDGAR corporate filings automation 8-K material event 10-K annual report 10-Q quarterly Form 4 insider trading 13D 13G 13F ownership activism free API data.sec.gov OpenClaw"
+  },
+  {
+    "url": "filings-8k.html",
+    "title": "8-K Real-Time Alert System with OpenClaw \u2014 Corporate Filings Part 1 of 5",
+    "description": "Automate 8-K filing alerts with OpenClaw. Get notified the moment companies file material events: earnings, CEO changes, M&A, bankruptcy, restatements.",
+    "tags": [
+      "8-K",
+      "material event",
+      "SEC",
+      "EDGAR",
+      "CEO change",
+      "M&A",
+      "earnings release"
+    ],
+    "series": "Corporate Filings",
+    "headings": [
+      "What is an 8-K",
+      "Architecture",
+      "HEARTBEAT config",
+      "Watchlist config",
+      "Noise filtering",
+      "FAQ"
+    ],
+    "body": "8-K filing alert material event CEO change merger acquisition bankruptcy restatement earnings release EDGAR RSS feed HEARTBEAT OpenClaw SEC real-time notification"
+  },
+  {
+    "url": "filings-insider.html",
+    "title": "Insider Trading Monitor with OpenClaw \u2014 Corporate Filings Part 2 of 5",
+    "description": "Automate Form 4 insider trading monitoring with OpenClaw. Detect cluster buying, unusual transaction sizes, and director vs officer distinctions from free SEC EDGAR data.",
+    "tags": [
+      "Form 4",
+      "insider trading",
+      "cluster buying",
+      "SEC",
+      "EDGAR",
+      "director",
+      "officer"
+    ],
+    "series": "Corporate Filings",
+    "headings": [
+      "What is a Form 4",
+      "Why it matters",
+      "Architecture",
+      "Cluster signal detection",
+      "Signal quality table",
+      "FAQ"
+    ],
+    "body": "Form 4 insider trading monitor cluster buying CEO purchase director officer open market transaction EDGAR SEC OpenClaw automation watchlist signal detection"
+  },
+  {
+    "url": "filings-10q.html",
+    "title": "10-Q Earnings Filing Tracker with OpenClaw \u2014 Corporate Filings Part 3 of 5",
+    "description": "Automate 10-Q monitoring with OpenClaw. Get instant alerts when quarterly reports file, extract revenue, EPS, and free cash flow automatically.",
+    "tags": [
+      "10-Q",
+      "quarterly earnings",
+      "SEC",
+      "EDGAR",
+      "XBRL",
+      "revenue",
+      "EPS",
+      "free cash flow"
+    ],
+    "series": "Corporate Filings",
+    "headings": [
+      "What is a 10-Q",
+      "Architecture",
+      "HEARTBEAT config",
+      "XBRL extraction",
+      "Earnings season calendar",
+      "FAQ"
+    ],
+    "body": "10-Q quarterly report earnings filing tracker XBRL financial extraction revenue EPS operating income free cash flow prior quarter comparison earnings season EDGAR OpenClaw"
+  },
+  {
+    "url": "filings-10k.html",
+    "title": "10-K Annual Deep Dive with OpenClaw \u2014 Corporate Filings Part 4 of 5",
+    "description": "Use OpenClaw to automate 10-K annual report monitoring. Extract financials, detect risk factor changes with NLP diff, and track debt maturity schedules.",
+    "tags": [
+      "10-K",
+      "annual report",
+      "risk factors",
+      "NLP diff",
+      "EDGAR",
+      "SEC",
+      "debt maturity"
+    ],
+    "series": "Corporate Filings",
+    "headings": [
+      "What is a 10-K",
+      "Risk factor diff",
+      "Segment revenue extraction",
+      "Debt maturity schedule",
+      "FAQ"
+    ],
+    "body": "10-K annual report deep dive risk factor NLP diff year-over-year comparison segment revenue debt maturity XBRL financial extraction EDGAR OpenClaw automation"
+  },
+  {
+    "url": "filings-ownership.html",
+    "title": "Ownership & Activism Monitor with OpenClaw \u2014 Corporate Filings Part 5 of 5",
+    "description": "Automate 13D, 13G, and 13F ownership monitoring with OpenClaw. Detect activist investors and large ownership changes before they hit the news.",
+    "tags": [
+      "13D",
+      "13G",
+      "13F",
+      "activist investor",
+      "ownership",
+      "SEC",
+      "EDGAR",
+      "Elliott",
+      "Starboard"
+    ],
+    "series": "Corporate Filings",
+    "headings": [
+      "Filing types",
+      "13D vs 13G",
+      "Architecture",
+      "Known activist list",
+      "13F limitations",
+      "FAQ"
+    ],
+    "body": "Schedule 13D 13G 13F ownership activism Elliott Starboard Icahn ValueAct Pershing Square activist investor institutional holdings ownership change EDGAR OpenClaw monitoring"
   }
 ]
