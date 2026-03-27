@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track GDP releases, GDPNow real-time estimates, retail sales, and consumer confidence automatically with OpenClaw. Quarterly GDP briefs, recession detection, and growth trend analysis from free government APIs.">
+  <meta name="keywords" content="GDP, GDPNow, growth, recession, economic data, BEA API">
+  <link rel="canonical" href="https://learnopenclaw.org/indicators-gdp.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="GDP & Economic Growth Monitoring with OpenClaw — Economic Indicators Part 4 of 5">
+  <meta property="og:description" content="Track GDP releases and GDPNow real-time estimates. Quarterly briefs, recession detection, and growth analysis from free APIs.">
+  <meta property="og:url" content="https://learnopenclaw.org/indicators-gdp.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="GDP & Economic Growth Monitoring with OpenClaw — Economic Indicators Part 4 of 5">
+  <meta name="twitter:description" content="Track GDP releases and GDPNow real-time estimates from free government APIs.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+  <title>GDP & Economic Growth Monitoring with OpenClaw — Economic Indicators Part 4 of 5 | learnopenclaw.org</title>
+  <style>
+:root {
+  --teal: #0f766e; --teal-lt: #f0fdfa; --teal-md: #99f6e4; --teal-dk: #134e4a;
+  --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+  --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+  --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a; --amber-dk: #92400e;
+  --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+  --crimson: #b91c1c; --crimson-lt: #fff1f2; --crimson-md: #fecdd3;
+  --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe;
+  --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+  --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+  --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+}
+html { scroll-behavior: smooth; }
+.skip-nav { position: absolute; top: -100px; left: 16px; background: var(--teal); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+.skip-nav:focus { top: 8px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+.nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+.nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.nav-logo:hover { text-decoration: none; }
+.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+.hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+.nav-links.open { display: flex; }
+.nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+.nav-links a:hover { color: var(--teal); text-decoration: none; }
+@media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+.nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+.nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+.nav-search-input:focus { outline: none; }
+.nav-search-input::placeholder { color: var(--gray-5); }
+@media (max-width: 480px) { .nav-search-form { display: none; } }
+.disclaimer-bar { background: var(--teal-lt); border-bottom: 1px solid var(--teal-md); padding: 8px 24px; text-align: center; font-size: .85rem; color: var(--teal-dk); }
+.disclaimer-bar a { color: var(--teal-dk); font-weight: 600; }
+.post-header { background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0f766e 100%); padding: 60px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+.post-header::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+.breadcrumb { font-size: .82rem; color: rgba(255,255,255,.6); margin-bottom: 20px; position: relative; }
+.breadcrumb a { color: rgba(255,255,255,.7); }
+.breadcrumb a:hover { color: #fff; text-decoration: none; }
+.breadcrumb span { color: rgba(255,255,255,.45); margin: 0 6px; }
+.series-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 100px; padding: 5px 14px; margin-bottom: 18px; position: relative; }
+.series-badge span { color: #99f6e4; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.series-badge strong { color: #fff; font-size: .75rem; }
+.post-header h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.2; max-width: 760px; margin: 0 auto 22px; color: var(--white); position: relative; }
+.post-meta { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: .88rem; color: rgba(255,255,255,.65); flex-wrap: wrap; position: relative; }
+.post-meta span::before { content: '·'; margin-right: 6px; }
+.post-meta span:first-child::before { content: ''; margin: 0; }
+.series-nav { background: #f1f5f9; border-bottom: 1px solid var(--gray-3); padding: 0 24px; overflow-x: auto; }
+.series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 0; }
+.series-nav a { display: flex; align-items: center; gap: 7px; padding: 12px 16px; font-size: .83rem; font-weight: 600; color: var(--gray-5); border-bottom: 3px solid transparent; white-space: nowrap; text-decoration: none; transition: color .15s, border-color .15s; }
+.series-nav a:hover { color: var(--teal); text-decoration: none; }
+.series-nav a[aria-current="page"] { color: var(--teal); border-bottom-color: var(--teal); }
+.series-nav a .sn-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--teal-lt); border: 1px solid var(--teal-md); font-size: .72rem; font-weight: 800; color: var(--teal); }
+.series-nav a[aria-current="page"] .sn-num { background: var(--teal); color: #fff; border-color: var(--teal-dk); }
+.post-body { max-width: 780px; margin: 0 auto; padding: 52px 24px 80px; }
+.post-body h2 { font-size: 1.45rem; font-weight: 800; margin: 52px 0 16px; padding-top: 8px; border-top: 2px solid var(--teal-md); color: var(--gray-8); }
+.post-body h3 { font-size: 1.05rem; font-weight: 700; margin: 28px 0 10px; color: var(--gray-8); }
+.post-body p { margin-bottom: 18px; }
+.post-body ul, .post-body ol { padding-left: 22px; margin-bottom: 18px; }
+.post-body li { margin-bottom: 7px; }
+.post-body strong { font-weight: 700; }
+.post-body code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 22px 24px; overflow-x: auto; font-size: .88rem; line-height: 1.65; margin: 24px 0 32px; position: relative; }
+.post-body pre code { background: none !important; color: #e2e8f0 !important; padding: 0; border-radius: 0; font-size: inherit; }
+.toc { background: var(--teal-lt); border: 1px solid var(--teal-md); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 44px; }
+.toc-label { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+.toc ol { padding-left: 20px; }
+.toc li { margin-bottom: 7px; font-size: .95rem; }
+.toc a { color: var(--teal); font-weight: 500; }
+.callout { border-left: 4px solid var(--teal); background: var(--teal-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 28px 0; font-size: .95rem; }
+.callout strong { color: var(--teal-dk); }
+.callout--blue { border-left-color: var(--blue); background: var(--blue-lt); }
+.callout--blue strong { color: var(--blue); }
+.callout--green { border-left-color: var(--green); background: var(--green-lt); }
+.callout--green strong { color: var(--green); }
+.callout--amber { border-left-color: var(--amber); background: var(--amber-lt); }
+.callout--amber strong { color: var(--amber-dk); }
+.callout--red { border-left-color: var(--red); background: var(--red-lt); }
+.callout--red strong { color: var(--red); }
+.api-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 24px 0 36px; border-radius: var(--radius); border: 1px solid var(--gray-3); }
+.api-table { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 500px; }
+.api-table th { background: var(--teal); color: var(--white); font-weight: 700; padding: 10px 14px; text-align: left; font-size: .83rem; }
+.api-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+.api-table tr:nth-child(even) td { background: var(--gray-1); }
+.api-table tr:last-child td { border-bottom: none; }
+@media (max-width: 480px) { .api-table th, .api-table td { padding: 8px 10px; font-size: .82rem; } }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.badge-free { background: var(--green-lt); color: var(--green); border: 1px solid var(--green-md); }
+.badge-monthly { background: var(--blue-lt); color: var(--blue); border: 1px solid var(--blue-md); }
+.badge-weekly { background: var(--teal-lt); color: var(--teal); border: 1px solid var(--teal-md); }
+.badge-quarterly { background: var(--amber-lt); color: var(--amber-dk); border: 1px solid var(--amber-md); }
+.use-case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin: 24px 0 36px; }
+.use-case-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--teal); border-radius: var(--radius); padding: 20px 22px; }
+.use-case-card h4 { font-size: .95rem; font-weight: 800; margin: 0 0 8px; }
+.use-case-card p { font-size: .88rem; color: var(--gray-5); margin: 0; line-height: 1.5; }
+.audience-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin: 28px 0 36px; }
+.audience-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--teal); border-radius: var(--radius); padding: 22px 24px; }
+.audience-card h4 { font-size: .95rem; font-weight: 800; margin: 0 0 10px; color: var(--gray-8); }
+.audience-card p { font-size: .9rem; margin: 0 0 10px; color: var(--gray-5); line-height: 1.5; }
+.audience-card .best-parts { font-size: .82rem; font-weight: 600; color: var(--teal-dk); }
+.release-calendar { background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 20px 24px; margin: 24px 0 36px; }
+.release-calendar .rc-label { font-size: .75rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; }
+.release-row { display: flex; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--gray-3); font-size: .9rem; }
+.release-row:last-child { border-bottom: none; }
+.release-freq { font-size: .72rem; font-weight: 700; min-width: 80px; }
+.release-name { font-weight: 600; flex: 1; }
+.release-timing { color: var(--gray-5); font-size: .85rem; }
+.series-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin: 28px 0 20px; }
+.series-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--teal); border-radius: var(--radius); padding: 20px 22px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow); transition: transform .18s, box-shadow .18s; }
+.series-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(15,118,110,.18); text-decoration: none; }
+.sc-num { font-size: .72rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--teal); }
+.sc-title { font-size: 1rem; font-weight: 800; color: var(--gray-8); line-height: 1.3; }
+.sc-desc { font-size: .84rem; color: var(--gray-5); line-height: 1.5; flex: 1; }
+.sc-arrow { font-size: .83rem; font-weight: 700; color: var(--teal); margin-top: 4px; }
+.sample-output { background: #0f172a; color: #e2e8f0; border-radius: var(--radius); padding: 24px 26px; font-size: .86rem; line-height: 1.7; font-family: "SF Mono", "Fira Code", monospace; overflow-x: auto; margin: 24px 0 36px; position: relative; }
+.sample-output .so-head { color: #99f6e4; font-weight: 700; }
+.sample-output .so-label { color: #94a3b8; }
+.sample-output .so-val { color: #a3e635; }
+.sample-output .so-neg { color: #f87171; }
+.sample-output .so-pos { color: #34d399; }
+.sample-output .so-warn { color: #fbbf24; }
+.sample-output .so-neutral { color: #e2e8f0; }
+.indicator-status { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 100px; font-size: .78rem; font-weight: 700; }
+.status-hot { background: #fef2f2; color: #b91c1c; border: 1px solid #fecdd3; }
+.status-warm { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.status-cool { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.status-normal { background: var(--teal-lt); color: var(--teal-dk); border: 1px solid var(--teal-md); }
+.related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; }
+.related-inner { max-width: 780px; margin: 0 auto; }
+.related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+.related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+.related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--teal); margin-bottom: 8px; }
+.related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+.related-card a { font-size: .85rem; font-weight: 600; color: var(--teal); }
+footer { background: #1f2937; color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+footer a { color: #60a5fa; }
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+@media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
+  </style>
+</head>
+<body>
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Site navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">OpenClaw</a>
+    <button class="hamburger" aria-expanded="false" aria-label="Toggle navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="6.5" cy="6.5" r="5"/>
+          <path d="M10.5 10.5l5 5"/>
+        </svg>
+        <input type="text" class="nav-search-input" placeholder="Search..." aria-label="Search">
+      </form>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  <strong>ℹ️ For informational purposes only.</strong> Economic data from government APIs may lag official releases. Nothing here is financial or investment advice. <a href="openclaw-for-indicators.html#disclaimer">Full disclaimer →</a>
+</div>
+
+<header class="post-header">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="index.html">Home</a>
+    <span>/</span>
+    <a href="learn.html">Learn</a>
+    <span>/</span>
+    <a href="openclaw-for-indicators.html">Economic Indicators</a>
+    <span>/</span>
+    <span>Part 4: GDP & Growth</span>
+  </nav>
+  <div class="series-badge">
+    <span>Series</span>
+    <strong>Part 4 of 5 · Economic Indicators</strong>
+  </div>
+  <h1>Part 4: GDP & Growth Indicators — Track Economic Growth in Real Time</h1>
+  <div class="post-meta">
+    <span>Intermediate</span>
+    <span>~20 min read</span>
+  </div>
+</header>
+
+<nav class="series-nav" aria-label="Economic Indicators series navigation">
+  <div class="series-nav-inner">
+    <a href="openclaw-for-indicators.html"><span class="sn-num">0</span> Overview</a>
+    <a href="indicators-fed.html"><span class="sn-num">1</span> Fed &amp; Rates</a>
+    <a href="indicators-inflation.html"><span class="sn-num">2</span> Inflation</a>
+    <a href="indicators-jobs.html"><span class="sn-num">3</span> Jobs</a>
+    <a href="indicators-gdp.html" aria-current="page"><span class="sn-num">4</span> GDP &amp; Growth</a>
+    <a href="indicators-dashboard.html"><span class="sn-num">5</span> Dashboard</a>
+  </div>
+</nav>
+
+<main id="main-content">
+  <article class="post-body">
+    <nav class="toc" role="navigation" aria-labelledby="toc-heading">
+      <h2 id="toc-heading" style="margin: 0; font-size: .85rem;">Contents</h2>
+      <ol style="margin-bottom: 0;">
+        <li><a href="#use-cases">Use cases at a glance</a></li>
+        <li><a href="#bea-setup">BEA API setup</a></li>
+        <li><a href="#gdpnow">GDPNow real-time tracking</a></li>
+        <li><a href="#gdp-release">Quarterly GDP release brief</a></li>
+        <li><a href="#retail-sales">Retail sales monitor</a></li>
+        <li><a href="#recession">Recession detection</a></li>
+        <li><a href="#growth-analysis">Growth trend analysis</a></li>
+        <li><a href="#heartbeat">HEARTBEAT schedule</a></li>
+        <li><a href="#sample-output">Sample quarterly GDP brief</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="use-cases">Use Cases at a Glance</h2>
+    <div class="use-case-grid">
+      <div class="use-case-card">
+        <h4>GDPNow Real-Time Tracking</h4>
+        <p>Update 2-3x per week as Atlanta Fed releases fresh GDP estimate for current quarter.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>Quarterly GDP Release Brief</h4>
+        <p>Pre-release (GDPNow expectation) and post-release (actual) with components breakdown.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>Recession Detection</h4>
+        <p>Flag when two consecutive quarters of negative GDP growth occur (technical recession signal).</p>
+      </div>
+      <div class="use-case-card">
+        <h4>Growth Components</h4>
+        <p>Break down GDP by consumer spending (PCE), business investment, government, net exports.</p>
+      </div>
+    </div>
+
+    <h2 id="bea-setup">BEA API Setup</h2>
+    <p>The Bureau of Economic Analysis (BEA) publishes all official GDP data. Registration is free and gives you access to the NIPA (National Income and Product Accounts) dataset.</p>
+    <ol>
+      <li>Go to <strong>apps.bea.gov/api/signup</strong></li>
+      <li>Register with your email</li>
+      <li>Generate API key</li>
+      <li>Store as environment variable: <code>BEA_API_KEY</code></li>
+    </ol>
+    <p><strong>Key BEA dataset: NIPA (National Income and Product Accounts)</strong></p>
+    <ul>
+      <li><strong>TableName:</strong> <code>T10101</code> (GDP and Major Components)</li>
+      <li><strong>Series IDs:</strong>
+        <ul>
+          <li><code>A191RL1Q225SBEA</code> — Real GDP, Percent Change</li>
+          <li><code>A191RL1Q225SBEA</code> for QoQ annualized growth</li>
+          <li><code>A191RC1Q225SBEA</code> — Real PCE (Personal Consumption Expenditures)</li>
+          <li><code>A191RX1Q225SBEA</code> — Net Exports contribution</li>
+        </ul>
+      </li>
+    </ul>
+    <p><strong>Simpler approach:</strong> Use FRED for GDP and PCE data. FRED mirrors BEA releases with a short lag. FRED series: <code>A191RL1Q225SBEA</code> (real GDP annualized growth), <code>DPCCRG3M086SBEA</code> (PCE).</p>
+
+    <h2 id="gdpnow">GDPNow Real-Time Tracking</h2>
+    <p>The Atlanta Federal Reserve publishes <strong>GDPNow</strong> — a real-time estimate of quarterly GDP that updates 2-3 times per week as new economic data comes in.</p>
+    <p><strong>Why it matters:</strong> GDPNow gives you a running estimate of what GDP will be for the current quarter without waiting 4 weeks for the official Advance estimate. Early in the quarter, it's volatile. By quarter-end, it converges toward the official number.</p>
+    <p><strong>How to fetch it:</strong> GDPNow is published at <code>atlantafed.org/cgi-bin/beamod/gp10.aspx</code> as an HTML page. Use HTTP fetch and parse the current estimate number, update date, and components (consumption, investment, government, net exports).</p>
+    <pre>GDPNow tracking example:
+- Update frequency: Tuesday, Thursday, occasionally Friday (2-3x/week)
+- Store in time-series for quarter: [date, estimate_pct, PCE_contrib, GPDI_contrib, govt_contrib, NX_contrib]
+- Display in weekly dashboard as: "GDPNow Q1 2026: +2.1% (as of March 24, updated daily)"</pre>
+
+    <h2 id="gdp-release">Quarterly GDP Release Brief</h2>
+    <p>The BEA releases three GDP estimates for each quarter, spaced about 4-5 weeks apart:</p>
+    <ul>
+      <li><strong>Advance estimate:</strong> ~4 weeks after quarter-end, most market-moving</li>
+      <li><strong>Second estimate:</strong> ~8 weeks after quarter-end, incorporates more complete data</li>
+      <li><strong>Third (final) estimate:</strong> ~12 weeks after quarter-end</li>
+    </ul>
+    <p><strong>Pre-release brief (morning of Advance estimate):</strong></p>
+    <ul>
+      <li>Prior quarter's final GDP reading</li>
+      <li>GDPNow current estimate going into release</li>
+      <li>What consensus expects (optional — this data isn't easily automated)</li>
+      <li>Components to watch: Personal Consumption is ~70% of GDP, so watch PCE closely</li>
+    </ul>
+    <p><strong>Post-release brief (8:35 AM following release):</strong></p>
+    <ul>
+      <li>Actual GDP reading (annualized % change)</li>
+      <li>Prior quarter final (for trend)</li>
+      <li>Beat/miss vs GDPNow estimate</li>
+      <li>Components breakdown: PCE, Business Investment (GPDI), Government, Net Exports</li>
+      <li>Recession flag check: if this is the 2nd consecutive quarter of negative growth, flag as "TECHNICAL RECESSION SIGNAL"</li>
+      <li>Classification: Moderate (2-3%), Healthy (3-4%), Strong (&gt;4%)</li>
+    </ul>
+
+    <h2 id="retail-sales">Retail Sales Monitor</h2>
+    <p>Retail sales data comes from the Census Bureau and signals consumer spending health. Retail sales release monthly.</p>
+    <p>Alert if MoM retail sales decline two consecutive months — this often precedes weakening consumer spending and slowing GDP growth. Retail sales represent a leading indicator for PCE (the consumer spending component of GDP).</p>
+
+    <h2 id="recession">Recession Detection</h2>
+    <p><strong>Technical definition:</strong> Two consecutive quarters of negative real GDP growth. This is NOT the official NBER definition (which is more nuanced), but it's a useful technical signal.</p>
+    <p><strong>Implementation:</strong></p>
+    <ol>
+      <li>Track quarterly real GDP growth rates (current quarter vs prior quarter, annualized)</li>
+      <li>If current quarter is negative AND prior quarter was negative: fire "TECHNICAL RECESSION SIGNAL" alert</li>
+      <li>Include note: "This is a technical indicator. Official recession designation comes from NBER, which uses a broader definition and often dates recessions months or years after they begin."</li>
+    </ol>
+
+    <h2 id="growth-analysis">Growth Trend Analysis</h2>
+    <p>Beyond single quarters, track multi-quarter trends:</p>
+    <ul>
+      <li><strong>Average growth last 4 quarters:</strong> Is trend accelerating or decelerating?</li>
+      <li><strong>Component divergence:</strong> If consumer spending (PCE) is strong but business investment (GPDI) is weak, it signals unequal recovery</li>
+      <li><strong>Potential growth estimate:</strong> Long-term US potential real GDP growth is roughly 2-2.5%. Are we above or below trend?</li>
+    </ul>
+
+    <h2 id="heartbeat">HEARTBEAT Schedule</h2>
+    <pre># GDPNow update (2-3x per week, Tue/Thu typical)
+0 9 * * 2,4 — Tuesday and Thursday 9 AM: check GDPNow for updates
+
+# Quarterly GDP release (Advance estimate)
+0 8 [gdp_release_dates] * * — Morning of GDP Advance release: pre-brief
+
+# GDP post-release
+35 8 [gdp_release_dates] * * — 8:35 AM: full post-release GDP brief
+
+# Mid-month retail sales check
+0 11 15 * * — 15th of month at 11 AM: check for retail sales release</pre>
+
+    <h2 id="sample-output">Sample Quarterly GDP Brief</h2>
+    <div class="sample-output">
+<span class="so-head">📈 GDP ADVANCE ESTIMATE — Q4 2025</span>
+
+<span class="so-label">Real GDP Growth (annualized):</span> <span class="so-val">+2.1%</span> (prior Q3: <span class="so-val">+2.8%</span>)
+<span class="so-label">GDPNow estimate going in:</span> <span class="so-val">+2.4%</span>
+<span class="so-label">vs GDPNow:</span> <span class="so-neg">Miss by -0.3pp</span> (slightly weaker than real-time estimate)
+
+<span class="so-label">Components (contribution to growth):</span>
+  <span class="so-label">Personal Consumption (PCE):</span> <span class="so-val">+2.8pp</span> (strong consumer)
+  <span class="so-label">Business Investment (GPDI):</span> <span class="so-val">+1.2pp</span> (moderate)
+  <span class="so-label">Government spending:</span> <span class="so-val">+0.9pp</span>
+  <span class="so-label">Net Exports:</span> <span class="so-neg">-0.4pp drag</span> (trade deficit headwind)
+
+<span class="so-label">Recession indicator:</span> <span class="so-neutral">No</span> (prior Q: <span class="so-val">+2.8%</span>, both positive)
+<span class="so-label">Trend:</span> <span class="so-neutral">Deceleration</span> (4Q avg: +2.6%, prior 4Q avg: +3.1%)
+<span class="so-label">vs potential:</span> <span class="so-neutral">Below trend</span> (growth at ~2.1% vs ~2.5% potential)
+
+<span class="so-label">Classification:</span> <span class="indicator-status status-cool">MODERATE GROWTH</span>
+
+<span class="so-label">Interpretation:</span> <span class="so-neutral">Consumer spending remains the growth engine. Business investment and trade are headwinds. Growth is slowing and now runs below potential, consistent with Fed's expectation of gradual cooling.</span>
+    </div>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>How is GDPNow different from the official GDP release?</h3>
+    <p>The official GDP estimate from the BEA releases quarterly — typically the last week of the month following the end of a quarter. GDPNow is the Atlanta Fed's real-time tracking estimate that updates 2-3 times per week as new economic data comes in throughout the quarter. It's not a forecast of what GDP will be — it's an estimate of what GDP *is* based on data already available. The two often diverge significantly early in the quarter and converge as more data accumulates.</p>
+
+    <h3>How is a recession technically defined?</h3>
+    <p>The most common definition used in the US is two consecutive quarters of negative real GDP growth. However, the official arbiter of US recessions is the NBER (National Bureau of Economic Research), which uses a broader definition including income, employment, and production data — and often calls recessions months or years after they begin. The agent flags two consecutive negative GDP quarters as a recession signal, while noting this is an informal indicator; NBER dating is the official standard.</p>
+
+    <h3>What is the advance GDP estimate vs revised?</h3>
+    <p>The BEA releases three GDP estimates for each quarter: the Advance estimate (first release, about 4 weeks after quarter ends, most market-moving), the Second estimate (about 8 weeks after), and the Third estimate (about 12 weeks after). Each revision incorporates more complete data. The Advance estimate often moves markets because it's the first read. The agent monitors all three but flags the Advance estimate most prominently.</p>
+  </article>
+</main>
+
+<section class="related">
+  <div class="related-inner">
+    <h2>Final Part Ahead</h2>
+    <div class="related-grid">
+      <a href="indicators-dashboard.html" class="related-card">
+        <span class="rc-cat">Part 5</span>
+        <h3>Weekly Dashboard</h3>
+        <a href="indicators-dashboard.html">Finish the series →</a>
+      </a>
+      <a href="indicators-inflation.html" class="related-card">
+        <span class="rc-cat">Part 2</span>
+        <h3>Inflation Tracking</h3>
+        <a href="indicators-inflation.html">Revisit →</a>
+      </a>
+      <a href="openclaw-for-indicators.html" class="related-card">
+        <span class="rc-cat">Overview</span>
+        <h3>Series Start</h3>
+        <a href="openclaw-for-indicators.html">Back to top →</a>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer role="contentinfo">
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="learn.html">Learn</a>
+    <a href="blog.html">Blog</a>
+    <a href="faq.html">FAQ</a>
+    <a href="privacy.html">Privacy</a>
+  </div>
+  <p>© 2026 learnopenclaw.org · Not affiliated with Anthropic.</p>
+</footer>
+
+<script src="copy.js"></script>
+<script>
+  const btn = document.querySelector('.hamburger');
+  const nav = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !open);
+    nav.classList.toggle('open');
+  });
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "FAQPage"],
+  "headline": "Part 4: GDP & Growth Indicators — Track Economic Growth in Real Time",
+  "description": "Track GDP releases, GDPNow real-time estimates, retail sales, and consumer confidence automatically with OpenClaw. Quarterly briefs, recession detection, and growth trend analysis.",
+  "url": "https://learnopenclaw.org/indicators-gdp.html",
+  "datePublished": "2026-03-26",
+  "dateModified": "2026-03-26",
+  "image": "https://learnopenclaw.org/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org"
+  },
+  "mainEntity": {
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is GDPNow different from the official GDP release?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The official GDP estimate from the BEA releases quarterly — typically the last week of the month following the end of a quarter. GDPNow is the Atlanta Fed's real-time tracking estimate that updates 2-3 times per week as new economic data comes in throughout the quarter. It's not a forecast of what GDP will be — it's an estimate of what GDP *is* based on data already available. The two often diverge significantly early in the quarter and converge as more data accumulates."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is a recession technically defined?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The most common definition used in the US is two consecutive quarters of negative real GDP growth. However, the official arbiter of US recessions is the NBER (National Bureau of Economic Research), which uses a broader definition including income, employment, and production data — and often calls recessions months or years after they begin. The agent flags two consecutive negative GDP quarters as a recession signal, while noting this is an informal indicator; NBER dating is the official standard."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the advance GDP estimate vs revised?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The BEA releases three GDP estimates for each quarter: the Advance estimate (first release, about 4 weeks after quarter ends, most market-moving), the Second estimate (about 8 weeks after), and the Third estimate (about 12 weeks after). Each revision incorporates more complete data. The Advance estimate often moves markets because it's the first read. The agent monitors all three but flags the Advance estimate most prominently."
+        }
+      }
+    ]
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Economic Indicators",
+        "item": "https://learnopenclaw.org/openclaw-for-indicators.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Part 4: GDP & Growth",
+        "item": "https://learnopenclaw.org/indicators-gdp.html"
+      }
+    ]
+  }
+}
+</script>
+
+</body>
+</html>

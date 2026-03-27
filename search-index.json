@@ -761,5 +761,118 @@
       "FAQ"
     ],
     "body": "end of day debrief options trading OpenClaw P&L position summary IV rank VIX regime next day watchlist weekly debrief flow recap Greeks summary trading journal automation"
+  },
+  {
+    "id": "openclaw-for-indicators.html",
+    "url": "https://learnopenclaw.org/openclaw-for-indicators.html",
+    "title": "OpenClaw for Economic Indicators \u2014 Automate Your Macro Briefings",
+    "description": "Use OpenClaw to automate economic indicator monitoring: Fed rate decisions, CPI inflation, NFP jobs data, GDP releases, and a weekly economic pulse dashboard. All data sources are free government APIs.",
+    "headings": [
+      "What this series does",
+      "Who it's for",
+      "The release calendar",
+      "Data sources",
+      "Disclaimer",
+      "The full series",
+      "FAQ"
+    ],
+    "body": "economic indicators automation FRED BLS BEA Census Bureau Atlanta Fed GDPNow macro briefing CPI NFP GDP Fed rate decisions free API traders investors business owners CFO real estate"
+  },
+  {
+    "id": "indicators-fed.html",
+    "url": "https://learnopenclaw.org/indicators-fed.html",
+    "title": "Fed & Interest Rate Monitoring with OpenClaw \u2014 Economic Indicators Part 1 of 5",
+    "description": "Automate Federal Reserve monitoring with OpenClaw. Track the fed funds rate, FOMC meeting calendar, Treasury yield curve, and rate decision alerts \u2014 all from the free FRED API.",
+    "headings": [
+      "Use cases at a glance",
+      "FRED API setup",
+      "FOMC calendar agent",
+      "Fed funds rate tracker",
+      "Treasury yield curve monitor",
+      "Rate decision day brief",
+      "Yield curve inversion alert",
+      "HEARTBEAT schedule",
+      "Sample rate decision brief",
+      "FAQ"
+    ],
+    "body": "Federal Reserve FOMC interest rate monitoring fed funds rate Treasury yield curve 2s10s inversion rate decision alert FRED API free OpenClaw macro trading"
+  },
+  {
+    "id": "indicators-inflation.html",
+    "url": "https://learnopenclaw.org/indicators-inflation.html",
+    "title": "CPI, PPI & PCE Inflation Tracking with OpenClaw \u2014 Economic Indicators Part 2 of 5",
+    "description": "Automate inflation monitoring with OpenClaw. Track CPI, Core CPI, PPI, and PCE from the free BLS and BEA APIs. Get pre-release countdowns and instant post-release summaries every month.",
+    "headings": [
+      "Use cases at a glance",
+      "BLS API setup",
+      "CPI release calendar agent",
+      "Monthly CPI brief",
+      "Core CPI vs Headline tracking",
+      "PPI monitor",
+      "PCE setup",
+      "Trend analysis",
+      "HEARTBEAT schedule",
+      "Sample CPI release brief",
+      "FAQ"
+    ],
+    "body": "CPI inflation tracking Core CPI PPI PCE BLS BEA API monthly release brief hot warm cool cold Fed 2% target OpenClaw economic indicators automation"
+  },
+  {
+    "id": "indicators-jobs.html",
+    "url": "https://learnopenclaw.org/indicators-jobs.html",
+    "title": "NFP & Jobs Market Monitoring with OpenClaw \u2014 Economic Indicators Part 3 of 5",
+    "description": "Automate labor market monitoring with OpenClaw. Track non-farm payrolls, weekly jobless claims, the unemployment rate, and JOLTS job openings from the free BLS API.",
+    "headings": [
+      "Use cases at a glance",
+      "BLS series IDs for labor data",
+      "Weekly claims agent",
+      "NFP first-Friday brief",
+      "Unemployment rate tracker",
+      "JOLTS job openings monitor",
+      "Labor market health score",
+      "HEARTBEAT schedule",
+      "Sample NFP morning brief",
+      "FAQ"
+    ],
+    "body": "NFP non-farm payrolls jobs report labor market weekly jobless claims unemployment rate JOLTS job openings BLS API first Friday OpenClaw economic indicators automation"
+  },
+  {
+    "id": "indicators-gdp.html",
+    "url": "https://learnopenclaw.org/indicators-gdp.html",
+    "title": "GDP & Economic Growth Monitoring with OpenClaw \u2014 Economic Indicators Part 4 of 5",
+    "description": "Track GDP releases, GDPNow real-time estimates, retail sales, and consumer confidence automatically with OpenClaw. Quarterly GDP briefs, recession detection, and growth trend analysis.",
+    "headings": [
+      "Use cases at a glance",
+      "BEA API setup",
+      "GDPNow real-time tracking",
+      "Quarterly GDP release brief",
+      "Retail sales monitor",
+      "Consumer confidence",
+      "Recession detection",
+      "Growth trend analysis",
+      "HEARTBEAT schedule",
+      "Sample quarterly GDP brief",
+      "FAQ"
+    ],
+    "body": "GDP growth GDPNow Atlanta Fed BEA API quarterly release recession detection retail sales consumer confidence real GDP growth advance estimate OpenClaw economic indicators"
+  },
+  {
+    "id": "indicators-dashboard.html",
+    "url": "https://learnopenclaw.org/indicators-dashboard.html",
+    "title": "Weekly Economic Pulse Dashboard with OpenClaw \u2014 Economic Indicators Part 5 of 5",
+    "description": "Build a weekly economic pulse dashboard with OpenClaw. Every Monday morning, get a single structured report covering all major economic indicators: rates, inflation, jobs, GDP, and leading indicators.",
+    "headings": [
+      "Use cases at a glance",
+      "Dashboard architecture",
+      "The 8 indicator modules",
+      "Status classification system",
+      "Upcoming releases calendar",
+      "Week-ahead context",
+      "Customizing your dashboard",
+      "HEARTBEAT schedule",
+      "Sample full Monday dashboard",
+      "FAQ"
+    ],
+    "body": "weekly economic dashboard Monday briefing FRED EFFR yield curve CPI PCE NFP unemployment GDPNow recession probability LEI ISM PMI OpenClaw macro briefing service economic pulse"
   }
 ]

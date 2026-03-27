@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Automate inflation monitoring with OpenClaw. Track CPI, Core CPI, PPI, and PCE from the free BLS and BEA APIs. Get pre-release countdowns and instant post-release summaries every month.">
+  <meta name="keywords" content="CPI, inflation, PCE, PPI, BLS API, economic data, automation">
+  <link rel="canonical" href="https://learnopenclaw.org/indicators-inflation.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="CPI, PPI & PCE Inflation Tracking with OpenClaw — Economic Indicators Part 2 of 5">
+  <meta property="og:description" content="Automate inflation monitoring. Track CPI, Core CPI, PPI, and PCE monthly from free BLS and BEA APIs.">
+  <meta property="og:url" content="https://learnopenclaw.org/indicators-inflation.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CPI, PPI & PCE Inflation Tracking with OpenClaw — Economic Indicators Part 2 of 5">
+  <meta name="twitter:description" content="Automate inflation monitoring. Track CPI, Core CPI, PPI, and PCE monthly from free APIs.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+  <title>CPI, PPI & PCE Inflation Tracking with OpenClaw — Economic Indicators Part 2 of 5 | learnopenclaw.org</title>
+  <style>
+:root {
+  --teal: #0f766e; --teal-lt: #f0fdfa; --teal-md: #99f6e4; --teal-dk: #134e4a;
+  --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+  --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+  --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a; --amber-dk: #92400e;
+  --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+  --crimson: #b91c1c; --crimson-lt: #fff1f2; --crimson-md: #fecdd3;
+  --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe;
+  --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+  --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+  --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+}
+html { scroll-behavior: smooth; }
+.skip-nav { position: absolute; top: -100px; left: 16px; background: var(--teal); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+.skip-nav:focus { top: 8px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+.nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+.nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.nav-logo:hover { text-decoration: none; }
+.hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+.hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+.nav-links.open { display: flex; }
+.nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+.nav-links a:hover { color: var(--teal); text-decoration: none; }
+@media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+.nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+.nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+.nav-search-input:focus { outline: none; }
+.nav-search-input::placeholder { color: var(--gray-5); }
+@media (max-width: 480px) { .nav-search-form { display: none; } }
+.disclaimer-bar { background: var(--teal-lt); border-bottom: 1px solid var(--teal-md); padding: 8px 24px; text-align: center; font-size: .85rem; color: var(--teal-dk); }
+.disclaimer-bar a { color: var(--teal-dk); font-weight: 600; }
+.post-header { background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0f766e 100%); padding: 60px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+.post-header::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+.breadcrumb { font-size: .82rem; color: rgba(255,255,255,.6); margin-bottom: 20px; position: relative; }
+.breadcrumb a { color: rgba(255,255,255,.7); }
+.breadcrumb a:hover { color: #fff; text-decoration: none; }
+.breadcrumb span { color: rgba(255,255,255,.45); margin: 0 6px; }
+.series-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 100px; padding: 5px 14px; margin-bottom: 18px; position: relative; }
+.series-badge span { color: #99f6e4; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.series-badge strong { color: #fff; font-size: .75rem; }
+.post-header h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.2; max-width: 760px; margin: 0 auto 22px; color: var(--white); position: relative; }
+.post-meta { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: .88rem; color: rgba(255,255,255,.65); flex-wrap: wrap; position: relative; }
+.post-meta span::before { content: '·'; margin-right: 6px; }
+.post-meta span:first-child::before { content: ''; margin: 0; }
+.series-nav { background: #f1f5f9; border-bottom: 1px solid var(--gray-3); padding: 0 24px; overflow-x: auto; }
+.series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 0; }
+.series-nav a { display: flex; align-items: center; gap: 7px; padding: 12px 16px; font-size: .83rem; font-weight: 600; color: var(--gray-5); border-bottom: 3px solid transparent; white-space: nowrap; text-decoration: none; transition: color .15s, border-color .15s; }
+.series-nav a:hover { color: var(--teal); text-decoration: none; }
+.series-nav a[aria-current="page"] { color: var(--teal); border-bottom-color: var(--teal); }
+.series-nav a .sn-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--teal-lt); border: 1px solid var(--teal-md); font-size: .72rem; font-weight: 800; color: var(--teal); }
+.series-nav a[aria-current="page"] .sn-num { background: var(--teal); color: #fff; border-color: var(--teal-dk); }
+.post-body { max-width: 780px; margin: 0 auto; padding: 52px 24px 80px; }
+.post-body h2 { font-size: 1.45rem; font-weight: 800; margin: 52px 0 16px; padding-top: 8px; border-top: 2px solid var(--teal-md); color: var(--gray-8); }
+.post-body h3 { font-size: 1.05rem; font-weight: 700; margin: 28px 0 10px; color: var(--gray-8); }
+.post-body p { margin-bottom: 18px; }
+.post-body ul, .post-body ol { padding-left: 22px; margin-bottom: 18px; }
+.post-body li { margin-bottom: 7px; }
+.post-body strong { font-weight: 700; }
+.post-body code { background: var(--gray-2); border-radius: 4px; padding: 2px 6px; font-size: .88em; font-family: "SF Mono", "Fira Code", monospace; }
+pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 22px 24px; overflow-x: auto; font-size: .88rem; line-height: 1.65; margin: 24px 0 32px; position: relative; }
+.post-body pre code { background: none !important; color: #e2e8f0 !important; padding: 0; border-radius: 0; font-size: inherit; }
+.toc { background: var(--teal-lt); border: 1px solid var(--teal-md); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 44px; }
+.toc-label { font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+.toc ol { padding-left: 20px; }
+.toc li { margin-bottom: 7px; font-size: .95rem; }
+.toc a { color: var(--teal); font-weight: 500; }
+.callout { border-left: 4px solid var(--teal); background: var(--teal-lt); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 28px 0; font-size: .95rem; }
+.callout strong { color: var(--teal-dk); }
+.callout--blue { border-left-color: var(--blue); background: var(--blue-lt); }
+.callout--blue strong { color: var(--blue); }
+.callout--green { border-left-color: var(--green); background: var(--green-lt); }
+.callout--green strong { color: var(--green); }
+.callout--amber { border-left-color: var(--amber); background: var(--amber-lt); }
+.callout--amber strong { color: var(--amber-dk); }
+.callout--red { border-left-color: var(--red); background: var(--red-lt); }
+.callout--red strong { color: var(--red); }
+.api-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 24px 0 36px; border-radius: var(--radius); border: 1px solid var(--gray-3); }
+.api-table { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 500px; }
+.api-table th { background: var(--teal); color: var(--white); font-weight: 700; padding: 10px 14px; text-align: left; font-size: .83rem; }
+.api-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-3); vertical-align: top; }
+.api-table tr:nth-child(even) td { background: var(--gray-1); }
+.api-table tr:last-child td { border-bottom: none; }
+@media (max-width: 480px) { .api-table th, .api-table td { padding: 8px 10px; font-size: .82rem; } }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.badge-free { background: var(--green-lt); color: var(--green); border: 1px solid var(--green-md); }
+.badge-monthly { background: var(--blue-lt); color: var(--blue); border: 1px solid var(--blue-md); }
+.badge-weekly { background: var(--teal-lt); color: var(--teal); border: 1px solid var(--teal-md); }
+.badge-quarterly { background: var(--amber-lt); color: var(--amber-dk); border: 1px solid var(--amber-md); }
+.use-case-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin: 24px 0 36px; }
+.use-case-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--teal); border-radius: var(--radius); padding: 20px 22px; }
+.use-case-card h4 { font-size: .95rem; font-weight: 800; margin: 0 0 8px; }
+.use-case-card p { font-size: .88rem; color: var(--gray-5); margin: 0; line-height: 1.5; }
+.audience-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin: 28px 0 36px; }
+.audience-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--teal); border-radius: var(--radius); padding: 22px 24px; }
+.audience-card h4 { font-size: .95rem; font-weight: 800; margin: 0 0 10px; color: var(--gray-8); }
+.audience-card p { font-size: .9rem; margin: 0 0 10px; color: var(--gray-5); line-height: 1.5; }
+.audience-card .best-parts { font-size: .82rem; font-weight: 600; color: var(--teal-dk); }
+.release-calendar { background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 20px 24px; margin: 24px 0 36px; }
+.release-calendar .rc-label { font-size: .75rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; }
+.release-row { display: flex; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--gray-3); font-size: .9rem; }
+.release-row:last-child { border-bottom: none; }
+.release-freq { font-size: .72rem; font-weight: 700; min-width: 80px; }
+.release-name { font-weight: 600; flex: 1; }
+.release-timing { color: var(--gray-5); font-size: .85rem; }
+.series-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin: 28px 0 20px; }
+.series-card { background: var(--white); border: 1px solid var(--gray-3); border-top: 3px solid var(--teal); border-radius: var(--radius); padding: 20px 22px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--shadow); transition: transform .18s, box-shadow .18s; }
+.series-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(15,118,110,.18); text-decoration: none; }
+.sc-num { font-size: .72rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--teal); }
+.sc-title { font-size: 1rem; font-weight: 800; color: var(--gray-8); line-height: 1.3; }
+.sc-desc { font-size: .84rem; color: var(--gray-5); line-height: 1.5; flex: 1; }
+.sc-arrow { font-size: .83rem; font-weight: 700; color: var(--teal); margin-top: 4px; }
+.sample-output { background: #0f172a; color: #e2e8f0; border-radius: var(--radius); padding: 24px 26px; font-size: .86rem; line-height: 1.7; font-family: "SF Mono", "Fira Code", monospace; overflow-x: auto; margin: 24px 0 36px; position: relative; }
+.sample-output .so-head { color: #99f6e4; font-weight: 700; }
+.sample-output .so-label { color: #94a3b8; }
+.sample-output .so-val { color: #a3e635; }
+.sample-output .so-neg { color: #f87171; }
+.sample-output .so-pos { color: #34d399; }
+.sample-output .so-warn { color: #fbbf24; }
+.sample-output .so-neutral { color: #e2e8f0; }
+.indicator-status { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 100px; font-size: .78rem; font-weight: 700; }
+.status-hot { background: #fef2f2; color: #b91c1c; border: 1px solid #fecdd3; }
+.status-warm { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+.status-cool { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.status-normal { background: var(--teal-lt); color: var(--teal-dk); border: 1px solid var(--teal-md); }
+.related { background: var(--gray-1); border-top: 1px solid var(--gray-3); padding: 48px 24px; }
+.related-inner { max-width: 780px; margin: 0 auto; }
+.related h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+.related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.related-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 18px 20px; }
+.related-card .rc-cat { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--teal); margin-bottom: 8px; }
+.related-card h3 { font-size: .92rem; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
+.related-card a { font-size: .85rem; font-weight: 600; color: var(--teal); }
+footer { background: #1f2937; color: #d1d5db; text-align: center; padding: 36px 24px; font-size: .9rem; }
+footer a { color: #60a5fa; }
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+@media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
+  </style>
+</head>
+<body>
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Site navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">OpenClaw</a>
+    <button class="hamburger" aria-expanded="false" aria-label="Toggle navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="6.5" cy="6.5" r="5"/>
+          <path d="M10.5 10.5l5 5"/>
+        </svg>
+        <input type="text" class="nav-search-input" placeholder="Search..." aria-label="Search">
+      </form>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  <strong>ℹ️ For informational purposes only.</strong> Economic data from government APIs may lag official releases. Nothing here is financial or investment advice. <a href="openclaw-for-indicators.html#disclaimer">Full disclaimer →</a>
+</div>
+
+<header class="post-header">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="index.html">Home</a>
+    <span>/</span>
+    <a href="learn.html">Learn</a>
+    <span>/</span>
+    <a href="openclaw-for-indicators.html">Economic Indicators</a>
+    <span>/</span>
+    <span>Part 2: Inflation Tracking</span>
+  </nav>
+  <div class="series-badge">
+    <span>Series</span>
+    <strong>Part 2 of 5 · Economic Indicators</strong>
+  </div>
+  <h1>Part 2: Inflation Tracking — Automate Your CPI, PPI & PCE Monitoring</h1>
+  <div class="post-meta">
+    <span>Intermediate</span>
+    <span>~20 min read</span>
+  </div>
+</header>
+
+<nav class="series-nav" aria-label="Economic Indicators series navigation">
+  <div class="series-nav-inner">
+    <a href="openclaw-for-indicators.html"><span class="sn-num">0</span> Overview</a>
+    <a href="indicators-fed.html"><span class="sn-num">1</span> Fed &amp; Rates</a>
+    <a href="indicators-inflation.html" aria-current="page"><span class="sn-num">2</span> Inflation</a>
+    <a href="indicators-jobs.html"><span class="sn-num">3</span> Jobs</a>
+    <a href="indicators-gdp.html"><span class="sn-num">4</span> GDP &amp; Growth</a>
+    <a href="indicators-dashboard.html"><span class="sn-num">5</span> Dashboard</a>
+  </div>
+</nav>
+
+<main id="main-content">
+  <article class="post-body">
+    <nav class="toc" role="navigation" aria-labelledby="toc-heading">
+      <h2 id="toc-heading" style="margin: 0; font-size: .85rem;">Contents</h2>
+      <ol style="margin-bottom: 0;">
+        <li><a href="#use-cases">Use cases at a glance</a></li>
+        <li><a href="#bls-setup">BLS API setup</a></li>
+        <li><a href="#cpi-brief">Monthly CPI brief</a></li>
+        <li><a href="#ppi-pce">PPI and PCE monitoring</a></li>
+        <li><a href="#trend-analysis">Trend analysis</a></li>
+        <li><a href="#heartbeat">HEARTBEAT schedule</a></li>
+        <li><a href="#sample-output">Sample CPI release brief</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="use-cases">Use Cases at a Glance</h2>
+    <div class="use-case-grid">
+      <div class="use-case-card">
+        <h4>CPI Release Countdown</h4>
+        <p>7 days, 1 day, and morning-of alerts with consensus expectations.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>Post-Release Summary</h4>
+        <p>Instant brief: actual vs consensus, MoM and YoY changes, beat/miss classification.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>Core vs Headline Tracking</h4>
+        <p>Compare CPI and Core CPI divergence to understand inflation breadth.</p>
+      </div>
+      <div class="use-case-card">
+        <h4>Trend Analysis</h4>
+        <p>3-month and 6-month moving averages to spot acceleration or deceleration.</p>
+      </div>
+    </div>
+
+    <h2 id="bls-setup">BLS API Setup</h2>
+    <p>The Bureau of Labor Statistics maintains the most granular inflation data. Registration is optional but recommended for higher rate limits.</p>
+    <ol>
+      <li>Register at <strong>data.bls.gov/registrationEngine</strong></li>
+      <li>Generate API key (optional but gives 5,000 requests/day vs 500/day)</li>
+      <li>Store as environment variable: <code>BLS_API_KEY</code></li>
+    </ol>
+    <p><strong>Key BLS series IDs used in this part:</strong></p>
+    <ul>
+      <li><code>CUSR0000SA0</code> — CPI-U (Consumer Price Index for All Urban Consumers), headline inflation</li>
+      <li><code>CUSR0000SA0L1E</code> — Core CPI (excludes food and energy)</li>
+      <li><code>WPSFD4</code> — PPI Final Demand (Producer Price Index)</li>
+    </ul>
+    <p><strong>Additional series via FRED:</strong></p>
+    <ul>
+      <li><code>PCE</code> (FRED series) — Personal Consumption Expenditures (inflation measure preferred by Fed)</li>
+      <li><code>DPCCRG3M086SBEA</code> — Core PCE (Fed's explicit target is 2% on Core PCE)</li>
+    </ul>
+    <p><strong>Rate limits:</strong> 500 requests/day (unregistered), 5,000 requests/day (registered with API key). This series makes 2-3 API calls per CPI release, so registered access is recommended for peace of mind.</p>
+
+    <h2 id="cpi-brief">Monthly CPI Brief</h2>
+    <p><strong>Release cadence:</strong> CPI releases mid-month, typically on the second or third Tuesday or Wednesday. The exact date varies; the BLS publishes the upcoming 3 months of release dates at data.bls.gov/pub/news.release/archives.</p>
+    <p><strong>Agent configuration example:</strong></p>
+    <pre>name: inflation-monitor
+description: CPI, Core CPI, PPI, and PCE tracking
+frequency: variable (see HEARTBEAT section)
+cpi_release_dates_q1_2026:
+  - 2026-01-13  # January CPI
+  - 2026-02-10  # February CPI
+  - 2026-03-11  # March CPI
+api_keys:
+  bls_api_key: ${BLS_API_KEY}
+status_thresholds:
+  hot: "> 3%"       # YoY inflation above 3%
+  warm: "2% - 3%"   # Elevated but moderating
+  cool: "1% - 2%"   # Approaching target
+  cold: "< 1%"      # Below target (deflation risk)</pre>
+
+    <p><strong>Pre-release brief (day before):</strong> Show last month's reading, the current month's consensus estimate (pulled from financial data sources or noted as manual check), and what economists are watching.</p>
+    <p><strong>Post-release brief (8:35 AM, 5 min after official release):</strong></p>
+    <ul>
+      <li>Actual headline CPI: YoY % and MoM %</li>
+      <li>Core CPI: YoY % and MoM %</li>
+      <li>Comparison to prior month and consensus</li>
+      <li>Classification: HOT (&gt;3% YoY), WARM (2-3%), COOL (1-2%), COLD (&lt;1%)</li>
+      <li>Trend note: acceleration or deceleration vs prior 3 months</li>
+    </ul>
+
+    <h2 id="ppi-pce">PPI and PCE Monitoring</h2>
+    <p><strong>Producer Price Index (PPI):</strong> Measures inflation from the producer/seller's perspective. It's a leading indicator for CPI because producer cost increases often pass through to consumers over time. PPI releases monthly, typically a day before CPI.</p>
+    <p>Pull <code>WPSFD4</code> (Final Demand) from BLS. Compare YoY trend to CPI — if PPI is rising faster than CPI, it signals potential future inflation pressure on consumers.</p>
+
+    <p><strong>PCE (Personal Consumption Expenditures):</strong> The Federal Reserve's preferred inflation measure because it's broader and differently weighted than CPI. The Fed's explicit 2% inflation target refers to Core PCE specifically, not CPI. PCE releases monthly as part of the income/spending report (BEA), typically in the third or fourth week of the month.</p>
+    <p>Core PCE (excludes food and energy) is what the Fed targets. When Core PCE is running at 2.5% and the Fed says "inflation is above target," they're referring specifically to Core PCE.</p>
+
+    <div class="callout callout--blue">
+      <strong>Why Fed tracks Core PCE:</strong> The Fed uses Core PCE (not CPI) as its inflation target because it's less volatile than headline inflation and reflects underlying inflation trends more clearly. CPI is more widely reported in news and markets, but for Fed decision-making, Core PCE is the official scorecard.
+    </div>
+
+    <h2 id="trend-analysis">Trend Analysis</h2>
+    <p>Beyond month-to-month readings, the agent tracks inflation trends to answer: is inflation accelerating or decelerating?</p>
+    <ol>
+      <li>Store the last 12 months of CPI readings</li>
+      <li>Compute 3-month moving average (current + prior 2 months) ÷ 3</li>
+      <li>Compute 6-month moving average</li>
+      <li>Compare current reading to moving averages: if above both, inflation accelerating; if below both, decelerating</li>
+      <li>Note the context: "Inflation has been decelerating for 4 consecutive months but remains 1.2pp above Fed target"</li>
+    </ol>
+    <p>This trend view is particularly valuable for options traders because sustained deceleration + still-elevated inflation creates unique implied volatility conditions.</p>
+
+    <h2 id="heartbeat">HEARTBEAT Schedule</h2>
+    <pre># CPI release morning (7 days before)
+0 9 [cpi_date-7] * * — 7 days before CPI: countdown alert with consensus
+
+# CPI release morning (1 day before)
+0 9 [cpi_date-1] * * — 1 day before CPI: reminder with prior month recap
+
+# CPI release (morning of, 8:30 AM ET)
+0 8 [cpi_release_dates] * * — Morning of CPI: note time of release
+
+# CPI release (5 minutes after)
+35 8 [cpi_release_dates] * * — 8:35 AM: Poll BLS API, post full brief
+
+# Monthly trend summary
+0 9 1 * * — First of each month: summarize prior month inflation trend</pre>
+
+    <h2 id="sample-output">Sample CPI Release Brief</h2>
+    <div class="sample-output">
+<span class="so-head">📊 CPI RELEASE — March 12, 2026</span>
+
+<span class="so-label">Headline CPI</span>
+  <span class="so-label">YoY change:</span> <span class="so-warn">+3.2%</span> (prior: <span class="so-val">+3.0%</span>)
+  <span class="so-label">MoM change:</span> <span class="so-warn">+0.4%</span> (prior: <span class="so-val">+0.2%</span>)
+  <span class="so-label">vs consensus:</span> <span class="so-pos">Beat</span> (expected <span class="so-val">+3.1%</span> YoY)
+
+<span class="so-label">Core CPI (ex-food &amp; energy)</span>
+  <span class="so-label">YoY change:</span> <span class="so-warn">+3.5%</span> (prior: <span class="so-val">+3.4%</span>)
+  <span class="so-label">MoM change:</span> <span class="so-warm">+0.3%</span> (prior: <span class="so-val">+0.3%</span>)
+  <span class="so-label">vs consensus:</span> <span class="so-neutral">In-line</span> (expected <span class="so-val">+3.5%</span> YoY)
+
+<span class="so-label">Status classification:</span> <span class="indicator-status status-warm">WARM</span> → <span class="indicator-status status-hot">TRENDING HOT</span>
+<span class="so-label">3-month trend:</span> <span class="so-neg">Acceleration</span> (+0.2pp each month)
+<span class="so-label">vs Fed target:</span> <span class="so-warn">+1.3pp above 2% target</span>
+
+<span class="so-label">Implication:</span> Fed unlikely to cut rates soon. Sticky inflation in core services (ex-energy services).
+    </div>
+
+    <h2 id="faq">FAQ</h2>
+    <h3>What's the difference between CPI, Core CPI, PPI, and PCE?</h3>
+    <p><strong>CPI (Consumer Price Index)</strong> measures the average price change for a basket of consumer goods and services — the headline inflation number most commonly cited in news. It includes everything: food, energy, housing, transportation, etc.</p>
+    <p><strong>Core CPI</strong> excludes food and energy from the headline number. Food and energy prices are volatile and can spike due to supply shocks (bad harvest, geopolitical tensions) rather than underlying demand-driven inflation. By excluding them, Core CPI shows the underlying inflation trend more cleanly.</p>
+    <p><strong>PPI (Producer Price Index)</strong> measures price changes from the seller's perspective — what factories, farmers, and manufacturers pay for inputs and what they charge for finished goods. PPI is a leading indicator for CPI because when producer costs rise, that inflation eventually gets passed through to consumers.</p>
+    <p><strong>PCE (Personal Consumption Expenditures)</strong> is the Federal Reserve's preferred inflation measure. It's broader than CPI, weighted differently (giving more weight to items people actually spend more on), and updated monthly as part of the income/spending report. <strong>Core PCE</strong> (excluding food and energy) is what the Fed's 2% inflation target explicitly refers to — not CPI.</p>
+
+    <h3>When does CPI release each month?</h3>
+    <p>CPI releases mid-month, typically on the second or third Tuesday, Wednesday, or Thursday. The exact date varies month to month and is published by the BLS in advance. The release time is always 8:30 AM ET. The agent config maintains the upcoming 3 months of release dates and fires countdown alerts at 7 days, 1 day, and morning-of. The BLS website (data.bls.gov/pub/news.release/archives) publishes the full year of CPI release dates.</p>
+
+    <h3>How does high CPI affect options traders?</h3>
+    <p>In the periods leading up to a CPI print, IV on SPY and QQQ options typically rises as traders buy protection or establish speculative positions. After a surprisingly hot CPI (above consensus), the market often sells off and IV spikes further. After an in-line or cool CPI, IV often drops (IV crush similar to post-earnings). The pre-release brief from this agent, combined with the options flow monitoring in the OpenClaw for Options Trading series, gives you both the macro catalyst awareness and the market microstructure view.</p>
+  </article>
+</main>
+
+<section class="related">
+  <div class="related-inner">
+    <h2>Next in Series</h2>
+    <div class="related-grid">
+      <a href="indicators-jobs.html" class="related-card">
+        <span class="rc-cat">Part 3</span>
+        <h3>Labor Market</h3>
+        <a href="indicators-jobs.html">Continue →</a>
+      </a>
+      <a href="indicators-gdp.html" class="related-card">
+        <span class="rc-cat">Part 4</span>
+        <h3>GDP & Growth</h3>
+        <a href="indicators-gdp.html">Read →</a>
+      </a>
+      <a href="indicators-dashboard.html" class="related-card">
+        <span class="rc-cat">Part 5</span>
+        <h3>Weekly Dashboard</h3>
+        <a href="indicators-dashboard.html">Jump ahead →</a>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer role="contentinfo">
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="learn.html">Learn</a>
+    <a href="blog.html">Blog</a>
+    <a href="faq.html">FAQ</a>
+    <a href="privacy.html">Privacy</a>
+  </div>
+  <p>© 2026 learnopenclaw.org · Not affiliated with Anthropic.</p>
+</footer>
+
+<script src="copy.js"></script>
+<script>
+  const btn = document.querySelector('.hamburger');
+  const nav = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !open);
+    nav.classList.toggle('open');
+  });
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "FAQPage"],
+  "headline": "Part 2: Inflation Tracking — Automate Your CPI, PPI & PCE Monitoring",
+  "description": "Automate inflation monitoring with OpenClaw. Track CPI, Core CPI, PPI, and PCE from the free BLS and BEA APIs. Get pre-release countdowns and instant post-release summaries every month.",
+  "url": "https://learnopenclaw.org/indicators-inflation.html",
+  "datePublished": "2026-03-26",
+  "dateModified": "2026-03-26",
+  "image": "https://learnopenclaw.org/og-image.png",
+  "author": {
+    "@type": "Organization",
+    "name": "learnopenclaw.org"
+  },
+  "mainEntity": {
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What's the difference between CPI, Core CPI, PPI, and PCE?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CPI (Consumer Price Index) measures the average price change for a basket of consumer goods and services — the headline inflation number. Core CPI excludes food and energy (which are volatile) to show underlying inflation trends. PPI (Producer Price Index) measures price changes from the seller's perspective — a leading indicator for CPI since producer costs eventually pass through to consumers. PCE (Personal Consumption Expenditures) is the Fed's preferred inflation measure, broader than CPI and weighted differently. The Fed's 2% inflation target refers to Core PCE specifically, not CPI."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When does CPI release each month?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CPI releases mid-month, typically on the second or third Tuesday or Wednesday of the month. The exact date is published in advance by the BLS. The release time is 8:30 AM ET. The agent config maintains the upcoming 3 months of release dates and fires countdown alerts at 7 days, 1 day, and morning-of."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does high CPI affect options traders?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "In the periods leading up to a hot CPI print, IV on SPY and QQQ options typically rises as traders buy protection or speculative positions. After a surprisingly hot CPI (above consensus), the market often sells off and IV spikes further. After an in-line or cool CPI, IV often drops (IV crush similar to post-earnings). The pre-release brief from this agent, combined with the options flow monitoring in the OpenClaw for Options Trading series, gives you both the macro catalyst awareness and the market microstructure view."
+        }
+      }
+    ]
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Economic Indicators",
+        "item": "https://learnopenclaw.org/openclaw-for-indicators.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Part 2: Inflation Tracking",
+        "item": "https://learnopenclaw.org/indicators-inflation.html"
+      }
+    ]
+  }
+}
+</script>
+
+</body>
+</html>
