@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fed Speech & FOMC Monitoring with OpenClaw — Transcripts & Audio Part 2 of 5 | learnopenclaw.org</title>
+  <meta name="description" content="Automate Federal Reserve speech and FOMC monitoring with OpenClaw. Track hawkish/dovish language shifts, FOMC minutes the moment they drop, and Powell press conference tone — all free from federalreserve.gov.">
+  <link rel="canonical" href="https://learnopenclaw.org/transcripts-fed.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Fed Speech & FOMC Monitoring with OpenClaw — Every Word Powell Says, Automatically Analyzed">
+  <meta property="og:description" content="Automate Federal Reserve speech and FOMC monitoring with OpenClaw. Track hawkish/dovish language shifts, FOMC minutes the moment they drop, and Powell press conference tone — all free from federalreserve.gov.">
+  <meta property="og:url" content="https://learnopenclaw.org/transcripts-fed.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Fed Speech & FOMC Monitoring with OpenClaw — Every Word Powell Says, Automatically Analyzed">
+  <meta name="twitter:description" content="Automate Federal Reserve speech and FOMC monitoring with OpenClaw. Track hawkish/dovish language shifts, FOMC minutes the moment they drop, and Powell press conference tone — all free from federalreserve.gov.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+  <meta name="datePublished" content="2026-03-27">
+  <meta name="dateModified" content="2026-03-27">
+  <style>
+    :root {
+      --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe; --purple-dk: #4c1d95;
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+      --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--purple); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+    .skip-nav:focus { top: 8px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--purple); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); text-decoration: none; white-space: nowrap; }
+    .nav-logo:hover { text-decoration: none; color: var(--purple); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--purple); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+    .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+    .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+    .nav-search-input:focus { outline: none; }
+    .nav-search-input::placeholder { color: var(--gray-5); }
+    @media (max-width: 480px) { .nav-search-form { display: none; } }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .disclaimer-bar { background: var(--purple-lt); border-left: 4px solid var(--purple); padding: 12px 24px; font-size: .875rem; color: var(--purple-dk); display: flex; align-items: center; gap: 10px; }
+    .disclaimer-bar strong { font-weight: 700; }
+    .post-header { background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 55%, #7c3aed 100%); color: var(--white); padding: 48px 24px; }
+    .post-header-inner { max-width: 900px; margin: 0 auto; }
+    .post-badge { display: inline-block; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; background: rgba(255,255,255,.15); border-radius: 6px; margin-bottom: 16px; }
+    .post-h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin: 0 0 20px; }
+    .post-meta { font-size: .95rem; opacity: .9; }
+    .series-nav { background: var(--gray-1); border-bottom: 1px solid var(--gray-3); padding: 20px 24px; }
+    .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .series-nav a { padding: 10px 14px; border-radius: 6px; background: var(--white); color: var(--gray-8); font-size: .9rem; border: 1px solid var(--gray-3); transition: .2s; }
+    .series-nav a:hover { background: var(--purple-lt); color: var(--purple); border-color: var(--purple); text-decoration: none; }
+    .series-nav a[aria-current="page"] { background: var(--purple); color: var(--white); border-color: var(--purple); }
+    main { }
+    .container { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
+    h2 { font-size: 1.8rem; font-weight: 700; margin: 40px 0 20px; line-height: 1.3; }
+    h3 { font-size: 1.3rem; font-weight: 700; margin: 24px 0 12px; }
+    p { margin: 0 0 16px; }
+    ul, ol { margin: 0 0 16px 24px; }
+    li { margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; background: var(--white); border: 1px solid var(--gray-3); border-radius: 8px; overflow: hidden; font-size: .95rem; }
+    th { background: var(--purple-lt); color: var(--purple-dk); font-weight: 700; padding: 12px 16px; text-align: left; }
+    td { padding: 12px 16px; border-top: 1px solid var(--gray-3); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: var(--gray-1); }
+    pre { background: var(--gray-1); border: 1px solid var(--gray-3); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: .85rem; line-height: 1.5; margin: 24px 0; position: relative; }
+    code { font-family: "Courier New", monospace; }
+    .faq-section { margin-top: 40px; }
+    .faq-item { margin-bottom: 24px; }
+    .faq-q { font-weight: 700; margin-bottom: 8px; }
+    .faq-a { color: var(--gray-5); }
+    footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; margin-top: 60px; }
+    footer a { color: #d1d5db; }
+    footer a:hover { text-decoration: underline; }
+    @media (max-width: 768px) {
+      .post-h1 { font-size: 1.8rem; }
+      .container { padding: 32px 20px; }
+      h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+      <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" onsubmit="return false;">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+      </form>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  ℹ️ <strong>Informational only.</strong> Transcript sources and audio APIs change over time. Always verify data independently. Nothing here is investment advice.
+</div>
+
+<div class="post-header">
+  <div class="post-header-inner">
+    <div class="post-badge">🏛️ TRANSCRIPTS & AUDIO · PART 2 OF 5</div>
+    <h1 class="post-h1">Fed Speech & FOMC Monitoring</h1>
+    <div class="post-meta">Every Word Powell Says, Automatically Analyzed</div>
+  </div>
+</div>
+
+<nav class="series-nav" aria-label="Transcripts & Audio series">
+  <div class="series-nav-inner">
+    <a href="openclaw-for-transcripts.html">🗺️ Overview</a>
+    <a href="transcripts-earnings.html">📞 Part 1: Earnings Calls</a>
+    <a href="transcripts-fed.html" aria-current="page">🏛️ Part 2: Fed & FOMC</a>
+    <a href="transcripts-whisper.html">🎙️ Part 3: Audio Pipeline</a>
+    <a href="transcripts-nlp.html">🧠 Part 4: NLP & Tone</a>
+    <a href="transcripts-events.html">📅 Part 5: Investor Days</a>
+  </div>
+</nav>
+
+<main id="main-content">
+  <article>
+    <div class="container">
+      <h2>Why the Fed matters</h2>
+      <p>The Federal Reserve publishes everything for free. Every speech by every Fed governor, every FOMC meeting minutes document, every press conference transcript — all at federalreserve.gov. Most of it is never systematically read. OpenClaw monitors the Fed's RSS feed and processes every new publication.</p>
+
+      <h2>Fed content calendar</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Content</th>
+            <th scope="col">Source</th>
+            <th scope="col">Timing</th>
+            <th scope="col">Key signal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>FOMC Minutes</td>
+            <td>federalreserve.gov</td>
+            <td>3 weeks after meeting</td>
+            <td>Policy direction shift</td>
+          </tr>
+          <tr>
+            <td>Press conference transcript</td>
+            <td>federalreserve.gov</td>
+            <td>Same day as meeting</td>
+            <td>Powell tone</td>
+          </tr>
+          <tr>
+            <td>Fed governor speeches</td>
+            <td>federalreserve.gov</td>
+            <td>Ongoing, ~3-5/week</td>
+            <td>Dissent signals</td>
+          </tr>
+          <tr>
+            <td>Beige Book</td>
+            <td>federalreserve.gov</td>
+            <td>2 weeks before each FOMC</td>
+            <td>Regional economic tone</td>
+          </tr>
+          <tr>
+            <td>FOMC meeting transcripts</td>
+            <td>federalreserve.gov</td>
+            <td>5-year lag</td>
+            <td>Historical record</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Hawkish vs dovish classifier</h2>
+      <p><strong>Hawkish language:</strong> "inflation," "price stability," "restrictive," "above target," "further increases," "not yet confident"</p>
+      <p><strong>Dovish language:</strong> "labor market," "cooling," "progress," "appropriate to begin," "balance of risks," "gradual"</p>
+      <p><strong>Neutral:</strong> procedural language, economic data citations without directional framing</p>
+
+      <h2>HEARTBEAT configuration</h2>
+      <pre><code>name: fed_monitor
+schedule: "0 */2 * * 1-5"
+steps:
+  - fetch_rss:
+      url: "https://www.federalreserve.gov/feeds/speeches.xml"
+      type: fed_speeches
+  - fetch_rss:
+      url: "https://www.federalreserve.gov/feeds/press_all.xml"
+      type: fed_press
+  - check_seen:
+      dedup_key: item_url
+      store: seen_fed.json
+  - llm:
+      prompt: |
+        Analyze this Federal Reserve publication:
+
+        1. HAWK/DOVE: Classify as hawkish, dovish, or neutral. Quote the key sentence.
+        2. RATE SIGNAL: Any explicit or implicit signal about future rate moves?
+        3. KEY LANGUAGE: List any new or changed phrasing vs recent communications.
+        4. SPEAKER: Note who spoke and their known position on the policy spectrum.
+        5. ONE-LINE SUMMARY: For quick-scan alerts.
+
+        Content: {{ content }}
+  - notify:
+      channel: email
+      subject: "🏛️ Fed Alert: {{ speaker }} — {{ one_line_summary }}"
+      priority: "{{ 'high' if fomc_minutes else 'normal' }}"</code></pre>
+
+      <h2>Fed RSS fetch + parse — Python snippet</h2>
+      <pre><code>import feedparser
+import httpx
+from bs4 import BeautifulSoup
+
+def fetch_fed_speeches(limit: int = 10) -> list:
+    """Fetch latest Fed speeches from official RSS feed."""
+    feed = feedparser.parse("https://www.federalreserve.gov/feeds/speeches.xml")
+    speeches = []
+    for entry in feed.entries[:limit]:
+        speeches.append({
+            "title": entry.title,
+            "url": entry.link,
+            "date": entry.get("published", ""),
+            "summary": entry.get("summary", ""),
+        })
+    return speeches
+
+def fetch_speech_text(url: str) -> str:
+    """Fetch full text of a Fed speech page."""
+    r = httpx.get(url, headers={"User-Agent": "FedMonitor/1.0 contact@youremail.com"},
+                  timeout=10, follow_redirects=True)
+    soup = BeautifulSoup(r.text, "html.parser")
+    # Fed pages use div#article or div.col-xs-12.col-sm-8.col-md-8
+    content = soup.find("div", {"id": "article"}) or soup.find("div", class_="col-xs-12")
+    return content.get_text(separator=" ", strip=True) if content else ""</code></pre>
+
+      <h2>Hawkish/dovish scorer</h2>
+      <pre><code>HAWKISH_TERMS = ["inflation", "price stability", "restrictive", "above target",
+                  "further increases", "not yet confident", "premature", "persistent"]
+DOVISH_TERMS = ["cooling", "progress", "appropriate to begin", "labor market",
+                 "balance of risks", "gradual", "easing", "below target", "sustainable"]
+
+def score_fed_tone(text: str) -> dict:
+    text_lower = text.lower()
+    hawk_count = sum(text_lower.count(term) for term in HAWKISH_TERMS)
+    dove_count = sum(text_lower.count(term) for term in DOVISH_TERMS)
+    total = hawk_count + dove_count
+    if total == 0:
+        return {"tone": "neutral", "hawk_score": 0, "dove_score": 0}
+    tone = "hawkish" if hawk_count > dove_count * 1.2 else "dovish" if dove_count > hawk_count * 1.2 else "neutral"
+    return {"tone": tone, "hawk_score": hawk_count, "dove_score": dove_count,
+            "hawk_pct": round(hawk_count / total * 100)}</code></pre>
+
+      <div class="faq-section">
+        <h2>Frequently asked questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Q: How often does the Fed publish new content?</div>
+          <div class="faq-a">A: Fed governors give 3–5 speeches per week collectively. FOMC meetings are 8 times per year. The Beige Book drops 2 weeks before each meeting.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Q: Are FOMC meeting transcripts available?</div>
+          <div class="faq-a">A: Yes, but with a 5-year lag. The 2020 FOMC transcripts became available in 2025. Minutes (summary) come 3 weeks after each meeting.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Q: What's the difference between minutes and a transcript?</div>
+          <div class="faq-a">A: Minutes are an edited summary produced by staff. Full transcripts are verbatim records released 5 years later.</div>
+        </div>
+      </div>
+
+    </div>
+  </article>
+</main>
+
+<footer role="contentinfo">
+  <div style="max-width:700px;margin:0 auto;">
+    <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+    <p style="margin:0 0 8px;">
+      <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+      <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+      <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+      <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+      <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+    </p>
+    <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or investment advice. For educational and informational purposes only.</p>
+  </div>
+</footer>
+
+<script>
+const btn = document.querySelector('.hamburger');
+const menu = document.getElementById('nav-links');
+btn.addEventListener('click', () => {
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!open));
+  menu.classList.toggle('open');
+});
+</script>
+<script src="copy.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Fed Speech & FOMC Monitoring with OpenClaw — Every Word Powell Says, Automatically Analyzed",
+  "description": "Automate Federal Reserve speech and FOMC monitoring with OpenClaw. Track hawkish/dovish language shifts, FOMC minutes the moment they drop, and Powell press conference tone — all free from federalreserve.gov.",
+  "image": "https://learnopenclaw.org/og-image.png",
+  "datePublished": "2026-03-27",
+  "dateModified": "2026-03-27",
+  "author": { "@type": "Organization", "name": "learnopenclaw.org" },
+  "publisher": { "@type": "Organization", "name": "learnopenclaw.org", "logo": { "@type": "ImageObject", "url": "https://learnopenclaw.org/og-image.png" } }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How often does the Fed publish new content?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Fed governors give 3–5 speeches per week collectively. FOMC meetings are 8 times per year. The Beige Book drops 2 weeks before each meeting."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are FOMC meeting transcripts available?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, but with a 5-year lag. The 2020 FOMC transcripts became available in 2025. Minutes (summary) come 3 weeks after each meeting."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the difference between minutes and a transcript?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Minutes are an edited summary produced by staff. Full transcripts are verbatim records released 5 years later."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://learnopenclaw.org/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Learn",
+      "item": "https://learnopenclaw.org/learn.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Transcripts & Audio",
+      "item": "https://learnopenclaw.org/openclaw-for-transcripts.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Part 2: Fed & FOMC",
+      "item": "https://learnopenclaw.org/transcripts-fed.html"
+    }
+  ]
+}
+</script>
+
+</body>
+</html>

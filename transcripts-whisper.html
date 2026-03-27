@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Transcription Pipeline with OpenClaw — Transcripts & Audio Part 3 of 5 | learnopenclaw.org</title>
+  <meta name="description" content="Build an automated audio transcription pipeline with OpenClaw and OpenAI Whisper. Detect new audio files on IR pages, transcribe investor days and earnings calls, and feed clean text into your analysis pipeline.">
+  <link rel="canonical" href="https://learnopenclaw.org/transcripts-whisper.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Audio Transcription Pipeline with OpenClaw — Turn Any Earnings Call Into Searchable Text">
+  <meta property="og:description" content="Build an automated audio transcription pipeline with OpenClaw and OpenAI Whisper. Detect new audio files on IR pages, transcribe investor days and earnings calls, and feed clean text into your analysis pipeline.">
+  <meta property="og:url" content="https://learnopenclaw.org/transcripts-whisper.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Audio Transcription Pipeline with OpenClaw — Turn Any Earnings Call Into Searchable Text">
+  <meta name="twitter:description" content="Build an automated audio transcription pipeline with OpenClaw and OpenAI Whisper. Detect new audio files on IR pages, transcribe investor days and earnings calls, and feed clean text into your analysis pipeline.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+  <meta name="datePublished" content="2026-03-27">
+  <meta name="dateModified" content="2026-03-27">
+  <style>
+    :root {
+      --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe; --purple-dk: #4c1d95;
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+      --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--purple); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+    .skip-nav:focus { top: 8px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--purple); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); text-decoration: none; white-space: nowrap; }
+    .nav-logo:hover { text-decoration: none; color: var(--purple); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--purple); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+    .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+    .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+    .nav-search-input:focus { outline: none; }
+    .nav-search-input::placeholder { color: var(--gray-5); }
+    @media (max-width: 480px) { .nav-search-form { display: none; } }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .disclaimer-bar { background: var(--purple-lt); border-left: 4px solid var(--purple); padding: 12px 24px; font-size: .875rem; color: var(--purple-dk); display: flex; align-items: center; gap: 10px; }
+    .disclaimer-bar strong { font-weight: 700; }
+    .post-header { background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 55%, #7c3aed 100%); color: var(--white); padding: 48px 24px; }
+    .post-header-inner { max-width: 900px; margin: 0 auto; }
+    .post-badge { display: inline-block; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; background: rgba(255,255,255,.15); border-radius: 6px; margin-bottom: 16px; }
+    .post-h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin: 0 0 20px; }
+    .post-meta { font-size: .95rem; opacity: .9; }
+    .series-nav { background: var(--gray-1); border-bottom: 1px solid var(--gray-3); padding: 20px 24px; }
+    .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .series-nav a { padding: 10px 14px; border-radius: 6px; background: var(--white); color: var(--gray-8); font-size: .9rem; border: 1px solid var(--gray-3); transition: .2s; }
+    .series-nav a:hover { background: var(--purple-lt); color: var(--purple); border-color: var(--purple); text-decoration: none; }
+    .series-nav a[aria-current="page"] { background: var(--purple); color: var(--white); border-color: var(--purple); }
+    main { }
+    .container { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
+    h2 { font-size: 1.8rem; font-weight: 700; margin: 40px 0 20px; line-height: 1.3; }
+    h3 { font-size: 1.3rem; font-weight: 700; margin: 24px 0 12px; }
+    p { margin: 0 0 16px; }
+    ul, ol { margin: 0 0 16px 24px; }
+    li { margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; background: var(--white); border: 1px solid var(--gray-3); border-radius: 8px; overflow: hidden; font-size: .95rem; }
+    th { background: var(--purple-lt); color: var(--purple-dk); font-weight: 700; padding: 12px 16px; text-align: left; }
+    td { padding: 12px 16px; border-top: 1px solid var(--gray-3); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: var(--gray-1); }
+    pre { background: var(--gray-1); border: 1px solid var(--gray-3); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: .85rem; line-height: 1.5; margin: 24px 0; position: relative; }
+    code { font-family: "Courier New", monospace; }
+    .faq-section { margin-top: 40px; }
+    .faq-item { margin-bottom: 24px; }
+    .faq-q { font-weight: 700; margin-bottom: 8px; }
+    .faq-a { color: var(--gray-5); }
+    footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; margin-top: 60px; }
+    footer a { color: #d1d5db; }
+    footer a:hover { text-decoration: underline; }
+    @media (max-width: 768px) {
+      .post-h1 { font-size: 1.8rem; }
+      .container { padding: 32px 20px; }
+      h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+      <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" onsubmit="return false;">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+      </form>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  ℹ️ <strong>Informational only.</strong> Transcript sources and audio APIs change over time. Always verify data independently. Nothing here is investment advice.
+</div>
+
+<div class="post-header">
+  <div class="post-header-inner">
+    <div class="post-badge">🎙️ TRANSCRIPTS & AUDIO · PART 3 OF 5</div>
+    <h1 class="post-h1">Audio Transcription Pipeline</h1>
+    <div class="post-meta">Turn Any Earnings Call Into Searchable Text</div>
+  </div>
+</div>
+
+<nav class="series-nav" aria-label="Transcripts & Audio series">
+  <div class="series-nav-inner">
+    <a href="openclaw-for-transcripts.html">🗺️ Overview</a>
+    <a href="transcripts-earnings.html">📞 Part 1: Earnings Calls</a>
+    <a href="transcripts-fed.html">🏛️ Part 2: Fed & FOMC</a>
+    <a href="transcripts-whisper.html" aria-current="page">🎙️ Part 3: Audio Pipeline</a>
+    <a href="transcripts-nlp.html">🧠 Part 4: NLP & Tone</a>
+    <a href="transcripts-events.html">📅 Part 5: Investor Days</a>
+  </div>
+</nav>
+
+<main id="main-content">
+  <article>
+    <div class="container">
+      <h2>Why audio transcription matters</h2>
+      <p>Not everything gets transcribed. Investor days, analyst days, roadshows, and some international earnings calls are published as audio or video only. Whisper ($0.006/min) turns any MP3 or MP4 into searchable, analyzable text. A 90-minute investor day costs about $0.54 to transcribe.</p>
+
+      <h2>Cost breakdown</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Event type</th>
+            <th scope="col">Typical length</th>
+            <th scope="col">Whisper cost</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Earnings call</td>
+            <td>45–75 min</td>
+            <td>$0.27–$0.45</td>
+            <td>Often transcribed free elsewhere</td>
+          </tr>
+          <tr>
+            <td>Investor day</td>
+            <td>2–6 hours</td>
+            <td>$0.72–$2.16</td>
+            <td>Rarely transcribed free</td>
+          </tr>
+          <tr>
+            <td>Analyst day presentation</td>
+            <td>30–60 min</td>
+            <td>$0.18–$0.36</td>
+            <td>Often not transcribed</td>
+          </tr>
+          <tr>
+            <td>Fed press conference</td>
+            <td>45–60 min</td>
+            <td>$0.27–$0.36</td>
+            <td>Fed publishes free transcript</td>
+          </tr>
+          <tr>
+            <td>Conference presentation</td>
+            <td>20–40 min</td>
+            <td>$0.12–$0.24</td>
+            <td>Almost never transcribed</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Pipeline architecture</h2>
+      <p>IR page / audio URL → OpenClaw detects new file → download audio → chunk if >25MB → Whisper API → clean text → LLM analysis → notify</p>
+
+      <h2>HEARTBEAT configuration</h2>
+      <pre><code>name: audio_transcription_pipeline
+schedule: "0 9 * * 1-5"
+steps:
+  - check_ir_pages:
+      companies:
+        - name: "Nvidia"
+          ir_url: "https://investor.nvidia.com/events-and-presentations/events/default.aspx"
+          audio_patterns: ["*.mp3", "*.mp4", "*.m4a", "webcast"]
+        - name: "Tesla"
+          ir_url: "https://ir.tesla.com/events-and-presentations"
+          audio_patterns: ["*.mp3", "*.mp4", "webcast"]
+  - check_seen:
+      dedup_key: audio_url
+      store: seen_audio.json
+  - download_audio:
+      max_file_size_mb: 200
+      format_preference: ["mp3", "m4a", "mp4"]
+  - transcribe:
+      provider: openai_whisper
+      model: whisper-1
+      language: en
+      chunk_size_mb: 24
+  - llm:
+      prompt: |
+        This is a transcript of {{ event_type }} for {{ company }}.
+        Produce a structured brief:
+        1. KEY ANNOUNCEMENTS: New products, partnerships, financial targets
+        2. STRATEGIC DIRECTION: Where is management taking the company?
+        3. MANAGEMENT TONE: Confident, cautious, or defensive?
+        4. NOTABLE QUOTES: 3-4 direct quotes worth preserving
+        5. FOLLOW-UP QUESTIONS: What would you ask in Q&A?
+        Transcript: {{ transcript }}
+  - save:
+      path: "transcripts/{{ company }}_{{ date }}.txt"
+  - notify:
+      subject: "🎙️ Transcribed: {{ company }} {{ event_type }} — {{ date }}"</code></pre>
+
+      <h2>Whisper API — Python snippet</h2>
+      <pre><code>import openai
+import os
+import math
+
+def transcribe_audio(file_path: str, language: str = "en") -> str:
+    """Transcribe audio file using OpenAI Whisper API."""
+    client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+    if file_size_mb > 24:
+        return transcribe_chunked(file_path, client, language)
+    with open(file_path, "rb") as f:
+        response = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=f,
+            language=language,
+            response_format="text"
+        )
+    return response
+
+def transcribe_chunked(file_path: str, client, language: str = "en") -> str:
+    """Split large audio files and transcribe in chunks."""
+    import subprocess, tempfile
+    duration_cmd = ["ffprobe", "-v", "quiet", "-show_entries",
+                    "format=duration", "-of", "csv=p=0", file_path]
+    duration = float(subprocess.check_output(duration_cmd))
+    chunk_duration = 1400  # 23 min chunks to stay under 25MB
+    num_chunks = math.ceil(duration / chunk_duration)
+    transcripts = []
+    with tempfile.TemporaryDirectory() as tmp:
+        for i in range(num_chunks):
+            start = i * chunk_duration
+            chunk_path = os.path.join(tmp, f"chunk_{i}.mp3")
+            subprocess.run(["ffmpeg", "-ss", str(start), "-t", str(chunk_duration),
+                           "-i", file_path, "-q:a", "0", chunk_path, "-y"], check=True)
+            with open(chunk_path, "rb") as f:
+                result = client.audio.transcriptions.create(
+                    model="whisper-1", file=f, language=language, response_format="text")
+            transcripts.append(result)
+    return " ".join(transcripts)</code></pre>
+
+      <h2>IR page audio detection — Python snippet</h2>
+      <pre><code>import httpx
+from bs4 import BeautifulSoup
+import re
+
+def find_audio_links(ir_url: str) -> list:
+    """Scrape IR page for audio/video links."""
+    r = httpx.get(ir_url, headers={"User-Agent": "TranscriptBot/1.0 contact@youremail.com"},
+                  timeout=15, follow_redirects=True)
+    soup = BeautifulSoup(r.text, "html.parser")
+    audio_extensions = re.compile(r'\.(mp3|mp4|m4a|wav|ogg|webm)(\?|$)', re.IGNORECASE)
+    webcast_patterns = re.compile(r'webcast|listen|audio|replay', re.IGNORECASE)
+    links = []
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if audio_extensions.search(href) or webcast_patterns.search(a.get_text()):
+            links.append({"text": a.get_text(strip=True), "url": href})
+    return links</code></pre>
+
+      <div class="faq-section">
+        <h2>Frequently asked questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Q: Does Whisper support languages other than English?</div>
+          <div class="faq-a">A: Yes — Whisper supports 99 languages. Set the language parameter or leave it blank for auto-detection.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Q: What's the maximum file size for Whisper?</div>
+          <div class="faq-a">A: 25MB per request. Use the chunked transcription function above for longer files. ffmpeg is required for chunking.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Q: How accurate is Whisper on financial terminology?</div>
+          <div class="faq-a">A: Very accurate on earnings calls. Occasional errors on proper names and ticker symbols — consider a post-processing glossary substitution step.</div>
+        </div>
+      </div>
+
+    </div>
+  </article>
+</main>
+
+<footer role="contentinfo">
+  <div style="max-width:700px;margin:0 auto;">
+    <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+    <p style="margin:0 0 8px;">
+      <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+      <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+      <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+      <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+      <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+    </p>
+    <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or investment advice. For educational and informational purposes only.</p>
+  </div>
+</footer>
+
+<script>
+const btn = document.querySelector('.hamburger');
+const menu = document.getElementById('nav-links');
+btn.addEventListener('click', () => {
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!open));
+  menu.classList.toggle('open');
+});
+</script>
+<script src="copy.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Audio Transcription Pipeline with OpenClaw — Turn Any Earnings Call Into Searchable Text",
+  "description": "Build an automated audio transcription pipeline with OpenClaw and OpenAI Whisper. Detect new audio files on IR pages, transcribe investor days and earnings calls, and feed clean text into your analysis pipeline.",
+  "image": "https://learnopenclaw.org/og-image.png",
+  "datePublished": "2026-03-27",
+  "dateModified": "2026-03-27",
+  "author": { "@type": "Organization", "name": "learnopenclaw.org" },
+  "publisher": { "@type": "Organization", "name": "learnopenclaw.org", "logo": { "@type": "ImageObject", "url": "https://learnopenclaw.org/og-image.png" } }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Whisper support languages other than English?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — Whisper supports 99 languages. Set the language parameter or leave it blank for auto-detection."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the maximum file size for Whisper?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "25MB per request. Use the chunked transcription function above for longer files. ffmpeg is required for chunking."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How accurate is Whisper on financial terminology?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Very accurate on earnings calls. Occasional errors on proper names and ticker symbols — consider a post-processing glossary substitution step."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://learnopenclaw.org/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Learn",
+      "item": "https://learnopenclaw.org/learn.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Transcripts & Audio",
+      "item": "https://learnopenclaw.org/openclaw-for-transcripts.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Part 3: Audio Pipeline",
+      "item": "https://learnopenclaw.org/transcripts-whisper.html"
+    }
+  ]
+}
+</script>
+
+</body>
+</html>

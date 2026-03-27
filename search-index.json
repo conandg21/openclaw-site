@@ -1189,5 +1189,150 @@
       "FAQ"
     ],
     "body": "web scraping price monitoring Amazon product rank robots.txt BeautifulSoup competitor pricing inventory signals IR page monitoring responsible scraping OpenClaw"
+  },
+  {
+    "url": "openclaw-for-transcripts.html",
+    "title": "OpenClaw for Transcripts & Audio \u2014 Automate Every Word That Matters",
+    "description": "Automate earnings call transcript monitoring, Fed speech analysis, and audio transcription with OpenClaw. Track management tone and FOMC language systematically.",
+    "tags": [
+      "transcripts",
+      "earnings calls",
+      "Fed",
+      "FOMC",
+      "Whisper",
+      "audio",
+      "NLP",
+      "tone analysis"
+    ],
+    "series": "Transcripts & Audio",
+    "headings": [
+      "Overview",
+      "Two modes",
+      "Who this is for",
+      "Series roadmap",
+      "FAQ"
+    ],
+    "body": "earnings call transcript Fed FOMC Whisper audio transcription NLP tone analysis investor day conference OpenClaw management language monitoring"
+  },
+  {
+    "url": "transcripts-earnings.html",
+    "title": "Earnings Call Transcript Monitor \u2014 Transcripts & Audio Part 1 of 5",
+    "description": "Automate earnings call transcript monitoring with OpenClaw. Get instant alerts when transcripts publish and extract guidance language and Q&A tone.",
+    "tags": [
+      "earnings call",
+      "transcript",
+      "guidance",
+      "Q&A",
+      "Seeking Alpha",
+      "Motley Fool",
+      "RSS"
+    ],
+    "series": "Transcripts & Audio",
+    "headings": [
+      "How transcripts publish",
+      "What to extract",
+      "HEARTBEAT config",
+      "RSS parsing",
+      "Guidance extraction",
+      "FAQ"
+    ],
+    "body": "earnings call transcript monitor guidance language Q&A tone Seeking Alpha Motley Fool RSS feedparser watchlist ticker OpenClaw"
+  },
+  {
+    "url": "transcripts-fed.html",
+    "title": "Fed Speech & FOMC Monitoring \u2014 Transcripts & Audio Part 2 of 5",
+    "description": "Automate Federal Reserve speech and FOMC monitoring with OpenClaw. Track hawkish/dovish language shifts and FOMC minutes the moment they drop.",
+    "tags": [
+      "Fed",
+      "FOMC",
+      "hawkish",
+      "dovish",
+      "minutes",
+      "Powell",
+      "interest rates",
+      "federalreserve.gov"
+    ],
+    "series": "Transcripts & Audio",
+    "headings": [
+      "Why the Fed matters",
+      "Fed content calendar",
+      "Hawkish vs dovish",
+      "HEARTBEAT config",
+      "Python snippet",
+      "FAQ"
+    ],
+    "body": "Federal Reserve Fed FOMC hawkish dovish Powell speech minutes transcript interest rates federalreserve.gov RSS Beige Book OpenClaw"
+  },
+  {
+    "url": "transcripts-whisper.html",
+    "title": "Audio Transcription Pipeline with OpenClaw \u2014 Transcripts & Audio Part 3 of 5",
+    "description": "Build an automated audio transcription pipeline with OpenClaw and OpenAI Whisper. Transcribe investor days and earnings calls into searchable text.",
+    "tags": [
+      "Whisper",
+      "audio transcription",
+      "OpenAI",
+      "investor day",
+      "IR page",
+      "MP3",
+      "MP4"
+    ],
+    "series": "Transcripts & Audio",
+    "headings": [
+      "Why audio transcription",
+      "Cost breakdown",
+      "Pipeline architecture",
+      "Whisper API snippet",
+      "Chunked transcription",
+      "FAQ"
+    ],
+    "body": "Whisper OpenAI audio transcription pipeline investor day earnings call IR page MP3 MP4 chunked ffmpeg OpenClaw"
+  },
+  {
+    "url": "transcripts-nlp.html",
+    "title": "Transcript NLP & Tone Analysis \u2014 Transcripts & Audio Part 4 of 5",
+    "description": "Use OpenClaw to automate transcript sentiment scoring, management tone tracking, and year-over-year language comparison. Build a longitudinal confidence index.",
+    "tags": [
+      "NLP",
+      "tone analysis",
+      "sentiment",
+      "confidence score",
+      "red flags",
+      "going concern",
+      "quarter-over-quarter"
+    ],
+    "series": "Transcripts & Audio",
+    "headings": [
+      "Four NLP layers",
+      "Confidence scoring",
+      "Red flag detector",
+      "QoQ comparison",
+      "HEARTBEAT config",
+      "FAQ"
+    ],
+    "body": "NLP tone analysis sentiment confidence score hedging language red flags going concern material weakness restatement quarter-over-quarter management OpenClaw"
+  },
+  {
+    "url": "transcripts-events.html",
+    "title": "Investor Day & Conference Calendar \u2014 Transcripts & Audio Part 5 of 5",
+    "description": "Automate investor day and analyst conference monitoring with OpenClaw. Track 8-K announcements and automatically capture slides and audio.",
+    "tags": [
+      "investor day",
+      "analyst day",
+      "conference",
+      "8-K",
+      "IR page",
+      "JPMorgan",
+      "Goldman Sachs"
+    ],
+    "series": "Transcripts & Audio",
+    "headings": [
+      "Why investor days matter",
+      "Detection methods",
+      "Conference calendar",
+      "HEARTBEAT config",
+      "Post-event capture",
+      "FAQ"
+    ],
+    "body": "investor day analyst day conference calendar 8-K SEC EDGAR IR page slides audio capture JPMorgan Goldman Sachs OpenClaw monitoring"
   }
 ]

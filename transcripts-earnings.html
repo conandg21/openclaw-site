@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earnings Call Transcript Monitor with OpenClaw — Transcripts & Audio Part 1 of 5 | learnopenclaw.org</title>
+  <meta name="description" content="Automate earnings call transcript monitoring with OpenClaw. Get instant alerts when transcripts publish, extract guidance language, Q&A tone, and flag specific phrases across your watchlist.">
+  <link rel="canonical" href="https://learnopenclaw.org/transcripts-earnings.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Earnings Call Transcript Monitor with OpenClaw — Never Miss What Management Said">
+  <meta property="og:description" content="Automate earnings call transcript monitoring with OpenClaw. Get instant alerts when transcripts publish, extract guidance language, Q&A tone, and flag specific phrases across your watchlist.">
+  <meta property="og:url" content="https://learnopenclaw.org/transcripts-earnings.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Earnings Call Transcript Monitor with OpenClaw — Never Miss What Management Said">
+  <meta name="twitter:description" content="Automate earnings call transcript monitoring with OpenClaw. Get instant alerts when transcripts publish, extract guidance language, Q&A tone, and flag specific phrases across your watchlist.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+  <meta name="datePublished" content="2026-03-27">
+  <meta name="dateModified" content="2026-03-27">
+  <style>
+    :root {
+      --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe; --purple-dk: #4c1d95;
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+      --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--purple); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+    .skip-nav:focus { top: 8px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--purple); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); text-decoration: none; white-space: nowrap; }
+    .nav-logo:hover { text-decoration: none; color: var(--purple); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--purple); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+    .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+    .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+    .nav-search-input:focus { outline: none; }
+    .nav-search-input::placeholder { color: var(--gray-5); }
+    @media (max-width: 480px) { .nav-search-form { display: none; } }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .disclaimer-bar { background: var(--purple-lt); border-left: 4px solid var(--purple); padding: 12px 24px; font-size: .875rem; color: var(--purple-dk); display: flex; align-items: center; gap: 10px; }
+    .disclaimer-bar strong { font-weight: 700; }
+    .post-header { background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 55%, #7c3aed 100%); color: var(--white); padding: 48px 24px; }
+    .post-header-inner { max-width: 900px; margin: 0 auto; }
+    .post-badge { display: inline-block; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; background: rgba(255,255,255,.15); border-radius: 6px; margin-bottom: 16px; }
+    .post-h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin: 0 0 20px; }
+    .post-meta { font-size: .95rem; opacity: .9; }
+    .series-nav { background: var(--gray-1); border-bottom: 1px solid var(--gray-3); padding: 20px 24px; }
+    .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .series-nav a { padding: 10px 14px; border-radius: 6px; background: var(--white); color: var(--gray-8); font-size: .9rem; border: 1px solid var(--gray-3); transition: .2s; }
+    .series-nav a:hover { background: var(--purple-lt); color: var(--purple); border-color: var(--purple); text-decoration: none; }
+    .series-nav a[aria-current="page"] { background: var(--purple); color: var(--white); border-color: var(--purple); }
+    main { }
+    .container { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
+    h2 { font-size: 1.8rem; font-weight: 700; margin: 40px 0 20px; line-height: 1.3; }
+    h3 { font-size: 1.3rem; font-weight: 700; margin: 24px 0 12px; }
+    p { margin: 0 0 16px; }
+    ul, ol { margin: 0 0 16px 24px; }
+    li { margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; background: var(--white); border: 1px solid var(--gray-3); border-radius: 8px; overflow: hidden; font-size: .95rem; }
+    th { background: var(--purple-lt); color: var(--purple-dk); font-weight: 700; padding: 12px 16px; text-align: left; }
+    td { padding: 12px 16px; border-top: 1px solid var(--gray-3); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: var(--gray-1); }
+    pre { background: var(--gray-1); border: 1px solid var(--gray-3); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: .85rem; line-height: 1.5; margin: 24px 0; position: relative; }
+    code { font-family: "Courier New", monospace; }
+    .faq-section { margin-top: 40px; }
+    .faq-item { margin-bottom: 24px; }
+    .faq-q { font-weight: 700; margin-bottom: 8px; }
+    .faq-a { color: var(--gray-5); }
+    footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; margin-top: 60px; }
+    footer a { color: #d1d5db; }
+    footer a:hover { text-decoration: underline; }
+    @media (max-width: 768px) {
+      .post-h1 { font-size: 1.8rem; }
+      .container { padding: 32px 20px; }
+      h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+      <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" onsubmit="return false;">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+      </form>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  ℹ️ <strong>Informational only.</strong> Transcript sources and audio APIs change over time. Always verify data independently. Nothing here is investment advice.
+</div>
+
+<div class="post-header">
+  <div class="post-header-inner">
+    <div class="post-badge">📞 TRANSCRIPTS & AUDIO · PART 1 OF 5</div>
+    <h1 class="post-h1">Earnings Call Transcript Monitor</h1>
+    <div class="post-meta">Never Miss What Management Said</div>
+  </div>
+</div>
+
+<nav class="series-nav" aria-label="Transcripts & Audio series">
+  <div class="series-nav-inner">
+    <a href="openclaw-for-transcripts.html">🗺️ Overview</a>
+    <a href="transcripts-earnings.html" aria-current="page">📞 Part 1: Earnings Calls</a>
+    <a href="transcripts-fed.html">🏛️ Part 2: Fed & FOMC</a>
+    <a href="transcripts-whisper.html">🎙️ Part 3: Audio Pipeline</a>
+    <a href="transcripts-nlp.html">🧠 Part 4: NLP & Tone</a>
+    <a href="transcripts-events.html">📅 Part 5: Investor Days</a>
+  </div>
+</nav>
+
+<main id="main-content">
+  <article>
+    <div class="container">
+      <h2>How transcripts get published</h2>
+      <p>Companies report earnings quarterly. The call happens, then transcripts appear:</p>
+      <ul>
+        <li><strong>Same day / next day:</strong> Seeking Alpha, Motley Fool (free, ad-supported)</li>
+        <li><strong>2–4 days:</strong> Some IR pages post official transcripts</li>
+        <li><strong>Via 8-K:</strong> Companies sometimes file earnings call transcripts as 8-K exhibits (searchable in EDGAR)</li>
+      </ul>
+      <p>The free Seeking Alpha and Motley Fool RSS feeds are the fastest free sources.</p>
+
+      <h2>What to extract</h2>
+      <ul>
+        <li>Prepared remarks: revenue, guidance, key initiatives</li>
+        <li>Q&A section: analyst concerns, management hedging language</li>
+        <li>Specific phrases: "headwinds," "macro uncertainty," "raised guidance," "below expectations," "AI," "tariff," "pricing power"</li>
+        <li>Tone: confident vs hedging, specific vs vague</li>
+      </ul>
+
+      <h2>HEARTBEAT configuration</h2>
+      <pre><code>name: earnings_transcript_monitor
+schedule: "0 */4 * * *"
+steps:
+  - fetch_rss:
+      sources:
+        - url: "https://seekingalpha.com/earnings/earnings-call-transcripts"
+          type: seeking_alpha
+        - url: "https://www.fool.com/earnings-call-transcripts/"
+          type: motley_fool
+      filter_tickers: "{{ watchlist_tickers }}"
+  - check_seen:
+      dedup_key: transcript_url
+      store: seen_transcripts.json
+  - extract:
+      sections:
+        - prepared_remarks
+        - qa_section
+      phrases_to_flag:
+        - "guidance"
+        - "raised"
+        - "lowered"
+        - "headwinds"
+        - "macro"
+        - "tariff"
+        - "pricing power"
+  - llm:
+      prompt: |
+        Analyze this earnings call transcript and produce a structured brief:
+
+        1. GUIDANCE: What guidance was given? Raised, lowered, or maintained?
+        2. KEY THEMES: Top 3 topics management emphasized
+        3. ANALYST CONCERNS: What did analysts probe hardest in Q&A?
+        4. TONE: Rate management confidence 1-5. Note any hedging language.
+        5. NOTABLE QUOTES: 2-3 verbatim quotes worth flagging
+
+        Transcript: {{ transcript_text }}
+  - notify:
+      channel: email
+      subject: "📞 Earnings Transcript: {{ company }} Q{{ quarter }} {{ year }}"</code></pre>
+
+      <h2>RSS parsing — Python snippet</h2>
+      <pre><code>import httpx
+import feedparser
+import json
+import os
+from datetime import datetime
+
+SEEN_FILE = "seen_transcripts.json"
+
+def load_seen() -> set:
+    if os.path.exists(SEEN_FILE):
+        with open(SEEN_FILE) as f:
+            return set(json.load(f))
+    return set()
+
+def save_seen(seen: set):
+    with open(SEEN_FILE, "w") as f:
+        json.dump(list(seen), f)
+
+def fetch_new_transcripts(rss_url: str, watchlist: list) -> list:
+    seen = load_seen()
+    feed = feedparser.parse(rss_url)
+    new_transcripts = []
+    for entry in feed.entries:
+        if entry.link in seen:
+            continue
+        title_upper = entry.title.upper()
+        for ticker in watchlist:
+            if ticker.upper() in title_upper or "TRANSCRIPT" in title_upper:
+                new_transcripts.append({
+                    "ticker": ticker,
+                    "title": entry.title,
+                    "url": entry.link,
+                    "published": entry.get("published", ""),
+                })
+                seen.add(entry.link)
+                break
+    save_seen(seen)
+    return new_transcripts</code></pre>
+
+      <h2>Guidance extraction</h2>
+      <pre><code>def extract_guidance_language(text: str) -> dict:
+    """Find guidance-related sentences in transcript text."""
+    import re
+    guidance_patterns = [
+        r"(?:we (?:raise|lower|maintain|reiterate|withdraw)|guidance).{0,200}",
+        r"(?:full[- ]year|fiscal \d{4}|Q[1-4]).{0,100}(?:expect|guide|anticipate).{0,100}",
+        r"(?:EPS|revenue|margin).{0,50}(?:between|of|approximately).{0,100}",
+    ]
+    results = []
+    for pattern in guidance_patterns:
+        matches = re.findall(pattern, text, re.IGNORECASE)
+        results.extend(matches[:3])
+    return {"guidance_sentences": results[:10]}</code></pre>
+
+      <div class="faq-section">
+        <h2>Frequently asked questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Q: How do I get the full transcript text, not just a summary?</div>
+          <div class="faq-a">A: Fetch the HTML of the transcript page and extract the article body. Most transcript pages have a clear article element. Use BeautifulSoup with a 3-second delay and check robots.txt first.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Q: Can I monitor transcripts for multiple companies at once?</div>
+          <div class="faq-a">A: Yes — build a watchlist of tickers and filter RSS entries by ticker symbol appearing in the title.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Q: How do I handle companies that don't get covered by Seeking Alpha or Motley Fool?</div>
+          <div class="faq-a">A: Check their IR page directly and monitor the 8-K RSS feed for transcript exhibits filed under Item 7.01.</div>
+        </div>
+      </div>
+
+    </div>
+  </article>
+</main>
+
+<footer role="contentinfo">
+  <div style="max-width:700px;margin:0 auto;">
+    <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+    <p style="margin:0 0 8px;">
+      <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+      <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+      <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+      <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+      <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+    </p>
+    <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or investment advice. For educational and informational purposes only.</p>
+  </div>
+</footer>
+
+<script>
+const btn = document.querySelector('.hamburger');
+const menu = document.getElementById('nav-links');
+btn.addEventListener('click', () => {
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!open));
+  menu.classList.toggle('open');
+});
+</script>
+<script src="copy.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Earnings Call Transcript Monitor with OpenClaw — Never Miss What Management Said",
+  "description": "Automate earnings call transcript monitoring with OpenClaw. Get instant alerts when transcripts publish, extract guidance language, Q&A tone, and flag specific phrases across your watchlist.",
+  "image": "https://learnopenclaw.org/og-image.png",
+  "datePublished": "2026-03-27",
+  "dateModified": "2026-03-27",
+  "author": { "@type": "Organization", "name": "learnopenclaw.org" },
+  "publisher": { "@type": "Organization", "name": "learnopenclaw.org", "logo": { "@type": "ImageObject", "url": "https://learnopenclaw.org/og-image.png" } }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I get the full transcript text, not just a summary?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Fetch the HTML of the transcript page and extract the article body. Most transcript pages have a clear article element. Use BeautifulSoup with a 3-second delay and check robots.txt first."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I monitor transcripts for multiple companies at once?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — build a watchlist of tickers and filter RSS entries by ticker symbol appearing in the title."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I handle companies that don't get covered by Seeking Alpha or Motley Fool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Check their IR page directly and monitor the 8-K RSS feed for transcript exhibits filed under Item 7.01."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://learnopenclaw.org/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Learn",
+      "item": "https://learnopenclaw.org/learn.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Transcripts & Audio",
+      "item": "https://learnopenclaw.org/openclaw-for-transcripts.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Part 1: Earnings Calls",
+      "item": "https://learnopenclaw.org/transcripts-earnings.html"
+    }
+  ]
+}
+</script>
+
+</body>
+</html>

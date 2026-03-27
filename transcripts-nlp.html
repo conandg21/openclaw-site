@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transcript NLP & Tone Analysis with OpenClaw — Transcripts & Audio Part 4 of 5 | learnopenclaw.org</title>
+  <meta name="description" content="Use OpenClaw to automate transcript sentiment scoring, management tone tracking, and year-over-year language comparison. Build a longitudinal confidence index for every company on your watchlist.">
+  <link rel="canonical" href="https://learnopenclaw.org/transcripts-nlp.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Transcript NLP & Tone Analysis with OpenClaw — Track How Management Language Changes Over Time">
+  <meta property="og:description" content="Use OpenClaw to automate transcript sentiment scoring, management tone tracking, and year-over-year language comparison. Build a longitudinal confidence index for every company on your watchlist.">
+  <meta property="og:url" content="https://learnopenclaw.org/transcripts-nlp.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta property="og:site_name" content="learnopenclaw.org">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Transcript NLP & Tone Analysis with OpenClaw — Track How Management Language Changes Over Time">
+  <meta name="twitter:description" content="Use OpenClaw to automate transcript sentiment scoring, management tone tracking, and year-over-year language comparison. Build a longitudinal confidence index for every company on your watchlist.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+  <meta name="datePublished" content="2026-03-27">
+  <meta name="dateModified" content="2026-03-27">
+  <style>
+    :root {
+      --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe; --purple-dk: #4c1d95;
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+      --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+      --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--purple); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+    .skip-nav:focus { top: 8px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--purple); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+    a { color: var(--purple); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); text-decoration: none; white-space: nowrap; }
+    .nav-logo:hover { text-decoration: none; color: var(--purple); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--purple); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+    .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+    .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+    .nav-search-input:focus { outline: none; }
+    .nav-search-input::placeholder { color: var(--gray-5); }
+    @media (max-width: 480px) { .nav-search-form { display: none; } }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .disclaimer-bar { background: var(--purple-lt); border-left: 4px solid var(--purple); padding: 12px 24px; font-size: .875rem; color: var(--purple-dk); display: flex; align-items: center; gap: 10px; }
+    .disclaimer-bar strong { font-weight: 700; }
+    .post-header { background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 55%, #7c3aed 100%); color: var(--white); padding: 48px 24px; }
+    .post-header-inner { max-width: 900px; margin: 0 auto; }
+    .post-badge { display: inline-block; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 8px 12px; background: rgba(255,255,255,.15); border-radius: 6px; margin-bottom: 16px; }
+    .post-h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin: 0 0 20px; }
+    .post-meta { font-size: .95rem; opacity: .9; }
+    .series-nav { background: var(--gray-1); border-bottom: 1px solid var(--gray-3); padding: 20px 24px; }
+    .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .series-nav a { padding: 10px 14px; border-radius: 6px; background: var(--white); color: var(--gray-8); font-size: .9rem; border: 1px solid var(--gray-3); transition: .2s; }
+    .series-nav a:hover { background: var(--purple-lt); color: var(--purple); border-color: var(--purple); text-decoration: none; }
+    .series-nav a[aria-current="page"] { background: var(--purple); color: var(--white); border-color: var(--purple); }
+    main { }
+    .container { max-width: 860px; margin: 0 auto; padding: 48px 24px; }
+    h2 { font-size: 1.8rem; font-weight: 700; margin: 40px 0 20px; line-height: 1.3; }
+    h3 { font-size: 1.3rem; font-weight: 700; margin: 24px 0 12px; }
+    p { margin: 0 0 16px; }
+    ul, ol { margin: 0 0 16px 24px; }
+    li { margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; background: var(--white); border: 1px solid var(--gray-3); border-radius: 8px; overflow: hidden; font-size: .95rem; }
+    th { background: var(--purple-lt); color: var(--purple-dk); font-weight: 700; padding: 12px 16px; text-align: left; }
+    td { padding: 12px 16px; border-top: 1px solid var(--gray-3); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background: var(--gray-1); }
+    pre { background: var(--gray-1); border: 1px solid var(--gray-3); padding: 16px; border-radius: 8px; overflow-x: auto; font-size: .85rem; line-height: 1.5; margin: 24px 0; position: relative; }
+    code { font-family: "Courier New", monospace; }
+    .faq-section { margin-top: 40px; }
+    .faq-item { margin-bottom: 24px; }
+    .faq-q { font-weight: 700; margin-bottom: 8px; }
+    .faq-a { color: var(--gray-5); }
+    footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; margin-top: 60px; }
+    footer a { color: #d1d5db; }
+    footer a:hover { text-decoration: underline; }
+    @media (max-width: 768px) {
+      .post-h1 { font-size: 1.8rem; }
+      .container { padding: 32px 20px; }
+      h2 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="skip-nav" href="#main-content">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+      <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+    </div>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" onsubmit="return false;">
+        <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+      </form>
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="disclaimer-bar" role="note">
+  ℹ️ <strong>Informational only.</strong> Transcript sources and audio APIs change over time. Always verify data independently. Nothing here is investment advice.
+</div>
+
+<div class="post-header">
+  <div class="post-header-inner">
+    <div class="post-badge">🧠 TRANSCRIPTS & AUDIO · PART 4 OF 5</div>
+    <h1 class="post-h1">Transcript NLP & Tone Analysis</h1>
+    <div class="post-meta">Track How Management Language Changes Over Time</div>
+  </div>
+</div>
+
+<nav class="series-nav" aria-label="Transcripts & Audio series">
+  <div class="series-nav-inner">
+    <a href="openclaw-for-transcripts.html">🗺️ Overview</a>
+    <a href="transcripts-earnings.html">📞 Part 1: Earnings Calls</a>
+    <a href="transcripts-fed.html">🏛️ Part 2: Fed & FOMC</a>
+    <a href="transcripts-whisper.html">🎙️ Part 3: Audio Pipeline</a>
+    <a href="transcripts-nlp.html" aria-current="page">🧠 Part 4: NLP & Tone</a>
+    <a href="transcripts-events.html">📅 Part 5: Investor Days</a>
+  </div>
+</nav>
+
+<main id="main-content">
+  <article>
+    <div class="container">
+      <h2>What NLP adds</h2>
+      <p>Raw transcripts are useful. Processed transcripts are a dataset. Once you're collecting transcripts systematically (Parts 1–3), you can build longitudinal metrics: Is management getting more cautious? Are they using more hedging language? Did the tone shift between the Q3 and Q4 call? These are signals that don't exist anywhere else.</p>
+
+      <h2>Four NLP layers</h2>
+      <h3>Layer 1 — Confidence scoring</h3>
+      <p><strong>Confident language:</strong> specific numbers, definitive statements, "we will," "we expect," concrete timelines</p>
+      <p><strong>Hedging language:</strong> "potentially," "we believe," "subject to," "depending on," "uncertain," "difficult to predict"</p>
+      <p><strong>Score:</strong> (confident_count - hedge_count) / total_sentences × 100</p>
+
+      <h3>Layer 2 — Management vs analyst tone</h3>
+      <p>Analyze prepared remarks separately from Q&A. Management often sounds more optimistic in prepared remarks. A gap between prepared-remarks confidence and Q&A defensiveness is a signal.</p>
+
+      <h3>Layer 3 — Quarter-over-quarter language diff</h3>
+      <p>Compare word frequency across calls. Rising frequency of "tariff," "inventory," "macro" signals emerging concerns. Declining mentions of a product line signals deprioritization.</p>
+
+      <h3>Layer 4 — Keyword alert system</h3>
+      <p>Specific phrases trigger immediate alerts regardless of overall tone: "going concern," "material weakness," "restatement," "withdraw guidance," "SEC investigation."</p>
+
+      <h2>HEARTBEAT configuration</h2>
+      <pre><code>name: transcript_nlp_pipeline
+schedule: "on_new_transcript"
+steps:
+  - load_transcript:
+      source: "{{ transcript_path }}"
+  - split_sections:
+      sections:
+        - name: prepared_remarks
+          end_marker: "questions and answers"
+        - name: qa_section
+          start_marker: "questions and answers"
+  - score_confidence:
+      sections: [prepared_remarks, qa_section]
+  - extract_keywords:
+      track:
+        - "guidance"
+        - "tariff"
+        - "inventory"
+        - "AI"
+        - "macro"
+        - "uncertainty"
+        - "pricing"
+  - check_red_flags:
+      phrases:
+        - "going concern"
+        - "material weakness"
+        - "restatement"
+        - "withdraw guidance"
+        - "SEC"
+        - "DOJ"
+      alert_immediately: true
+  - compare_to_prior:
+      quarters: 4
+      metric: confidence_score
+  - llm:
+      prompt: |
+        Compare this quarter's transcript tone to the prior 4 quarters.
+        Focus on: confidence trend, keyword frequency shifts, Q&A defensiveness.
+        Current quarter data: {{ current_metrics }}
+        Prior quarters: {{ historical_metrics }}
+  - save:
+      path: "nlp/{{ company }}_{{ quarter }}_metrics.json"
+  - notify:
+      subject: "🧠 NLP Brief: {{ company }} Q{{ quarter }} — Confidence {{ score }}/100"</code></pre>
+
+      <h2>Confidence scorer — Python snippet</h2>
+      <pre><code>import re
+
+CONFIDENT_PHRASES = [
+    "we will", "we expect", "we are confident", "we delivered",
+    "record", "exceeded", "outperformed", "strong demand", "accelerating"
+]
+HEDGE_PHRASES = [
+    "potentially", "we believe", "subject to", "depending on",
+    "uncertain", "difficult to predict", "we hope", "if conditions",
+    "may", "might", "could be", "we cannot guarantee"
+]
+
+def score_confidence(text: str) -> dict:
+    text_lower = text.lower()
+    sentences = re.split(r'[.!?]', text_lower)
+    confident = sum(1 for s in sentences if any(p in s for p in CONFIDENT_PHRASES))
+    hedging = sum(1 for s in sentences if any(p in s for p in HEDGE_PHRASES))
+    total = len([s for s in sentences if len(s.strip()) > 10])
+    score = round(((confident - hedging) / total * 100) + 50) if total > 0 else 50
+    score = max(0, min(100, score))
+    return {"confidence_score": score, "confident_sentences": confident,
+            "hedging_sentences": hedging, "total_sentences": total}</code></pre>
+
+      <h2>Red flag detector — Python snippet</h2>
+      <pre><code>RED_FLAGS = [
+    "going concern", "material weakness", "restatement",
+    "withdraw guidance", "sec investigation", "doj", "class action",
+    "liquidity concerns", "covenant violation", "impairment charge"
+]
+
+def check_red_flags(text: str) -> list:
+    text_lower = text.lower()
+    found = []
+    for flag in RED_FLAGS:
+        if flag in text_lower:
+            # Extract surrounding context
+            idx = text_lower.find(flag)
+            context = text[max(0, idx-100):idx+200].strip()
+            found.append({"flag": flag, "context": context})
+    return found</code></pre>
+
+      <h2>Quarter-over-quarter comparison — Python snippet</h2>
+      <pre><code>import json, os, glob
+
+def load_historical_metrics(company: str, quarters: int = 4) -> list:
+    pattern = f"nlp/{company}_*_metrics.json"
+    files = sorted(glob.glob(pattern), reverse=True)[:quarters]
+    history = []
+    for f in files:
+        with open(f) as fh:
+            history.append(json.load(fh))
+    return history
+
+def trend_analysis(current: dict, history: list) -> dict:
+    if not history:
+        return {"trend": "insufficient_data"}
+    scores = [h.get("confidence_score", 50) for h in history]
+    avg_prior = sum(scores) / len(scores)
+    delta = current["confidence_score"] - avg_prior
+    trend = "improving" if delta > 5 else "declining" if delta < -5 else "stable"
+    return {"trend": trend, "current_score": current["confidence_score"],
+            "prior_avg": round(avg_prior, 1), "delta": round(delta, 1)}</code></pre>
+
+      <div class="faq-section">
+        <h2>Frequently asked questions</h2>
+        <div class="faq-item">
+          <div class="faq-q">Q: How do I split prepared remarks from Q&A reliably?</div>
+          <div class="faq-a">A: Most transcripts include a clear "Question-and-Answer Session" or "QUESTION AND ANSWER" header. Split on that string (case-insensitive).</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Q: Is LLM-based analysis more accurate than keyword counting?</div>
+          <div class="faq-a">A: For nuance, yes — LLMs understand context better than keyword lists. Use keyword scoring for speed and consistency, LLM analysis for depth on important calls.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Q: How many quarters do I need before the trend analysis is useful?</div>
+          <div class="faq-a">A: Minimum 3 quarters for a trend, 6+ for statistical reliability.</div>
+        </div>
+      </div>
+
+    </div>
+  </article>
+</main>
+
+<footer role="contentinfo">
+  <div style="max-width:700px;margin:0 auto;">
+    <p style="margin:0 0 8px;"><a href="index.html" style="color:#d1d5db;font-weight:700;">&#x1F99E; learnopenclaw.org</a></p>
+    <p style="margin:0 0 8px;">
+      <a href="learn.html" style="color:#9ca3af;">Learn</a> ·
+      <a href="blog.html" style="color:#9ca3af;">Blog</a> ·
+      <a href="faq.html" style="color:#9ca3af;">FAQ</a> ·
+      <a href="privacy-policy.html" style="color:#9ca3af;">Privacy</a> ·
+      <a href="claw-street-terminal.html" style="color:#9ca3af;">Terminal</a>
+    </p>
+    <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or investment advice. For educational and informational purposes only.</p>
+  </div>
+</footer>
+
+<script>
+const btn = document.querySelector('.hamburger');
+const menu = document.getElementById('nav-links');
+btn.addEventListener('click', () => {
+  const open = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!open));
+  menu.classList.toggle('open');
+});
+</script>
+<script src="copy.js"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Transcript NLP & Tone Analysis with OpenClaw — Track How Management Language Changes Over Time",
+  "description": "Use OpenClaw to automate transcript sentiment scoring, management tone tracking, and year-over-year language comparison. Build a longitudinal confidence index for every company on your watchlist.",
+  "image": "https://learnopenclaw.org/og-image.png",
+  "datePublished": "2026-03-27",
+  "dateModified": "2026-03-27",
+  "author": { "@type": "Organization", "name": "learnopenclaw.org" },
+  "publisher": { "@type": "Organization", "name": "learnopenclaw.org", "logo": { "@type": "ImageObject", "url": "https://learnopenclaw.org/og-image.png" } }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I split prepared remarks from Q&A reliably?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most transcripts include a clear 'Question-and-Answer Session' or 'QUESTION AND ANSWER' header. Split on that string (case-insensitive)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is LLM-based analysis more accurate than keyword counting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For nuance, yes — LLMs understand context better than keyword lists. Use keyword scoring for speed and consistency, LLM analysis for depth on important calls."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many quarters do I need before the trend analysis is useful?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Minimum 3 quarters for a trend, 6+ for statistical reliability."
+      }
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://learnopenclaw.org/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Learn",
+      "item": "https://learnopenclaw.org/learn.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Transcripts & Audio",
+      "item": "https://learnopenclaw.org/openclaw-for-transcripts.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Part 4: NLP & Tone",
+      "item": "https://learnopenclaw.org/transcripts-nlp.html"
+    }
+  ]
+}
+</script>
+
+</body>
+</html>
