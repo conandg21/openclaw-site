@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claw Street Terminal — OpenClaw Finance Master Class | learnopenclaw.org</title>
+  <meta name="description" content="The Claw Street Terminal is a standalone master class teaching you how to build your own programmatic research layer using OpenClaw. Connect to live market APIs, deploy automated research agents, and aggregate data from options flow to corporate filings." />
+  <meta name="keywords" content="OpenClaw finance automation, options trading automation, economic indicators API, corporate filings automation, alternative data OpenClaw, algorithmic research, market infrastructure, SEC EDGAR automation" />
+  <link rel="canonical" href="https://learnopenclaw.org/claw-street-terminal.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Claw Street Terminal — OpenClaw Finance Master Class" />
+  <meta property="og:description" content="Stop manual screen-watching. Start architecting. Build your own programmatic research layer with OpenClaw — options flow, economic calendars, corporate filings, alternative data, and more." />
+  <meta property="og:url" content="https://learnopenclaw.org/claw-street-terminal.html" />
+  <meta property="og:site_name" content="learnopenclaw.org" />
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Claw Street Terminal — OpenClaw Finance Master Class" />
+  <meta name="twitter:description" content="Build your own programmatic research layer with OpenClaw. Options flow, economic data, corporate filings, alternative data — automated." />
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Claw Street Terminal — OpenClaw Finance Master Class",
+    "description": "A standalone master class teaching how to build a programmatic research layer using OpenClaw — connecting to live market APIs, deploying automated research agents, and aggregating financial data from options flow to corporate filings.",
+    "url": "https://learnopenclaw.org/claw-street-terminal.html",
+    "datePublished": "2026-03-26",
+    "dateModified": "2026-03-26",
+    "author": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "publisher": {"@type": "Organization", "name": "learnopenclaw.org", "url": "https://learnopenclaw.org"},
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+        {"@type": "ListItem", "position": 2, "name": "Claw Street Terminal", "item": "https://learnopenclaw.org/claw-street-terminal.html"}
+      ]
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the Claw Street Terminal?",
+          "acceptedAnswer": {"@type": "Answer", "text": "The Claw Street Terminal is a curated collection of OpenClaw series focused entirely on financial market automation. It covers options trading research, economic indicator monitoring, corporate filings analysis, transcripts and audio processing, alternative data ingestion, risk and portfolio monitoring, and crypto and DeFi tracking. Each series is an independent engineering guide — not trading advice."}
+        },
+        {
+          "@type": "Question",
+          "name": "Is this financial advice?",
+          "acceptedAnswer": {"@type": "Answer", "text": "No. The Claw Street Terminal is a pure engineering resource. It teaches you how to connect OpenClaw to financial data APIs and build automated research and monitoring systems. It does not provide trading signals, investment recommendations, or strategy advice. You bring the strategy; OpenClaw brings the automation."}
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to pay for data to use these guides?",
+          "acceptedAnswer": {"@type": "Answer", "text": "It depends on the series. The Economic Indicators series runs entirely on free government APIs (FRED, BLS, BEA, Census Bureau). The Options Trading series uses Tradier's free developer tier for most parts, with optional paid sources for advanced flow detection. Corporate Filings runs on the free SEC EDGAR API. Alternative Data and Crypto/DeFi have some free sources (CoinGecko, Etherscan, Reddit) and some paid. Each series page documents the exact cost of every data source upfront."}
+        }
+      ]
+    }
+  }
+  </script>
+  <style>
+  :root {
+    --gold: #c9a84c; --gold-lt: #fdf8ec; --gold-dk: #92700a;
+    --slate: #0f172a; --slate-md: #1e293b; --slate-lt: #334155;
+    --crimson: #b91c1c; --crimson-lt: #fff1f2; --crimson-md: #fecdd3;
+    --teal: #0f766e; --teal-lt: #f0fdfa; --teal-md: #99f6e4;
+    --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+    --purple: #7c3aed; --purple-lt: #f5f3ff; --purple-md: #ddd6fe;
+    --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+    --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
+    --orange: #ea580c; --orange-lt: #fff7ed; --orange-md: #fed7aa;
+    --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+    --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
+    --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+  html { scroll-behavior: smooth; }
+  .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--gold); color: var(--slate); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+  .skip-nav:focus { top: 8px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+  a { color: var(--gold-dk); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Site nav ── */
+  .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--slate); border-bottom: 1px solid var(--slate-lt); padding: 0 24px; }
+  .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+  .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .nav-logo:hover { text-decoration: none; }
+  .nav-logo .terminal-tag { font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(201,168,76,.4); border-radius: 100px; padding: 2px 8px; margin-left: 4px; }
+  .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: .25s; }
+  .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--slate-md); border: 1px solid var(--slate-lt); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.4); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+  .nav-links.open { display: flex; }
+  .nav-links a { color: #94a3b8; font-size: .95rem; font-weight: 500; }
+  .nav-links a:hover { color: var(--gold); text-decoration: none; }
+  .nav-links a.active { color: var(--gold); }
+  @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+  .nav-right { display: flex; align-items: center; gap: 10px; }
+  .nav-search-form { display: flex; align-items: center; background: var(--slate-md); border: 1px solid var(--slate-lt); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+  .nav-search-icon { flex-shrink: 0; color: #64748b; }
+  .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--white); width: 130px; font-family: inherit; }
+  .nav-search-input:focus { outline: none; }
+  .nav-search-input::placeholder { color: #64748b; }
+  @media (max-width: 480px) { .nav-search-form { display: none; } }
+
+  /* ── Hero ── */
+  .terminal-hero { background: var(--slate); padding: 80px 24px 72px; position: relative; overflow: hidden; }
+  .terminal-hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(201,168,76,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,.04) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; }
+  .terminal-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: .4; }
+  .hero-inner { max-width: 860px; margin: 0 auto; position: relative; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .hero-eyebrow .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px rgba(201,168,76,.6); }
+  .hero-eyebrow span { font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+  .terminal-hero h1 { font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 900; line-height: 1.08; color: var(--white); margin: 0 0 16px; letter-spacing: -.02em; }
+  .terminal-hero h1 em { font-style: normal; color: var(--gold); }
+  .hero-subtitle { font-size: 1.05rem; font-weight: 700; color: var(--gold); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 28px; }
+  .hero-body { font-size: 1.1rem; color: #94a3b8; line-height: 1.75; max-width: 680px; margin-bottom: 16px; }
+  .hero-body strong { color: #e2e8f0; font-weight: 600; }
+  .hero-tagline { font-size: 1rem; color: #64748b; font-style: italic; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--slate-lt); }
+  .hero-tagline strong { color: #94a3b8; font-style: normal; }
+  .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 36px; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--slate); font-weight: 800; font-size: .95rem; padding: 12px 24px; border-radius: 8px; text-decoration: none; transition: background .15s, transform .15s; }
+  .btn-primary:hover { background: #d4af5a; transform: translateY(-1px); text-decoration: none; }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #94a3b8; font-weight: 600; font-size: .95rem; padding: 12px 24px; border-radius: 8px; border: 1px solid var(--slate-lt); text-decoration: none; transition: border-color .15s, color .15s; }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); text-decoration: none; }
+
+  /* ── Disclaimer strip ── */
+  .disclaimer-strip { background: var(--slate-md); border-bottom: 1px solid var(--slate-lt); padding: 10px 24px; text-align: center; font-size: .83rem; color: #64748b; }
+  .disclaimer-strip strong { color: #94a3b8; }
+
+  /* ── Section wrappers ── */
+  .section { padding: 72px 24px; }
+  .section-dark { background: var(--slate); }
+  .section-mid { background: #111827; }
+  .section-light { background: var(--gray-1); border-top: 1px solid var(--gray-3); }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label { font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+  .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 900; line-height: 1.2; margin: 0 0 16px; }
+  .section-title-dark { color: var(--white); }
+  .section-title-light { color: var(--gray-8); }
+  .section-desc { font-size: 1rem; color: #94a3b8; max-width: 600px; line-height: 1.7; margin-bottom: 52px; }
+  .section-desc-light { color: var(--gray-5); }
+
+  /* ── How it connects ── */
+  .flow-row { display: flex; flex-direction: column; gap: 0; margin: 36px 0; }
+  .flow-step { display: flex; gap: 20px; align-items: flex-start; position: relative; padding-bottom: 32px; }
+  .flow-step:last-child { padding-bottom: 0; }
+  .flow-step:not(:last-child)::before { content: ''; position: absolute; left: 19px; top: 44px; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--gold), transparent); opacity: .3; }
+  .flow-icon { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: var(--slate-md); border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+  .flow-content h4 { font-size: 1rem; font-weight: 800; color: var(--white); margin: 8px 0 4px; }
+  .flow-content p { font-size: .9rem; color: #64748b; margin: 0; line-height: 1.6; }
+  .flow-content .flow-series { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--gold); margin-bottom: 4px; }
+
+  /* ── Module grid ── */
+  .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 8px; }
+  .module-card { border-radius: var(--radius); padding: 28px 28px 24px; position: relative; overflow: hidden; transition: transform .18s, box-shadow .18s; text-decoration: none; display: flex; flex-direction: column; }
+  .module-card:hover { transform: translateY(-3px); text-decoration: none; }
+  .module-card.live { background: var(--slate-md); border: 1px solid var(--slate-lt); cursor: pointer; }
+  .module-card.live:hover { box-shadow: 0 12px 36px rgba(0,0,0,.4); }
+  .module-card.dev { background: #0c1220; border: 1px dashed var(--slate-lt); opacity: .75; cursor: default; }
+  .module-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0; }
+  .module-card.crimson::before { background: var(--crimson); }
+  .module-card.teal::before { background: var(--teal); }
+  .module-card.amber::before { background: var(--amber); }
+  .module-card.purple::before { background: var(--purple); }
+  .module-card.blue::before { background: var(--blue); }
+  .module-card.orange::before { background: var(--orange); }
+  .module-card.green::before { background: var(--green); }
+  .module-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .module-icon { font-size: 1.6rem; }
+  .module-status { display: inline-flex; align-items: center; gap: 5px; font-size: .7rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
+  .status-live { background: rgba(16,163,74,.15); color: #4ade80; border: 1px solid rgba(16,163,74,.3); }
+  .status-dev { background: rgba(100,116,139,.1); color: #64748b; border: 1px solid rgba(100,116,139,.2); }
+  .status-live::before { content: '●'; margin-right: 3px; font-size: .55rem; }
+  .status-dev::before { content: '○'; margin-right: 3px; font-size: .55rem; }
+  .module-name { font-size: 1.1rem; font-weight: 800; color: var(--white); margin: 0 0 8px; line-height: 1.3; }
+  .module-desc { font-size: .88rem; color: #64748b; line-height: 1.6; flex: 1; margin: 0 0 20px; }
+  .module-card.live .module-desc { color: #94a3b8; }
+  .module-parts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .module-part { font-size: .72rem; font-weight: 600; color: #64748b; background: rgba(255,255,255,.04); border: 1px solid var(--slate-lt); border-radius: 6px; padding: 3px 8px; }
+  .module-link { font-size: .85rem; font-weight: 700; color: var(--gold); display: inline-flex; align-items: center; gap: 5px; margin-top: auto; }
+  .module-link:hover { text-decoration: underline; }
+  .module-coming { font-size: .82rem; color: #475569; font-style: italic; margin-top: auto; }
+
+  /* ── Learning paths ── */
+  .path-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 8px; }
+  .path-card { background: var(--white); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 24px; }
+  .path-persona { font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-dk); margin-bottom: 10px; }
+  .path-card h4 { font-size: 1rem; font-weight: 800; color: var(--gray-8); margin: 0 0 12px; }
+  .path-card ol { padding-left: 18px; margin: 0; }
+  .path-card li { font-size: .88rem; color: var(--gray-5); margin-bottom: 6px; line-height: 1.5; }
+  .path-card li strong { color: var(--gray-8); font-weight: 600; }
+
+  /* ── Stats bar ── */
+  .stats-bar { background: var(--slate-md); border-top: 1px solid var(--slate-lt); border-bottom: 1px solid var(--slate-lt); padding: 28px 24px; }
+  .stats-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 2rem; font-weight: 900; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: .78rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .07em; margin-top: 4px; }
+
+  /* ── Footer ── */
+  footer { background: #060d18; color: #475569; text-align: center; padding: 36px 24px; font-size: .9rem; border-top: 1px solid var(--slate-lt); }
+  footer a { color: #64748b; }
+  footer a:hover { color: var(--gold); text-decoration: none; }
+  .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
+
+  @media (max-width: 640px) {
+    .terminal-hero { padding: 56px 20px 52px; }
+    .module-grid { grid-template-columns: 1fr; }
+    .stats-inner { gap: 32px; }
+    .hero-cta { flex-direction: column; }
+    .btn-primary, .btn-secondary { justify-content: center; }
+  }
+  </style>
+</head>
+<body>
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo" aria-label="learnopenclaw.org home">
+      🦞 <span>learnopenclaw.org</span>
+      <span class="terminal-tag">Terminal</span>
+    </a>
+    <div class="nav-right">
+      <form class="nav-search-form" role="search" action="search.html" method="get" aria-label="Site search">
+        <svg class="nav-search-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="M15 15l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input class="nav-search-input" type="search" name="q" placeholder="Search guides…" aria-label="Search" />
+      </form>
+      <button class="hamburger" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-links" id="nav-links" role="list">
+      <a href="index.html" role="listitem">Home</a>
+      <a href="blog.html" role="listitem">Blog</a>
+      <a href="learn.html" role="listitem">Learn</a>
+      <a href="claw-street-terminal.html" role="listitem" class="active">Terminal</a>
+      <a href="faq.html" role="listitem">FAQ</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+  <!-- ── Hero ── -->
+  <section class="terminal-hero" aria-labelledby="hero-heading">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="dot" aria-hidden="true"></span>
+        <span>OpenClaw Finance Master Class</span>
+      </div>
+      <h1 id="hero-heading"><em>Claw Street</em> Terminal</h1>
+      <p class="hero-subtitle">The OpenClaw Master Class for Automated Market Infrastructure</p>
+      <p class="hero-body">
+        Stop manual screen-watching. Start architecting. The Claw Street Terminal is a standalone master class teaching you how to build your own <strong>programmatic research layer</strong> using OpenClaw. This isn't about trading strategies, "alpha," or financial advice. It is a <strong>pure engineering blueprint</strong>.
+      </p>
+      <p class="hero-body">
+        Learn to connect OpenClaw to live market APIs, deploy automated research agents, and aggregate unstructured data — from options order flow and economic calendars to corporate filings and alternative data.
+      </p>
+      <p class="hero-tagline"><strong>You bring the strategy. OpenClaw brings the automation.</strong></p>
+      <div class="hero-cta">
+        <a href="#modules" class="btn-primary">Browse all modules →</a>
+        <a href="learn.html" class="btn-secondary">← Back to Learn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Disclaimer ── -->
+  <div class="disclaimer-strip" role="note">
+    <strong>Engineering resource only.</strong> Nothing in the Claw Street Terminal constitutes financial, investment, or trading advice. All guides are infrastructure blueprints. You are responsible for your own decisions.
+  </div>
+
+  <!-- ── Stats ── -->
+  <div class="stats-bar" aria-label="Terminal statistics">
+    <div class="stats-inner">
+      <div class="stat">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Series modules</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Live now</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">12+</div>
+        <div class="stat-label">Guides available</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">$0</div>
+        <div class="stat-label">Min data cost</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── How the series connect ── -->
+  <section class="section section-dark" aria-labelledby="connect-heading">
+    <div class="section-inner">
+      <div class="section-label">How it works together</div>
+      <h2 class="section-title section-title-dark" id="connect-heading">The research layer, end to end</h2>
+      <p class="section-desc">The Terminal modules are designed to stack. Here's what a single automated research workflow looks like when the series work in combination.</p>
+
+      <div class="flow-row" role="list">
+        <div class="flow-step" role="listitem">
+          <div class="flow-icon" aria-hidden="true">🏛️</div>
+          <div class="flow-content">
+            <div class="flow-series">Economic Indicators</div>
+            <h4>CPI release in 2 days — pre-release brief fires</h4>
+            <p>Your Economic Indicators agent delivers the consensus estimate, prior month's reading, and Fed 2% target gap. You know what's coming before the market open.</p>
+          </div>
+        </div>
+        <div class="flow-step" role="listitem">
+          <div class="flow-icon" aria-hidden="true">📈</div>
+          <div class="flow-content">
+            <div class="flow-series">Options Trading</div>
+            <h4>IV spikes on SPY/QQQ — flow alert fires</h4>
+            <p>Your options flow agent detects unusual volume on index options. IV rank crosses 60. The pre-market scanner shows elevated OI at key strikes. You see the positioning, not just the price.</p>
+          </div>
+        </div>
+        <div class="flow-step" role="listitem">
+          <div class="flow-icon" aria-hidden="true">📄</div>
+          <div class="flow-content">
+            <div class="flow-series">Corporate Filings — In Development</div>
+            <h4>8-K filed — material event detected before headlines</h4>
+            <p>A company on your watchlist files an 8-K at 5:47 AM. Your EDGAR agent parses the filing type, flags it as material, and delivers the summary before it hits financial news.</p>
+          </div>
+        </div>
+        <div class="flow-step" role="listitem">
+          <div class="flow-icon" aria-hidden="true">📊</div>
+          <div class="flow-content">
+            <div class="flow-series">Risk &amp; Portfolio — In Development</div>
+            <h4>Position risk re-evaluated against new macro environment</h4>
+            <p>Your portfolio risk agent recalculates beta and correlation across your held positions given the new CPI data. Concentration alerts fire if any single macro factor now dominates your exposure.</p>
+          </div>
+        </div>
+        <div class="flow-step" role="listitem">
+          <div class="flow-icon" aria-hidden="true">🌅</div>
+          <div class="flow-content">
+            <div class="flow-series">All modules</div>
+            <h4>Morning brief delivered — you trade, not research</h4>
+            <p>By 8:50 AM your complete research brief is waiting. Macro context, options positioning, relevant filings, portfolio risk delta. You open your laptop informed, not scrambling.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Module grid ── -->
+  <section class="section section-mid" id="modules" aria-labelledby="modules-heading">
+    <div class="section-inner">
+      <div class="section-label">The curriculum</div>
+      <h2 class="section-title section-title-dark" id="modules-heading">All seven modules</h2>
+      <p class="section-desc">Two series are live now. Five are in active development. Each module is a standalone series — start with what's most relevant to your workflow.</p>
+
+      <div class="module-grid">
+
+        <!-- Options Trading — LIVE -->
+        <a href="openclaw-for-options.html" class="module-card live crimson" aria-label="OpenClaw for Options Trading — live series">
+          <div class="module-top">
+            <span class="module-icon" aria-hidden="true">📈</span>
+            <span class="module-status status-live">Live</span>
+          </div>
+          <h3 class="module-name">Options Trading</h3>
+          <p class="module-desc">Pre-market scanners, unusual flow detection, IV rank monitoring, earnings play automation, and end-of-day debriefs. For day traders, swing traders, and premium sellers.</p>
+          <div class="module-parts" aria-label="Parts in this series">
+            <span class="module-part">Pre-Market</span>
+            <span class="module-part">Flow Alerts</span>
+            <span class="module-part">IV &amp; Greeks</span>
+            <span class="module-part">Earnings</span>
+            <span class="module-part">Debrief</span>
+          </div>
+          <span class="module-link">Start series →</span>
+        </a>
+
+        <!-- Economic Indicators — LIVE -->
+        <a href="openclaw-for-indicators.html" class="module-card live teal" aria-label="OpenClaw for Economic Indicators — live series">
+          <div class="module-top">
+            <span class="module-icon" aria-hidden="true">🏛️</span>
+            <span class="module-status status-live">Live</span>
+          </div>
+          <h3 class="module-name">Economic Indicators</h3>
+          <p class="module-desc">Fed &amp; rate decision monitoring, CPI/PPI/PCE inflation tracking, NFP &amp; jobs data, GDP &amp; GDPNow, and a weekly economic pulse dashboard. All from free government APIs.</p>
+          <div class="module-parts" aria-label="Parts in this series">
+            <span class="module-part">Fed &amp; Rates</span>
+            <span class="module-part">Inflation</span>
+            <span class="module-part">Jobs</span>
+            <span class="module-part">GDP</span>
+            <span class="module-part">Dashboard</span>
+          </div>
+          <span class="module-link">Start series →</span>
+        </a>
+
+        <!-- Corporate Filings — DEV -->
+        <div class="module-card dev amber" aria-label="Corporate Filings — in development">
+          <div class="module-top">
+            <span class="module-icon" aria-hidden="true">📄</span>
+            <span class="module-status status-dev">In Development</span>
+          </div>
+          <h3 class="module-name">Corporate Filings</h3>
+          <p class="module-desc">SEC EDGAR automation — 8-K material event alerts, 10-K/10-Q financial summary extraction, Form 4 insider transaction monitoring, and DEF 14A proxy filing analysis. All from the free EDGAR API.</p>
+          <div class="module-parts" aria-label="Planned parts">
+            <span class="module-part">8-K Alerts</span>
+            <span class="module-part">10-K/10-Q</span>
+            <span class="module-part">Insider Trades</span>
+            <span class="module-part">Proxy Filings</span>
+            <span class="module-part">EDGAR Setup</span>
+          </div>
+          <p class="module-coming">Coming soon</p>
+        </div>
+
+        <!-- Transcripts & Audio — DEV -->
+        <div class="module-card dev purple" aria-label="Transcripts and Audio — in development">
+          <div class="module-top">
+            <span class="module-icon" aria-hidden="true">🎙️</span>
+            <span class="module-status status-dev">In Development</span>
+          </div>
+          <h3 class="module-name">Transcripts &amp; Audio</h3>
+          <p class="module-desc">Earnings call transcript analysis, Fed speech monitoring, congressional testimony parsing, and audio-to-text processing using Whisper for investor relations recordings published publicly.</p>
+          <div class="module-parts" aria-label="Planned parts">
+            <span class="module-part">Earnings Calls</span>
+            <span class="module-part">Fed Speeches</span>
+            <span class="module-part">Audio → Text</span>
+            <span class="module-part">Sentiment</span>
+            <span class="module-part">Summaries</span>
+          </div>
+          <p class="module-coming">Coming soon</p>
+        </div>
+
+        <!-- Alternative Data — DEV -->
+        <div class="module-card dev blue" aria-label="Alternative Data — in development">
+          <div class="module-top">
+            <span class="module-icon" aria-hidden="true">🛰️</span>
+            <span class="module-status status-dev">In Development</span>
+          </div>
+          <h3 class="module-name">Alternative Data</h3>
+          <p class="module-desc">Accessible alt data for people without institutional budgets — Reddit sentiment, Google Trends signals, app store rankings, job postings as hiring signals, and web traffic proxies for company health.</p>
+          <div class="module-parts" aria-label="Planned parts">
+            <span class="module-part">Social Sentiment</span>
+            <span class="module-part">Google Trends</span>
+            <span class="module-part">App Rankings</span>
+            <span class="module-part">Job Signals</span>
+            <span class="module-part">Web Traffic</span>
+          </div>
+          <p class="module-coming">Coming soon</p>
+        </div>
+
+        <!-- Risk & Portfolio — DEV -->
+        <div class="module-card dev green" aria-label="Risk and Portfolio — in development">
+          <div class="module-top">
+            <span class="module-icon" aria-hidden="true">⚖️</span>
+            <span class="module-status status-dev">In Development</span>
+          </div>
+          <h3 class="module-name">Risk &amp; Portfolio</h3>
+          <p class="module-desc">Portfolio-level risk monitoring — VaR, beta, correlation matrix alerts, Sharpe ratio tracking, max drawdown alerts, and position sizing guardrails. Built on free market data APIs.</p>
+          <div class="module-parts" aria-label="Planned parts">
+            <span class="module-part">VaR</span>
+            <span class="module-part">Beta &amp; Correlation</span>
+            <span class="module-part">Drawdown Alerts</span>
+            <span class="module-part">Position Sizing</span>
+            <span class="module-part">Rebalancing</span>
+          </div>
+          <p class="module-coming">Coming soon</p>
+        </div>
+
+        <!-- Crypto & DeFi — DEV -->
+        <div class="module-card dev orange" aria-label="Crypto and DeFi — in development">
+          <div class="module-top">
+            <span class="module-icon" aria-hidden="true">⛓️</span>
+            <span class="module-status status-dev">In Development</span>
+          </div>
+          <h3 class="module-name">Crypto &amp; DeFi</h3>
+          <p class="module-desc">On-chain monitoring via Etherscan, price and volume alerts via CoinGecko, whale wallet tracking, DeFi protocol health monitoring, gas fee alerts, and cross-chain liquidity signals.</p>
+          <div class="module-parts" aria-label="Planned parts">
+            <span class="module-part">Price Alerts</span>
+            <span class="module-part">Whale Wallets</span>
+            <span class="module-part">DeFi Health</span>
+            <span class="module-part">Gas Fees</span>
+            <span class="module-part">On-Chain Flow</span>
+          </div>
+          <p class="module-coming">Coming soon</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Learning paths ── -->
+  <section class="section section-light" aria-labelledby="paths-heading">
+    <div class="section-inner">
+      <div class="section-label">Start here</div>
+      <h2 class="section-title section-title-light" id="paths-heading">Recommended learning paths</h2>
+      <p class="section-desc section-desc-light">Not sure where to start? Pick the path that matches how you use markets.</p>
+      <div class="path-grid">
+        <div class="path-card">
+          <div class="path-persona">Day Trader</div>
+          <h4>Intraday automation first</h4>
+          <ol>
+            <li><strong>Options Trading Parts 1–2</strong> — pre-market scanner and flow alerts</li>
+            <li><strong>Economic Indicators Parts 1–3</strong> — catalyst calendar awareness</li>
+            <li><strong>Options Trading Parts 3–5</strong> — IV monitoring and EOD debrief</li>
+          </ol>
+        </div>
+        <div class="path-card">
+          <div class="path-persona">Swing Trader</div>
+          <h4>Multi-day position management</h4>
+          <ol>
+            <li><strong>Economic Indicators Part 5</strong> — weekly macro dashboard first</li>
+            <li><strong>Options Trading Parts 3–4</strong> — IV rank and earnings plays</li>
+            <li><strong>Economic Indicators Parts 1–2</strong> — rates and inflation context</li>
+          </ol>
+        </div>
+        <div class="path-card">
+          <div class="path-persona">Business Owner / CFO</div>
+          <h4>Macro briefing service</h4>
+          <ol>
+            <li><strong>Economic Indicators Part 5</strong> — Monday dashboard</li>
+            <li><strong>Economic Indicators Parts 1–2</strong> — rates and inflation alerts</li>
+            <li><strong>Economic Indicators Part 3</strong> — labor market for hiring context</li>
+          </ol>
+        </div>
+        <div class="path-card">
+          <div class="path-persona">Long-Term Investor</div>
+          <h4>Macro health monitoring</h4>
+          <ol>
+            <li><strong>Economic Indicators Parts 4–5</strong> — GDP and weekly dashboard</li>
+            <li><strong>Economic Indicators Part 1</strong> — rate cycle monitoring</li>
+            <li><strong>Options Trading Overview</strong> — understand volatility as context</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer role="contentinfo">
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="learn.html">Learn</a>
+    <a href="claw-street-terminal.html">Terminal</a>
+    <a href="blog.html">Blog</a>
+    <a href="faq.html">FAQ</a>
+    <a href="privacy.html">Privacy</a>
+  </div>
+  <p>© 2026 learnopenclaw.org · Not affiliated with Anthropic. · Nothing here is financial advice.</p>
+</footer>
+
+<script>
+  const btn = document.querySelector('.hamburger');
+  const nav = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', !open);
+    nav.classList.toggle('open');
+  });
+</script>
+</body>
+</html>

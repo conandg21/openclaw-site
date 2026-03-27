@@ -874,5 +874,36 @@
       "FAQ"
     ],
     "body": "weekly economic dashboard Monday briefing FRED EFFR yield curve CPI PCE NFP unemployment GDPNow recession probability LEI ISM PMI OpenClaw macro briefing service economic pulse"
+  },
+  {
+    "url": "claw-street-terminal.html",
+    "title": "Claw Street Terminal \u2014 Finance Automation Masterclass",
+    "description": "A hub for financial market automation. Options trading, economic indicators, corporate filings, transcripts, alternative data, and risk & portfolio management \u2014 all powered by OpenClaw agents.",
+    "tags": [
+      "terminal",
+      "finance",
+      "masterclass",
+      "hub",
+      "options",
+      "indicators",
+      "filings"
+    ],
+    "series": "Claw Street Terminal",
+    "headings": [
+      "Claw Street Terminal",
+      "Stop manual screen-watching",
+      "Active modules",
+      "Options Trading",
+      "Economic Indicators",
+      "Corporate Filings",
+      "Transcripts & Audio",
+      "Alternative Data",
+      "Risk & Portfolio",
+      "Crypto & DeFi",
+      "How the series connect",
+      "Learning paths",
+      "FAQ"
+    ],
+    "body": "Claw Street Terminal finance masterclass OpenClaw automation hub options trading economic indicators corporate filings SEC EDGAR transcripts earnings calls alternative data risk portfolio crypto DeFi day trader swing trader long-term investor CFO business owner automated briefing market intelligence"
   }
 ]

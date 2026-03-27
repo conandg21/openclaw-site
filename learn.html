@@ -97,6 +97,33 @@
     .nav-search-input::placeholder { color: var(--gray-5); }
     @media (max-width: 480px) { .nav-search-form { display: none; } }
 
+    /* ── Terminal Banner ── */
+    .terminal-banner {
+      background: linear-gradient(135deg, #0d1b2a 0%, #1a2942 50%, #0d1b2a 100%);
+      border-bottom: 2px solid #c9a84c;
+      padding: 28px 24px;
+      text-align: center;
+      position: relative;
+    }
+    .terminal-banner-inner { max-width: 800px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .terminal-banner-icon { font-size: 2rem; flex-shrink: 0; }
+    .terminal-banner-text { text-align: left; }
+    .terminal-banner-text strong { display: block; font-size: 1.05rem; font-weight: 800; color: #c9a84c; margin-bottom: 4px; letter-spacing: .02em; }
+    .terminal-banner-text span { font-size: .9rem; color: rgba(255,255,255,.75); }
+    .terminal-banner-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #c9a84c; color: #0d1b2a;
+      font-weight: 800; font-size: .88rem; letter-spacing: .04em;
+      padding: 10px 22px; border-radius: 8px;
+      text-decoration: none; white-space: nowrap;
+      transition: background .15s;
+    }
+    .terminal-banner-cta:hover { background: #e0bf6a; }
+    @media (max-width: 640px) {
+      .terminal-banner-inner { flex-direction: column; text-align: center; }
+      .terminal-banner-text { text-align: center; }
+    }
+
     /* ── Hero ── */
     .hero {
       background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #1e40af 100%);
@@ -207,6 +234,8 @@
       <a href="blog.html">Blog</a>
       <a href="learn.html" aria-current="page">Learn</a>
       <a href="faq.html">FAQ</a>
+    
+      <a href="claw-street-terminal.html">Terminal</a>
     </div>
     <div class="nav-right">
       <form class="nav-search-form" role="search" onsubmit="return false;">
@@ -226,6 +255,18 @@
 </nav>
 
 <main id="main-content">
+
+<!-- Claw Street Terminal Banner -->
+<div class="terminal-banner" role="complementary" aria-label="Claw Street Terminal">
+  <div class="terminal-banner-inner">
+    <div class="terminal-banner-icon" aria-hidden="true">🖥️</div>
+    <div class="terminal-banner-text">
+      <strong>NEW — Claw Street Terminal</strong>
+      <span>A finance masterclass built on automation. Options, indicators, filings, risk, and more.</span>
+    </div>
+    <a href="claw-street-terminal.html" class="terminal-banner-cta">Explore the Terminal →</a>
+  </div>
+</div>
 
 <header class="hero" role="banner">
   <h1>Learn OpenClaw</h1>
