@@ -483,6 +483,64 @@
     <!-- Content -->
     <div class="content">
 
+        <!-- Section 0: OpenClaw Config -->
+        <div class="section">
+            <h2>OpenClaw Backtest Config</h2>
+            <p>Define your backtest parameters in <code>ta-config.yaml</code> once. Tweak thresholds in the config file without editing Python code — then compare runs side by side.</p>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span class="code-label">ta-config.yaml</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code># ta-config.yaml — backtest section
+backtest:
+  ticker: "SPY"
+  period: "5y"
+  strategy: "rsi_mean_reversion"
+
+  rsi_mean_reversion:
+    rsi_buy:   30       # buy when RSI drops below this
+    rsi_sell:  60       # sell when RSI rises above this
+    max_hold:  30       # maximum days to hold before forced exit
+
+  output:
+    print_trades: true
+    save_csv:     true
+    vs_buy_hold:  true  # compare against passive holding</code></pre>
+            </div>
+
+            <div class="code-wrapper">
+                <div class="code-header">
+                    <span class="code-label">Python — Load Config</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>import yaml
+
+def load_config(path: str = "ta-config.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+cfg = load_config()
+bt  = cfg.get("backtest", {})
+strat = bt.get("rsi_mean_reversion", {})
+
+# Run backtest from config
+result = backtest_rsi_mean_reversion(
+    ticker          = bt.get("ticker", "SPY"),
+    period          = bt.get("period", "5y"),
+    rsi_buy         = strat.get("rsi_buy", 30),
+    rsi_sell        = strat.get("rsi_sell", 60),
+    holding_limit_days = strat.get("max_hold", 30),
+)
+
+analyse_backtest(result)
+
+if bt.get("output", {}).get("vs_buy_hold"):
+    vs_buy_hold(result, bt["ticker"], bt["period"])</code></pre>
+            </div>
+        </div>
+
         <!-- Section 1: Honest Framing -->
         <div class="section">
             <div class="callout" style="border-left: 8px solid #0d9488; padding: 24px 28px;">
@@ -670,27 +728,29 @@ result = backtest_rsi_mean_reversion("AAPL", period="5y", rsi_buy=30, rsi_sell=6
 analyse_backtest(result)</code></pre>
             </div>
 
-            <p style="margin-top: 20px;"><strong>Example output:</strong></p>
-            <pre style="background: #0f172a; padding: 16px; border: 1px solid #334155; border-radius: 6px; font-size: 0.9rem; color: #94a3b8;"><code>═════════════════════════════════════════════════════
-  Backtest: AAPL | RSI(30/60) | 5y
-═════════════════════════════════════════════════════
-  Total trades:    42
-  Win rate:        52.4%
-  Avg return/trade: +0.87%
-  Avg win:         +2.15%
-  Avg loss:        -1.63%
-  Best trade:      +8.92%
-  Worst trade:     -6.31%
-  Max drawdown:    -12.45%
-  Avg days held:   18.3
+            <p style="margin-top: 20px;"><strong>OpenClaw Backtest Output:</strong></p>
+            <div class="callout" style="background: rgba(13, 148, 136, 0.15); border-left: 4px solid #0d9488; padding: 20px 24px;">
+                <pre style="background: #0f172a; padding: 16px; border: 1px solid #334155; border-radius: 6px; font-size: 0.9rem; color: #94a3b8; margin: 0;"><code>🦞 OpenClaw Backtest Report
+═══════════════════════════════════════════════════════
+  SPY | RSI(30/60) | 5y
+═══════════════════════════════════════════════════════
+  Total trades:     31
+  Win rate:         58.1%
+  Avg return/trade: +1.84%
+  Avg win:         +3.12%
+  Avg loss:        -1.56%
+  Best trade:      +7.41%
+  Worst trade:     -5.23%
+  Max drawdown:    -8.64%
+  Avg days held:   19.2
 ─────────────────────────────────────────────────────
 
   Last 10 trades:
   Entry        Exit         Entry $    Exit $    Return   Days
-  2024-01-15   2024-01-29   $172.43    $173.95   +0.88%    14  ✓
-  2024-02-03   2024-02-18   $179.82    $176.51   -1.84%    15  ✗
-  2024-02-28   2024-03-15   $181.27    $186.45   +2.86%    16  ✓
-  ...</code></pre>
+  2024-02-15   2024-03-01   $425.32    $432.87   +1.77%    15  ✓
+  2024-03-10   2024-03-28   $438.15    $441.65   +0.80%    18  ✓
+  2024-04-05   2024-04-19   $441.12    $434.78   -1.43%    14  ✗</code></pre>
+            </div>
         </div>
 
         <!-- Section 4: Parameter Sweep -->

@@ -585,6 +585,39 @@
     <div class="container">
         <div class="content">
 
+            <!-- SECTION 0: OpenClaw Alert Config -->
+            <section>
+                <h2>OpenClaw Alert Config</h2>
+                <p>Alert thresholds, cooldown periods, and notification targets all come from <code>ta-config.yaml</code>. Change a threshold once and all alert types update together.</p>
+
+                <div class="code-block">
+                    <div class="code-header">python</div>
+                    <pre>import yaml
+import yfinance as yf
+import pandas_ta as ta
+import time
+from datetime import datetime
+
+def load_config(path: str = "ta-config.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+cfg = load_config()
+
+# Alert thresholds come directly from ta-config.yaml
+RSI_OVERSOLD   = cfg["signals"]["rsi_oversold"]    # default: 30
+RSI_OVERBOUGHT = cfg["signals"]["rsi_overbought"]  # default: 70
+MACD_CROSS     = cfg["signals"]["macd_cross"]
+GOLDEN_CROSS   = cfg["signals"]["golden_cross"]
+COOLDOWN_HRS   = cfg["alerts"]["cooldown_hours"]
+EMAIL_TO       = cfg["alerts"]["email"]
+TICKERS        = cfg["watchlist"]["tickers"]
+
+print(f"🦞 OpenClaw TA Alerts | Watching {len(TICKERS)} tickers")
+print(f"   RSI thresholds: {RSI_OVERSOLD}/{RSI_OVERBOUGHT} | Cooldown: {COOLDOWN_HRS}h")</pre>
+                </div>
+            </section>
+
             <!-- SECTION 1: Alert Architecture -->
             <section>
                 <h2>Alert Architecture</h2>
@@ -1082,117 +1115,57 @@ run_alert_loop(WATCHLIST, check_interval=3600)</code></pre>
                 </div>
             </section>
 
-            <!-- SECTION 6: Daily Digest -->
+            <!-- SECTION 6: OpenClaw Daily Digest -->
             <section>
-                <h2>Daily Digest</h2>
-                <p>Instead of individual alert emails throughout the day, buffer all signals and send one comprehensive digest at market close. Less noise, easier to spot patterns:</p>
+                <h2>OpenClaw Daily Digest</h2>
+                <p>Set <code>alerts.daily_digest: true</code> in <code>ta-config.yaml</code> to get a single end-of-day summary instead of individual real-time pings. Better for signal-rich markets where individual emails would be overwhelming.</p>
 
                 <div class="code-block">
                     <div class="code-block-header">
                         <span class="code-block-label">Python</span>
-                        <button class="copy-btn" data-code="from collections import defaultdict
-
-daily_buffer: list[dict] = []
-
-def buffer_alert(alert: dict) -> None:
-    '''Add alert to daily buffer instead of sending immediately.'''
-    daily_buffer.append({**alert, 'time': datetime.now().strftime('%H:%M')})
-
-def send_daily_digest(watchlist: list) -> None:
-    '''Scan all tickers and send one summary email.'''
-    global daily_buffer
-    daily_buffer = []
-
-    for ticker in watchlist:
-        snap = get_snapshot(ticker)
-        if not snap:
-            continue
-        all_alerts = (
-            check_rsi_alert(snap) +
-            check_ma_cross_alert(snap) +
-            check_price_ma_cross(snap) +
-            check_macd_cross(snap)
-        )
-        for a in all_alerts:
-            buffer_alert(a)
-
-    if not daily_buffer:
-        log_alert('Daily digest: no signals today.')
-        return
-
-    # Group by priority
-    by_priority = defaultdict(list)
-    for a in daily_buffer:
-        by_priority[a['priority']].append(a['msg'])
-
-    body_lines = [f'OpenClaw Daily Signal Digest — {date.today()}\n' + '='*50 + '\n']
-    for priority in ['high','medium','low']:
-        if priority in by_priority:
-            body_lines.append(f'\n[{priority.upper()} PRIORITY]')
-            body_lines.extend(f'  • {m}' for m in by_priority[priority])
-
-    body = '\n'.join(body_lines)
-    send_email(
-        subject=f'[OpenClaw] Daily Digest — {len(daily_buffer)} signals — {date.today()}',
-        body=body
-    )
-    log_alert(f'Daily digest sent: {len(daily_buffer)} signals')
-
-# Schedule with cron at market close (4pm ET Mon-Fri):
-# 0 16 * * 1-5 python3 /home/user/openclaw/daily_digest.py
-send_daily_digest(WATCHLIST)">Copy</button>
                     </div>
-                    <pre><code>from collections import defaultdict
-
-daily_buffer: list[dict] = []
-
-def buffer_alert(alert: dict) -> None:
-    '''Add alert to daily buffer instead of sending immediately.'''
-    daily_buffer.append({**alert, 'time': datetime.now().strftime('%H:%M')})
-
-def send_daily_digest(watchlist: list) -> None:
-    '''Scan all tickers and send one summary email.'''
-    global daily_buffer
-    daily_buffer = []
-
-    for ticker in watchlist:
-        snap = get_snapshot(ticker)
-        if not snap:
-            continue
-        all_alerts = (
-            check_rsi_alert(snap) +
-            check_ma_cross_alert(snap) +
-            check_price_ma_cross(snap) +
-            check_macd_cross(snap)
-        )
-        for a in all_alerts:
-            buffer_alert(a)
-
-    if not daily_buffer:
-        log_alert('Daily digest: no signals today.')
+                    <pre><code>def send_daily_digest(all_signals: list, cfg: dict) -> None:
+    """
+    Rolled-up digest of all signals fired during the day.
+    Sent once at market close instead of individual alert emails.
+    Configured via alerts.daily_digest in ta-config.yaml.
+    """
+    if not cfg["alerts"].get("daily_digest", False):
+        return
+    if not all_signals:
+        print("No signals today — digest skipped.")
         return
 
-    # Group by priority
-    by_priority = defaultdict(list)
-    for a in daily_buffer:
-        by_priority[a['priority']].append(a['msg'])
+    import smtplib
+    from email.mime.text import MIMEText
 
-    body_lines = [f'OpenClaw Daily Signal Digest — {date.today()}\n' + '='*50 + '\n']
-    for priority in ['high','medium','low']:
-        if priority in by_priority:
-            body_lines.append(f'\n[{priority.upper()} PRIORITY]')
-            body_lines.extend(f'  • {m}' for m in by_priority[priority])
+    lines = [
+        f"🦞 OpenClaw TA Daily Digest — {datetime.now().strftime('%Y-%m-%d')}",
+        f"{'─'*45}",
+        f"{len(all_signals)} signal(s) fired today:\n"
+    ]
+    for sig in all_signals:
+        lines.append(
+            f"  {sig['ticker']:<8} {sig['signal']:<20} "
+            f"@ ${sig['price']:,.2f}  ({sig['time']})"
+        )
+    lines += [
+        f"\n{'─'*45}",
+        "Not financial advice. | learnopenclaw.org"
+    ]
 
-    body = '\n'.join(body_lines)
-    send_email(
-        subject=f'[OpenClaw] Daily Digest — {len(daily_buffer)} signals — {date.today()}',
-        body=body
-    )
-    log_alert(f'Daily digest sent: {len(daily_buffer)} signals')
+    body = "\n".join(lines)
+    msg = MIMEText(body)
+    msg["Subject"] = f"[OpenClaw] TA Digest — {len(all_signals)} signals — {datetime.now().strftime('%b %d')}"
+    msg["From"]    = "openclaw@yourdomain.com"
+    msg["To"]      = cfg["alerts"]["email"]
 
-# Schedule with cron at market close (4pm ET Mon-Fri):
-# 0 16 * * 1-5 python3 /home/user/openclaw/daily_digest.py
-send_daily_digest(WATCHLIST)</code></pre>
+    with smtplib.SMTP("localhost") as s:
+        s.send_message(msg)
+    print(f"✓ Daily digest sent to {cfg['alerts']['email']}")
+
+# At end of monitoring loop, call:
+# send_daily_digest(signals_today, cfg)</code></pre>
                 </div>
             </section>
 

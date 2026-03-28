@@ -577,7 +577,7 @@
       <div class="hero-inner">
         <div class="hero-tag">CLAW STREET TERMINAL</div>
         <h1>Technical Analysis Automation</h1>
-        <p class="subtitle">Stop checking 50 charts every morning. Automate RSI scans, moving average crossovers, Bollinger Band squeezes, and custom signal alerts using free Python libraries and Yahoo Finance data.</p>
+        <p class="subtitle">OpenClaw makes it easy to automate RSI scans, moving average crossovers, Bollinger Band squeezes, and signal alerts using free Python libraries and Yahoo Finance data — so your morning workflow runs itself.</p>
         <div class="stat-pills">
           <div class="stat-pill">yfinance Free</div>
           <div class="stat-pill">pandas-ta 130+ Indicators</div>
@@ -662,6 +662,54 @@
       </div>
     </section>
 
+    <!-- OpenClaw TA Config -->
+    <section>
+      <div class="container">
+        <h2>OpenClaw TA Config</h2>
+        <p style="margin-bottom: 24px; color: #a8a29e;">All scripts in this series read from a single <strong>ta-config.yaml</strong> file. Define your watchlist once, and every tool — the scanner, the alerts, the chart generator — pulls from the same source.</p>
+        <div class="code-block" style="background: #2b2622; border: 1px solid #3d3935; border-radius: 8px; padding: 0; margin: 20px 0; overflow: hidden;">
+          <div style="background: #1c1917; border-bottom: 1px solid #3d3935; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: #0d9488; letter-spacing: 0.05em;">YAML</span>
+          </div>
+          <pre style="padding: 16px; overflow-x: auto; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.85rem; line-height: 1.5; color: #d2cec9; margin: 0;"><code><span style="color: #78716c;"># ta-config.yaml — OpenClaw Technical Analysis config</span>
+
+<span style="color: #f97316;">watchlist:</span>
+  <span style="color: #f97316;">name:</span> <span style="color: #86efac;">"My TA Watchlist"</span>
+  <span style="color: #f97316;">tickers:</span>
+    - AAPL
+    - MSFT
+    - GOOGL
+    - NVDA
+    - SPY
+    - QQQ
+    - IWM
+
+<span style="color: #f97316;">signals:</span>
+  <span style="color: #f97316;">rsi_oversold:</span>    <span style="color: #93c5fd;">30</span>      <span style="color: #78716c;"># alert when RSI drops below this</span>
+  <span style="color: #f97316;">rsi_overbought:</span>  <span style="color: #93c5fd;">70</span>      <span style="color: #78716c;"># alert when RSI rises above this</span>
+  <span style="color: #f97316;">macd_cross:</span>      <span style="color: #93c5fd;">true</span>    <span style="color: #78716c;"># alert on MACD bull/bear crosses</span>
+  <span style="color: #f97316;">golden_cross:</span>    <span style="color: #93c5fd;">true</span>    <span style="color: #78716c;"># alert on SMA50/SMA200 crossovers</span>
+  <span style="color: #f97316;">bb_squeeze:</span>      <span style="color: #93c5fd;">true</span>    <span style="color: #78716c;"># alert on Bollinger Band squeeze</span>
+
+<span style="color: #f97316;">alerts:</span>
+  <span style="color: #f97316;">email:</span> <span style="color: #86efac;">"you@example.com"</span>
+  <span style="color: #f97316;">daily_digest:</span> <span style="color: #93c5fd;">true</span>       <span style="color: #78716c;"># send a rolled-up digest at market close</span>
+  <span style="color: #f97316;">cooldown_hours:</span> <span style="color: #93c5fd;">4</span>        <span style="color: #78716c;"># minimum hours between same signal repeating</span>
+
+<span style="color: #f97316;">scanner:</span>
+  <span style="color: #f97316;">run_time:</span> <span style="color: #86efac;">"16:15"</span>        <span style="color: #78716c;"># run after market close (Mon–Fri)</span>
+  <span style="color: #f97316;">lookback_period:</span> <span style="color: #86efac;">"1y"</span>    <span style="color: #78716c;"># historical data period for indicators</span>
+  <span style="color: #f97316;">export_csv:</span> <span style="color: #93c5fd;">true</span>         <span style="color: #78716c;"># save daily results to scanner_YYYYMMDD.csv</span>
+
+<span style="color: #f97316;">charts:</span>
+  <span style="color: #f97316;">enabled:</span> <span style="color: #93c5fd;">true</span>
+  <span style="color: #f97316;">format:</span> <span style="color: #86efac;">"html"</span>           <span style="color: #78716c;"># html (interactive Plotly) or png (matplotlib)</span>
+  <span style="color: #f97316;">output_dir:</span> <span style="color: #86efac;">"charts/"</span>
+  <span style="color: #f97316;">tickers:</span> [<span style="color: #86efac;">"AAPL"</span>,<span style="color: #86efac;">"MSFT"</span>,<span style="color: #86efac;">"SPY"</span>]  <span style="color: #78716c;"># subset for chart generation</span></code></pre>
+        </div>
+      </div>
+    </section>
+
     <!-- Series Modules -->
     <section>
       <div class="container">
@@ -670,27 +718,27 @@
           <a href="ta-indicators.html" class="module-card">
             <div class="module-icon">📊</div>
             <h3>Core Indicators</h3>
-            <p>SMA, EMA, RSI, MACD, Bollinger Bands on any ticker</p>
+            <p>Build the indicator stack that powers every other OpenClaw TA tool</p>
           </a>
           <a href="ta-scanner.html" class="module-card">
             <div class="module-icon">🔍</div>
             <h3>Multi-Stock Scanner</h3>
-            <p>Screen 500 stocks for RSI, golden cross, BB squeeze in seconds</p>
+            <p>Run your OpenClaw watchlist through 4 signal types every market close</p>
           </a>
           <a href="ta-alerts.html" class="module-card">
             <div class="module-icon">🔔</div>
             <h3>Signal Alerts</h3>
-            <p>Email/file alerts when conditions hit — MA crossover, RSI threshold, MACD flip</p>
+            <p>Get notified the moment your OpenClaw rules fire — not the next morning</p>
           </a>
           <a href="ta-backtest.html" class="module-card">
             <div class="module-icon">📈</div>
             <h3>Backtesting</h3>
-            <p>Test a strategy over historical data — win rate, avg return, drawdown</p>
+            <p>Validate your OpenClaw signal rules against history before going live</p>
           </a>
           <a href="ta-charts.html" class="module-card">
             <div class="module-icon">🖼️</div>
             <h3>Chart Generation</h3>
-            <p>Automated candlestick charts with indicator overlays, saved to HTML or PNG</p>
+            <p>Automated overnight chart packet for your entire OpenClaw watchlist</p>
           </a>
           <a href="#" class="module-card" style="cursor: default; opacity: 0.6;">
             <div class="module-icon">⚙️</div>

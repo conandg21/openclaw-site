@@ -345,6 +345,30 @@
             <span>Automated charts are for research and review only. Visual patterns on charts do not constitute financial advice.</span>
         </div>
 
+        <!-- OpenClaw Chart Config -->
+        <h2>OpenClaw Chart Config</h2>
+        <p>Chart settings live in <code>ta-config.yaml</code>. Set <code>charts.format</code> to <code>html</code> for interactive Plotly charts or <code>png</code> for email-friendly batch exports. The <code>charts.tickers</code> list defaults to your full watchlist if not specified.</p>
+
+        <div class="code-header">
+            <span>Python</span>
+            <button class="copy-btn" data-code="config-load">Copy</button>
+        </div>
+        <pre><code id="config-load">import yaml
+
+def load_config(path: str = "ta-config.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+cfg      = load_config()
+chart_cfg = cfg.get("charts", {})
+
+ENABLED    = chart_cfg.get("enabled", True)
+FORMAT     = chart_cfg.get("format", "html")       # "html" or "png"
+OUTPUT_DIR = chart_cfg.get("output_dir", "charts/")
+CHART_TICKERS = chart_cfg.get("tickers") or cfg["watchlist"]["tickers"]
+
+print(f"🦞 OpenClaw Charts | {len(CHART_TICKERS)} tickers | Format: {FORMAT} | Dir: {OUTPUT_DIR}")</code></pre>
+
         <!-- Hero -->
         <div class="hero">
             <div class="hero-tag">Technical Analysis · Part 5 of 5</div>
@@ -628,6 +652,42 @@ matplotlib_chart("MSFT", period="6mo", save_path="charts/MSFT.png")</code></pre>
         <h2>Nightly Cron Job: Full Pipeline Automation</h2>
         <p>Automate the complete workflow: fetch fresh data, generate charts, and deliver your chart packet. Schedule with cron to run Monday–Friday at 5 PM.</p>
 
+        <p><strong>Config-driven nightly run — reads all settings from ta-config.yaml:</strong></p>
+
+        <div class="code-header">
+            <span>Python</span>
+            <button class="copy-btn" data-code="nightly-cron-config">Copy</button>
+        </div>
+        <pre><code id="nightly-cron-config"># Config-driven nightly run — reads from ta-config.yaml
+def openclaw_nightly_charts() -> None:
+    cfg      = load_config()
+    chart_cfg = cfg.get("charts", {})
+
+    if not chart_cfg.get("enabled", True):
+        print("Charts disabled in ta-config.yaml — skipping.")
+        return
+
+    fmt      = chart_cfg.get("format", "html")
+    out_dir  = chart_cfg.get("output_dir", "charts/")
+    tickers  = chart_cfg.get("tickers") or cfg["watchlist"]["tickers"]
+    period   = cfg["scanner"]["lookback_period"]
+
+    print(f"\n🦞 OpenClaw Nightly Chart Run | {len(tickers)} tickers | {fmt.upper()}")
+
+    if fmt == "png":
+        for t in tickers:
+            matplotlib_chart(t, period=period, save_path=f"{out_dir}{t}.png")
+    else:
+        generate_chart_packet(tickers, output_dir=out_dir, period=period)
+
+    print(f"\n✓ Charts ready: {out_dir}index.html")
+
+# Schedule via cron — runs Mon–Fri at 5:00pm
+# 0 17 * * 1-5 python3 /path/to/openclaw/nightly_charts.py
+openclaw_nightly_charts()</code></pre>
+
+        <p style="margin-top: 20px;"><strong>Legacy non-config version (still supported):</strong></p>
+
         <div class="code-header">
             <span>Python</span>
             <button class="copy-btn" data-code="nightly-cron">Copy</button>
@@ -702,6 +762,12 @@ nightly_chart_run(WATCHLIST)</code></pre>
                 </tr>
             </tbody>
         </table>
+
+        <!-- OpenClaw Scheduler Note -->
+        <div class="info-box">
+            <h4>OpenClaw Scheduler Integration</h4>
+            <p>The chart run is configured in <code>ta-config.yaml</code> and runs automatically via OpenClaw's scheduler. Set <code>charts.enabled: false</code> on days you don't need it. Charts from the past 30 days are kept in <code>charts/</code> with date-stamped subdirectories.</p>
+        </div>
 
         <!-- Series Completion CTA -->
         <div class="cta-box">

@@ -587,10 +587,40 @@
 <!-- Main Content -->
 <div class="container">
 
+  <!-- Section 0: Loading OpenClaw Config -->
+  <section class="section">
+    <h2>0. Loading Your OpenClaw Config</h2>
+    <p>All TA scripts load from a single <strong>ta-config.yaml</strong> file, making it easy to manage your watchlist and signal preferences across all tools in the series.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">python</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="comment"># All TA scripts load from ta-config.yaml</span>
+<span class="keyword">import</span> yaml
+<span class="keyword">import</span> yfinance <span class="keyword">as</span> yf
+<span class="keyword">import</span> pandas_ta <span class="keyword">as</span> ta
+<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="keyword">def</span> <span class="function">load_config</span>(path: str = <span class="string">"ta-config.yaml"</span>) -> <span class="keyword">dict</span>:
+    <span class="keyword">with</span> <span class="keyword">open</span>(path) <span class="keyword">as</span> f:
+        <span class="keyword">return</span> yaml.safe_load(f)
+
+cfg = <span class="function">load_config</span>()
+TICKERS = cfg[<span class="string">"watchlist"</span>][<span class="string">"tickers"</span>]
+PERIOD  = cfg[<span class="string">"scanner"</span>][<span class="string">"lookback_period"</span>]
+
+<span class="keyword">print</span>(f<span class="string">"🦞 OpenClaw TA | Watchlist: {len(TICKERS)} tickers | Period: {PERIOD}"</span>)</code></pre>
+    </div>
+
+    <p style="margin-top: 20px; color: #b5aea8;">This pattern is used throughout the series. Store your configuration once in <span class="highlight">ta-config.yaml</span>, and every module — indicators, scanners, alerts, backtester, and chart generator — reads from the same source.</p>
+  </section>
+
   <!-- Section 1: Setup & Data Fetch -->
   <section class="section">
     <h2>1. Setup & Data Fetch</h2>
-    <p>Start by installing the required packages and fetching historical OHLCV data from Yahoo Finance. This foundation is used by all subsequent indicators.</p>
+    <p>These are the building blocks that power every OpenClaw TA automation — the scanner, the alerts system, and the chart generator all use this same indicator stack. Start by installing the required packages and fetching historical OHLCV data from Yahoo Finance.</p>
 
     <div class="code-block">
       <div class="code-header">
@@ -922,6 +952,59 @@ df = <span class="function">build_indicator_stack</span>(<span class="string">"A
     </div>
 
     <p>Each indicator has a specific purpose in your analysis workflow. Combine them to validate signals and reduce false positives in a multi-timeframe context.</p>
+  </section>
+
+  <!-- OpenClaw Daily Brief -->
+  <section class="section">
+    <h2>OpenClaw Indicator Daily Brief</h2>
+    <p>Use this function to generate a morning brief snapshot of your watchlist's key indicators. This output format is used across all OpenClaw TA modules — scanners, alerts, and dashboards all roll up to this same pattern.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">python</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><code><span class="keyword">def</span> <span class="function">ta_daily_brief</span>(tickers: list, period: str = <span class="string">"1y"</span>) -> <span class="keyword">None</span>:
+    <span class="string">"""
+    OpenClaw daily brief — indicator snapshot for your watchlist.
+    Run at market close or pre-market open.
+    """</span>
+    <span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+    <span class="keyword">print</span>(f<span class="string">"\n{'🦞 OpenClaw TA Daily Brief':=^65}"</span>)
+    <span class="keyword">print</span>(f<span class="string">\"{'Generated: ' + datetime.now().strftime('%Y-%m-%d %H:%M'):^65}\n\"</span>)
+
+    rows = []
+    <span class="keyword">for</span> ticker <span class="keyword">in</span> tickers:
+        df = yf.<span class="function">download</span>(ticker, period=period, interval=<span class="string">"1d"</span>, progress=<span class="keyword">False</span>)
+        df.columns = [c.lower() <span class="keyword">for</span> c <span class="keyword">in</span> df.columns]
+        df[<span class="string">"rsi"</span>]   = ta.<span class="function">rsi</span>(df[<span class="string">"close"</span>], <span class="number">14</span>)
+        df[<span class="string">"sma50"</span>] = ta.<span class="function">sma</span>(df[<span class="string">"close"</span>], <span class="number">50</span>)
+        df[<span class="string">"sma200"</span>]= ta.<span class="function">sma</span>(df[<span class="string">"close"</span>], <span class="number">200</span>)
+        macd = ta.<span class="function">macd</span>(df[<span class="string">"close"</span>], <span class="number">12</span>, <span class="number">26</span>, <span class="number">9</span>)
+        df[<span class="string">"macd_hist"</span>] = macd.iloc[:, <span class="number">2</span>]
+        df = df.<span class="function">dropna</span>()
+        <span class="keyword">if</span> df.<span class="function">empty</span>():
+            <span class="keyword">continue</span>
+
+        cur = df.iloc[<span class="number">-1</span>]
+        trend = <span class="string">"▲ Above"</span> <span class="keyword">if</span> cur[<span class="string">"close"</span>] > cur[<span class="string">"sma50"</span>] <span class="keyword">else</span> <span class="string">"▼ Below"</span>
+        rsi_flag = <span class="string">""</span>
+        <span class="keyword">if</span> cur[<span class="string">"rsi"</span>] < <span class="number">30</span>: rsi_flag = <span class="string">" 🔴"</span>
+        <span class="keyword">if</span> cur[<span class="string">"rsi"</span>] > <span class="number">70</span>: rsi_flag = <span class="string">" 🟢"</span>
+
+        <span class="keyword">print</span>(f<span class="string">"  {ticker:<8} RSI: {cur['rsi']:>5.1f}{rsi_flag}  |  "</span>
+              f<span class="string">"vs SMA50: {trend:<10}  |  MACD hist: {cur['macd_hist']:>+7.3f}"</span>)
+
+    <span class="keyword">print</span>(f<span class="string">"\n{'':=^65}"</span>)
+
+<span class="comment"># Load config and run the brief</span>
+cfg = <span class="function">load_config</span>()
+<span class="function">ta_daily_brief</span>(cfg[<span class="string">"watchlist"</span>][<span class="string">"tickers"</span>], cfg[<span class="string">"scanner"</span>][<span class="string">"lookback_period"</span>])</code></pre>
+    </div>
+
+    <div class="info-box">
+      <strong>Integration pattern:</strong> This brief becomes the template for your OpenClaw TA ecosystem. The scanner module expands it with alert counts. The alert module triggers off it. The dashboard displays it. Start here, scale up from there.
+    </div>
   </section>
 
   <!-- Navigation -->

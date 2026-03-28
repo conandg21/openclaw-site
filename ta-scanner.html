@@ -599,6 +599,35 @@
 
     <!-- Main Content -->
     <div class="container">
+        <!-- Section 0: OpenClaw Scanner Config -->
+        <section class="section">
+            <div class="section-tag">CONFIGURATION</div>
+            <h2>OpenClaw Scanner Config</h2>
+            <p>The scanner reads your watchlist from <code>ta-config.yaml</code>. To add a ticker to the scan, add it to <code>watchlist.tickers</code> — every OpenClaw TA tool picks it up automatically.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code># Load watchlist from ta-config.yaml — defined once, used everywhere
+import yaml
+
+def load_config(path: str = "ta-config.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+cfg = load_config()
+
+# Pull scanner settings from config
+TICKERS = cfg["watchlist"]["tickers"]
+PERIOD  = cfg["scanner"]["lookback_period"]
+EXPORT  = cfg["scanner"]["export_csv"]
+
+print(f"🦞 OpenClaw Scanner | {len(TICKERS)} tickers | Period: {PERIOD}")</code></pre>
+            </div>
+        </section>
+
         <!-- Section 1: Scanner Architecture -->
         <section class="section">
             <div class="section-tag">ARCHITECTURE</div>
@@ -789,6 +818,27 @@ results = run_scanner(WATCHLIST)</code></pre>
             </div>
 
             <p>The scanner prints progress in real-time, showing each ticker's status and detected signals. Tickers with no signals are noted but not included in the results. With a 24-ticker watchlist, the full scan completes in 30–40 seconds. The full S&P 500 takes 2–3 minutes depending on network speed.</p>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">Full OpenClaw Scanner Run</h3>
+            <p>Here's how to run the complete scanner with OpenClaw config integration:</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code># Full OpenClaw scanner run — reads from ta-config.yaml
+cfg = load_config()
+results = run_scanner(
+    tickers=cfg["watchlist"]["tickers"],
+    period=cfg["scanner"]["lookback_period"],
+)
+print_scanner_results(results)
+
+if cfg["scanner"].get("export_csv"):
+    save_to_csv(results)
+    print("✓ Results saved to CSV per config")</code></pre>
+            </div>
         </section>
 
         <!-- Section 5: Output Functions -->
@@ -981,6 +1031,29 @@ def cached_scan_ticker(ticker: str, period: str = "1y") -> dict | None:
             </table>
 
             <p>RSI and Bollinger Band signals are continuous — they update daily as prices move in and out of extremes. Moving average crosses (golden/death) and MACD crossovers are rare events that trigger only once per occurrence. Combine signals for stronger conviction.</p>
+        </section>
+
+        <!-- Section 9: Scheduling the Scanner with OpenClaw -->
+        <section class="section">
+            <div class="section-tag">AUTOMATION</div>
+            <h2>Scheduling the Scanner with OpenClaw</h2>
+            <p>The scanner runs best at market close when the day's final prices are in. OpenClaw's scheduler handles the cron so you don't have to manage it manually — results land in your inbox and CSV before the next morning.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>bash / yaml</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code># Schedule via cron — runs Mon–Fri at 4:15pm (after US market close)
+# 15 16 * * 1-5 python3 /path/to/openclaw/ta_scanner.py
+
+# Or use OpenClaw's built-in scheduler config:
+# scheduler:
+#   ta_scanner:
+#     script: ta_scanner.py
+#     schedule: "15 16 * * 1-5"
+#     notify: true</code></pre>
+            </div>
         </section>
 
         <!-- Navigation Buttons -->
