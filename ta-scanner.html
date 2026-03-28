@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Scan your entire watchlist or S&P 500 for RSI extremes, golden crosses, Bollinger Band squeezes, and MACD crossovers in under 2 minutes.">
+    <meta name="description" content="Learn how OpenClaw's technical analysis scanner automates watchlist screening. Understand what a scanner is, why it matters, and how to set it up — then see the code.">
     <meta name="canonical" content="https://learnopenclaw.org/ta-scanner.html">
-    <title>Multi-Stock TA Scanner with Python | Claw Street Terminal</title>
+    <title>OpenClaw Multi-Stock TA Scanner | Technical Analysis Automation</title>
 
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": "Multi-Stock Scanner",
-        "description": "Technical Analysis scanner for screening watchlists and S&P 500 tickers",
+        "headline": "The OpenClaw Scanner — Automated Watchlist Screening",
+        "description": "Teaching guide to building and understanding a multi-stock technical analysis scanner",
         "url": "https://learnopenclaw.org/ta-scanner.html",
-        "image": "https://learnopenclaw.org/images/ta-scanner.png",
         "author": {
             "@type": "Organization",
-            "name": "Claw Street Terminal"
+            "name": "OpenClaw"
         },
         "datePublished": "2026-03-28",
         "dateModified": "2026-03-28"
@@ -29,30 +28,10 @@
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://learnopenclaw.org/"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Terminal",
-                "item": "https://learnopenclaw.org/terminal"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Technical Analysis Automation",
-                "item": "https://learnopenclaw.org/ta-automation"
-            },
-            {
-                "@type": "ListItem",
-                "position": 4,
-                "name": "Multi-Stock Scanner",
-                "item": "https://learnopenclaw.org/ta-scanner.html"
-            }
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+            {"@type": "ListItem", "position": 2, "name": "Terminal", "item": "https://learnopenclaw.org/terminal"},
+            {"@type": "ListItem", "position": 3, "name": "Technical Analysis", "item": "https://learnopenclaw.org/ta"},
+            {"@type": "ListItem", "position": 4, "name": "Multi-Stock Scanner", "item": "https://learnopenclaw.org/ta-scanner.html"}
         ]
     }
     </script>
@@ -75,7 +54,7 @@
             line-height: 1.6;
         }
 
-        /* Navigation */
+        /* ─ NAVIGATION ─────────────────────────────────────────────────── */
         .site-nav {
             background: #1c1917;
             border-bottom: 2px solid #0d9488;
@@ -140,10 +119,6 @@
             flex-shrink: 0;
         }
 
-        .nav-search {
-            display: none;
-        }
-
         .hamburger {
             display: flex;
             flex-direction: column;
@@ -169,13 +144,38 @@
             background: #0d9488;
         }
 
-        /* Breadcrumb */
+        .search-form {
+            display: flex;
+            align-items: center;
+            background: #292522;
+            border: 1px solid #44403c;
+            border-radius: 4px;
+            padding: 6px 12px;
+            gap: 6px;
+        }
+
+        .search-form input {
+            background: none;
+            border: none;
+            color: #e7e5e4;
+            font-size: 0.9rem;
+            outline: none;
+            width: 140px;
+        }
+
+        .search-form input::placeholder {
+            color: #78716b;
+        }
+
+        /* ─ BREADCRUMB ─────────────────────────────────────────────────── */
         .breadcrumb {
+            background: #1c1917;
+            border-bottom: 1px solid #44403c;
+            padding: 12px 20px;
             max-width: 1200px;
-            margin: 20px auto 0;
-            padding: 0 20px;
-            font-size: 0.875rem;
-            color: #a1a1a1;
+            margin: 0 auto;
+            font-size: 0.85rem;
+            color: #a8a29e;
         }
 
         .breadcrumb a {
@@ -187,7 +187,7 @@
             text-decoration: underline;
         }
 
-        /* Disclaimer */
+        /* ─ DISCLAIMER ─────────────────────────────────────────────────── */
         .disclaimer {
             background: #f0fdfa;
             border-left: 4px solid #0d9488;
@@ -198,919 +198,1165 @@
             align-items: center;
             gap: 10px;
             max-width: 1200px;
-            margin: 24px auto 0;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .disclaimer-icon {
-            flex-shrink: 0;
-            font-size: 1.25rem;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
-            padding: 60px 20px;
-            text-align: center;
-            color: #f0fdfa;
-        }
-
-        .hero-inner {
-            max-width: 1200px;
             margin: 0 auto;
+            border-bottom: 1px solid #a7f3d0;
+        }
+
+        /* ─ MAIN CONTAINER ─────────────────────────────────────────────── */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* ─ HERO SECTION ───────────────────────────────────────────────── */
+        .hero {
+            margin-bottom: 80px;
         }
 
         .hero-tag {
             display: inline-block;
-            background: rgba(13, 148, 136, 0.2);
+            background: rgba(13, 148, 136, 0.15);
             color: #0d9488;
-            padding: 8px 16px;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-            border: 1px solid #0d9488;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
         }
 
-        .hero h1 {
-            font-size: 2.5rem;
+        .hero-title {
+            font-size: 3rem;
             font-weight: 800;
-            margin-bottom: 12px;
-            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #0d9488 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero-subtitle {
             font-size: 1.25rem;
-            color: #d1fae5;
-            margin-bottom: 32px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            line-height: 1.7;
+            color: #d6d3d1;
+            margin-bottom: 30px;
         }
 
         .hero-pills {
             display: flex;
-            gap: 12px;
-            justify-content: center;
             flex-wrap: wrap;
+            gap: 12px;
         }
 
         .pill {
-            background: rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
             color: #f0fdfa;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 0.875rem;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.9rem;
             font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 20px;
-        }
-
-        .section {
-            margin-bottom: 60px;
-        }
-
-        .section-tag {
             display: inline-block;
-            background: rgba(13, 148, 136, 0.1);
-            color: #0d9488;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
+        }
+
+        /* ─ CONTENT SECTIONS ───────────────────────────────────────────── */
+        section {
+            margin-bottom: 80px;
         }
 
         h2 {
-            font-size: 1.875rem;
+            font-size: 2.2rem;
             font-weight: 800;
-            margin-bottom: 24px;
-            color: #f0fdfa;
+            margin-bottom: 20px;
+            color: #0d9488;
         }
 
         h3 {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-top: 32px;
-            margin-bottom: 16px;
+            margin-top: 40px;
+            margin-bottom: 20px;
             color: #e7e5e4;
-        }
-
-        h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-top: 24px;
-            margin-bottom: 12px;
-            color: #d1fae5;
         }
 
         p {
             margin-bottom: 16px;
-            color: #a8a8a8;
+            color: #d6d3d1;
+        }
+
+        .section-intro {
+            font-size: 1.1rem;
+            color: #d6d3d1;
+            margin-bottom: 30px;
             line-height: 1.8;
         }
 
-        .highlight {
-            color: #0d9488;
-            font-weight: 600;
+        /* ─ WORKFLOW BOXES ─────────────────────────────────────────────── */
+        .workflow {
+            display: grid;
+            gap: 30px;
+            margin: 40px 0;
         }
 
-        /* Code Blocks */
-        .code-block-wrapper {
-            background: #2d2421;
-            border: 1px solid #3d3a37;
-            border-radius: 8px;
-            margin: 24px 0;
-            overflow: hidden;
-        }
-
-        .code-block-header {
-            background: #1c1917;
-            padding: 12px 16px;
-            border-bottom: 1px solid #3d3a37;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.875rem;
-            color: #a8a8a8;
-        }
-
-        .code-block-header span {
-            color: #0d9488;
-            font-weight: 600;
-        }
-
-        .copy-btn {
-            background: #0d9488;
-            color: #1c1917;
-            border: none;
-            padding: 6px 12px;
+        .workflow-item {
+            background: #292522;
+            border-left: 4px solid #0d9488;
+            padding: 24px;
             border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: all 0.3s;
         }
 
-        .copy-btn:hover {
-            background: #0f766e;
+        .workflow-item-title {
+            color: #0d9488;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
         }
 
-        .copy-btn.copied {
-            background: #059669;
+        .workflow-item-content {
+            color: #d6d3d1;
         }
 
-        pre {
-            background: #2d2421;
+        .workflow-item-content li {
+            margin-left: 20px;
+            margin-bottom: 8px;
+            list-style: disc;
+        }
+
+        /* ─ COMPARISON TABLE ───────────────────────────────────────────── */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .comparison-box {
+            background: #292522;
+            border: 1px solid #44403c;
+            padding: 28px;
+            border-radius: 4px;
+        }
+
+        .comparison-box h4 {
             color: #e7e5e4;
-            padding: 16px;
-            overflow-x: auto;
-            font-size: 0.875rem;
-            line-height: 1.5;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .comparison-box ol {
+            margin-left: 20px;
+            color: #d6d3d1;
+        }
+
+        .comparison-box li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        /* ─ NUMBERED STEPS ─────────────────────────────────────────────── */
+        .steps {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.1) 0%, rgba(4, 47, 46, 0.05) 100%);
+            border: 1px solid #134e4a;
+            padding: 40px;
+            border-radius: 6px;
+            margin: 40px 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 50px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #0d9488 0%, #06b6d4 100%);
+            color: #1c1917;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            color: #e7e5e4;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: #d6d3d1;
             margin: 0;
         }
 
+        /* ─ CODE BLOCKS ────────────────────────────────────────────────── */
+        pre {
+            background: #0f0e0d;
+            border: 1px solid #44403c;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 30px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
         code {
-            font-family: "Fira Code", "Courier New", monospace;
-            color: #e7e5e4;
-        }
-
-        /* Inline code */
-        p code, li code {
-            background: #2d2421;
-            padding: 2px 6px;
-            border-radius: 3px;
+            font-family: "Courier New", monospace;
             color: #0d9488;
-            font-size: 0.9em;
         }
 
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 24px 0;
-            border: 1px solid #3d3a37;
-            border-radius: 8px;
-            overflow: hidden;
+        pre code {
+            color: #d6d3d1;
         }
 
-        thead {
-            background: #2d2421;
-            border-bottom: 2px solid #0d9488;
+        /* Syntax highlighting for inline code */
+        code.string { color: #86efac; }
+        code.keyword { color: #06b6d4; }
+        code.function { color: #0d9488; }
+        code.number { color: #fb923c; }
+        code.comment { color: #78716b; }
+
+        /* ─ CALLOUT BOXES ──────────────────────────────────────────────── */
+        .callout {
+            background: #292522;
+            border-left: 4px solid #0d9488;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
         }
 
-        th {
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 700;
+        .callout strong {
             color: #0d9488;
-            font-size: 0.875rem;
         }
 
-        td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #3d3a37;
-            color: #a8a8a8;
-            font-size: 0.875rem;
+        .callout p {
+            margin: 0;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr:hover {
-            background: #2d2421;
-        }
-
-        /* Lists */
+        /* ─ LISTS ──────────────────────────────────────────────────────── */
         ul, ol {
-            margin-left: 20px;
-            margin-bottom: 16px;
+            margin: 20px 0;
+            padding-left: 24px;
         }
 
         li {
-            margin-bottom: 8px;
-            color: #a8a8a8;
+            margin-bottom: 10px;
+            color: #d6d3d1;
         }
 
-        li code {
-            background: #2d2421;
-            padding: 2px 6px;
-            border-radius: 3px;
-            color: #0d9488;
-        }
-
-        /* Navigation Buttons */
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
+        /* ─ FOOTER NAVIGATION ──────────────────────────────────────────── */
+        .prev-next {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-top: 60px;
+            margin: 80px 0 40px 0;
             padding-top: 40px;
-            border-top: 2px solid #3d3a37;
+            border-top: 1px solid #44403c;
         }
 
-        .nav-btn {
-            flex: 1;
-            padding: 16px 20px;
-            background: #2d2421;
-            border: 1px solid #3d3a37;
-            border-radius: 8px;
-            color: #e7e5e4;
+        .prev-link, .next-link {
+            padding: 20px;
+            background: #292522;
+            border: 1px solid #44403c;
+            border-radius: 4px;
             text-decoration: none;
-            text-align: center;
             transition: all 0.3s;
-            font-weight: 600;
         }
 
-        .nav-btn:hover {
-            background: #3d3a37;
+        .prev-link:hover, .next-link:hover {
             border-color: #0d9488;
-            color: #0d9488;
+            background: rgba(13, 148, 136, 0.1);
         }
 
-        .nav-btn.next {
+        .prev-link {
+            text-align: left;
+        }
+
+        .next-link {
             text-align: right;
         }
 
-        .nav-btn-label {
+        .nav-label {
             display: block;
-            font-size: 0.75rem;
-            color: #a8a8a8;
-            margin-bottom: 4px;
-            font-weight: 400;
+            color: #78716b;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
         }
 
-        /* Footer */
-        footer {
-            background: #2d2421;
-            border-top: 2px solid #0d9488;
-            padding: 40px 20px;
-            margin-top: 60px;
-            color: #a8a8a8;
-        }
-
-        footer .footer-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-            font-size: 0.875rem;
-        }
-
-        footer a {
+        .nav-title {
+            display: block;
             color: #0d9488;
-            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
         }
 
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
+        /* ─ RESPONSIVE ─────────────────────────────────────────────────── */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 1.875rem;
+            .hero-title {
+                font-size: 2rem;
             }
 
             .hero-subtitle {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
 
-            h2 {
-                font-size: 1.5rem;
-            }
-
-            .nav-buttons {
+            .hero-pills {
                 flex-direction: column;
             }
 
-            .nav-btn-label {
-                display: none;
+            .pill {
+                display: block;
+                width: 100%;
+                text-align: center;
             }
 
-            table {
-                font-size: 0.75rem;
+            h2 {
+                font-size: 1.8rem;
             }
 
-            th, td {
-                padding: 8px 12px;
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                padding: 24px;
+            }
+
+            .step {
+                gap: 16px;
+            }
+
+            .prev-next {
+                grid-template-columns: 1fr;
+            }
+
+            .search-form input {
+                width: 100px;
+            }
+
+            pre {
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="site-nav">
-        <div class="nav-inner">
-            <a href="/" class="nav-logo">🦞 learnopenclaw.org</a>
-            <div class="nav-links" id="navLinks">
-                <a href="/">Home</a>
-                <a href="/blog">Blog</a>
-                <a href="/learn">Learn</a>
-                <a href="/faq">FAQ</a>
-                <a href="/terminal">Terminal</a>
-            </div>
-            <div class="nav-right">
-                <form class="nav-search" style="display: none;">
-                    <input type="search" placeholder="Search...">
-                </form>
-                <button class="hamburger" id="hamburgerBtn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
+
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<!-- NAVIGATION                                                               -->
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<nav class="site-nav">
+    <div class="nav-inner">
+        <a href="/" class="nav-logo">&#x1F99E; learnopenclaw.org</a>
+        <div class="nav-links" id="nav-links">
+            <a href="/">Home</a>
+            <a href="/blog">Blog</a>
+            <a href="/learn">Learn</a>
+            <a href="/faq">FAQ</a>
+            <a href="/terminal">Terminal</a>
         </div>
-    </nav>
-
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <a href="/">Home</a> › <a href="/terminal">Terminal</a> › <a href="/ta-automation">Technical Analysis Automation</a> › <span>Multi-Stock Scanner</span>
-    </div>
-
-    <!-- Disclaimer -->
-    <div class="disclaimer">
-        <div class="disclaimer-icon">⚠️</div>
-        <div>Scanner outputs are not buy or sell recommendations. Technical signals reflect historical patterns only. Always do your own research.</div>
-    </div>
-
-    <!-- Hero Section -->
-    <div class="hero">
-        <div class="hero-inner">
-            <div class="hero-tag">TECHNICAL ANALYSIS · PART 2 OF 5</div>
-            <h1>Multi-Stock Scanner</h1>
-            <p class="hero-subtitle">Scan your entire watchlist — or the full S&P 500 — for RSI extremes, golden crosses, Bollinger Band squeezes, and MACD crossovers in under 2 minutes.</p>
-            <div class="hero-pills">
-                <div class="pill">S&P 500 Ready</div>
-                <div class="pill">4 Signal Types</div>
-                <div class="pill">CSV Export</div>
-                <div class="pill">~2 Min Runtime</div>
-            </div>
+        <div class="nav-right">
+            <form class="search-form" onsubmit="return false;">
+                <input type="text" placeholder="search...">
+            </form>
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </div>
+</nav>
 
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Section 0: OpenClaw Scanner Config -->
-        <section class="section">
-            <div class="section-tag">CONFIGURATION</div>
-            <h2>OpenClaw Scanner Config</h2>
-            <p>The scanner reads your watchlist from <code>ta-config.yaml</code>. To add a ticker to the scan, add it to <code>watchlist.tickers</code> — every OpenClaw TA tool picks it up automatically.</p>
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<!-- BREADCRUMB                                                               -->
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<div class="breadcrumb">
+    <a href="/">Home</a> › <a href="/terminal">Terminal</a> › <a href="/ta">Technical Analysis</a> › Multi-Stock Scanner
+</div>
 
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>python</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<!-- DISCLAIMER                                                               -->
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<div class="disclaimer">
+    <span>⚠️</span>
+    <span><strong>Scanner results are not buy or sell recommendations.</strong> They surface stocks matching your rules — judgment and additional research are always required. Not financial advice.</span>
+</div>
+
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<!-- MAIN CONTENT                                                             -->
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<div class="container">
+
+    <!-- ─ HERO ─────────────────────────────────────────────────────────── -->
+    <section class="hero">
+        <div class="hero-tag">TECHNICAL ANALYSIS · PART 2 OF 5</div>
+        <h1 class="hero-title">The OpenClaw Scanner</h1>
+        <p class="hero-subtitle">
+            Manually checking 50 stock charts every morning takes an hour. OpenClaw's scanner does it in under 2 minutes — checking every ticker on your watchlist against your signal rules and surfacing only the ones that matter.
+        </p>
+        <div class="hero-pills">
+            <div class="pill">Scans in ~2 Minutes</div>
+            <div class="pill">Reads ta-config.yaml</div>
+            <div class="pill">CSV Export</div>
+            <div class="pill">S&P 500 Ready</div>
+        </div>
+    </section>
+
+    <!-- ─ SECTION 1: WHAT IS A SCANNER ────────────────────────────────── -->
+    <section>
+        <h2>What Is a Scanner?</h2>
+        <p class="section-intro">
+            A stock scanner is a tool that goes through a list of stocks and checks each one against a set of rules. Instead of manually pulling up charts for 50 stocks, you define your criteria once — and the scanner tells you which stocks match.
+        </p>
+
+        <h3>Your Morning Without a Scanner</h3>
+        <div class="workflow-item">
+            <div class="workflow-item-content">
+                <ul>
+                    <li>Open chart for <strong>AAPL</strong> → check RSI → no signal → close</li>
+                    <li>Open chart for <strong>MSFT</strong> → check RSI → no signal → close</li>
+                    <li>Open chart for <strong>NVDA</strong> → check RSI → overbought → note it down</li>
+                    <li>... repeat 47 more times</li>
+                    <li style="margin-top: 16px;"><strong>Total time: ~60 minutes</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Your Morning With OpenClaw's Scanner</h3>
+        <div class="workflow-item">
+            <div class="workflow-item-content">
+                <ul>
+                    <li>Run the scan → 3 tickers matched your rules → review those 3</li>
+                    <li style="margin-top: 16px;"><strong>Total time: ~2 minutes</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <p>
+            That's the core idea. The scanner automates the tedious part (checking 50 charts) so you can focus on the interesting part (analyzing the ones that matter).
+        </p>
+    </section>
+
+    <!-- ─ SECTION 2: HOW IT WORKS ──────────────────────────────────────── -->
+    <section>
+        <h2>How the OpenClaw Scanner Works</h2>
+        <p class="section-intro">
+            Here's the step-by-step flow of what the scanner does, in plain English:
+        </p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>📋 Reads your watchlist</h4>
+                    <p>The scanner loads your list of tickers from <code>ta-config.yaml</code> — you define it once, the scanner uses it every time.</p>
                 </div>
-                <pre><code># Load watchlist from ta-config.yaml — defined once, used everywhere
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>📥 Downloads price history</h4>
+                    <p>For each ticker, it fetches the last 1 year of daily price data from the free Yahoo Finance API. No credentials required.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>📊 Calculates indicators</h4>
+                    <p>Using the price data, it computes RSI, moving averages, MACD, and Bollinger Bands — all the indicators we covered in Part 1.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>✅ Checks your signal rules</h4>
+                    <p>For each ticker, it asks: "Does this stock's RSI cross 30? Did the moving averages cross today? Is the Bollinger Band squeezed?" Based on your config.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h4>📤 Outputs a ranked list</h4>
+                    <p>Tickers that matched your rules are printed to the terminal, sorted by how many signals they triggered.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h4>💾 Saves to CSV (optional)</h4>
+                    <p>If configured, the results are also saved to a CSV file you can archive or import into a spreadsheet.</p>
+                </div>
+            </div>
+        </div>
+
+        <p style="margin-top: 40px; font-style: italic; color: #a8a29e;">
+            All of this happens in under 2 minutes because the scanner runs in parallel and the Yahoo Finance API is fast.
+        </p>
+    </section>
+
+    <!-- ─ SECTION 3: THE CONFIG FILE ───────────────────────────────────── -->
+    <section>
+        <h2>Your ta-config.yaml Controls Everything</h2>
+        <p class="section-intro">
+            You never need to edit Python code. Instead, you edit a single YAML file that tells the scanner what to look for. Here's what it looks like:
+        </p>
+
+        <pre><code># ta-config.yaml
+# This is the only file you need to edit to customize your scanner
+
+watchlist:
+  tickers:
+    - AAPL      # Add or remove tickers here
+    - MSFT
+    - NVDA
+    - GOOGL
+    - AMZN
+    - SPY       # ETFs work too
+    - QQQ
+
+signals:
+  # Which signals should the scanner look for?
+  golden_cross:    true    # SMA50 just crossed above SMA200 (bullish trend)
+  death_cross:     true    # SMA50 just crossed below SMA200 (bearish trend)
+  rsi_oversold:    30      # Flag stocks with RSI below 30 (potential bounce)
+  rsi_overbought:  70      # Flag stocks with RSI above 70 (extended rally)
+  macd_cross:      true    # MACD momentum shift detected
+  bb_squeeze:      true    # Bollinger Band squeeze (low volatility)
+
+scanner:
+  lookback_period:  "1y"   # How much price history to use (1y = 1 year)
+  export_csv:       true   # Save results to a CSV file? true or false
+  output_file:      "scan_results.csv"</code></pre>
+
+        <div class="callout">
+            <p>
+                <strong>That's it.</strong> You never need to open the Python files to change what the scanner looks for — just edit this YAML file. Add tickers, change the RSI threshold, toggle signals on and off.
+            </p>
+        </div>
+
+        <h3>What Each Setting Means</h3>
+
+        <div class="workflow-item">
+            <div class="workflow-item-title">🎯 Watchlist</div>
+            <div class="workflow-item-content">
+                <p>
+                    A list of stock tickers. The scanner checks each one. You can have 5, 50, or 500 tickers here — the scanner will check all of them.
+                </p>
+            </div>
+        </div>
+
+        <div class="workflow-item">
+            <div class="workflow-item-title">📊 Signals</div>
+            <div class="workflow-item-content">
+                <p>
+                    <strong>golden_cross / death_cross:</strong> Watch for moving average crossovers (bullish/bearish trend shifts).
+                </p>
+                <p style="margin-top: 12px;">
+                    <strong>rsi_oversold / rsi_overbought:</strong> Set the RSI thresholds (typically 30 and 70, but you can adjust).
+                </p>
+                <p style="margin-top: 12px;">
+                    <strong>macd_cross:</strong> Detect when MACD momentum flips direction.
+                </p>
+                <p style="margin-top: 12px;">
+                    <strong>bb_squeeze:</strong> Flag stocks when Bollinger Bands tighten (low volatility before breakout).
+                </p>
+            </div>
+        </div>
+
+        <div class="workflow-item">
+            <div class="workflow-item-title">⏱️ Scanner Settings</div>
+            <div class="workflow-item-content">
+                <p>
+                    <strong>lookback_period:</strong> How much history to analyze. "1y" = 1 year, "6mo" = 6 months. Longer periods take slightly longer but give better moving average accuracy.
+                </p>
+                <p style="margin-top: 12px;">
+                    <strong>export_csv:</strong> Whether to save results to a file. Turn it on for record-keeping.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─ SECTION 4: SETUP ─────────────────────────────────────────────── -->
+    <section>
+        <h2>Setting Up OpenClaw TA</h2>
+        <p class="section-intro">
+            Three steps to get the scanner running on your machine.
+        </p>
+
+        <h3>Step 1: Install Required Packages</h3>
+        <p>
+            Run this once. It installs Python libraries the scanner depends on:
+        </p>
+        <pre><code>pip install yfinance pandas-ta pandas pyyaml tabulate</code></pre>
+
+        <h3>Step 2: Create Your Configuration</h3>
+        <p>
+            Save the config from the section above as <code>ta-config.yaml</code> in your project folder. Customize the tickers and signal settings to match your trading style.
+        </p>
+
+        <h3>Step 3: Run the Scanner</h3>
+        <p>
+            Execute the scanner script:
+        </p>
+        <pre><code>python3 ta_scanner.py</code></pre>
+
+        <p style="margin-top: 30px;">
+            You should see output like this:
+        </p>
+        <pre><code>🦞 OpenClaw Scanner | 7 tickers | Period: 1y
+   2026-03-28 14:32
+──────────────────────────────────────────
+  [1/7] AAPL     ✓  RSI_OVERSOLD
+  [2/7] MSFT     —  no signals
+  [3/7] NVDA     ✓  RSI_OVERBOUGHT, BB_SQUEEZE
+  [4/7] GOOGL    ✓  GOLDEN_CROSS
+  [5/7] AMZN     —  no signals
+  [6/7] SPY      —  no signals
+  [7/7] QQQ      ✓  MACD_BULL_CROSS
+
+══════════════════════════════════════════
+🦞 Scan complete: 4 signal(s) found in 7 tickers
+══════════════════════════════════════════
+  AAPL      RSI:  25.3  |  RSI_OVERSOLD
+  NVDA      RSI:  78.9  |  RSI_OVERBOUGHT, BB_SQUEEZE
+  GOOGL     RSI:  52.1  |  GOLDEN_CROSS
+  QQQ       RSI:  48.7  |  MACD_BULL_CROSS
+
+✓ Saved to scan_results.csv</code></pre>
+
+        <div class="callout">
+            <p>
+                <strong>If no tickers show up in your results,</strong> that's actually good — it means nothing unusual is happening in your watchlist today. The scanner is most useful on volatile days or during market corrections.
+            </p>
+        </div>
+    </section>
+
+    <!-- ─ SECTION 5: THE CODE ──────────────────────────────────────────── -->
+    <section>
+        <h2>The Scanner Script: ta_scanner.py</h2>
+        <p class="section-intro">
+            Now that you understand what the scanner does and how to configure it, here's the full Python implementation. Read it section by section — every part is commented to explain the logic.
+        </p>
+
+        <h3>Complete Script with Line-by-Line Comments</h3>
+
+        <pre><code>#!/usr/bin/env python3
+# ta_scanner.py — OpenClaw Technical Analysis Scanner
+# Reads ta-config.yaml and scans your watchlist for signal matches
+
 import yaml
+import yfinance as yf
+import pandas_ta as ta
+import pandas as pd
+import time
+import csv
+from datetime import datetime
+from tabulate import tabulate
+
+# ── STEP 1: LOAD CONFIGURATION ──────────────────────────────────────────
 
 def load_config(path: str = "ta-config.yaml") -> dict:
-    with open(path) as f:
-        return yaml.safe_load(f)
-
-cfg = load_config()
-
-# Pull scanner settings from config
-TICKERS = cfg["watchlist"]["tickers"]
-PERIOD  = cfg["scanner"]["lookback_period"]
-EXPORT  = cfg["scanner"]["export_csv"]
-
-print(f"🦞 OpenClaw Scanner | {len(TICKERS)} tickers | Period: {PERIOD}")</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 1: Scanner Architecture -->
-        <section class="section">
-            <div class="section-tag">ARCHITECTURE</div>
-            <h2>Scanner Architecture</h2>
-            <p>The multi-stock scanner follows a simple but powerful pipeline:</p>
-            <ul>
-                <li><strong>Input:</strong> List of tickers (your watchlist or full S&P 500)</li>
-                <li><strong>Fetch:</strong> Download 1 year of daily OHLCV (Open, High, Low, Close, Volume) for each ticker</li>
-                <li><strong>Compute:</strong> Calculate all technical indicators (SMA, RSI, Bollinger Bands, MACD) on the fetched data</li>
-                <li><strong>Evaluate:</strong> Check signal conditions (RSI extremes, moving average crosses, band squeezes, MACD crossovers)</li>
-                <li><strong>Rank:</strong> Sort results by signal count and RSI extremity</li>
-                <li><strong>Output:</strong> Display results in a terminal table and export to CSV</li>
-            </ul>
-            <p><span class="highlight">Key principle:</span> Fetch once, evaluate multiple conditions. Cache data to avoid redundant downloads and speed up re-runs on the same day.</p>
-        </section>
-
-        <!-- Section 2: Fetching S&P 500 -->
-        <section class="section">
-            <div class="section-tag">DATA SOURCING</div>
-            <h2>Fetching the Full S&P 500 Ticker List</h2>
-            <p>You can scan either your own watchlist or pull all 500+ tickers from the S&P 500 directly from Wikipedia. Choose your universe, then pass it to the scanner.</p>
-
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>python</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code># pip install yfinance pandas-ta pandas requests tabulate
-import pandas as pd
-import requests
-
-def get_sp500_tickers() -> list:
-    """Scrape S&P 500 tickers from Wikipedia."""
-    url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-    tables = pd.read_html(url)
-    sp500 = tables[0]
-    tickers = sp500["Symbol"].str.replace(".", "-", regex=False).tolist()
-    return tickers
-
-# Or define your own watchlist
-WATCHLIST = [
-    "AAPL","MSFT","GOOGL","AMZN","NVDA","META","TSLA","BRK-B",
-    "JPM","V","UNH","MA","HD","PG","XOM","JNJ","MRK","ABBV",
-    "SPY","QQQ","IWM","GLD","TLT","SLV"
-]
-
-# Use WATCHLIST for daily focus, get_sp500_tickers() for full scan
-tickers = WATCHLIST  # swap for get_sp500_tickers() to scan all 500+
-print(f"Scanning {len(tickers)} tickers...")</code></pre>
-            </div>
-
-            <p>The <code>get_sp500_tickers()</code> function scrapes the Wikipedia list of S&P 500 companies and extracts all symbols (replacing dots with dashes for Yahoo Finance compatibility). You can then pass this list or your own custom watchlist to the scanner.</p>
-        </section>
-
-        <!-- Section 3: Core Scanner Function -->
-        <section class="section">
-            <div class="section-tag">CORE LOGIC</div>
-            <h2>Core Scanner Function</h2>
-            <p>This function handles a single ticker: fetch data, compute all indicators, and evaluate signal conditions. It returns a result dictionary containing price, RSI, Bollinger Bands width, and all detected signals.</p>
-
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>python</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>import yfinance as yf
-import pandas_ta as ta
-import time
-from datetime import datetime
-
-def scan_ticker(ticker: str, period: str = "1y") -> dict | None:
     """
-    Fetch data and evaluate all signal conditions for one ticker.
-    Returns a result dict, or None on error.
+    Loads the YAML config file and returns it as a Python dictionary.
+    If the file doesn't exist, exits with an error message.
     """
     try:
-        df = yf.download(ticker, period=period, interval="1d", progress=False)
-        if df.empty or len(df) < 210:
-            return None
-        df.columns = [c.lower() for c in df.columns]
-        df = df[["open","high","low","close","volume"]].dropna()
+        with open(path) as f:
+            return yaml.safe_load(f)
+    except FileNotFoundError:
+        print(f"❌ ERROR: {path} not found. Create it first.")
+        exit(1)
 
-        # Compute indicators
-        df["sma50"]  = ta.sma(df["close"], 50)
+cfg = load_config()
+TICKERS = cfg["watchlist"]["tickers"]
+PERIOD = cfg["scanner"]["lookback_period"]
+EXPORT_CSV = cfg["scanner"].get("export_csv", False)
+OUTPUT_FILE = cfg["scanner"].get("output_file", "scan_results.csv")
+
+# Print scan header
+print(f"\n🦞 OpenClaw Scanner | {len(TICKERS)} tickers | Period: {PERIOD}")
+print(f"   {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+print("─" * 50)
+
+# ── STEP 2: SCAN ONE TICKER FOR SIGNALS ─────────────────────────────────
+
+def scan_ticker(ticker: str) -> dict | None:
+    """
+    Downloads price history for a ticker and checks all configured signals.
+
+    Returns:
+        dict: { "ticker": str, "price": float, "rsi": float, "signals": list }
+        None: if no signals were found or data fetch failed
+    """
+    try:
+        # Download 1 year (or configured period) of daily price data
+        # progress=False suppresses Yahoo's download messages
+        df = yf.download(
+            ticker,
+            period=PERIOD,
+            interval="1d",
+            progress=False
+        )
+
+        # Check if we got valid data
+        if df.empty or len(df) < 210:
+            # Need at least 210 days for 200-day moving average
+            return None
+
+        # Standardize column names to lowercase
+        df.columns = [c.lower() for c in df.columns]
+
+        # Keep only OHLCV columns, drop others (adj close, etc)
+        df = df[["open", "high", "low", "close", "volume"]].dropna()
+
+        # ── Calculate all technical indicators ───────────────────────────
+
+        # Simple Moving Averages (trend identification)
+        df["sma50"] = ta.sma(df["close"], 50)
         df["sma200"] = ta.sma(df["close"], 200)
-        df["rsi"]    = ta.rsi(df["close"], 14)
+
+        # RSI (momentum/overbought-oversold)
+        df["rsi"] = ta.rsi(df["close"], 14)
+
+        # Bollinger Bands (volatility measurement)
+        # BBB = Bollinger Band bandwidth (width of bands)
         bb = ta.bbands(df["close"], 20, 2)
-        df["bb_bw"]  = bb[[c for c in bb.columns if "BBB" in c][0]]
-        df["bb_upper"] = bb[[c for c in bb.columns if "BBU" in c][0]]
-        df["bb_lower"] = bb[[c for c in bb.columns if "BBL" in c][0]]
+        bb_cols = [c for c in bb.columns if "BBB" in c]
+        if bb_cols:
+            df["bb_bandwidth"] = bb[bb_cols[0]]
+
+        # MACD (momentum crossover)
         macd = ta.macd(df["close"], 12, 26, 9)
-        df["macd"]   = macd[[c for c in macd.columns if c.startswith("MACD_")][0]]
-        df["macd_s"] = macd[[c for c in macd.columns if c.startswith("MACDs_")][0]]
+        macd_cols = [c for c in macd.columns if "MACD_" in c]
+        signal_cols = [c for c in macd.columns if "MACDs_" in c]
+        if macd_cols and signal_cols:
+            df["macd"] = macd[macd_cols[0]]
+            df["macd_signal"] = macd[signal_cols[0]]
+
+        # Remove rows where indicators weren't calculated yet
         df = df.dropna()
 
+        # Need at least 2 rows to check crossovers
         if len(df) < 2:
             return None
 
-        cur = df.iloc[-1]
-        prev = df.iloc[-2]
+        # ── COMPARE TODAY vs YESTERDAY ──────────────────────────────────
 
-        # Signal evaluations
-        rsi_val = cur["rsi"]
-        bw_20th = df["bb_bw"].quantile(0.20)
+        cur = df.iloc[-1]   # Today's values (most recent)
+        prev = df.iloc[-2]  # Yesterday's values
 
         signals = []
-        if rsi_val < 30:   signals.append("RSI_OVERSOLD")
-        if rsi_val > 70:   signals.append("RSI_OVERBOUGHT")
-        if (cur["sma50"] > cur["sma200"]) and (prev["sma50"] <= prev["sma200"]):
-            signals.append("GOLDEN_CROSS")
-        if (cur["sma50"] < cur["sma200"]) and (prev["sma50"] >= prev["sma200"]):
-            signals.append("DEATH_CROSS")
-        if cur["bb_bw"] < bw_20th:
-            signals.append("BB_SQUEEZE")
-        if (cur["macd"] > cur["macd_s"]) and (prev["macd"] <= prev["macd_s"]):
-            signals.append("MACD_BULL_CROSS")
-        if (cur["macd"] < cur["macd_s"]) and (prev["macd"] >= prev["macd_s"]):
-            signals.append("MACD_BEAR_CROSS")
 
-        # Above/below key MAs
-        ma_status = []
-        if cur["close"] > cur["sma50"]:  ma_status.append("Above50")
-        if cur["close"] > cur["sma200"]: ma_status.append("Above200")
+        # ── CHECK SIGNAL CONDITIONS ─────────────────────────────────────
 
-        pct_change_1d = (cur["close"] - prev["close"]) / prev["close"] * 100
+        # RSI OVERSOLD: Is RSI below configured threshold?
+        rsi_oversold_threshold = cfg["signals"].get("rsi_oversold", 30)
+        if cur["rsi"] < rsi_oversold_threshold:
+            signals.append("RSI_OVERSOLD")
 
+        # RSI OVERBOUGHT: Is RSI above configured threshold?
+        rsi_overbought_threshold = cfg["signals"].get("rsi_overbought", 70)
+        if cur["rsi"] > rsi_overbought_threshold:
+            signals.append("RSI_OVERBOUGHT")
+
+        # GOLDEN CROSS: Did SMA50 just cross ABOVE SMA200?
+        if cfg["signals"].get("golden_cross"):
+            if cur["sma50"] > cur["sma200"] and prev["sma50"] <= prev["sma200"]:
+                signals.append("GOLDEN_CROSS")
+
+        # DEATH CROSS: Did SMA50 just cross BELOW SMA200?
+        if cfg["signals"].get("death_cross"):
+            if cur["sma50"] < cur["sma200"] and prev["sma50"] >= prev["sma200"]:
+                signals.append("DEATH_CROSS")
+
+        # MACD CROSSOVER: Did MACD flip relative to signal line?
+        if cfg["signals"].get("macd_cross"):
+            if "macd" in df.columns and "macd_signal" in df.columns:
+                # Bullish: MACD crossed above signal
+                if cur["macd"] > cur["macd_signal"] and prev["macd"] <= prev["macd_signal"]:
+                    signals.append("MACD_BULL_CROSS")
+                # Bearish: MACD crossed below signal
+                if cur["macd"] < cur["macd_signal"] and prev["macd"] >= prev["macd_signal"]:
+                    signals.append("MACD_BEAR_CROSS")
+
+        # BOLLINGER SQUEEZE: Is bandwidth at historic low?
+        if cfg["signals"].get("bb_squeeze"):
+            if "bb_bandwidth" in df.columns:
+                # Squeeze = lowest 20% of bandwidth values
+                threshold = df["bb_bandwidth"].quantile(0.20)
+                if cur["bb_bandwidth"] < threshold:
+                    signals.append("BB_SQUEEZE")
+
+        # If no signals triggered, skip this ticker
+        if not signals:
+            return None
+
+        # Return the result
         return {
-            "ticker":     ticker,
-            "price":      cur["close"],
-            "chg_1d":     pct_change_1d,
-            "rsi":        rsi_val,
-            "bb_bw":      cur["bb_bw"],
-            "macd_hist":  cur["macd"] - cur["macd_s"],
-            "signals":    signals,
-            "ma_status":  " ".join(ma_status) if ma_status else "Below both",
-            "signal_count": len(signals),
+            "ticker": ticker,
+            "price": cur["close"],
+            "rsi": cur["rsi"],
+            "signals": signals,
         }
+
     except Exception as e:
-        return None</code></pre>
-            </div>
+        # Silently skip tickers with errors (delisted, etc)
+        return None
 
-            <p>The function uses <span class="highlight">pandas_ta</span> to compute all indicators efficiently. It checks for 7 distinct signal types, tracks moving average positioning, and returns a compact dictionary for each ticker. All calculations happen on the same dataframe to minimize memory overhead.</p>
-        </section>
+# ── STEP 3: SCAN ALL TICKERS IN WATCHLIST ───────────────────────────────
 
-        <!-- Section 4: Run the Full Scanner -->
-        <section class="section">
-            <div class="section-tag">EXECUTION</div>
-            <h2>Run the Full Scanner</h2>
-            <p>The <code>run_scanner()</code> function loops through all tickers, calls <code>scan_ticker()</code> on each, and collects results. It includes a small delay between requests (to be polite to Yahoo Finance) and sorts results by signal count.</p>
+results = []
 
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>python</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>from tabulate import tabulate
-import csv
+for i, ticker in enumerate(TICKERS, 1):
+    result = scan_ticker(ticker)
 
-def run_scanner(tickers: list, period: str = "1y", delay: float = 0.1) -> list:
-    """
-    Scan all tickers. Returns list of result dicts sorted by signal count.
-    delay: seconds between requests (be polite to Yahoo Finance)
-    """
-    results = []
-    errors = 0
-
-    print(f"\n🔍 Scanning {len(tickers)} tickers | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    print("─" * 50)
-
-    for i, ticker in enumerate(tickers, 1):
-        result = scan_ticker(ticker, period)
-        if result:
-            if result["signals"]:
-                results.append(result)
-                print(f"  [{i:>3}/{len(tickers)}] {ticker:<8} ✓  {', '.join(result['signals'])}")
-            else:
-                print(f"  [{i:>3}/{len(tickers)}] {ticker:<8} —  no signals")
-        else:
-            errors += 1
-            print(f"  [{i:>3}/{len(tickers)}] {ticker:<8} ✗  error/skip")
-        time.sleep(delay)
-
-    # Sort: most signals first, then by RSI extremity
-    results.sort(key=lambda x: (x["signal_count"], abs(x["rsi"] - 50)), reverse=True)
-    return results
-
-results = run_scanner(WATCHLIST)</code></pre>
-            </div>
-
-            <p>The scanner prints progress in real-time, showing each ticker's status and detected signals. Tickers with no signals are noted but not included in the results. With a 24-ticker watchlist, the full scan completes in 30–40 seconds. The full S&P 500 takes 2–3 minutes depending on network speed.</p>
-
-            <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">Full OpenClaw Scanner Run</h3>
-            <p>Here's how to run the complete scanner with OpenClaw config integration:</p>
-
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>python</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code># Full OpenClaw scanner run — reads from ta-config.yaml
-cfg = load_config()
-results = run_scanner(
-    tickers=cfg["watchlist"]["tickers"],
-    period=cfg["scanner"]["lookback_period"],
-)
-print_scanner_results(results)
-
-if cfg["scanner"].get("export_csv"):
-    save_to_csv(results)
-    print("✓ Results saved to CSV per config")</code></pre>
-            </div>
-        </section>
-
-        <!-- Section 5: Output Functions -->
-        <section class="section">
-            <div class="section-tag">OUTPUT</div>
-            <h2>Output: Terminal Table + CSV</h2>
-            <p>After scanning, format the results as a clean terminal table and optionally save to CSV for further analysis or record-keeping.</p>
-
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>python</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>def print_scanner_results(results: list) -> None:
-    """Pretty-print scanner results."""
-    if not results:
-        print("\nNo signals found.")
-        return
-
-    rows = []
-    for r in results:
-        rows.append([
-            r["ticker"],
-            f"${r['price']:,.2f}",
-            f"{r['chg_1d']:+.1f}%",
-            f"{r['rsi']:.1f}",
-            r["ma_status"],
-            ", ".join(r["signals"]) or "—",
-        ])
-
-    print(f"\n{'═'*70}")
-    print(f"  Scanner Results — {datetime.now().strftime('%Y-%m-%d')} | {len(results)} signals found")
-    print(f"{'═'*70}")
-    print(tabulate(rows,
-        headers=["Ticker","Price","1d%","RSI","vs MAs","Signals"],
-        tablefmt="rounded_outline",
-        colalign=("left","right","right","right","left","left")
-    ))
-
-def save_to_csv(results: list, path: str = None) -> None:
-    """Save scanner results to CSV."""
-    filename = path or f"scanner_{datetime.now().strftime('%Y%m%d')}.csv"
-    if not results:
-        return
-
-    keys = ["ticker","price","chg_1d","rsi","bb_bw","ma_status","signals","signal_count"]
-    with open(filename, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        writer.writeheader()
-        for r in results:
-            row = dict(r)
-            row["signals"] = " | ".join(row["signals"])
-            writer.writerow(row)
-    print(f"\nSaved: {filename}")
-
-print_scanner_results(results)
-save_to_csv(results)</code></pre>
-            </div>
-
-            <p>The terminal table uses <span class="highlight">tabulate</span> with rounded box borders and right-aligned numeric columns for easy scanning. The CSV export preserves all fields and joins multiple signals with a pipe separator for clean parsing later.</p>
-        </section>
-
-        <!-- Section 6: Filtering -->
-        <section class="section">
-            <div class="section-tag">FILTERING</div>
-            <h2>Filtering to Specific Signal Types</h2>
-            <p>Once you have results, filter them to focus on a single signal type. This is useful for trading strategies that target specific patterns.</p>
-
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>python</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>def filter_signals(results: list, signal_type: str) -> list:
-    """Filter results to a specific signal type."""
-    return [r for r in results if signal_type in r["signals"]]
-
-# Examples
-oversold  = filter_signals(results, "RSI_OVERSOLD")
-squeezes  = filter_signals(results, "BB_SQUEEZE")
-gold_x    = filter_signals(results, "GOLDEN_CROSS")
-macd_bull = filter_signals(results, "MACD_BULL_CROSS")
-
-print(f"RSI Oversold:   {len(oversold)} tickers")
-print(f"BB Squeezes:    {len(squeezes)} tickers")
-print(f"Golden Crosses: {len(gold_x)} tickers")
-print(f"MACD Bull:      {len(macd_bull)} tickers")</code></pre>
-            </div>
-
-            <p>Each filter returns a subset of the results containing only tickers with that specific signal. You can chain filters or use them to build custom alerts for different trading strategies.</p>
-        </section>
-
-        <!-- Section 7: Performance Tips -->
-        <section class="section">
-            <div class="section-tag">OPTIMIZATION</div>
-            <h2>Performance Tips for Large Universes</h2>
-            <p>When scanning the full S&P 500 repeatedly, caching is essential. Store results locally keyed by date, so re-runs on the same day are nearly instantaneous.</p>
-
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>python</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>import os
-import pickle
-from datetime import date
-
-CACHE_DIR = ".scanner_cache"
-
-def cached_scan_ticker(ticker: str, period: str = "1y") -> dict | None:
-    """Cache results so re-runs don't re-fetch the same day's data."""
-    os.makedirs(CACHE_DIR, exist_ok=True)
-    cache_file = os.path.join(CACHE_DIR, f"{ticker}_{date.today()}.pkl")
-
-    if os.path.exists(cache_file):
-        with open(cache_file, "rb") as f:
-            return pickle.load(f)
-
-    result = scan_ticker(ticker, period)
     if result:
-        with open(cache_file, "wb") as f:
-            pickle.dump(result, f)
-    return result
+        # Ticker matched signals — add to results
+        print(f"  [{i:>2}/{len(TICKERS)}] {ticker:<8} ✓  {', '.join(result['signals'])}")
+        results.append(result)
+    else:
+        # No signals found for this ticker
+        print(f"  [{i:>2}/{len(TICKERS)}] {ticker:<8} —  no signals")
 
-# With caching, re-running the scanner on the same day takes < 5 seconds</code></pre>
-            </div>
+    # Rate limit: wait 0.5 seconds between requests to be polite to Yahoo
+    time.sleep(0.5)
 
-            <p>Each cache file stores a single ticker's scan result for the day. When you run the scanner again, it loads from cache instead of re-fetching data from Yahoo Finance. Old cache files can be safely deleted at the end of each week.</p>
-        </section>
+# ── STEP 4: PRINT SUMMARY ───────────────────────────────────────────────
 
-        <!-- Section 8: Signal Types Reference -->
-        <section class="section">
-            <div class="section-tag">REFERENCE</div>
-            <h2>Signal Types Reference</h2>
-            <p>All 7 signal types detected by the scanner, their conditions, typical frequency, and trading use cases:</p>
+print(f"\n{'═' * 50}")
+print(f"🦞 Scan complete: {len(results)} signal(s) in {len(TICKERS)} tickers")
+print(f"{'═' * 50}\n")
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Signal</th>
-                        <th>Condition</th>
-                        <th>Frequency</th>
-                        <th>Typical Use</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>RSI_OVERSOLD</strong></td>
-                        <td>RSI &lt; 30</td>
-                        <td>~5–10% of universe</td>
-                        <td>Mean reversion watch</td>
-                    </tr>
-                    <tr>
-                        <td><strong>RSI_OVERBOUGHT</strong></td>
-                        <td>RSI &gt; 70</td>
-                        <td>~5–10% of universe</td>
-                        <td>Momentum or fade watch</td>
-                    </tr>
-                    <tr>
-                        <td><strong>GOLDEN_CROSS</strong></td>
-                        <td>SMA50 crosses above SMA200</td>
-                        <td>Rare, 1–3x/year per ticker</td>
-                        <td>Trend following entry</td>
-                    </tr>
-                    <tr>
-                        <td><strong>DEATH_CROSS</strong></td>
-                        <td>SMA50 crosses below SMA200</td>
-                        <td>Rare, 1–3x/year per ticker</td>
-                        <td>Trend following exit</td>
-                    </tr>
-                    <tr>
-                        <td><strong>BB_SQUEEZE</strong></td>
-                        <td>Bandwidth &lt; 20th percentile</td>
-                        <td>~20% of universe at any time</td>
-                        <td>Breakout anticipation</td>
-                    </tr>
-                    <tr>
-                        <td><strong>MACD_BULL_CROSS</strong></td>
-                        <td>MACD crosses above signal</td>
-                        <td>Monthly</td>
-                        <td>Momentum entry</td>
-                    </tr>
-                    <tr>
-                        <td><strong>MACD_BEAR_CROSS</strong></td>
-                        <td>MACD crosses below signal</td>
-                        <td>Monthly</td>
-                        <td>Momentum exit</td>
-                    </tr>
-                </tbody>
-            </table>
+# Print detailed results
+if results:
+    for r in results:
+        print(f"  {r['ticker']:<8}  Price: ${r['price']:>8.2f}  "
+              f"RSI: {r['rsi']:>5.1f}  |  {', '.join(r['signals'])}")
+else:
+    print("  (no signals found today)")
 
-            <p>RSI and Bollinger Band signals are continuous — they update daily as prices move in and out of extremes. Moving average crosses (golden/death) and MACD crossovers are rare events that trigger only once per occurrence. Combine signals for stronger conviction.</p>
-        </section>
+# ── STEP 5: EXPORT TO CSV ───────────────────────────────────────────────
 
-        <!-- Section 9: Scheduling the Scanner with OpenClaw -->
-        <section class="section">
-            <div class="section-tag">AUTOMATION</div>
-            <h2>Scheduling the Scanner with OpenClaw</h2>
-            <p>The scanner runs best at market close when the day's final prices are in. OpenClaw's scheduler handles the cron so you don't have to manage it manually — results land in your inbox and CSV before the next morning.</p>
+if EXPORT_CSV and results:
+    try:
+        with open(OUTPUT_FILE, "w", newline="") as f:
+            fieldnames = ["ticker", "price", "rsi", "signals", "timestamp"]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
 
-            <div class="code-block-wrapper">
-                <div class="code-block-header">
-                    <span>bash / yaml</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code># Schedule via cron — runs Mon–Fri at 4:15pm (after US market close)
-# 15 16 * * 1-5 python3 /path/to/openclaw/ta_scanner.py
+            for r in results:
+                writer.writerow({
+                    "ticker": r["ticker"],
+                    "price": r["price"],
+                    "rsi": r["rsi"],
+                    "signals": " | ".join(r["signals"]),
+                    "timestamp": datetime.now().isoformat(),
+                })
 
-# Or use OpenClaw's built-in scheduler config:
-# scheduler:
-#   ta_scanner:
-#     script: ta_scanner.py
-#     schedule: "15 16 * * 1-5"
-#     notify: true</code></pre>
-            </div>
-        </section>
+        print(f"\n✓ Results saved to {OUTPUT_FILE}")
 
-        <!-- Navigation Buttons -->
-        <div class="nav-buttons">
-            <a href="ta-indicators.html" class="nav-btn">
-                <span class="nav-btn-label">← Previous</span>
-                <span>Part 1: Core Indicators</span>
-            </a>
-            <a href="ta-alerts.html" class="nav-btn next">
-                <span class="nav-btn-label">Next →</span>
-                <span>Part 3: Signal Alerts</span>
-            </a>
+    except Exception as e:
+        print(f"\n⚠️  Could not save CSV: {e}")
+
+print()  # Final blank line
+</code></pre>
+
+        <div class="callout">
+            <p>
+                <strong>Every function has a docstring.</strong> Every logical section is commented. The code is designed to be readable first, clever second. That's intentional — you should understand what's happening.
+            </p>
         </div>
+    </section>
+
+    <!-- ─ SECTION 6: UNDERSTANDING OUTPUT ──────────────────────────────── -->
+    <section>
+        <h2>Reading the Scanner Output</h2>
+        <p class="section-intro">
+            Here's what each part of the output means.
+        </p>
+
+        <h3>The Results Table</h3>
+
+        <div class="workflow-item">
+            <div class="workflow-item-content">
+                <p style="font-family: monospace; background: #0f0e0d; padding: 12px; border-radius: 4px;">
+                    AAPL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price: $&nbsp;&nbsp;150.23&nbsp;&nbsp;RSI:&nbsp;&nbsp;25.3&nbsp;&nbsp;|&nbsp;&nbsp;RSI_OVERSOLD<br>
+                    NVDA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price: $&nbsp;&nbsp;875.41&nbsp;&nbsp;RSI:&nbsp;&nbsp;78.9&nbsp;&nbsp;|&nbsp;&nbsp;RSI_OVERBOUGHT, BB_SQUEEZE<br>
+                    GOOGL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price: $&nbsp;&nbsp;142.67&nbsp;&nbsp;RSI:&nbsp;&nbsp;52.1&nbsp;&nbsp;|&nbsp;&nbsp;GOLDEN_CROSS
+                </p>
+            </div>
+        </div>
+
+        <h3>What Each Column Means</h3>
+
+        <div class="workflow-item">
+            <div class="workflow-item-title">Ticker</div>
+            <div class="workflow-item-content">
+                <p>The stock symbol.</p>
+            </div>
+        </div>
+
+        <div class="workflow-item">
+            <div class="workflow-item-title">Price</div>
+            <div class="workflow-item-content">
+                <p>The closing price from today (or the last trading day).</p>
+            </div>
+        </div>
+
+        <div class="workflow-item">
+            <div class="workflow-item-title">RSI</div>
+            <div class="workflow-item-content">
+                <p>The current RSI value. Below 30 = oversold (potential bounce). Above 70 = overbought (extended rally).</p>
+            </div>
+        </div>
+
+        <div class="workflow-item">
+            <div class="workflow-item-title">Signals</div>
+            <div class="workflow-item-content">
+                <p>What condition(s) triggered. A stock can have multiple signals (e.g., RSI_OVERBOUGHT AND BB_SQUEEZE at the same time).</p>
+            </div>
+        </div>
+
+        <h3>Interpreting Results</h3>
+
+        <p style="margin-top: 30px;">
+            If a ticker shows up in your results, that's a <strong>starting point for research</strong>, not an automatic trade signal.
+        </p>
+
+        <ul>
+            <li><strong>RSI oversold:</strong> Look at the chart. Is it in a downtrend that could continue? Or has it been ranging and just dipped? Check for news.</li>
+            <li><strong>Golden Cross:</strong> Confirmation that an uptrend may be establishing. Doesn't mean buy immediately — watch for a pullback to the moving average first.</li>
+            <li><strong>BB Squeeze:</strong> A move is coming, but direction is unknown. Watch the next few days for the breakout direction before acting.</li>
+            <li><strong>MACD Cross:</strong> Momentum is shifting. Combine with RSI and price action before making a decision.</li>
+        </ul>
+
+        <div class="callout" style="margin-top: 40px;">
+            <p>
+                <strong>No signals today?</strong> That's actually the normal state. Most days, most stocks aren't doing anything unusual. The scanner's job is to surface the exceptions.
+            </p>
+        </div>
+    </section>
+
+    <!-- ─ SECTION 7: AUTOMATION ────────────────────────────────────────── -->
+    <section>
+        <h2>Automating the Scanner</h2>
+        <p class="section-intro">
+            Right now you have to run the scanner manually. Here's how to make it run automatically every day after the market closes.
+        </p>
+
+        <h3>Option 1: System Cron (Mac/Linux)</h3>
+
+        <p>
+            Open your crontab:
+        </p>
+
+        <pre><code>crontab -e</code></pre>
+
+        <p>
+            Add this line to run Monday–Friday at 4:15 PM Eastern (15 minutes after market close):
+        </p>
+
+        <pre><code>15 16 * * 1-5 cd /path/to/your/openclaw && python3 ta_scanner.py >> scanner.log 2>&1</code></pre>
+
+        <p>
+            Replace <code>/path/to/your/openclaw</code> with the actual folder path. The <code>&gt;&gt; scanner.log 2&gt;&amp;1</code> saves output to a log file.
+        </p>
+
+        <h3>Option 2: Windows Task Scheduler</h3>
+
+        <p>
+            Create a <code>.bat</code> file:
+        </p>
+
+        <pre><code>@echo off
+cd C:\path\to\your\openclaw
+python3 ta_scanner.py >> scanner.log 2>&1</code></pre>
+
+        <p>
+            Then create a scheduled task in Windows Task Scheduler to run this batch file at 4:15 PM daily.
+        </p>
+
+        <h3>Option 3: Email Notification (Advanced)</h3>
+
+        <p>
+            You can extend the scanner to email you results automatically. Add this to your config:
+        </p>
+
+        <pre><code>scheduler:
+  email_on_signals: true
+  email_address: "you@example.com"
+  smtp_server: "smtp.gmail.com"
+  smtp_password: "your_app_password"  # Use app-specific password, not Gmail password</code></pre>
+
+        <p>
+            Then modify the scanner script to send an email when signals are found. (We'll cover this in the next tutorial.)
+        </p>
+    </section>
+
+    <!-- ─ SECTION 8: WHAT TO DO NEXT ───────────────────────────────────── -->
+    <section>
+        <h2>What to Do With Scan Results</h2>
+        <p class="section-intro">
+            So the scanner found a stock that matched your rules. Now what?
+        </p>
+
+        <h3>A Sensible Workflow</h3>
+
+        <div class="workflow">
+            <div class="workflow-item">
+                <div class="workflow-item-title">1️⃣ LOOK AT THE CHART</div>
+                <div class="workflow-item-content">
+                    <p>
+                        The scanner is automated, but your eyes aren't. Pull up the chart and visually confirm what the scanner found. Does the price action match what you'd expect from the signal?
+                    </p>
+                </div>
+            </div>
+
+            <div class="workflow-item">
+                <div class="workflow-item-title">2️⃣ CHECK FOR NEWS</div>
+                <div class="workflow-item-content">
+                    <p>
+                        A sudden RSI dip might be due to a disappointing earnings report or broader market weakness. The scanner doesn't know about news — you do.
+                    </p>
+                </div>
+            </div>
+
+            <div class="workflow-item">
+                <div class="workflow-item-title">3️⃣ CONSIDER YOUR TIMEFRAME</div>
+                <div class="workflow-item-content">
+                    <p>
+                        A golden cross on daily might be a good trend signal, but if you trade 5-minute charts, you need to confirm on intraday timeframes too.
+                    </p>
+                </div>
+            </div>
+
+            <div class="workflow-item">
+                <div class="workflow-item-title">4️⃣ WAIT FOR CONFIRMATION</div>
+                <div class="workflow-item-content">
+                    <p>
+                        Don't act immediately. Watch the stock for the next few days. Is the move continuing? Or was it a fake-out? Patience is rewarded.
+                    </p>
+                </div>
+            </div>
+
+            <div class="workflow-item">
+                <div class="workflow-item-title">5️⃣ TEST YOUR RULES</div>
+                <div class="workflow-item-content">
+                    <p>
+                        Over time, if you find your scanner rules are too noisy (false signals), adjust them. Tighten RSI thresholds, require multiple signals at once, etc.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout" style="margin-top: 40px;">
+            <p>
+                <strong>The scanner is a filter, not a strategy.</strong> It removes the noise (50 tickers with nothing interesting), leaving you with signal (the 3-5 that matter). The strategy — how you trade those signals — is still up to you.
+            </p>
+        </div>
+    </section>
+
+    <!-- ─ PREV/NEXT NAVIGATION ─────────────────────────────────────────── -->
+    <div class="prev-next">
+        <a href="/ta-indicators.html" class="prev-link">
+            <span class="nav-label">← Part 1</span>
+            <span class="nav-title">Core Indicators</span>
+        </a>
+        <a href="/ta-alerts.html" class="next-link">
+            <span class="nav-label">Part 3 →</span>
+            <span class="nav-title">Signal Alerts</span>
+        </a>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-inner">
-            <p>&copy; 2026 Claw Street Terminal. <a href="/">Home</a> | <a href="/learn">Learn</a> | <a href="/faq">FAQ</a></p>
-            <p style="margin-top: 12px; font-size: 0.75rem;">Part 2 of Technical Analysis Automation series on learnopenclaw.org</p>
-        </div>
-    </footer>
+</div>
 
-    <script>
-        // Hamburger menu toggle
-        const hamburgerBtn = document.getElementById("hamburgerBtn");
-        const navLinks = document.getElementById("navLinks");
+<!-- ─────────────────────────────────────────────────────────────────────── -->
+<!-- SCRIPTS                                                                  -->
+<!-- ─────────────────────────────────────────────────────────────────────── -->
 
-        hamburgerBtn.addEventListener("click", () => {
-            navLinks.classList.toggle("open");
-        });
+<script>
+// Hamburger menu toggle
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const navLinks = document.getElementById('nav-links');
 
-        // Close menu when a link is clicked
-        navLinks.querySelectorAll("a").forEach(link => {
-            link.addEventListener("click", () => {
-                navLinks.classList.remove("open");
-            });
-        });
+hamburgerBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+});
 
-        // Copy button functionality
-        function copyCode(btn) {
-            const codeBlock = btn.closest(".code-block-wrapper");
-            const code = codeBlock.querySelector("pre code").textContent;
+// Close menu when a link is clicked
+navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+    });
+});
 
-            navigator.clipboard.writeText(code).then(() => {
-                const originalText = btn.textContent;
-                btn.textContent = "Copied!";
-                btn.classList.add("copied");
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.site-nav')) {
+        navLinks.classList.remove('open');
+    }
+});
+</script>
 
+<script>
+// Copy code blocks (optional enhancement)
+document.querySelectorAll('pre').forEach(block => {
+    const code = block.querySelector('code');
+    if (code) {
+        const copyBtn = document.createElement('button');
+        copyBtn.textContent = 'Copy';
+        copyBtn.style.cssText = `
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #0d9488;
+            color: #1c1917;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        `;
+
+        block.style.position = 'relative';
+        block.appendChild(copyBtn);
+
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(code.textContent).then(() => {
+                copyBtn.textContent = 'Copied!';
                 setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.classList.remove("copied");
+                    copyBtn.textContent = 'Copy';
                 }, 2000);
-            }).catch(err => {
-                console.error("Failed to copy:", err);
             });
-        }
-    </script>
+        });
+    }
+});
+</script>
+
 </body>
 </html>

@@ -1,1160 +1,989 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple TA Backtesting with Python | Claw Street Terminal</title>
-    <meta name="description" content="Test indicator-based trading strategies on historical data. Learn backtesting fundamentals: win rate, drawdown, overfitting risks, and honest performance interpretation.">
-    <link rel="canonical" href="https://learnopenclaw.org/ta-backtest.html">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backtesting TA Strategies with OpenClaw | Technical Analysis Automation</title>
+  <meta name="description" content="Understand backtesting, test your indicator rules against historical data, and see how your strategies would have performed with OpenClaw.">
+  <link rel="canonical" href="https://learnopenclaw.org/ta-backtest.html">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #1c1917; color: #e7e5e4; line-height: 1.6; }
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ─────────────────────────────────────────────────────────────── */
+    /* NAVIGATION                                                       */
+    /* ─────────────────────────────────────────────────────────────── */
+    .site-nav {
+      background: #1c1917;
+      border-bottom: 2px solid #0d9488;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-        body {
-            background: #1c1917;
-            color: #e7e5e4;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            font-size: 1rem;
-        }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
 
-        a { color: #0d9488; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+    .nav-logo {
+      color: #0d9488;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
 
-        /* Navigation */
-        .site-nav {
-            background: #1c1917;
-            border-bottom: 2px solid #0d9488;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    .nav-links {
+      display: none;
+    }
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: #1c1917;
+      border-bottom: 2px solid #0d9488;
+      padding: 16px 20px;
+      gap: 12px;
+      z-index: 99;
+    }
 
-        .nav-logo {
-            color: #0d9488;
-            font-weight: 800;
-            font-size: 1.1rem;
-            text-decoration: none;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+    .nav-links a {
+      color: #e7e5e4;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 6px 0;
+    }
 
-        .nav-logo:hover { text-decoration: none; }
+    .nav-links a:hover {
+      color: #0d9488;
+    }
 
-        .nav-links {
-            display: none;
-        }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
 
-        .nav-links.open {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 60px;
-            left: 0;
-            right: 0;
-            background: #1c1917;
-            border-bottom: 2px solid #0d9488;
-            padding: 16px 20px;
-            gap: 12px;
-            z-index: 99;
-        }
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+    }
 
-        .nav-links a {
-            color: #e7e5e4;
-            text-decoration: none;
-            font-size: 1rem;
-            font-weight: 500;
-            padding: 6px 0;
-        }
+    .hamburger span {
+      display: block;
+      height: 2px;
+      background: #e7e5e4;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
 
-        .nav-links a:hover {
-            color: #0d9488;
-        }
+    .hamburger:hover span {
+      background: #0d9488;
+    }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
+    .search-form {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(13, 148, 136, 0.3);
+      border-radius: 4px;
+      padding: 6px 12px;
+      gap: 8px;
+    }
 
-        .search-form {
-            display: none;
-        }
+    .search-form input {
+      background: none;
+      border: none;
+      color: #e7e5e4;
+      font-size: 0.9rem;
+      width: 120px;
+      outline: none;
+    }
 
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 24px;
-            height: 18px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            flex-shrink: 0;
-        }
+    .search-form input::placeholder {
+      color: rgba(231, 229, 228, 0.5);
+    }
 
-        .hamburger span {
-            display: block;
-            height: 2px;
-            background: #e7e5e4;
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
+    .search-form button {
+      background: none;
+      border: none;
+      color: #0d9488;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0;
+    }
 
-        .hamburger:hover span {
-            background: #0d9488;
-        }
+    /* ─────────────────────────────────────────────────────────────── */
+    /* BREADCRUMB & DISCLAIMER                                          */
+    /* ─────────────────────────────────────────────────────────────── */
+    .breadcrumb {
+      background: #1c1917;
+      border-bottom: 1px solid rgba(13, 148, 136, 0.2);
+      padding: 12px 20px;
+      font-size: 0.875rem;
+      color: rgba(231, 229, 228, 0.7);
+      max-width: 100%;
+      overflow-x: auto;
+    }
 
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translateY(8px);
-        }
+    .breadcrumb a {
+      color: #0d9488;
+      text-decoration: none;
+    }
 
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
 
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translateY(-8px);
-        }
+    .disclaimer {
+      background: #f0fdfa;
+      border-left: 4px solid #0d9488;
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      color: #134e4a;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 24px auto;
+      max-width: 1200px;
+      border-radius: 4px;
+    }
 
-        /* Disclaimer */
-        .disclaimer {
-            background: #f0fdfa;
-            border-left: 4px solid #0d9488;
-            padding: 12px 24px;
-            font-size: 0.875rem;
-            color: #134e4a;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
+    .disclaimer strong {
+      color: #134e4a;
+      font-weight: 600;
+    }
 
-        .disclaimer-icon {
-            flex-shrink: 0;
-            font-size: 1.2rem;
-            line-height: 1.4;
-        }
+    /* ─────────────────────────────────────────────────────────────── */
+    /* HERO SECTION                                                     */
+    /* ─────────────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
+      padding: 60px 20px;
+      text-align: center;
+      color: #f0fdfa;
+    }
 
-        /* Breadcrumb */
-        .breadcrumb {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            font-size: 0.875rem;
-            color: #a8a29e;
-        }
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-        .breadcrumb a {
-            color: #0d9488;
-        }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(13, 148, 136, 0.2);
+      color: #0d9488;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-        /* Hero */
-        .hero {
-            background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
-            padding: 60px 20px;
-            text-align: center;
-            color: #f0fdfa;
-        }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
 
-        .hero-tag {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #d1fae5;
-            margin-bottom: 12px;
-        }
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 24px;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
 
-        .hero h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            line-height: 1.2;
-        }
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+    }
 
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 24px;
-            color: #d1fae5;
-        }
+    .pill {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #f0fdfa;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+    }
 
-        .hero-pills {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            max-width: 700px;
-            margin: 0 auto;
-        }
+    /* ─────────────────────────────────────────────────────────────── */
+    /* MAIN CONTENT                                                     */
+    /* ─────────────────────────────────────────────────────────────── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
 
-        .pill {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid #0d9488;
-            color: #d1fae5;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
+    section {
+      margin-bottom: 60px;
+    }
 
-        /* Content */
-        .content {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+    .section-number {
+      color: #0d9488;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
 
-        .section {
-            margin-bottom: 50px;
-        }
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 24px;
+      color: #f0fdfa;
+      font-weight: 700;
+      line-height: 1.3;
+    }
 
-        .section h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 24px;
-            color: #0d9488;
-            border-bottom: 2px solid #0d9488;
-            padding-bottom: 12px;
-        }
+    h3 {
+      font-size: 1.3rem;
+      margin: 28px 0 16px 0;
+      color: #e7e5e4;
+      font-weight: 600;
+    }
 
-        .section h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin: 24px 0 12px;
-            color: #d1fae5;
-        }
+    p {
+      margin-bottom: 16px;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
 
-        .section p, .section li {
-            margin-bottom: 12px;
-            color: #e7e5e4;
-        }
+    /* Callout boxes */
+    .callout {
+      background: rgba(13, 148, 136, 0.1);
+      border-left: 4px solid #0d9488;
+      padding: 20px 24px;
+      border-radius: 4px;
+      margin: 24px 0;
+      line-height: 1.7;
+    }
 
-        .section ul, .section ol {
-            margin-left: 24px;
-            margin-bottom: 16px;
-        }
+    .callout strong {
+      color: #0d9488;
+    }
 
-        .section li {
-            margin-bottom: 8px;
-        }
+    .callout.warning {
+      background: rgba(217, 119, 6, 0.1);
+      border-left-color: #d97706;
+    }
 
-        /* Callout box */
-        .callout {
-            background: rgba(13, 148, 136, 0.1);
-            border-left: 4px solid #0d9488;
-            padding: 20px 24px;
-            margin: 24px 0;
-            border-radius: 4px;
-        }
+    .callout.warning strong {
+      color: #fbbf24;
+    }
 
-        .callout h3 {
-            color: #0d9488;
-            margin-top: 0;
-            margin-bottom: 12px;
-        }
+    /* Lists */
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
 
-        .callout strong {
-            color: #d1fae5;
-        }
+    li {
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
 
-        /* Code blocks */
-        .code-wrapper {
-            position: relative;
-            margin: 24px 0;
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            overflow: hidden;
-        }
+    strong {
+      color: #0d9488;
+      font-weight: 600;
+    }
 
-        .code-header {
-            background: #1e293b;
-            padding: 12px 16px;
-            border-bottom: 1px solid #334155;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.875rem;
-            color: #94a3b8;
-            font-weight: 600;
-        }
+    /* Code blocks */
+    pre {
+      background: #0f0e0c;
+      border: 1px solid rgba(13, 148, 136, 0.2);
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 20px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      position: relative;
+    }
 
-        .code-label {
-            color: #0d9488;
-        }
+    code {
+      color: #74c7b7;
+      font-family: 'Courier New', monospace;
+    }
 
-        .copy-btn {
-            background: #0d9488;
-            color: #1c1917;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
 
-        .copy-btn:hover {
-            background: #0f766e;
-        }
+    thead {
+      background: rgba(13, 148, 136, 0.15);
+    }
 
-        .copy-btn.copied {
-            background: #10b981;
-        }
+    th {
+      padding: 12px;
+      text-align: left;
+      color: #0d9488;
+      font-weight: 600;
+      border-bottom: 2px solid #0d9488;
+    }
 
-        pre {
-            padding: 16px;
-            overflow-x: auto;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(13, 148, 136, 0.1);
+    }
 
-        code {
-            font-family: "Monaco", "Menlo", "Ubuntu Mono", "Courier New", monospace;
-            color: #e2e8f0;
-        }
+    tbody tr:hover {
+      background: rgba(13, 148, 136, 0.05);
+    }
 
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 24px 0;
-            font-size: 0.95rem;
-        }
+    /* Results box */
+    .results-box {
+      background: #0f0e0c;
+      border: 1px solid rgba(13, 148, 136, 0.2);
+      padding: 20px;
+      border-radius: 6px;
+      margin: 24px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #74c7b7;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
 
-        th {
-            background: #0d9488;
-            color: #1c1917;
-            padding: 12px;
-            text-align: left;
-            font-weight: 700;
-        }
+    /* ─────────────────────────────────────────────────────────────── */
+    /* PREV/NEXT NAVIGATION                                            */
+    /* ─────────────────────────────────────────────────────────────── */
+    .prev-next {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(13, 148, 136, 0.2);
+    }
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #334155;
-        }
+    .prev-next a {
+      color: #0d9488;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        tr:hover {
-            background: rgba(13, 148, 136, 0.05);
-        }
+    .prev-next a:hover {
+      color: #06b6d4;
+    }
 
-        /* Navigation between parts */
-        .nav-parts {
-            display: flex;
-            justify-content: space-between;
-            margin: 50px 0 40px;
-            gap: 20px;
-        }
+    .prev-next .next {
+      margin-left: auto;
+    }
 
-        .nav-part {
-            flex: 1;
-            padding: 20px;
-            background: rgba(13, 148, 136, 0.1);
-            border: 1px solid #0d9488;
-            border-radius: 4px;
-            text-align: center;
-        }
+    /* ─────────────────────────────────────────────────────────────── */
+    /* RESPONSIVE                                                       */
+    /* ─────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
 
-        .nav-part a {
-            font-weight: 600;
-            color: #0d9488;
-            display: block;
-            margin-top: 8px;
-        }
+      .hero p {
+        font-size: 1rem;
+      }
 
-        .nav-part a:hover {
-            text-decoration: underline;
-        }
+      h2 {
+        font-size: 1.5rem;
+      }
 
-        .nav-part-label {
-            font-size: 0.875rem;
-            color: #a8a29e;
-            margin-bottom: 8px;
-        }
+      .hero-pills {
+        flex-direction: column;
+      }
 
-        /* Footer */
-        footer {
-            background: #0f0d0b;
-            border-top: 1px solid #334155;
-            padding: 40px 20px;
-            text-align: center;
-            color: #78716b;
-            font-size: 0.875rem;
-        }
+      .pill {
+        width: 100%;
+        text-align: center;
+      }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
+      .search-form {
+        display: none;
+      }
 
-            .hero p {
-                font-size: 1rem;
-            }
+      pre {
+        font-size: 0.85rem;
+      }
 
-            .section h2 {
-                font-size: 1.5rem;
-            }
+      table {
+        font-size: 0.85rem;
+      }
 
-            .nav-parts {
-                flex-direction: column;
-            }
+      th, td {
+        padding: 10px;
+      }
 
-            table {
-                font-size: 0.85rem;
-            }
+      .prev-next {
+        flex-direction: column;
+        gap: 20px;
+      }
 
-            th, td {
-                padding: 8px;
-            }
-        }
-    </style>
+      .prev-next .next {
+        margin-left: 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="site-nav">
-        <div class="nav-inner">
-            <a href="/" class="nav-logo">🦎 learnopenclaw.org</a>
-            <div class="nav-links" id="nav-links">
-                <a href="/">Home</a>
-                <a href="/blog">Blog</a>
-                <a href="/learn">Learn</a>
-                <a href="/faq">FAQ</a>
-                <a href="/terminal">Terminal</a>
-            </div>
-            <div class="nav-right">
-                <form class="search-form" action="/search" method="get">
-                    <input type="text" placeholder="Search..." name="q">
-                </form>
-                <button class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Disclaimer -->
-    <div class="disclaimer">
-        <div class="disclaimer-icon">⚠️</div>
-        <div>Backtesting shows how a strategy performed in the past — it does NOT predict future returns. Overfitting, survivorship bias, and transaction costs make backtests optimistic. Not financial advice.</div>
+<!-- ───────────────────────────────────────────────────────────────── -->
+<!-- NAVIGATION                                                         -->
+<!-- ───────────────────────────────────────────────────────────────── -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">🦞 learnopenclaw.org</a>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/learn.html">Learn</a>
+      <a href="/faq.html">FAQ</a>
+      <a href="/claw-street-terminal.html">Terminal</a>
+    </div>
+    <div class="nav-right">
+      <form class="search-form" action="/search.html" method="get">
+        <input type="text" name="q" placeholder="Search...">
+        <button type="submit" aria-label="Search">🔍</button>
+      </form>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ───────────────────────────────────────────────────────────────── -->
+<!-- BREADCRUMB                                                         -->
+<!-- ───────────────────────────────────────────────────────────────── -->
+<div class="breadcrumb">
+  <a href="/">Home</a> › <a href="/claw-street-terminal.html">Terminal</a> › <a href="/ta-signals.html">Technical Analysis</a> › Backtesting
+</div>
+
+<!-- ───────────────────────────────────────────────────────────────── -->
+<!-- DISCLAIMER                                                         -->
+<!-- ───────────────────────────────────────────────────────────────── -->
+<div class="disclaimer">
+  <span>⚠️</span>
+  <div>
+    <strong>Past performance does not predict future results.</strong> Backtesting shows how a strategy would have performed historically — this is not a guarantee of future returns. Not financial advice.
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────────────────────────── -->
+<!-- HERO SECTION                                                       -->
+<!-- ───────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Technical Analysis · Part 4 of 5</div>
+    <h1>Backtesting Your Rules</h1>
+    <p>Before you trust a signal, test it. OpenClaw's backtesting module runs your indicator rules against years of historical data so you can see how they would have performed — and where they would have failed.</p>
+    <div class="hero-pills">
+      <div class="pill">Historical Simulation</div>
+      <div class="pill">Win Rate & Drawdown</div>
+      <div class="pill">OpenClaw Config-Driven</div>
+      <div class="pill">Free yfinance Data</div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────────────────────────────────────────────── -->
+<!-- MAIN CONTENT                                                       -->
+<!-- ───────────────────────────────────────────────────────────────── -->
+<main class="container">
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 1: WHAT IS BACKTESTING?                                 -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-number">Section 1</div>
+    <h2>What Is Backtesting?</h2>
+
+    <p>Backtesting is like a rehearsal. You take a set of rules — for example, <strong>"buy when RSI drops below 30, sell when RSI goes back above 60"</strong> — and apply them to historical price data to see what would have happened.</p>
+
+    <p>Think of it like rewinding a sports game and asking <strong>"what if we had made different calls?"</strong> You can see the outcome, but you're looking at a version of the past — not a guarantee about the future.</p>
+
+    <h3>Three Things Backtesting Is Good For</h3>
+    <ul>
+      <li><strong>Eliminating bad ideas quickly.</strong> If a strategy has a terrible win rate over 5 years, you probably don't want to use it. Backtesting lets you rule out duds before risking real money.</li>
+      <li><strong>Understanding risk.</strong> How bad was the worst losing streak? Could you have stomached that? Backtesting shows you the maximum drawdown — the worst peak-to-trough decline — so you know what you're getting into.</li>
+      <li><strong>Comparing two approaches.</strong> Is RSI(30/60) better than RSI(25/65) historically on SPY? Backtesting on the same historical data gives you a fair head-to-head comparison.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Key insight:</strong> Backtesting is not a crystal ball. It's a way to test whether your logic makes sense on real data, and to set realistic expectations before you commit capital.
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 2: THE LIMITS OF BACKTESTING                            -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-number">Section 2</div>
+    <h2>The Limits of Backtesting (Read This First)</h2>
+
+    <p>Backtesting is incredibly useful — but it has real limitations. Understanding them now will save you from heartbreak later.</p>
+
+    <h3>Four Honest Warnings</h3>
+
+    <div class="callout warning">
+      <strong>1. Past performance ≠ future results.</strong>
+      <p style="margin-top: 12px; margin-bottom: 0;">Markets change. A strategy that worked beautifully from 2018–2023 may not work in 2025. Interest rates shift. Market regimes change. Backtesting shows you history, not a crystal ball. Use it to inform your decisions, but never as proof that something will work in the future.</p>
     </div>
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <a href="/">Home</a> › <a href="/terminal">Terminal</a> › <a href="/terminal">Technical Analysis Automation</a> › Backtesting
+    <div class="callout warning">
+      <strong>2. Survivorship bias.</strong>
+      <p style="margin-top: 12px; margin-bottom: 0;">We're testing tickers that still exist today. Companies that went bankrupt aren't in yfinance — they're not in our backtest. This makes backtests look better than reality. A strategy that sounds great on AAPL, MSFT, and NVDA (all of which thrived) might look very different if we included companies that failed.</p>
     </div>
 
-    <!-- Hero -->
-    <div class="hero">
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-            <div class="hero-tag">Technical Analysis · Part 4 of 5</div>
-            <h1>Simple Backtesting</h1>
-            <p>Test whether your indicator rules actually had an edge historically — and learn to read the results without fooling yourself.</p>
-            <div class="hero-pills">
-                <div class="pill">Historical Simulation</div>
-                <div class="pill">Win Rate + Drawdown</div>
-                <div class="pill">No Curve-Fitting</div>
-            </div>
-        </div>
+    <div class="callout warning">
+      <strong>3. The rules can't use future data.</strong>
+      <p style="margin-top: 12px; margin-bottom: 0;">OpenClaw's backtester is careful about this — it only uses data that would have been available on the day of the trade. This is called "avoiding look-ahead bias." Some sloppy backtesting tools accidentally use tomorrow's price to decide whether to trade today, which is cheating.</p>
     </div>
 
-    <!-- Content -->
-    <div class="content">
+    <div class="callout warning">
+      <strong>4. Real trades cost money.</strong>
+      <p style="margin-top: 12px; margin-bottom: 0;">Our simple backtester doesn't account for commissions, bid-ask spreads, or the fact that your order might not fill at the exact price shown. Real returns would be slightly lower. If you're trading big size, slippage costs could be material.</p>
+    </div>
 
-        <!-- Section 0: OpenClaw Config -->
-        <div class="section">
-            <h2>OpenClaw Backtest Config</h2>
-            <p>Define your backtest parameters in <code>ta-config.yaml</code> once. Tweak thresholds in the config file without editing Python code — then compare runs side by side.</p>
+    <div class="callout">
+      <strong>With all that said —</strong> backtesting is still extremely useful. It helps you have realistic expectations before risking real money on an untested idea. Just go in with eyes open.
+    </div>
+  </section>
 
-            <div class="code-wrapper">
-                <div class="code-header">
-                    <span class="code-label">ta-config.yaml</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code># ta-config.yaml — backtest section
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 3: THE STRATEGY WE'LL TEST                              -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-number">Section 3</div>
+    <h2>The Strategy We'll Test</h2>
+
+    <h3>RSI Mean Reversion</h3>
+
+    <p><strong>RSI Mean Reversion</strong> is one of the most commonly tested strategies in retail trading. Here's how it works:</p>
+
+    <ul>
+      <li><strong>Buy rule:</strong> When RSI closes below 30 (oversold), buy at the next day's opening price.</li>
+      <li><strong>Sell rule:</strong> When RSI rises back above 60 (recovered), or after 30 days (whichever comes first).</li>
+      <li><strong>One position at a time:</strong> We don't add to a position while already in one. When we exit, we wait for the next signal.</li>
+    </ul>
+
+    <p>This strategy bets that stocks which have dropped sharply (RSI oversold) tend to bounce back. Sometimes they do. Sometimes they keep falling. The backtest tells us historically how often each happened.</p>
+
+    <div class="callout">
+      <strong>Why test mean reversion?</strong> It's simple, it's widely known, and it's a good learning example. It tests whether reversal bounces are predictable — a question traders have asked for decades.
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 4: CONFIGURING THE BACKTEST                             -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-number">Section 4</div>
+    <h2>Setting Up the Backtest in ta-config.yaml</h2>
+
+    <p>OpenClaw reads backtesting settings from your config file. Here's what a typical setup looks like:</p>
+
+    <pre><code># ta-config.yaml — backtesting section
+# OpenClaw reads these settings when running ta_backtest.py
+
+watchlist:
+  tickers:
+    - AAPL
+    - SPY
+    - NVDA
+
 backtest:
-  ticker: "SPY"
-  period: "5y"
-  strategy: "rsi_mean_reversion"
+  strategy: "rsi_mean_reversion"  # Which strategy to test
+  period: "5y"                    # How much history (5y = 5 years)
 
-  rsi_mean_reversion:
-    rsi_buy:   30       # buy when RSI drops below this
-    rsi_sell:  60       # sell when RSI rises above this
-    max_hold:  30       # maximum days to hold before forced exit
+  # RSI Mean Reversion parameters
+  rsi_buy:    30    # Buy when RSI drops below this
+  rsi_sell:   60    # Sell when RSI rises above this
+  max_hold:   30    # Sell after this many days if RSI hasn't recovered</code></pre>
 
-  output:
-    print_trades: true
-    save_csv:     true
-    vs_buy_hold:  true  # compare against passive holding</code></pre>
-            </div>
+    <h3>What Each Setting Does</h3>
 
-            <div class="code-wrapper">
-                <div class="code-header">
-                    <span class="code-label">Python — Load Config</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>import yaml
+    <ul>
+      <li><strong>tickers:</strong> List the symbols you want to backtest. Test multiple tickers to avoid overfitting to one stock.</li>
+      <li><strong>strategy:</strong> The name of the strategy module OpenClaw will load (in this case, "rsi_mean_reversion").</li>
+      <li><strong>period:</strong> How much historical data to pull. Common values: "2y" (2 years), "5y" (5 years), "10y" (10 years).</li>
+      <li><strong>rsi_buy:</strong> RSI threshold for entry. Below this, we buy. Common range: 20–35.</li>
+      <li><strong>rsi_sell:</strong> RSI threshold for exit. Above this, we sell. Common range: 60–80.</li>
+      <li><strong>max_hold:</strong> Maximum days to hold a position. Forces an exit even if RSI hasn't recovered yet.</li>
+    </ul>
 
-def load_config(path: str = "ta-config.yaml") -> dict:
-    with open(path) as f:
-        return yaml.safe_load(f)
+    <div class="callout">
+      <strong>Experiment safely:</strong> Change <code>rsi_buy</code> and <code>rsi_sell</code> to test different thresholds. Change <code>period</code> to <code>2y</code> for a quick test or <code>10y</code> for a longer look. Each run takes seconds.
+    </div>
+  </section>
 
-cfg = load_config()
-bt  = cfg.get("backtest", {})
-strat = bt.get("rsi_mean_reversion", {})
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 5: THE BACKTEST SCRIPT                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-number">Section 5</div>
+    <h2>The Backtest Script</h2>
 
-# Run backtest from config
-result = backtest_rsi_mean_reversion(
-    ticker          = bt.get("ticker", "SPY"),
-    period          = bt.get("period", "5y"),
-    rsi_buy         = strat.get("rsi_buy", 30),
-    rsi_sell        = strat.get("rsi_sell", 60),
-    holding_limit_days = strat.get("max_hold", 30),
-)
+    <p>Now let's look at the actual Python code that runs the backtest. This script loads your config, downloads historical data, and simulates your strategy.</p>
 
-analyse_backtest(result)
+    <pre><code># ta_backtest.py — OpenClaw Backtesting Module
+# Tests your signal rules against historical price data
 
-if bt.get("output", {}).get("vs_buy_hold"):
-    vs_buy_hold(result, bt["ticker"], bt["period"])</code></pre>
-            </div>
-        </div>
-
-        <!-- Section 1: Honest Framing -->
-        <div class="section">
-            <div class="callout" style="border-left: 8px solid #0d9488; padding: 24px 28px;">
-                <h3 style="color: #0d9488; font-size: 1.3rem; margin-top: 0;">Read This Before You Backtest</h3>
-
-                <div style="margin-bottom: 16px;">
-                    <strong>Survivorship Bias:</strong> yfinance only has data for companies that still exist. Strategies tested on "current S&P 500" miss all the stocks that got delisted. If you backtest on a list that's been cleaned of losers, your results are too good.
-                </div>
-
-                <div style="margin-bottom: 16px;">
-                    <strong>Overfitting:</strong> If you tweak parameters until results look great, you've built a history-memorizer, not a strategy. This is why parameter sweeps feel seductive but are dangerous. Use them to understand sensitivity, not to pick your "best" parameters.
-                </div>
-
-                <div style="margin-bottom: 16px;">
-                    <strong>Transaction Costs:</strong> Real trades have commissions, slippage, and spreads. This backtester ignores them — subtract 0.1–0.3% per trade for realism. A strategy showing 1% avg return per trade barely beats costs.
-                </div>
-
-                <div style="margin-bottom: 16px;">
-                    <strong>Look-Ahead Bias:</strong> Never use future data in your entry/exit signals. The code below uses <code style="background: rgba(13, 148, 136, 0.2); padding: 2px 6px; border-radius: 3px;">.shift(1)</code> correctly to avoid this — signals are calculated on yesterday's close, executed on today's open.
-                </div>
-
-                <div>
-                    <strong>What Backtesting IS Good For:</strong> Eliminating clearly bad ideas quickly, comparing two approaches objectively, understanding drawdown risk in a strategy, building intuition about indicator behavior.
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 2: Core Backtester -->
-        <div class="section">
-            <h2>Core Backtester — RSI Mean Reversion</h2>
-            <p>Here's a complete backtester for a simple RSI-based strategy. It uses next-day open prices to avoid look-ahead bias and tracks win rate, drawdown, and hold time.</p>
-
-            <p><strong>Strategy rules:</strong></p>
-            <ul>
-                <li>BUY when RSI closes below a threshold (e.g., 30 = oversold)</li>
-                <li>SELL when RSI closes above a threshold (e.g., 60 = recovering) OR after a max hold period (default 30 days)</li>
-                <li>One position at a time — no pyramiding</li>
-                <li>Entry and exit at next-day open (not on the signal bar)</li>
-            </ul>
-
-            <div class="code-wrapper">
-                <div class="code-header">
-                    <span class="code-label">backtest.py</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code># pip install yfinance pandas-ta pandas
+import yaml
 import yfinance as yf
 import pandas_ta as ta
 import pandas as pd
 from datetime import datetime
 
-def backtest_rsi_mean_reversion(
-    ticker: str,
-    period: str = "5y",
-    rsi_buy: float = 30,
-    rsi_sell: float = 60,
-    holding_limit_days: int = 30,
-) -> dict:
-    """
-    Strategy:
-      BUY when RSI closes below rsi_buy (oversold)
-      SELL when RSI closes above rsi_sell OR after holding_limit_days days
-      One position at a time (no pyramiding)
+# ── Load config ───────────────────────────────────────────────────
+def load_config(path: str = "ta-config.yaml") -> dict:
+    """Load settings from ta-config.yaml."""
+    with open(path) as f:
+        return yaml.safe_load(f)
 
-    Uses next-day open as entry/exit price to avoid look-ahead bias.
-    """
-    df = yf.download(ticker, period=period, interval="1d", progress=False)
+cfg = load_config()
+BT  = cfg["backtest"]
+
+# ── Download data ─────────────────────────────────────────────────
+def get_data(ticker: str) -> pd.DataFrame:
+    """Download and prepare daily OHLCV data."""
+    df = yf.download(ticker, period=BT["period"], interval="1d",
+                     progress=False)
     df.columns = [c.lower() for c in df.columns]
     df = df[["open","high","low","close","volume"]].dropna()
     df["rsi"] = ta.rsi(df["close"], 14)
-    df = df.dropna()
+    return df.dropna()
 
+# ── Run the backtest ──────────────────────────────────────────────
+def run_backtest(ticker: str) -> list:
+    """
+    Simulates the RSI mean reversion strategy on historical data.
+    Returns a list of completed trades.
+
+    IMPORTANT: We use next-day's open price for all entries/exits.
+    This ensures we're not using data that wasn't available yet.
+    """
+    df = get_data(ticker)
     trades = []
     in_trade = False
     entry_price = None
-    entry_date = None
-    entry_idx = None
+    entry_date  = None
+    entry_idx   = None
 
     for i in range(1, len(df) - 1):
-        row = df.iloc[i]
-        prev_rsi = df.iloc[i - 1]["rsi"]
+        rsi_yesterday = df.iloc[i - 1]["rsi"]
 
         if not in_trade:
-            # Entry signal on today's close, execute at tomorrow's open
-            if prev_rsi < rsi_buy:
-                entry_price = df.iloc[i + 1]["open"]  # next-day open
-                entry_date  = df.index[i + 1]
-                entry_idx   = i + 1
-                in_trade = True
+            # Entry: RSI was oversold yesterday, buy at today's open
+            if rsi_yesterday < BT["rsi_buy"]:
+                entry_price = df.iloc[i]["open"]
+                entry_date  = df.index[i]
+                entry_idx   = i
+                in_trade    = True
 
         else:
             days_held = i - entry_idx
-            # Exit: RSI overbought OR max hold period
-            if prev_rsi > rsi_sell or days_held >= holding_limit_days:
-                exit_price = df.iloc[i + 1]["open"]
-                exit_date  = df.index[i + 1]
-                ret = (exit_price - entry_price) / entry_price * 100
+            # Exit: RSI recovered OR we've held too long
+            if (rsi_yesterday > BT["rsi_sell"] or
+                days_held >= BT["max_hold"]):
+                exit_price = df.iloc[i]["open"]
+                exit_date  = df.index[i]
+                return_pct = (exit_price - entry_price) / entry_price * 100
+
                 trades.append({
-                    "entry_date":  entry_date.date(),
-                    "exit_date":   exit_date.date(),
-                    "entry_price": entry_price,
-                    "exit_price":  exit_price,
-                    "return_pct":  ret,
-                    "days_held":   days_held,
-                    "win":         ret > 0,
+                    "entry_date":   entry_date.date(),
+                    "exit_date":    exit_date.date(),
+                    "entry_price":  round(entry_price, 2),
+                    "exit_price":   round(exit_price, 2),
+                    "days_held":    days_held,
+                    "return_pct":   round(return_pct, 2),
+                    "win":          return_pct > 0,
+                    "exit_reason":  ("RSI_SELL" if rsi_yesterday > BT["rsi_sell"]
+                                     else "MAX_HOLD"),
                 })
                 in_trade = False
 
-    return {"ticker": ticker, "trades": trades, "params": {
-        "rsi_buy": rsi_buy, "rsi_sell": rsi_sell,
-        "holding_limit_days": holding_limit_days, "period": period,
-    }}</code></pre>
-            </div>
-        </div>
+    return trades
 
-        <!-- Section 3: Analyse Results -->
-        <div class="section">
-            <h2>Analyse Results</h2>
-            <p>Once you've generated trades, this function computes the key performance metrics and prints a readable report with the last 10 trades.</p>
-
-            <div class="code-wrapper">
-                <div class="code-header">
-                    <span class="code-label">analyse.py</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>def analyse_backtest(result: dict) -> None:
-    """Print a full backtest report."""
-    trades = result["trades"]
-    ticker = result["ticker"]
-    params = result["params"]
-
+# ── Analyse and print results ─────────────────────────────────────
+def print_results(ticker: str, trades: list) -> None:
+    """Print backtest results in a human-readable format."""
     if not trades:
-        print(f"No trades generated for {ticker} with these parameters.")
+        print(f"\n{ticker}: No trades — try widening RSI thresholds.")
         return
 
     returns = [t["return_pct"] for t in trades]
     wins    = [r for r in returns if r > 0]
     losses  = [r for r in returns if r <= 0]
-
-    win_rate   = len(wins) / len(returns) * 100
+    win_rate = len(wins) / len(returns) * 100
     avg_return = sum(returns) / len(returns)
-    avg_win    = sum(wins) / len(wins) if wins else 0
-    avg_loss   = sum(losses) / len(losses) if losses else 0
-    best_trade = max(returns)
-    worst_trade= min(returns)
-
-    # Max drawdown (peak-to-trough on cumulative returns)
-    cum = 0
-    peak = 0
-    max_dd = 0
-    for r in returns:
-        cum += r
-        if cum > peak:
-            peak = cum
-        dd = peak - cum
-        if dd > max_dd:
-            max_dd = dd
-
     avg_days = sum(t["days_held"] for t in trades) / len(trades)
 
-    print(f"\n{'═'*55}")
-    print(f"  Backtest: {ticker} | RSI({params['rsi_buy']}/{params['rsi_sell']}) | {params['period']}")
-    print(f"{'═'*55}")
+    # Max drawdown: worst peak-to-trough on cumulative returns
+    cumulative, peak, max_dd = 0, 0, 0
+    for r in returns:
+        cumulative += r
+        peak = max(peak, cumulative)
+        max_dd = max(max_dd, peak - cumulative)
+
+    print(f"\n{'🦞 OpenClaw Backtest Results':=^55}")
+    print(f"  Ticker:          {ticker}")
+    print(f"  Strategy:        RSI Mean Reversion")
+    print(f"  Parameters:      Buy < {BT['rsi_buy']} | Sell > {BT['rsi_sell']} | "
+          f"Max hold {BT['max_hold']}d")
+    print(f"  Period:          {BT['period']}")
+    print(f"{'─'*55}")
     print(f"  Total trades:    {len(trades)}")
     print(f"  Win rate:        {win_rate:.1f}%")
-    print(f"  Avg return/trade:{avg_return:+.2f}%")
-    print(f"  Avg win:         {avg_win:+.2f}%")
-    print(f"  Avg loss:        {avg_loss:+.2f}%")
-    print(f"  Best trade:      {best_trade:+.2f}%")
-    print(f"  Worst trade:     {worst_trade:+.2f}%")
+    print(f"  Avg return:      {avg_return:+.2f}% per trade")
+    print(f"  Best trade:      {max(returns):+.2f}%")
+    print(f"  Worst trade:     {min(returns):+.2f}%")
     print(f"  Max drawdown:    -{max_dd:.2f}%")
-    print(f"  Avg days held:   {avg_days:.1f}")
+    print(f"  Avg hold time:   {avg_days:.1f} days")
     print(f"{'─'*55}")
-
-    # Last 10 trades
-    print(f"\n  Last 10 trades:")
-    print(f"  {'Entry':<12} {'Exit':<12} {'Entry $':>9} {'Exit $':>9} {'Return':>8} {'Days':>5}")
-    for t in trades[-10:]:
-        arrow = "✓" if t["win"] else "✗"
+    print(f"\n  Last 5 trades:")
+    print(f"  {'Entry':<12} {'Exit':<12} {'Return':>8} {'Days':>5} "
+          f"{'Exit Reason':<12}")
+    for t in trades[-5:]:
+        icon = "✓" if t["win"] else "✗"
         print(f"  {str(t['entry_date']):<12} {str(t['exit_date']):<12} "
-              f"${t['entry_price']:>8.2f} ${t['exit_price']:>8.2f} "
-              f"{t['return_pct']:>+7.2f}% {t['days_held']:>5}  {arrow}")
+              f"{t['return_pct']:>+7.2f}% {t['days_held']:>5}  "
+              f"{icon} {t['exit_reason']}")
 
-result = backtest_rsi_mean_reversion("AAPL", period="5y", rsi_buy=30, rsi_sell=60)
-analyse_backtest(result)</code></pre>
-            </div>
+# ── Run for all tickers in config ────────────────────────────────
+for ticker in cfg["watchlist"]["tickers"]:
+    trades = run_backtest(ticker)
+    print_results(ticker, trades)</code></pre>
 
-            <p style="margin-top: 20px;"><strong>OpenClaw Backtest Output:</strong></p>
-            <div class="callout" style="background: rgba(13, 148, 136, 0.15); border-left: 4px solid #0d9488; padding: 20px 24px;">
-                <pre style="background: #0f172a; padding: 16px; border: 1px solid #334155; border-radius: 6px; font-size: 0.9rem; color: #94a3b8; margin: 0;"><code>🦞 OpenClaw Backtest Report
-═══════════════════════════════════════════════════════
-  SPY | RSI(30/60) | 5y
-═══════════════════════════════════════════════════════
-  Total trades:     31
-  Win rate:         58.1%
-  Avg return/trade: +1.84%
-  Avg win:         +3.12%
-  Avg loss:        -1.56%
-  Best trade:      +7.41%
-  Worst trade:     -5.23%
-  Max drawdown:    -8.64%
-  Avg days held:   19.2
-─────────────────────────────────────────────────────
+    <h3>How This Code Works (Plain English)</h3>
 
-  Last 10 trades:
-  Entry        Exit         Entry $    Exit $    Return   Days
-  2024-02-15   2024-03-01   $425.32    $432.87   +1.77%    15  ✓
-  2024-03-10   2024-03-28   $438.15    $441.65   +0.80%    18  ✓
-  2024-04-05   2024-04-19   $441.12    $434.78   -1.43%    14  ✗</code></pre>
-            </div>
-        </div>
+    <ol>
+      <li><strong>Load config:</strong> Read your ta-config.yaml file to get strategy parameters and tickers.</li>
+      <li><strong>Download data:</strong> For each ticker, fetch daily OHLCV (open, high, low, close, volume) data from yfinance.</li>
+      <li><strong>Calculate RSI:</strong> Use pandas_ta to compute the 14-period RSI for each day.</li>
+      <li><strong>Run backtest:</strong> Loop through each day. If yesterday's RSI was below your buy threshold, enter at today's open. If RSI recovers above your sell threshold, or if you've held for max_hold days, exit at today's open.</li>
+      <li><strong>Record trades:</strong> For each completed trade, store entry price, exit price, days held, and whether it was a win or loss.</li>
+      <li><strong>Calculate metrics:</strong> Compute win rate, average return, maximum drawdown, and other statistics.</li>
+      <li><strong>Print results:</strong> Display a summary table for each ticker.</li>
+    </ol>
 
-        <!-- Section 4: Parameter Sweep -->
-        <div class="section">
-            <h2>Parameter Sweep — Find the Best RSI Thresholds</h2>
-            <p>Use a parameter sweep to understand how sensitive your strategy is to different RSI buy/sell levels. <strong>⚠️ WARNING:</strong> Choosing the "best" parameters from this table is overfitting. Use it for understanding sensitivity, not picking parameters.</p>
-
-            <div class="code-wrapper">
-                <div class="code-header">
-                    <span class="code-label">parameter_sweep.py</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>def rsi_parameter_sweep(ticker: str, period: str = "5y") -> pd.DataFrame:
-    """
-    Test multiple RSI buy/sell combinations and compare results.
-    WARNING: choosing the 'best' params from this table is overfitting.
-    Use it for understanding sensitivity, not picking parameters.
-    """
-    buy_levels  = [20, 25, 30, 35]
-    sell_levels = [55, 60, 65, 70]
-
-    rows = []
-    for buy in buy_levels:
-        for sell in sell_levels:
-            if sell <= buy + 20:
-                continue  # Nonsensical combination
-            result = backtest_rsi_mean_reversion(ticker, period, buy, sell)
-            trades = result["trades"]
-            if not trades:
-                continue
-            returns = [t["return_pct"] for t in trades]
-            rows.append({
-                "rsi_buy":    buy,
-                "rsi_sell":   sell,
-                "n_trades":   len(trades),
-                "win_rate":   round(len([r for r in returns if r > 0]) / len(returns) * 100, 1),
-                "avg_return": round(sum(returns) / len(returns), 2),
-                "total_return": round(sum(returns), 2),
-            })
-
-    df = pd.DataFrame(rows).sort_values("avg_return", ascending=False)
-    print(f"\n{'═'*60}")
-    print(f"  RSI Parameter Sweep: {ticker} | {period}")
-    print(f"  ⚠️  Selecting best params from this table = overfitting")
-    print(f"{'═'*60}")
-    print(df.to_string(index=False))
-    return df
-
-sweep = rsi_parameter_sweep("SPY", period="5y")</code></pre>
-            </div>
-
-            <p style="margin-top: 20px;">This produces a sorted table you can inspect:</p>
-            <div style="overflow-x: auto;">
-                <table style="font-size: 0.9rem;">
-                    <thead>
-                        <tr>
-                            <th>RSI Buy</th>
-                            <th>RSI Sell</th>
-                            <th>N Trades</th>
-                            <th>Win Rate</th>
-                            <th>Avg Return</th>
-                            <th>Total Return</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>30</td>
-                            <td>65</td>
-                            <td>38</td>
-                            <td>55.3%</td>
-                            <td>+0.72%</td>
-                            <td>+27.4%</td>
-                        </tr>
-                        <tr>
-                            <td>25</td>
-                            <td>60</td>
-                            <td>45</td>
-                            <td>51.1%</td>
-                            <td>+0.64%</td>
-                            <td>+28.8%</td>
-                        </tr>
-                        <tr>
-                            <td>30</td>
-                            <td>60</td>
-                            <td>42</td>
-                            <td>52.4%</td>
-                            <td>+0.62%</td>
-                            <td>+26.0%</td>
-                        </tr>
-                        <tr>
-                            <td>35</td>
-                            <td>70</td>
-                            <td>28</td>
-                            <td>46.4%</td>
-                            <td>+0.41%</td>
-                            <td>+11.5%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="callout">
-                <strong>Don't fall into the overfitting trap:</strong> If you pick (30, 65) because it has the highest win rate, you're optimizing the historical data. The best historical parameters rarely remain best on new data. Instead, pick parameters before backtesting (based on theory or convention), then use the sweep to stress-test that choice.
-            </div>
-        </div>
-
-        <!-- Section 5: Buy-and-Hold Comparison -->
-        <div class="section">
-            <h2>Comparing Buy-and-Hold vs Strategy</h2>
-            <p>A strategy only matters if it beats the alternative — which for most stocks is simply buying and holding. Here's how to compare:</p>
-
-            <div class="code-wrapper">
-                <div class="code-header">
-                    <span class="code-label">compare.py</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>def vs_buy_hold(result: dict, ticker: str, period: str = "5y") -> None:
-    """Compare strategy total return vs simple buy-and-hold."""
-    df = yf.download(ticker, period=period, interval="1d", progress=False)
-    df.columns = [c.lower() for c in df.columns]
-    df = df.dropna()
-
-    buy_hold = (df["close"].iloc[-1] - df["close"].iloc[0]) / df["close"].iloc[0] * 100
-
-    trades = result["trades"]
-    strategy_total = sum(t["return_pct"] for t in trades)
-
-    print(f"\n  Buy & Hold ({period}): {buy_hold:+.1f}%")
-    print(f"  Strategy total:      {strategy_total:+.1f}%  ({len(trades)} trades)")
-    print(f"  Note: strategy returns are summed, not compounded.")
-    print(f"  Market invested:     {len(trades) * (sum(t['days_held'] for t in trades)/len(trades) if trades else 0):.0f} avg days total.")
-
-vs_buy_hold(result, "AAPL", "5y")</code></pre>
-            </div>
-
-            <p style="margin-top: 20px;"><strong>Example output:</strong></p>
-            <pre style="background: #0f172a; padding: 16px; border: 1px solid #334155; border-radius: 6px; font-size: 0.9rem; color: #94a3b8;"><code>  Buy & Hold (5y): +45.8%
-  Strategy total:  +36.5%  (42 trades)
-  Note: strategy returns are summed, not compounded.
-  Market invested: 768 avg days total.</code></pre>
-
-            <p style="margin-top: 20px;">In this case, the RSI strategy beat buy-and-hold. But notice: the strategy was in the market only 768 days total (out of 1825 days). That means it was <strong>sitting in cash 60% of the time</strong>. So the per-day return is better, even if the total return looks lower.</p>
-        </div>
-
-        <!-- Section 6: Common Backtest Mistakes -->
-        <div class="section">
-            <h2>Common Backtest Mistakes</h2>
-            <p>Here are the most common pitfalls that make backtests look better than they are:</p>
-
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Mistake</th>
-                            <th>What Happens</th>
-                            <th>How to Avoid</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Look-ahead bias</strong></td>
-                            <td>Signal uses future data (e.g., using close price before market open)</td>
-                            <td>Always use <code>.shift(1)</code> before acting. Signal on yesterday's close, execute on today's open.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Survivorship bias</strong></td>
-                            <td>Only testing winners; ignores delisted or bankrupt stocks</td>
-                            <td>Use point-in-time universe data. Know which stocks existed when.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Overfitting</strong></td>
-                            <td>Tune parameters to history; works great on past data, fails on new data</td>
-                            <td>Test on out-of-sample period. Use only standard parameter ranges.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Ignoring costs</strong></td>
-                            <td>Returns look better than reality</td>
-                            <td>Subtract 0.1–0.3% per trade (commission + slippage).</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Small sample</strong></td>
-                            <td>5 trades = huge variance, results are noise</td>
-                            <td>Need 30+ trades minimum for meaningful signal.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Data snooping</strong></td>
-                            <td>Test until something "works", claim it's a discovery</td>
-                            <td>Pre-commit to hypothesis first. Don't mine for p-values.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Section 7: Key Metrics Reference -->
-        <div class="section">
-            <h2>Key Backtest Metrics</h2>
-            <p>Here's a quick reference for interpreting backtest results:</p>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Metric</th>
-                        <th>Good Range</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Win Rate</strong></td>
-                        <td>45–65%</td>
-                        <td>High win rate alone isn't enough — check avg win vs avg loss. A 70% win rate with 0.5% wins and 2% losses is bad.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Avg Return/Trade</strong></td>
-                        <td>&gt; 0.5%</td>
-                        <td>After costs (0.2% per trade), must beat 0. If avg return is 0.3%, you're negative after costs.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Max Drawdown</strong></td>
-                        <td>&lt; 20%</td>
-                        <td>Worst peak-to-trough loss. Tells you the pain during the strategy. Higher = less risk-adjusted.</td>
-                    </tr>
-                    <tr>
-                        <td><strong># Trades</strong></td>
-                        <td>&gt; 30</td>
-                        <td>Fewer = statistically meaningless. 100+ trades = better signal.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Sharpe Ratio</strong></td>
-                        <td>&gt; 1.0</td>
-                        <td>avg_return / std_dev. Proxy: > 1 means risk-adjusted return is decent.</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="callout">
-                <strong>One important caveat:</strong> Backtests are always biased optimistic. Historical data is clean, commissions are small, and you know all past prices. Real trading adds friction. Assume your actual edge is 30–50% of the backtest edge.
-            </div>
-        </div>
-
-        <!-- Section 8: Putting It Together -->
-        <div class="section">
-            <h2>Putting It All Together</h2>
-            <p>Here's a complete script that runs a backtest, analyzes it, and compares to buy-and-hold:</p>
-
-            <div class="code-wrapper">
-                <div class="code-header">
-                    <span class="code-label">full_example.py</span>
-                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                </div>
-                <pre><code>#!/usr/bin/env python3
-"""Complete backtest workflow."""
-
-import yfinance as yf
-import pandas_ta as ta
-import pandas as pd
-
-# [Include backtest_rsi_mean_reversion, analyse_backtest,
-#  vs_buy_hold, rsi_parameter_sweep functions above]
-
-if __name__ == "__main__":
-    ticker = "AAPL"
-    period = "5y"
-
-    print(f"\n🦎 Running backtest for {ticker}...")
-
-    # Run backtest with standard parameters
-    result = backtest_rsi_mean_reversion(
-        ticker=ticker,
-        period=period,
-        rsi_buy=30,
-        rsi_sell=60,
-        holding_limit_days=30
-    )
-
-    # Analyse
-    analyse_backtest(result)
-
-    # Compare to buy-and-hold
-    vs_buy_hold(result, ticker, period)
-
-    # Optional: run parameter sweep
-    print(f"\n\n📊 Running parameter sweep...")
-    sweep = rsi_parameter_sweep(ticker, period)
-
-    print("\n✓ Backtest complete. Remember:")
-    print("  - These are historical results only")
-    print("  - Real trading has costs and slippage")
-    print("  - Don't overfit to past data")</code></pre>
-            </div>
-        </div>
-
-        <!-- Navigation between parts -->
-        <div class="nav-parts">
-            <div class="nav-part">
-                <div class="nav-part-label">← Part 3</div>
-                <a href="ta-alerts.html">Signal Alerts</a>
-            </div>
-            <div class="nav-part">
-                <div class="nav-part-label">Part 5 →</div>
-                <a href="ta-charts.html">Chart Generation</a>
-            </div>
-        </div>
-
+    <div class="callout">
+      <strong>Why next-day's open?</strong> We use tomorrow's opening price for all entries and exits. Why? Because on the day the signal fires (RSI below 30 closes), that information is only available after the close bell. You can't act on it until the next day's open. This prevents "look-ahead bias" — using data that wasn't available yet.
     </div>
+  </section>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Claw Street Terminal. Part of the Technical Analysis Automation series.</p>
-        <p style="margin-top: 10px;">Previous: <a href="ta-alerts.html" style="color: #0d9488;">Signal Alerts</a> · Next: <a href="ta-charts.html" style="color: #0d9488;">Chart Generation</a></p>
-    </footer>
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 6: READING THE RESULTS                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-number">Section 6</div>
+    <h2>How to Read the Results</h2>
 
-    <script>
-        // Hamburger menu toggle
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
+    <p>After running the backtest, you'll see output that looks like this for each ticker:</p>
 
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navLinks.classList.toggle('open');
-        });
+    <div class="results-box">🦞 OpenClaw Backtest Results ═══════════════════════════════════
+  Ticker:          AAPL
+  Strategy:        RSI Mean Reversion
+  Parameters:      Buy &lt; 30 | Sell &gt; 60 | Max hold 30d
+  Period:          5y
+───────────────────────────────────────────────────────────────
+  Total trades:    18
+  Win rate:        61.1%
+  Avg return:      +1.8% per trade
+  Best trade:      +12.4%
+  Worst trade:     -8.2%
+  Max drawdown:    -14.6%
+  Avg hold time:   12.3 days
+───────────────────────────────────────────────────────────────
 
-        // Close menu when link is clicked
-        const navAnchors = navLinks.querySelectorAll('a');
-        navAnchors.forEach(anchor => {
-            anchor.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('open');
-            });
-        });
+  Last 5 trades:
+  Entry        Exit         Return   Days  Exit Reason
+  2023-06-15   2023-06-28   +5.2%      13  ✓ RSI_SELL
+  2023-08-02   2023-08-11   -2.1%       9  ✗ MAX_HOLD
+  2023-10-19   2023-11-02   +3.7%      14  ✓ RSI_SELL
+  2024-01-09   2024-01-30   +1.2%      21  ✓ MAX_HOLD
+  2024-03-12   2024-03-19   +2.8%       7  ✓ RSI_SELL</div>
 
-        // Copy button functionality
-        function copyCode(button) {
-            const codeBlock = button.closest('.code-wrapper').querySelector('code');
-            const text = codeBlock.textContent;
+    <h3>What Each Metric Means</h3>
 
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = button.textContent;
-                button.textContent = 'Copied!';
-                button.classList.add('copied');
+    <ul>
+      <li>
+        <strong>Total trades:</strong> How many buy-sell cycles were completed. More trades = more statistical confidence. Fewer than ~20 trades, and you might just be seeing luck.
+      </li>
+      <li>
+        <strong>Win rate 61.1%:</strong> 61% of your trades were profitable. Above 50% is generally good, but win rate alone doesn't tell the full story. A 55% win rate with huge average winners beats a 75% win rate with tiny average winners.
+      </li>
+      <li>
+        <strong>Avg return +1.8%:</strong> On average each trade made 1.8%. Multiply by hold time: if you held 12 days, that's roughly 15% annualized return (rough estimate — doesn't account for compounding or overlapping trades). Whether that's good depends on your goals and risk tolerance.
+      </li>
+      <li>
+        <strong>Best trade +12.4% / Worst trade -8.2%:</strong> Your range. Good news: no single loss wiped you out. Bad news: the biggest win is only 50% bigger than the biggest loss, so drawdowns could hurt.
+      </li>
+      <li>
+        <strong>Max drawdown -14.6%:</strong> At the worst point in the backtest period, your cumulative losses from the previous peak hit 14.6%. Ask yourself: <strong>"Could I stomach that losing streak without panic-selling?"</strong> If the answer is no, this strategy might be too risky for you psychologically.
+      </li>
+      <li>
+        <strong>Avg hold time 12.3 days:</strong> You were in each trade for about 2 weeks on average. Short holds = lower transaction costs (fewer commissions), but also less time for the trade to work.
+      </li>
+    </ul>
 
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.classList.remove('copied');
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy:', err);
-            });
-        }
-    </script>
+    <div class="callout">
+      <strong>The real test:</strong> After reading these results, would you actually trade this strategy with real money? If yes, you're ready to test it live (with small position sizes first). If no, adjust the parameters or try a different strategy.
+    </div>
+  </section>
 
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "Simple TA Backtesting with Python",
-      "description": "Test indicator-based trading strategies on historical data. Learn backtesting fundamentals: win rate, drawdown, overfitting risks, and honest performance interpretation.",
-      "author": {
-        "@type": "Organization",
-        "name": "Claw Street Terminal"
-      },
-      "datePublished": "2026-03-28",
-      "publisher": {
-        "@type": "Organization",
-        "name": "learnopenclaw.org"
-      },
-      "image": "https://learnopenclaw.org/images/ta-backtest.jpg"
-    }
-    </script>
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- SECTION 7: COMMON BACKTEST TRAPS                                -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="section-number">Section 7</div>
+    <h2>Common Backtest Traps to Avoid</h2>
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://learnopenclaw.org/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Terminal",
-          "item": "https://learnopenclaw.org/terminal"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Technical Analysis Automation",
-          "item": "https://learnopenclaw.org/ta-automation"
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "name": "Simple Backtesting",
-          "item": "https://learnopenclaw.org/ta-backtest.html"
-        }
-      ]
-    }
-    </script>
+    <p>Backtesting is powerful, but it's easy to fool yourself. Here are the most common pitfalls:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Trap</th>
+          <th scope="col">What Happens</th>
+          <th scope="col">How to Avoid It</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Picking parameters after seeing results</strong></td>
+          <td>You've memorized history, not found an edge. You tweak RSI_buy to 28, then 26, until results look perfect.</td>
+          <td>Decide your parameters <em>before</em> you look at results. Run once. Don't fiddle.</td>
+        </tr>
+        <tr>
+          <td><strong>Too few trades</strong></td>
+          <td>5 trades has huge variance — could be luck. One good trade can skew the whole result.</td>
+          <td>Aim for at least 20–30 trades before drawing conclusions. Longer test periods help.</td>
+        </tr>
+        <tr>
+          <td><strong>Testing only one stock</strong></td>
+          <td>AAPL might work; SPY might not. You're overfitting to a single ticker's behavior.</td>
+          <td>Test across several tickers (at least 3–5). If it only works on one, it's probably luck.</td>
+        </tr>
+        <tr>
+          <td><strong>Ignoring max drawdown</strong></td>
+          <td>A 60% win rate means nothing if one loss wipes you out. Psychological collapse follows.</td>
+          <td>Always check the worst-case drawdown. Ask: "Can I afford this without panic-selling?"</td>
+        </tr>
+        <tr>
+          <td><strong>Not testing in different market conditions</strong></td>
+          <td>2019–2021 bull market results don't apply to bear markets. Strategy breaks when regime changes.</td>
+          <td>Test across periods that include bull <em>and</em> bear markets. Test recent data separately.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warning">
+      <strong>The biggest trap:</strong> Running a backtest, seeing good results, and immediately deploying real money. Always do a "walk-forward" test: backtest on older data, then test the same rules on recent data you didn't include in the original backtest. If recent results are much worse, your strategy was probably overfit to the past.
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- PREV/NEXT                                                        -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <div class="prev-next">
+    <a href="/ta-alerts.html">← Part 3: Signal Alerts</a>
+    <a href="/ta-charts.html" class="next">Part 5: Chart Generation →</a>
+  </div>
+
+</main>
+
+<!-- ───────────────────────────────────────────────────────────────── -->
+<!-- SCRIPTS                                                            -->
+<!-- ───────────────────────────────────────────────────────────────── -->
+<script>
+  // Hamburger menu toggle
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const navLinks = document.getElementById('navLinks');
+
+  hamburgerBtn.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+
+  // Close menu when a link is clicked
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+    });
+  });
+
+  // Copy code block helper
+  document.querySelectorAll('pre code').forEach(codeBlock => {
+    const pre = codeBlock.parentElement;
+    const button = document.createElement('button');
+    button.textContent = 'Copy';
+    button.style.cssText = `
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 4px 12px;
+      background: #0d9488;
+      color: #1c1917;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    `;
+    button.onmouseover = () => button.style.opacity = '1';
+    button.onmouseout = () => button.style.opacity = '0.7';
+    button.onclick = () => {
+      navigator.clipboard.writeText(codeBlock.textContent);
+      const originalText = button.textContent;
+      button.textContent = 'Copied!';
+      setTimeout(() => { button.textContent = originalText; }, 2000);
+    };
+    pre.style.position = 'relative';
+    pre.appendChild(button);
+  });
+</script>
 
 </body>
 </html>

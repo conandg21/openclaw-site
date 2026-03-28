@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Core TA Indicators with pandas-ta | Claw Street Terminal</title>
+  <title>Core Technical Indicators Explained | OpenClaw TA Automation</title>
+  <meta name="description" content="Learn what technical indicators measure, why traders watch them, and how OpenClaw calculates them automatically. Plain English explanations for beginners.">
   <link rel="canonical" href="https://learnopenclaw.org/ta-indicators.html">
   <style>
     * {
@@ -12,14 +13,18 @@
       box-sizing: border-box;
     }
 
-    html, body {
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       background: #1c1917;
       color: #e7e5e4;
       line-height: 1.6;
     }
 
-    /* Navigation */
+    /* NAVIGATION */
     .site-nav {
       background: #1c1917;
       border-bottom: 2px solid #0d9488;
@@ -47,10 +52,6 @@
       white-space: nowrap;
     }
 
-    .nav-logo:hover {
-      color: #10b981;
-    }
-
     .nav-links {
       display: none;
     }
@@ -75,7 +76,6 @@
       font-size: 1rem;
       font-weight: 500;
       padding: 6px 0;
-      transition: color 0.2s;
     }
 
     .nav-links a:hover {
@@ -90,36 +90,7 @@
     }
 
     .search-form {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #292520;
-      border: 1px solid #0d9488;
-      border-radius: 4px;
-      padding: 6px 12px;
-      flex-shrink: 0;
-    }
-
-    .search-form input {
-      background: transparent;
-      border: none;
-      color: #e7e5e4;
-      outline: none;
-      width: 140px;
-      font-size: 0.875rem;
-    }
-
-    .search-form input::placeholder {
-      color: #78716b;
-    }
-
-    .search-form button {
-      background: none;
-      border: none;
-      color: #0d9488;
-      cursor: pointer;
-      font-size: 1rem;
-      padding: 0;
+      display: none;
     }
 
     .hamburger {
@@ -147,41 +118,32 @@
       background: #0d9488;
     }
 
-    .hamburger.active span:nth-child(1) {
-      transform: rotate(45deg) translate(7px, 7px);
-    }
-
-    .hamburger.active span:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(6px, -6px);
-    }
-
-    /* Breadcrumb */
-    .breadcrumb {
-      max-width: 1200px;
+    /* MAIN LAYOUT */
+    .container {
+      max-width: 900px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 0 20px;
+    }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      padding: 20px 0;
       font-size: 0.875rem;
-      color: #92807f;
+      color: #78716c;
+      margin-top: 20px;
     }
 
     .breadcrumb a {
       color: #0d9488;
       text-decoration: none;
-      transition: color 0.2s;
     }
 
     .breadcrumb a:hover {
-      color: #10b981;
+      text-decoration: underline;
     }
 
-    /* Disclaimer */
+    /* DISCLAIMER */
     .disclaimer {
-      max-width: 1200px;
-      margin: 20px auto;
       background: #f0fdfa;
       border-left: 4px solid #0d9488;
       padding: 12px 24px;
@@ -190,265 +152,313 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      margin: 30px 0;
       border-radius: 4px;
     }
 
     .disclaimer-icon {
+      font-size: 1.25rem;
       flex-shrink: 0;
-      font-size: 1.2rem;
     }
 
-    /* Hero Section */
+    /* HERO SECTION */
     .hero {
-      background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
-      color: #fff;
-      padding: 60px 20px;
-      text-align: center;
-    }
-
-    .hero-inner {
-      max-width: 900px;
-      margin: 0 auto;
+      margin: 60px 0 80px;
     }
 
     .hero-tag {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      padding: 6px 14px;
-      border-radius: 20px;
+      color: #0d9488;
       font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      margin-bottom: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
     }
 
-    .hero h1 {
+    .hero-title {
       font-size: 3rem;
       font-weight: 800;
       margin-bottom: 16px;
-      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .hero-subtitle {
       font-size: 1.1rem;
-      margin-bottom: 28px;
-      color: rgba(255, 255, 255, 0.95);
-      line-height: 1.7;
+      color: #a8a29e;
+      margin-bottom: 24px;
+      line-height: 1.8;
     }
 
     .hero-pills {
       display: flex;
-      gap: 12px;
-      justify-content: center;
       flex-wrap: wrap;
+      gap: 12px;
     }
 
     .pill {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #fff;
+      background: rgba(13, 148, 136, 0.1);
+      border: 1px solid #0d9488;
+      color: #0d9488;
       padding: 8px 16px;
       border-radius: 20px;
       font-size: 0.875rem;
       font-weight: 600;
     }
 
-    /* Main Content */
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 40px 20px;
+    /* CONTENT SECTIONS */
+    section {
+      margin: 80px 0;
     }
 
-    .section {
-      margin-bottom: 60px;
-    }
-
-    .section h2 {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
-      color: #0d9488;
-      font-weight: 700;
-    }
-
-    .section > p:first-of-type {
-      color: #b5aea8;
-      margin-bottom: 20px;
-      font-size: 0.95rem;
-    }
-
-    .section h3 {
-      font-size: 1.1rem;
-      margin-top: 24px;
-      margin-bottom: 12px;
+    h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 24px;
       color: #e7e5e4;
-      font-weight: 600;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-top: 32px;
+      margin-bottom: 16px;
+      color: #e7e5e4;
     }
 
     p {
       margin-bottom: 16px;
-      color: #d2cec9;
-      line-height: 1.7;
+      color: #a8a29e;
+      line-height: 1.8;
     }
 
-    /* Code Blocks */
-    .code-block {
-      background: #2b2622;
-      border: 1px solid #3d3935;
+    strong {
+      color: #0d9488;
+      font-weight: 700;
+    }
+
+    em {
+      color: #d4af37;
+    }
+
+    /* INTRO TABLE */
+    .intro-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 32px 0;
+      background: #262420;
       border-radius: 8px;
-      padding: 0;
-      margin: 20px 0;
       overflow: hidden;
+    }
+
+    .intro-table th,
+    .intro-table td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid #3f3735;
+    }
+
+    .intro-table th {
+      background: #1c1917;
+      color: #0d9488;
+      font-weight: 700;
+      border-bottom: 2px solid #0d9488;
+    }
+
+    .intro-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .intro-table td {
+      color: #a8a29e;
+    }
+
+    .intro-table strong {
+      color: #e7e5e4;
+    }
+
+    /* RSI SCALE */
+    .rsi-scale {
+      background: #262420;
+      border-left: 4px solid #0d9488;
+      padding: 24px;
+      margin: 32px 0;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+
+    .rsi-scale-line {
+      color: #78716c;
+      margin-bottom: 8px;
+      letter-spacing: 0.5em;
+    }
+
+    .rsi-scale-label {
+      color: #a8a29e;
+      font-size: 0.875rem;
+    }
+
+    /* CODE BLOCKS */
+    .code-block {
+      background: #262420;
+      border: 1px solid #3f3735;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 32px 0;
     }
 
     .code-header {
       background: #1c1917;
-      border-bottom: 1px solid #3d3935;
+      border-bottom: 1px solid #3f3735;
       padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-size: 0.875rem;
+      color: #78716c;
     }
 
-    .code-lang {
-      font-size: 0.75rem;
-      font-weight: 700;
+    .code-header span {
+      font-weight: 600;
       color: #0d9488;
-      letter-spacing: 0.05em;
     }
 
     .copy-btn {
       background: #0d9488;
-      color: #1c1917;
       border: none;
+      color: #1c1917;
       padding: 6px 12px;
       border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: background 0.2s;
     }
 
     .copy-btn:hover {
-      background: #10b981;
-      transform: translateY(-1px);
+      background: #0a7a6d;
     }
 
     .copy-btn.copied {
-      background: #10b981;
+      background: #059669;
     }
 
     pre {
       padding: 16px;
       overflow-x: auto;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      font-size: 0.85rem;
-      line-height: 1.5;
     }
 
     code {
-      color: #d2cec9;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #d4af37;
     }
 
-    .keyword { color: #f97316; }
-    .string { color: #86efac; }
-    .number { color: #93c5fd; }
-    .function { color: #a78bfa; }
-    .comment { color: #78716b; }
-
-    /* Tables */
-    .table-wrapper {
-      overflow-x: auto;
-      margin: 20px 0;
+    .code-comment {
+      color: #78716c;
     }
 
-    table {
+    /* LISTS */
+    ul, ol {
+      margin-left: 24px;
+      margin-bottom: 16px;
+    }
+
+    li {
+      margin-bottom: 12px;
+      color: #a8a29e;
+    }
+
+    /* CALLOUT BOXES */
+    .callout {
+      background: rgba(13, 148, 136, 0.08);
+      border-left: 4px solid #0d9488;
+      padding: 16px;
+      margin: 24px 0;
+      border-radius: 4px;
+    }
+
+    .callout p {
+      margin-bottom: 0;
+    }
+
+    /* REFERENCE TABLE */
+    .reference-table {
       width: 100%;
       border-collapse: collapse;
-      background: #2b2622;
-      border: 1px solid #3d3935;
+      margin: 32px 0;
+      background: #262420;
       border-radius: 8px;
       overflow: hidden;
     }
 
-    thead {
-      background: #1c1917;
-    }
-
-    th {
-      padding: 12px 16px;
+    .reference-table th,
+    .reference-table td {
+      padding: 16px;
       text-align: left;
-      font-weight: 700;
+      border-bottom: 1px solid #3f3735;
+    }
+
+    .reference-table th {
+      background: #1c1917;
       color: #0d9488;
-      border-bottom: 2px solid #3d3935;
-      font-size: 0.875rem;
+      font-weight: 700;
+      border-bottom: 2px solid #0d9488;
     }
 
-    td {
-      padding: 12px 16px;
-      border-bottom: 1px solid #3d3935;
-      color: #d2cec9;
-      font-size: 0.875rem;
-    }
-
-    tbody tr:hover {
-      background: #3d3935;
-    }
-
-    tbody tr:last-child td {
+    .reference-table tr:last-child td {
       border-bottom: none;
     }
 
-    /* Navigation Buttons */
+    .reference-table td {
+      color: #a8a29e;
+    }
+
+    /* NAV BETWEEN SECTIONS */
     .section-nav {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-top: 60px;
-      padding-top: 40px;
-      border-top: 1px solid #3d3935;
+      margin: 80px 0 60px;
+      gap: 16px;
     }
 
-    .nav-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 20px;
-      background: #2b2622;
-      border: 1px solid #3d3935;
-      color: #e7e5e4;
+    .nav-link {
+      flex: 1;
+      padding: 16px 20px;
+      background: #262420;
+      border: 1px solid #3f3735;
+      border-radius: 4px;
       text-decoration: none;
-      border-radius: 6px;
-      transition: all 0.2s;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .nav-btn:hover {
-      background: #3d3935;
-      border-color: #0d9488;
       color: #0d9488;
+      font-weight: 600;
+      transition: all 0.3s;
     }
 
-    .nav-btn.prev {
-      justify-self: flex-start;
+    .nav-link:hover {
+      background: #3f3735;
+      border-color: #0d9488;
     }
 
-    .nav-btn.next {
-      justify-self: flex-end;
+    .nav-link.prev {
+      text-align: left;
     }
 
-    /* Footer */
+    .nav-link.next {
+      text-align: right;
+    }
+
+    /* FOOTER */
     footer {
-      background: #1c1917;
-      border-top: 2px solid #0d9488;
+      border-top: 1px solid #3f3735;
+      margin-top: 100px;
       padding: 40px 20px;
       text-align: center;
-      color: #78716b;
+      color: #78716c;
       font-size: 0.875rem;
-      margin-top: 60px;
     }
 
     footer a {
@@ -457,41 +467,12 @@
     }
 
     footer a:hover {
-      color: #10b981;
+      text-decoration: underline;
     }
 
-    /* Utility */
-    .highlight {
-      background: rgba(13, 148, 136, 0.15);
-      color: #10b981;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: monospace;
-      font-size: 0.9em;
-    }
-
-    .info-box {
-      background: rgba(13, 148, 136, 0.1);
-      border: 1px solid rgba(13, 148, 136, 0.3);
-      border-left: 4px solid #0d9488;
-      padding: 16px;
-      border-radius: 6px;
-      margin: 20px 0;
-      color: #d2cec9;
-    }
-
-    .info-box strong {
-      color: #0d9488;
-    }
-
-    strong {
-      color: #e7e5e4;
-      font-weight: 600;
-    }
-
-    /* Responsive */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
-      .hero h1 {
+      .hero-title {
         font-size: 2rem;
       }
 
@@ -499,58 +480,40 @@
         font-size: 1rem;
       }
 
-      .hero-pills {
-        gap: 8px;
-      }
-
-      .pill {
-        font-size: 0.75rem;
-        padding: 6px 12px;
-      }
-
-      .section h2 {
-        font-size: 1.4rem;
-      }
-
-      .search-form input {
-        width: 100px;
+      .intro-table th,
+      .intro-table td {
+        padding: 12px;
+        font-size: 0.9rem;
       }
 
       .section-nav {
         flex-direction: column;
-        gap: 12px;
       }
 
-      .nav-btn {
-        width: 100%;
-        justify-content: center;
-      }
-
-      pre {
-        font-size: 0.75rem;
+      h2 {
+        font-size: 1.5rem;
       }
     }
   </style>
 </head>
 <body>
 
-<!-- Navigation -->
+<!-- NAVIGATION -->
 <nav class="site-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo">🦞 learnopenclaw.org</a>
-    <div class="nav-links" id="navLinks">
+    <a href="/" class="nav-logo">🦙 learnopenclaw.org</a>
+    <div class="nav-links" id="nav-links">
       <a href="/">Home</a>
-      <a href="/blog">Blog</a>
-      <a href="/learn">Learn</a>
-      <a href="/faq">FAQ</a>
-      <a href="/terminal">Terminal</a>
+      <a href="/blog/">Blog</a>
+      <a href="/learn/">Learn</a>
+      <a href="/faq/">FAQ</a>
+      <a href="/terminal/">Terminal</a>
     </div>
     <div class="nav-right">
-      <form class="search-form" onsubmit="event.preventDefault();">
-        <input type="text" placeholder="Search...">
-        <button type="submit">⌕</button>
+      <form class="search-form" action="/search/" method="get">
+        <input type="text" placeholder="Search..." name="q" aria-label="Search">
       </form>
-      <button class="hamburger" id="hamburger">
+      <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
@@ -559,485 +522,532 @@
   </div>
 </nav>
 
-<!-- Breadcrumb -->
-<div class="breadcrumb">
-  <a href="/">Home</a> › <a href="/terminal">Terminal</a> › <a href="/terminal/ta">Technical Analysis Automation</a> › <span>Core Indicators</span>
-</div>
-
-<!-- Disclaimer -->
-<div class="disclaimer">
-  <div class="disclaimer-icon">⚠️</div>
-  <div>Indicators are derived from historical price data. Past patterns do not guarantee future results. Not financial advice.</div>
-</div>
-
-<!-- Hero Section -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-tag">TECHNICAL ANALYSIS · PART 1 OF 5</div>
-    <h1>Core Indicators</h1>
-    <p class="hero-subtitle">Build a complete indicator stack — SMA, EMA, RSI, MACD, and Bollinger Bands — on any ticker in under 10 lines of Python.</p>
-    <div class="hero-pills">
-      <div class="pill">yfinance</div>
-      <div class="pill">pandas-ta</div>
-      <div class="pill">Works on Any Ticker</div>
-    </div>
-  </div>
-</section>
-
-<!-- Main Content -->
 <div class="container">
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="/">Home</a> › <a href="/terminal/">Terminal</a> › <a href="/learn/ta/">Technical Analysis</a> › Core Indicators
+  </div>
 
-  <!-- Section 0: Loading OpenClaw Config -->
-  <section class="section">
-    <h2>0. Loading Your OpenClaw Config</h2>
-    <p>All TA scripts load from a single <strong>ta-config.yaml</strong> file, making it easy to manage your watchlist and signal preferences across all tools in the series.</p>
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <span class="disclaimer-icon">⚠️</span>
+    <p>Technical indicators are tools for pattern recognition, not crystal balls. They reflect past price behavior — they do not predict the future. Not financial advice.</p>
+  </div>
+
+  <!-- HERO SECTION -->
+  <div class="hero">
+    <div class="hero-tag">Technical Analysis · Part 1 of 5</div>
+    <h1 class="hero-title">Core Indicators</h1>
+    <p class="hero-subtitle">Before OpenClaw can alert you to a signal, it needs to understand what that signal means. This module explains the five most important technical indicators — what they measure, why traders watch them, and how OpenClaw calculates them automatically.</p>
+    <div class="hero-pills">
+      <div class="pill">5 Indicators Explained</div>
+      <div class="pill">Plain English First</div>
+      <div class="pill">OpenClaw Ready</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1: WHAT IS A TECHNICAL INDICATOR? -->
+  <section>
+    <h2>What Is a Technical Indicator?</h2>
+
+    <p>A <strong>technical indicator</strong> is a calculation applied to a stock's price or volume history to help spot patterns. Think of it like a weather forecast — it doesn't tell you exactly what will happen, but it helps you make a more informed judgment.</p>
+
+    <p>Here's the key insight: <em>indicators are mirrors of the past</em>. They take historical price data and transform it into a number or signal that helps traders answer questions like:</p>
+
+    <ul>
+      <li>Is this stock in an uptrend or downtrend?</li>
+      <li>Has it been rising so fast it might be due for a pullback?</li>
+      <li>Is there a shift in momentum happening right now?</li>
+      <li>Is the market unusually calm before a big move?</li>
+    </ul>
+
+    <p>These questions matter because traders use them to decide when to enter or exit positions — or when to simply wait on the sidelines.</p>
+
+    <h3>How OpenClaw Fits In</h3>
+
+    <p>OpenClaw calculates indicators automatically whenever a scan or alert runs. You don't write code. You don't pull up charts. Instead, you define your thresholds once in <code>ta-config.yaml</code> — the configuration file that tells OpenClaw what to watch for — and OpenClaw does the math for every ticker in your watchlist, every time it runs.</p>
+
+    <p>This is the whole point of OpenClaw: <em>automation removes the manual work, so you never miss a signal</em>.</p>
+  </section>
+
+  <!-- SECTION 2: THE FIVE INDICATORS -->
+  <section>
+    <h2>The Five Indicators OpenClaw Uses</h2>
+
+    <p>OpenClaw focuses on five core indicators because they answer the most important questions about price movement. Here's a quick overview:</p>
+
+    <table class="intro-table">
+      <thead>
+        <tr>
+          <th scope="col">Indicator</th>
+          <th scope="col">What It Measures</th>
+          <th scope="col">Good For</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>SMA</strong> — Simple Moving Average</td>
+          <td>Average price over N days</td>
+          <td>Spotting trend direction</td>
+        </tr>
+        <tr>
+          <td><strong>EMA</strong> — Exponential Moving Average</td>
+          <td>Weighted average (recent days matter more)</td>
+          <td>Faster trend signals</td>
+        </tr>
+        <tr>
+          <td><strong>RSI</strong> — Relative Strength Index</td>
+          <td>Overbought vs oversold on a 0–100 scale</td>
+          <td>Timing entries and exits</td>
+        </tr>
+        <tr>
+          <td><strong>MACD</strong> — Moving Average Convergence/Divergence</td>
+          <td>Momentum — are two averages converging or diverging?</td>
+          <td>Spotting momentum shifts</td>
+        </tr>
+        <tr>
+          <td><strong>Bollinger Bands</strong></td>
+          <td>Volatility — how wide is the price range?</td>
+          <td>Identifying squeezes and breakouts</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Each of these answers a different question. Together, they give traders a 360-degree view of what the market is doing right now.</p>
+  </section>
+
+  <!-- SECTION 3: MOVING AVERAGES -->
+  <section>
+    <h2>Moving Averages (SMA & EMA)</h2>
+
+    <h3>What It Is</h3>
+
+    <p>A <strong>Simple Moving Average (SMA)</strong> takes the last N closing prices and averages them. A 50-day SMA shows you the average price over the past 50 trading days — it smooths out the daily noise so you can see the underlying trend more clearly.</p>
+
+    <p>Imagine a stock bouncing all over the place day-to-day (that's normal). A moving average is like squinting at a noisy chart — the smaller details blur away, and you see the big picture.</p>
+
+    <p>An <strong>Exponential Moving Average (EMA)</strong> does the same thing but gives more weight to recent prices. If an SMA treats all 50 days equally, an EMA says <em>"the last week matters more than a month ago."</em> This makes EMA react faster to new price action.</p>
+
+    <h3>Why Traders Watch It</h3>
+
+    <p>Traders watch moving averages for two specific reasons:</p>
+
+    <p><strong>1. Price vs Moving Average</strong><br>
+    When a stock's price is above its 50-day SMA, it's generally in an uptrend. When it's below — downtrend. This simple rule helps traders stay on the right side of the trend.</p>
+
+    <p><strong>2. Golden Cross / Death Cross</strong><br>
+    When the 50-day SMA crosses <em>above</em> the 200-day SMA, it's called a <strong>"Golden Cross"</strong> — historically read as a bullish signal that the long-term trend is turning up. The opposite (50-day crossing <em>below</em> 200-day) is a <strong>"Death Cross"</strong> — a bearish signal.</p>
+
+    <h3>What OpenClaw Does With It</h3>
+
+    <p>OpenClaw calculates the 20, 50, and 200-day moving averages for every ticker in your watchlist every time a scan runs. If you have <code>golden_cross: true</code> in your config, it watches for that crossover event and sends an alert the day it happens. No manual chart checking required.</p>
+
+    <h3>The Code</h3>
+
+    <p>Here's what's happening under the hood when OpenClaw runs:</p>
 
     <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">python</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <pre><code><span class="comment"># All TA scripts load from ta-config.yaml</span>
-<span class="keyword">import</span> yaml
-<span class="keyword">import</span> yfinance <span class="keyword">as</span> yf
-<span class="keyword">import</span> pandas_ta <span class="keyword">as</span> ta
-<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+      <div class="code-header"><span>python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+      <pre><code><span class="code-comment"># OpenClaw calculates this automatically — here's what's happening under the hood</span>
+import yfinance as yf
+import pandas_ta as ta
 
-<span class="keyword">def</span> <span class="function">load_config</span>(path: str = <span class="string">"ta-config.yaml"</span>) -> <span class="keyword">dict</span>:
-    <span class="keyword">with</span> <span class="keyword">open</span>(path) <span class="keyword">as</span> f:
-        <span class="keyword">return</span> yaml.safe_load(f)
+<span class="code-comment"># Step 1: Download price history (OpenClaw does this from ta-config.yaml)</span>
+df = yf.download("AAPL", period="1y", interval="1d", progress=False)
+df.columns = [c.lower() for c in df.columns]
 
-cfg = <span class="function">load_config</span>()
-TICKERS = cfg[<span class="string">"watchlist"</span>][<span class="string">"tickers"</span>]
-PERIOD  = cfg[<span class="string">"scanner"</span>][<span class="string">"lookback_period"</span>]
+<span class="code-comment"># Step 2: Calculate moving averages</span>
+df["sma_20"]  = ta.sma(df["close"], length=20)
+df["sma_50"]  = ta.sma(df["close"], length=50)
+df["sma_200"] = ta.sma(df["close"], length=200)
+df["ema_20"]  = ta.ema(df["close"], length=20)
 
-<span class="keyword">print</span>(f<span class="string">"🦞 OpenClaw TA | Watchlist: {len(TICKERS)} tickers | Period: {PERIOD}"</span>)</code></pre>
+<span class="code-comment"># Step 3: Read the latest values</span>
+latest = df.iloc[-1]
+print(f"AAPL Close:   ${latest['close']:.2f}")
+print(f"SMA 20-day:   ${latest['sma_20']:.2f}")
+print(f"SMA 50-day:   ${latest['sma_50']:.2f}")
+print(f"SMA 200-day:  ${latest['sma_200']:.2f}")
+print()
+
+<span class="code-comment"># Step 4: Interpret the position</span>
+if latest["close"] > latest["sma_200"]:
+    print("✅ Price is ABOVE 200-day SMA — long-term uptrend")
+else:
+    print("⚠️  Price is BELOW 200-day SMA — long-term downtrend")
+
+<span class="code-comment"># Step 5: Check for Golden Cross</span>
+prev = df.iloc[-2]
+if latest["sma_50"] > latest["sma_200"] and prev["sma_50"] <= prev["sma_200"]:
+    print("🚨 GOLDEN CROSS detected today!")</code></pre>
     </div>
 
-    <p style="margin-top: 20px; color: #b5aea8;">This pattern is used throughout the series. Store your configuration once in <span class="highlight">ta-config.yaml</span>, and every module — indicators, scanners, alerts, backtester, and chart generator — reads from the same source.</p>
+    <div class="callout">
+      <p><strong>Why This Matters:</strong> OpenClaw runs this exact code every time a scan happens. When it detects a Golden Cross, it fires an alert. You configured it once, and it handles everything else.</p>
+    </div>
   </section>
 
-  <!-- Section 1: Setup & Data Fetch -->
-  <section class="section">
-    <h2>1. Setup & Data Fetch</h2>
-    <p>These are the building blocks that power every OpenClaw TA automation — the scanner, the alerts system, and the chart generator all use this same indicator stack. Start by installing the required packages and fetching historical OHLCV data from Yahoo Finance.</p>
+  <!-- SECTION 4: RSI -->
+  <section>
+    <h2>RSI — Relative Strength Index</h2>
+
+    <h3>What It Is</h3>
+
+    <p>RSI measures how <strong>overbought</strong> or <strong>oversold</strong> a stock is, on a scale from 0 to 100. It compares recent gains to recent losses over a 14-day window.</p>
+
+    <p>Think of it like a pendulum. RSI tells you how far the pendulum has swung in one direction. When it swings too far in one direction, physics suggests it might swing back.</p>
+
+    <p>Here's the scale:</p>
+
+    <div class="rsi-scale">
+      <div class="rsi-scale-line">0 ────────────── 30 ────── 50 ────── 70 ──────────────── 100</div>
+      <div class="rsi-scale-label">Extremely       Oversold  Neutral  Overbought          Extremely</div>
+      <div class="rsi-scale-label">Oversold                                               Overbought</div>
+      <div class="rsi-scale-label">(potential buy)                              (potential sell/caution)</div>
+    </div>
+
+    <h3>Why Traders Watch It</h3>
+
+    <p><strong>RSI below 30:</strong> The stock has been falling hard — some traders see this as an opportunity if the underlying fundamentals are fine. It's exhausted selling.</p>
+
+    <p><strong>RSI above 70:</strong> The stock has been rallying hard — it may be due for a pause or pullback. It's exhausted buying.</p>
+
+    <p><strong>Important caveat:</strong> RSI is most useful when combined with other signals. A stock can stay overbought for a long time in a strong bull market. RSI alone doesn't tell the whole story.</p>
+
+    <h3>What OpenClaw Does With It</h3>
+
+    <p>You set your RSI thresholds once in <code>ta-config.yaml</code>. OpenClaw checks every ticker in your watchlist and fires an alert the moment RSI crosses your threshold. You never have to manually check a chart again.</p>
+
+    <h3>The Code</h3>
 
     <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">python</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <pre><code><span class="comment"># pip install yfinance pandas-ta pandas</span>
-<span class="keyword">import</span> yfinance <span class="keyword">as</span> yf
-<span class="keyword">import</span> pandas_ta <span class="keyword">as</span> ta
-<span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+      <div class="code-header"><span>python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+      <pre><code><span class="code-comment"># RSI calculation — OpenClaw runs this for your entire watchlist</span>
+df["rsi"] = ta.rsi(df["close"], length=14)
 
-<span class="keyword">def</span> <span class="function">get_ohlcv</span>(ticker: str, period: str = <span class="string">"1y"</span>, interval: str = <span class="string">"1d"</span>) -> pd.DataFrame:
-    <span class="string">"""
-    Fetch OHLCV from Yahoo Finance.
-    period: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd, max
-    interval: 1m, 5m, 15m, 30m, 1h, 1d, 1wk, 1mo
-    Note: intraday intervals only available for last 60 days.
-    """</span>
-    df = yf.download(ticker, period=period, interval=interval, progress=<span class="keyword">False</span>)
-    df.columns = [c.lower() <span class="keyword">for</span> c <span class="keyword">in</span> df.columns]
-    df = df[[<span class="string">"open"</span>,<span class="string">"high"</span>,<span class="string">"low"</span>,<span class="string">"close"</span>,<span class="string">"volume"</span>]].dropna()
-    <span class="keyword">print</span>(f<span class="string">"{ticker}: {len(df)} bars | {df.index[0].date()} → {df.index[-1].date()}"</span>)
-    <span class="keyword">return</span> df
+latest_rsi = df["rsi"].iloc[-1]
+print(f"AAPL RSI (14-day): {latest_rsi:.1f}")
 
-df = <span class="function">get_ohlcv</span>(<span class="string">"AAPL"</span>, period=<span class="string">"1y"</span>)</code></pre>
+<span class="code-comment"># OpenClaw's threshold check — matches ta-config.yaml settings</span>
+RSI_OVERSOLD   = 30  <span class="code-comment"># from config: signals.rsi_oversold</span>
+RSI_OVERBOUGHT = 70  <span class="code-comment"># from config: signals.rsi_overbought</span>
+
+if latest_rsi < RSI_OVERSOLD:
+    print(f"📉 RSI OVERSOLD — {latest_rsi:.1f} is below {RSI_OVERSOLD}")
+    print("   OpenClaw would fire an alert here")
+elif latest_rsi > RSI_OVERBOUGHT:
+    print(f"📈 RSI OVERBOUGHT — {latest_rsi:.1f} is above {RSI_OVERBOUGHT}")
+    print("   OpenClaw would fire an alert here")
+else:
+    print(f"😐 RSI neutral at {latest_rsi:.1f} — no alert triggered")</code></pre>
     </div>
 
-    <p>The <span class="highlight">get_ohlcv()</span> function handles downloading, normalizing column names, and validating data. Pass any ticker symbol (stocks, ETFs, crypto) and adjust the <span class="highlight">period</span> and <span class="highlight">interval</span> parameters to suit your analysis horizon.</p>
+    <div class="callout">
+      <p><strong>Customization:</strong> Don't like the 30/70 defaults? Change them in your config. OpenClaw will re-evaluate every scan with your new thresholds.</p>
+    </div>
   </section>
 
-  <!-- Section 2: Moving Averages -->
-  <section class="section">
-    <h2>2. Moving Averages — SMA and EMA</h2>
-    <p>Simple Moving Averages (SMA) and Exponential Moving Averages (EMA) smooth price trends. Use SMA for longer-term trend analysis and EMA for reactive, recent-weighted signals.</p>
+  <!-- SECTION 5: MACD -->
+  <section>
+    <h2>MACD — Moving Average Convergence/Divergence</h2>
+
+    <h3>What It Is</h3>
+
+    <p>MACD tracks the difference between a 12-day EMA and a 26-day EMA. When those two averages are moving apart (diverging), momentum is building. When they're moving together (converging), momentum may be fading.</p>
+
+    <p>Think of it this way: if a fast car and slow car are getting <em>further apart</em>, the fast car is pulling away (momentum building). If they're <em>getting closer together</em>, the gap is closing (momentum fading).</p>
+
+    <p>MACD has three components:</p>
+
+    <ul>
+      <li><strong>MACD Line:</strong> The difference between the 12 and 26-day EMA</li>
+      <li><strong>Signal Line:</strong> A 9-day EMA of the MACD line itself (slower, acts as a trigger)</li>
+      <li><strong>Histogram:</strong> The gap between MACD and Signal — when it crosses zero, that's the signal</li>
+    </ul>
+
+    <h3>Why Traders Watch It</h3>
+
+    <p>A <strong>MACD Bullish Crossover</strong> happens when the MACD line crosses <em>above</em> the Signal line — often read as a momentum shift to the upside. A <strong>Bearish Crossover</strong> is the opposite.</p>
+
+    <p>These crossovers are objective signals. There's no guessing — when the lines cross, traders notice.</p>
+
+    <h3>What OpenClaw Does With It</h3>
+
+    <p>OpenClaw detects MACD crossovers automatically. If you have <code>macd_cross: true</code> in your config, it monitors the lines every scan and alerts you the moment a crossover happens.</p>
+
+    <h3>The Code</h3>
 
     <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">python</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <pre><code><span class="comment"># Simple Moving Average — equal weight over N periods</span>
-df[<span class="string">"sma_20"</span>]  = ta.sma(df[<span class="string">"close"</span>], length=<span class="number">20</span>)
-df[<span class="string">"sma_50"</span>]  = ta.sma(df[<span class="string">"close"</span>], length=<span class="number">50</span>)
-df[<span class="string">"sma_200"</span>] = ta.sma(df[<span class="string">"close"</span>], length=<span class="number">200</span>)
+      <div class="code-header"><span>python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+      <pre><code><span class="code-comment"># MACD — OpenClaw checks this on every scan</span>
+macd_result = ta.macd(df["close"], fast=12, slow=26, signal=9)
 
-<span class="comment"># Exponential Moving Average — more weight on recent prices</span>
-df[<span class="string">"ema_12"</span>] = ta.ema(df[<span class="string">"close"</span>], length=<span class="number">12</span>)
-df[<span class="string">"ema_26"</span>] = ta.ema(df[<span class="string">"close"</span>], length=<span class="number">26</span>)
+<span class="code-comment"># pandas-ta returns a DataFrame with multiple columns</span>
+macd_col   = [c for c in macd_result.columns if c.startswith("MACD_")][0]
+signal_col = [c for c in macd_result.columns if c.startswith("MACDs_")][0]
+hist_col   = [c for c in macd_result.columns if c.startswith("MACDh_")][0]
 
-<span class="comment"># Golden / Death Cross signal</span>
-df[<span class="string">"golden_cross"</span>] = (
-    (df[<span class="string">"sma_50"</span>] > df[<span class="string">"sma_200"</span>]) &
-    (df[<span class="string">"sma_50"</span>].shift(<span class="number">1</span>) <= df[<span class="string">"sma_200"</span>].shift(<span class="number">1</span>))
-)
-df[<span class="string">"death_cross"</span>] = (
-    (df[<span class="string">"sma_50"</span>] < df[<span class="string">"sma_200"</span>]) &
-    (df[<span class="string">"sma_50"</span>].shift(<span class="number">1</span>) >= df[<span class="string">"sma_200"</span>].shift(<span class="number">1</span>))
-)
+df["macd"]      = macd_result[macd_col]
+df["macd_sig"]  = macd_result[signal_col]
+df["macd_hist"] = macd_result[hist_col]
 
-crosses = df[df[<span class="string">"golden_cross"</span>] | df[<span class="string">"death_cross"</span>]].copy()
-<span class="keyword">for</span> idx, row <span class="keyword">in</span> crosses.iterrows():
-    kind = <span class="string">"🟡 GOLDEN"</span> <span class="keyword">if</span> row[<span class="string">"golden_cross"</span>] <span class="keyword">else</span> <span class="string">"💀 DEATH"</span>
-    <span class="keyword">print</span>(f<span class="string">"{kind} CROSS: {idx.date()} | Price: ${row['close']:.2f}"</span>)
+cur  = df.iloc[-1]
+prev = df.iloc[-2]
 
-<span class="comment"># Current MA status</span>
-latest = df.iloc[<span class="number">-1</span>]
-<span class="keyword">print</span>(f<span class="string">"\nCurrent price: ${latest['close']:.2f}"</span>)
-<span class="keyword">print</span>(f<span class="string">"SMA20:  ${latest['sma_20']:.2f}  {'↑ above' if latest['close'] > latest['sma_20'] else '↓ below'}"</span>)
-<span class="keyword">print</span>(f<span class="string">"SMA50:  ${latest['sma_50']:.2f}  {'↑ above' if latest['close'] > latest['sma_50'] else '↓ below'}"</span>)
-<span class="keyword">print</span>(f<span class="string">"SMA200: ${latest['sma_200']:.2f} {'↑ above' if latest['close'] > latest['sma_200'] else '↓ below'}"</span>)</code></pre>
-    </div>
+print(f"MACD:       {cur['macd']:.3f}")
+print(f"Signal:     {cur['macd_sig']:.3f}")
+print(f"Histogram:  {cur['macd_hist']:.3f}")
 
-    <div class="info-box">
-      <strong>Golden Cross vs. Death Cross:</strong> A golden cross (50-day SMA crosses above 200-day SMA) often signals bullish momentum. A death cross indicates potential bearish reversal. These are useful for medium to long-term trend confirmation, not standalone trade signals.
+<span class="code-comment"># Crossover detection</span>
+if cur["macd"] > cur["macd_sig"] and prev["macd"] <= prev["macd_sig"]:
+    print("🟢 MACD BULLISH CROSSOVER — momentum shifting up")
+elif cur["macd"] < cur["macd_sig"] and prev["macd"] >= prev["macd_sig"]:
+    print("🔴 MACD BEARISH CROSSOVER — momentum shifting down")
+else:
+    print("— No MACD crossover today")</code></pre>
     </div>
   </section>
 
-  <!-- Section 3: RSI -->
-  <section class="section">
-    <h2>3. RSI — Relative Strength Index</h2>
-    <p>The Relative Strength Index measures momentum on a 0–100 scale. Values below 30 suggest oversold conditions (potential buy signals), while values above 70 suggest overbought conditions (potential sell signals).</p>
+  <!-- SECTION 6: BOLLINGER BANDS -->
+  <section>
+    <h2>Bollinger Bands</h2>
+
+    <h3>What It Is</h3>
+
+    <p>Bollinger Bands draw two lines around a moving average — one above (upper band) and one below (lower band). The distance between the bands changes based on volatility: they widen when price swings are large, and they narrow when price is calm.</p>
+
+    <p>Think of the bands as the "normal range" for a stock. When price breaks outside that range, something unusual is happening.</p>
+
+    <h3>Why Traders Watch It</h3>
+
+    <p><strong>1. Price Near the Bands:</strong> When price touches the upper band, it's stretched to the high side. Near the lower band, it's stretched to the low side. This tells you whether a stock is extreme or not.</p>
+
+    <p><strong>2. The Squeeze:</strong> When the bands get very narrow (low volatility), it often precedes a sharp move in either direction. OpenClaw can detect this compression before the breakout happens — giving you early warning.</p>
+
+    <h3>What OpenClaw Does With It</h3>
+
+    <p>OpenClaw tracks the band "bandwidth" (the distance between upper and lower). When bandwidth drops to historically low levels, it fires a squeeze alert. This is often a warning that a big move is coming.</p>
+
+    <h3>The Code</h3>
 
     <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">python</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <pre><code><span class="comment"># RSI: measures momentum. 0-100 scale.</span>
-<span class="comment"># &lt; 30 = oversold (potential buy watch)</span>
-<span class="comment"># &gt; 70 = overbought (potential sell watch)</span>
-<span class="comment"># Standard period: 14</span>
+      <div class="code-header"><span>python</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+      <pre><code><span class="code-comment"># Bollinger Bands — OpenClaw uses this for squeeze detection</span>
+bb = ta.bbands(df["close"], length=20, std=2)
 
-df[<span class="string">"rsi_14"</span>] = ta.rsi(df[<span class="string">"close"</span>], length=<span class="number">14</span>)
+upper_col = [c for c in bb.columns if "BBU" in c][0]
+lower_col = [c for c in bb.columns if "BBL" in c][0]
+bw_col    = [c for c in bb.columns if "BBB" in c][0]  <span class="code-comment"># bandwidth</span>
 
-<span class="keyword">def</span> <span class="function">classify_rsi</span>(value: <span class="keyword">float</span>) -> str:
-    <span class="keyword">if</span> value >= <span class="number">80</span>: <span class="keyword">return</span> <span class="string">"Extremely Overbought 🔴"</span>
-    <span class="keyword">if</span> value >= <span class="number">70</span>: <span class="keyword">return</span> <span class="string">"Overbought ⚠️"</span>
-    <span class="keyword">if</span> value >= <span class="number">55</span>: <span class="keyword">return</span> <span class="string">"Bullish Momentum 🟢"</span>
-    <span class="keyword">if</span> value >= <span class="number">45</span>: <span class="keyword">return</span> <span class="string">"Neutral ⚪"</span>
-    <span class="keyword">if</span> value >= <span class="number">30</span>: <span class="keyword">return</span> <span class="string">"Bearish Momentum 🔵"</span>
-    <span class="keyword">if</span> value >= <span class="number">20</span>: <span class="keyword">return</span> <span class="string">"Oversold ⚠️"</span>
-    <span class="keyword">return</span> <span class="string">"Extremely Oversold 🔴"</span>
+df["bb_upper"] = bb[upper_col]
+df["bb_lower"] = bb[lower_col]
+df["bb_bw"]    = bb[bw_col]
 
-<span class="comment"># Recent RSI readings</span>
-<span class="keyword">print</span>(<span class="string">"Recent RSI readings:"</span>)
-<span class="keyword">for</span> date, row <span class="keyword">in</span> df[[<span class="string">"close"</span>,<span class="string">"rsi_14"</span>]].tail(<span class="number">10</span>).iterrows():
-    label = <span class="function">classify_rsi</span>(row[<span class="string">"rsi_14"</span>])
-    <span class="keyword">print</span>(f<span class="string">"  {date.date()}  RSI: {row['rsi_14']:5.1f}  {label}"</span>)
+cur = df.iloc[-1]
+bw_20th_pct = df["bb_bw"].quantile(0.20)  <span class="code-comment"># historical low-volatility threshold</span>
 
-<span class="comment"># RSI divergence hint — price making higher highs but RSI making lower highs</span>
-recent = df.tail(<span class="number">30</span>)
-price_trend = recent[<span class="string">"close"</span>].iloc[<span class="number">-1</span>] - recent[<span class="string">"close"</span>].iloc[<span class="number">0</span>]
-rsi_trend = recent[<span class="string">"rsi_14"</span>].iloc[<span class="number">-1</span>] - recent[<span class="string">"rsi_14"</span>].iloc[<span class="number">0</span>]
-<span class="keyword">if</span> price_trend > <span class="number">0</span> <span class="keyword">and</span> rsi_trend < <span class="number">0</span>:
-    <span class="keyword">print</span>(<span class="string">"\n⚠️  Potential bearish divergence: price rising, RSI falling"</span>)
-<span class="keyword">elif</span> price_trend < <span class="number">0</span> <span class="keyword">and</span> rsi_trend > <span class="number">0</span>:
-    <span class="keyword">print</span>(<span class="string">"\n⚠️  Potential bullish divergence: price falling, RSI rising"</span>)</code></pre>
+print(f"Upper Band:  ${cur['bb_upper']:.2f}")
+print(f"Price:       ${cur['close']:.2f}")
+print(f"Lower Band:  ${cur['bb_lower']:.2f}")
+print(f"Bandwidth:   {cur['bb_bw']:.3f}  (20th pct: {bw_20th_pct:.3f})")
+
+if cur["bb_bw"] < bw_20th_pct:
+    print("⚡ SQUEEZE DETECTED — volatility at historic low, breakout watch")</code></pre>
     </div>
-
-    <p><strong>Divergence is key:</strong> When price makes higher highs but RSI makes lower highs, the uptrend may be losing strength. Conversely, if price makes lower lows while RSI makes higher lows, a reversal may be near.</p>
   </section>
 
-  <!-- Section 4: MACD -->
-  <section class="section">
-    <h2>4. MACD — Moving Average Convergence/Divergence</h2>
-    <p>MACD combines two EMAs to identify momentum shifts. The histogram (MACD line minus signal line) crossing zero is a popular entry/exit signal.</p>
+  <!-- SECTION 7: HOW OPENCLAW PUTS IT TOGETHER -->
+  <section>
+    <h2>How OpenClaw Puts It All Together</h2>
+
+    <p>The real power of OpenClaw isn't in any single indicator — it's in automation. You configure <em>all</em> your indicator settings in one place: <code>ta-config.yaml</code>. OpenClaw reads this file every time a scan runs and checks all your thresholds for all your tickers.</p>
+
+    <h3>Example ta-config.yaml</h3>
 
     <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">python</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <pre><code><span class="comment"># MACD = EMA(12) - EMA(26)</span>
-<span class="comment"># Signal = EMA(9) of MACD</span>
-<span class="comment"># Histogram = MACD - Signal</span>
-<span class="comment"># Crossover: MACD crosses above signal = bullish; below = bearish</span>
+      <div class="code-header"><span>yaml</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+      <pre><code><span class="code-comment"># ta-config.yaml — configure ALL your indicator settings in one place</span>
+<span class="code-comment"># OpenClaw reads this file every time a scan or alert runs</span>
 
-macd = ta.macd(df[<span class="string">"close"</span>], fast=<span class="number">12</span>, slow=<span class="number">26</span>, signal=<span class="number">9</span>)
-df = pd.concat([df, macd], axis=<span class="number">1</span>)
+watchlist:
+  tickers:
+    - AAPL
+    - MSFT
+    - NVDA
+    - SPY
+    - QQQ
 
-<span class="comment"># Rename for clarity (pandas-ta uses dynamic column names)</span>
-macd_col   = [c <span class="keyword">for</span> c <span class="keyword">in</span> macd.columns <span class="keyword">if</span> c.startswith(<span class="string">"MACD_"</span>)][<span class="number">0</span>]
-signal_col = [c <span class="keyword">for</span> c <span class="keyword">in</span> macd.columns <span class="keyword">if</span> c.startswith(<span class="string">"MACDs_"</span>)][<span class="number">0</span>]
-hist_col   = [c <span class="keyword">for</span> c <span class="keyword">in</span> macd.columns <span class="keyword">if</span> c.startswith(<span class="string">"MACDh_"</span>)][<span class="number">0</span>]
+signals:
+  <span class="code-comment"># Moving averages — set to true to enable each signal type</span>
+  golden_cross:    true   <span class="code-comment"># Alert when SMA50 crosses above SMA200</span>
+  death_cross:     true   <span class="code-comment"># Alert when SMA50 crosses below SMA200</span>
 
-df[<span class="string">"macd"</span>]   = df[macd_col]
-df[<span class="string">"signal"</span>] = df[signal_col]
-df[<span class="string">"hist"</span>]   = df[hist_col]
+  <span class="code-comment"># RSI thresholds — adjust to your trading style</span>
+  rsi_oversold:    30     <span class="code-comment"># Alert when RSI drops below this</span>
+  rsi_overbought:  70     <span class="code-comment"># Alert when RSI rises above this</span>
 
-<span class="comment"># Detect crossovers</span>
-df[<span class="string">"macd_bull"</span>] = (df[<span class="string">"macd"</span>] > df[<span class="string">"signal"</span>]) & (df[<span class="string">"macd"</span>].shift(<span class="number">1</span>) <= df[<span class="string">"signal"</span>].shift(<span class="number">1</span>))
-df[<span class="string">"macd_bear"</span>] = (df[<span class="string">"macd"</span>] < df[<span class="string">"signal"</span>]) & (df[<span class="string">"macd"</span>].shift(<span class="number">1</span>) >= df[<span class="string">"signal"</span>].shift(<span class="number">1</span>))
+  <span class="code-comment"># MACD crossover alerts</span>
+  macd_cross:      true   <span class="code-comment"># Alert on bullish or bearish MACD crossover</span>
 
-crossovers = df[df[<span class="string">"macd_bull"</span>] | df[<span class="string">"macd_bear"</span>]].tail(<span class="number">5</span>)
-<span class="keyword">for</span> idx, row <span class="keyword">in</span> crossovers.iterrows():
-    kind = <span class="string">"🟢 BULL"</span> <span class="keyword">if</span> row[<span class="string">"macd_bull"</span>] <span class="keyword">else</span> <span class="string">"🔴 BEAR"</span>
-    <span class="keyword">print</span>(f<span class="string">"{kind} crossover: {idx.date()} | Price: ${row['close']:.2f} | MACD: {row['macd']:.4f}"</span>)</code></pre>
+  <span class="code-comment"># Bollinger Band squeeze</span>
+  bb_squeeze:      true   <span class="code-comment"># Alert when bandwidth drops to historic low</span>
+
+scanner:
+  lookback_period:  "1y"   <span class="code-comment"># How much history to fetch</span>
+  export_csv:       true   <span class="code-comment"># Save results to CSV after each scan</span>
+
+alerts:
+  email:           "you@example.com"
+  cooldown_hours:  24      <span class="code-comment"># Wait this long before re-alerting the same signal</span>
+  daily_digest:    true    <span class="code-comment"># Send one summary email instead of individual alerts</span></code></pre>
     </div>
 
-    <div class="info-box">
-      <strong>Reading MACD:</strong> When the histogram is positive (MACD above signal), momentum is bullish. When negative, momentum is bearish. Watch for zero crossings in the histogram as early momentum signals.
-    </div>
+    <h3>How This Works</h3>
+
+    <p>Once <code>ta-config.yaml</code> is set up, you don't touch the code. To add a ticker, add a line under <code>tickers:</code>. To adjust RSI sensitivity, change the threshold number. To enable or disable a signal type, flip it to <code>true</code> or <code>false</code>.</p>
+
+    <p>OpenClaw handles everything else.</p>
+
+    <p>Every scan, OpenClaw:</p>
+    <ol>
+      <li>Downloads the price history for each ticker (respecting the lookback period)</li>
+      <li>Calculates all five indicators</li>
+      <li>Checks each indicator against your thresholds</li>
+      <li>Sends alerts for any signals that fired</li>
+      <li>Exports the results to CSV if you want</li>
+    </ol>
+
+    <p>This is the entire idea: <em>configuration, not code</em>.</p>
   </section>
 
-  <!-- Section 5: Bollinger Bands -->
-  <section class="section">
-    <h2>5. Bollinger Bands</h2>
-    <p>Bollinger Bands envelope price within upper and lower bands (SMA ± 2 standard deviations). Narrow bands (squeeze) often precede breakouts; price near bands can signal mean reversion.</p>
+  <!-- SECTION 8: QUICK REFERENCE -->
+  <section>
+    <h2>Quick Reference — What Each Value Means</h2>
+
+    <table class="reference-table">
+      <thead>
+        <tr>
+          <th scope="col">Indicator</th>
+          <th scope="col">Value / Signal</th>
+          <th scope="col">What OpenClaw Flags</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>RSI</strong></td>
+          <td>Below 30</td>
+          <td>Oversold — potential bounce watch</td>
+        </tr>
+        <tr>
+          <td><strong>RSI</strong></td>
+          <td>Above 70</td>
+          <td>Overbought — potential pullback watch</td>
+        </tr>
+        <tr>
+          <td><strong>SMA 50 vs 200</strong></td>
+          <td>50 crosses above 200</td>
+          <td>Golden Cross — trend turning bullish</td>
+        </tr>
+        <tr>
+          <td><strong>SMA 50 vs 200</strong></td>
+          <td>50 crosses below 200</td>
+          <td>Death Cross — trend turning bearish</td>
+        </tr>
+        <tr>
+          <td><strong>MACD</strong></td>
+          <td>Line crosses above Signal</td>
+          <td>Bullish momentum shift</td>
+        </tr>
+        <tr>
+          <td><strong>MACD</strong></td>
+          <td>Line crosses below Signal</td>
+          <td>Bearish momentum shift</td>
+        </tr>
+        <tr>
+          <td><strong>Bollinger Bandwidth</strong></td>
+          <td>At 20th percentile low</td>
+          <td>Squeeze — breakout likely coming</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SECTION 9: INSTALLATION -->
+  <section>
+    <h2>Installation</h2>
+
+    <p>OpenClaw needs three packages to calculate indicators. If you haven't installed them yet, run this once:</p>
 
     <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">python</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <pre><code><span class="comment"># Bollinger Bands: SMA(20) ± 2 standard deviations</span>
-<span class="comment"># Price near upper band = overbought relative to recent range</span>
-<span class="comment"># Price near lower band = oversold relative to recent range</span>
-<span class="comment"># Band squeeze (narrow bandwidth) often precedes a breakout</span>
+      <div class="code-header"><span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+      <pre><code><span class="code-comment"># Install the three packages OpenClaw's TA module needs</span>
+pip install yfinance pandas-ta pandas
 
-bb = ta.bbands(df[<span class="string">"close"</span>], length=<span class="number">20</span>, std=<span class="number">2</span>)
-df = pd.concat([df, bb], axis=<span class="number">1</span>)
-
-<span class="comment"># Extract columns</span>
-bb_upper = [c <span class="keyword">for</span> c <span class="keyword">in</span> bb.columns <span class="keyword">if</span> <span class="string">"BBU"</span> <span class="keyword">in</span> c][<span class="number">0</span>]
-bb_mid   = [c <span class="keyword">for</span> c <span class="keyword">in</span> bb.columns <span class="keyword">if</span> <span class="string">"BBM"</span> <span class="keyword">in</span> c][<span class="number">0</span>]
-bb_lower = [c <span class="keyword">for</span> c <span class="keyword">in</span> bb.columns <span class="keyword">if</span> <span class="string">"BBL"</span> <span class="keyword">in</span> c][<span class="number">0</span>]
-bb_bw    = [c <span class="keyword">for</span> c <span class="keyword">in</span> bb.columns <span class="keyword">if</span> <span class="string">"BBB"</span> <span class="keyword">in</span> c][<span class="number">0</span>]  <span class="comment"># bandwidth</span>
-
-df[<span class="string">"bb_upper"</span>] = df[bb_upper]
-df[<span class="string">"bb_mid"</span>]   = df[bb_mid]
-df[<span class="string">"bb_lower"</span>] = df[bb_lower]
-df[<span class="string">"bb_bw"</span>]    = df[bb_bw]
-
-<span class="comment"># Detect squeeze (bandwidth in lowest 20th percentile of past year)</span>
-bw_20th = df[<span class="string">"bb_bw"</span>].quantile(<span class="number">0.20</span>)
-df[<span class="string">"bb_squeeze"</span>] = df[<span class="string">"bb_bw"</span>] < bw_20th
-
-latest = df.iloc[<span class="number">-1</span>]
-<span class="keyword">print</span>(f<span class="string">"Upper band: ${latest['bb_upper']:.2f}"</span>)
-<span class="keyword">print</span>(f<span class="string">"Mid (SMA20): ${latest['bb_mid']:.2f}"</span>)
-<span class="keyword">print</span>(f<span class="string">"Lower band: ${latest['bb_lower']:.2f}"</span>)
-<span class="keyword">print</span>(f<span class="string">"Bandwidth:  {latest['bb_bw']:.2f}"</span>)
-<span class="keyword">print</span>(f<span class="string">"Squeeze:    {'YES ⚡' if latest['bb_squeeze'] else 'No'}"</span>)
-
-<span class="comment"># %B — where is price within the bands (0 = at lower, 1 = at upper)</span>
-df[<span class="string">"bb_pct"</span>] = (df[<span class="string">"close"</span>] - df[<span class="string">"bb_lower"</span>]) / (df[<span class="string">"bb_upper"</span>] - df[<span class="string">"bb_lower"</span>])
-<span class="keyword">print</span>(f<span class="string">"%B:         {latest['bb_pct']:.2f} ({'Near upper band' if latest['bb_pct'] > 0.8 else 'Near lower band' if latest['bb_pct'] < 0.2 else 'Mid-range'})"</span>)</code></pre>
+<span class="code-comment"># Test your setup</span>
+python3 -c "import yfinance, pandas_ta; print('✅ OpenClaw TA ready')"</code></pre>
     </div>
+
+    <p>If you see <code>✅ OpenClaw TA ready</code>, you're good to go.</p>
   </section>
 
-  <!-- Section 6: Full Stack -->
-  <section class="section">
-    <h2>6. Full Indicator Stack — One Function</h2>
-    <p>Combine all indicators into a single DataFrame for comprehensive analysis. Drop NaN rows to ensure all calculations are valid before interpretation.</p>
-
-    <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">python</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <pre><code><span class="keyword">def</span> <span class="function">build_indicator_stack</span>(ticker: str, period: str = <span class="string">"1y"</span>) -> pd.DataFrame:
-    <span class="string">"""
-    Returns a DataFrame with all core indicators computed.
-    Drop NaN rows so all indicators have valid values.
-    """</span>
-    df = <span class="function">get_ohlcv</span>(ticker, period)
-
-    <span class="comment"># Trend</span>
-    df[<span class="string">"sma_20"</span>]  = ta.sma(df[<span class="string">"close"</span>], <span class="number">20</span>)
-    df[<span class="string">"sma_50"</span>]  = ta.sma(df[<span class="string">"close"</span>], <span class="number">50</span>)
-    df[<span class="string">"sma_200"</span>] = ta.sma(df[<span class="string">"close"</span>], <span class="number">200</span>)
-    df[<span class="string">"ema_12"</span>]  = ta.ema(df[<span class="string">"close"</span>], <span class="number">12</span>)
-    df[<span class="string">"ema_26"</span>]  = ta.ema(df[<span class="string">"close"</span>], <span class="number">26</span>)
-
-    <span class="comment"># Momentum</span>
-    df[<span class="string">"rsi"</span>]    = ta.rsi(df[<span class="string">"close"</span>], <span class="number">14</span>)
-    df[<span class="string">"stoch_k"</span>] = ta.stoch(df[<span class="string">"high"</span>], df[<span class="string">"low"</span>], df[<span class="string">"close"</span>])[<span class="string">"STOCHk_14_3_3"</span>]
-
-    <span class="comment"># MACD</span>
-    macd = ta.macd(df[<span class="string">"close"</span>], <span class="number">12</span>, <span class="number">26</span>, <span class="number">9</span>)
-    df[<span class="string">"macd"</span>]        = macd[[c <span class="keyword">for</span> c <span class="keyword">in</span> macd.columns <span class="keyword">if</span> c.startswith(<span class="string">"MACD_"</span>)][<span class="number">0</span>]]
-    df[<span class="string">"macd_signal"</span>] = macd[[c <span class="keyword">for</span> c <span class="keyword">in</span> macd.columns <span class="keyword">if</span> c.startswith(<span class="string">"MACDs_"</span>)][<span class="number">0</span>]]
-    df[<span class="string">"macd_hist"</span>]   = macd[[c <span class="keyword">for</span> c <span class="keyword">in</span> macd.columns <span class="keyword">if</span> c.startswith(<span class="string">"MACDh_"</span>)][<span class="number">0</span>]]
-
-    <span class="comment"># Volatility</span>
-    bb = ta.bbands(df[<span class="string">"close"</span>], <span class="number">20</span>, <span class="number">2</span>)
-    df[<span class="string">"bb_upper"</span>] = bb[[c <span class="keyword">for</span> c <span class="keyword">in</span> bb.columns <span class="keyword">if</span> <span class="string">"BBU"</span> <span class="keyword">in</span> c][<span class="number">0</span>]]
-    df[<span class="string">"bb_lower"</span>] = bb[[c <span class="keyword">for</span> c <span class="keyword">in</span> bb.columns <span class="keyword">if</span> <span class="string">"BBL"</span> <span class="keyword">in</span> c][<span class="number">0</span>]]
-    df[<span class="string">"bb_bw"</span>]    = bb[[c <span class="keyword">for</span> c <span class="keyword">in</span> bb.columns <span class="keyword">if</span> <span class="string">"BBB"</span> <span class="keyword">in</span> c][<span class="number">0</span>]]
-    df[<span class="string">"atr"</span>]      = ta.atr(df[<span class="string">"high"</span>], df[<span class="string">"low"</span>], df[<span class="string">"close"</span>], <span class="number">14</span>)
-
-    <span class="comment"># Volume</span>
-    df[<span class="string">"obv"</span>] = ta.obv(df[<span class="string">"close"</span>], df[<span class="string">"volume"</span>])
-
-    <span class="keyword">return</span> df.dropna()
-
-df = <span class="function">build_indicator_stack</span>(<span class="string">"AAPL"</span>, <span class="string">"1y"</span>)
-<span class="keyword">print</span>(f<span class="string">"Columns: {list(df.columns)}"</span>)
-<span class="keyword">print</span>(df.tail(<span class="number">3</span>).to_string())</code></pre>
-    </div>
-  </section>
-
-  <!-- Section 7: Quick Reference Table -->
-  <section class="section">
-    <h2>7. Indicator Quick-Reference</h2>
-    <p>A summary of the core indicators, their function signatures, key parameters, and interpretation zones.</p>
-
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Indicator</th>
-            <th scope="col">Function</th>
-            <th scope="col">Key Params</th>
-            <th scope="col">Signal Zone</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>SMA</strong></td>
-            <td><span class="highlight">ta.sma(close, N)</span></td>
-            <td>length=20/50/200</td>
-            <td>Price vs MA level</td>
-          </tr>
-          <tr>
-            <td><strong>EMA</strong></td>
-            <td><span class="highlight">ta.ema(close, N)</span></td>
-            <td>length=12/26</td>
-            <td>Faster than SMA</td>
-          </tr>
-          <tr>
-            <td><strong>RSI</strong></td>
-            <td><span class="highlight">ta.rsi(close, N)</span></td>
-            <td>length=14</td>
-            <td>&lt;30 oversold, &gt;70 overbought</td>
-          </tr>
-          <tr>
-            <td><strong>MACD</strong></td>
-            <td><span class="highlight">ta.macd(close,f,s,sig)</span></td>
-            <td>12,26,9</td>
-            <td>Histogram zero cross</td>
-          </tr>
-          <tr>
-            <td><strong>Bollinger Bands</strong></td>
-            <td><span class="highlight">ta.bbands(close, N, std)</span></td>
-            <td>20, 2</td>
-            <td>%B position + squeeze</td>
-          </tr>
-          <tr>
-            <td><strong>ATR</strong></td>
-            <td><span class="highlight">ta.atr(high,low,close,N)</span></td>
-            <td>length=14</td>
-            <td>Position sizing</td>
-          </tr>
-          <tr>
-            <td><strong>Stochastic</strong></td>
-            <td><span class="highlight">ta.stoch(high,low,close)</span></td>
-            <td>14,3,3</td>
-            <td>&lt;20 / &gt;80</td>
-          </tr>
-          <tr>
-            <td><strong>OBV</strong></td>
-            <td><span class="highlight">ta.obv(close, volume)</span></td>
-            <td>—</td>
-            <td>Divergence vs price</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p>Each indicator has a specific purpose in your analysis workflow. Combine them to validate signals and reduce false positives in a multi-timeframe context.</p>
-  </section>
-
-  <!-- OpenClaw Daily Brief -->
-  <section class="section">
-    <h2>OpenClaw Indicator Daily Brief</h2>
-    <p>Use this function to generate a morning brief snapshot of your watchlist's key indicators. This output format is used across all OpenClaw TA modules — scanners, alerts, and dashboards all roll up to this same pattern.</p>
-
-    <div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">python</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <pre><code><span class="keyword">def</span> <span class="function">ta_daily_brief</span>(tickers: list, period: str = <span class="string">"1y"</span>) -> <span class="keyword">None</span>:
-    <span class="string">"""
-    OpenClaw daily brief — indicator snapshot for your watchlist.
-    Run at market close or pre-market open.
-    """</span>
-    <span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
-    <span class="keyword">print</span>(f<span class="string">"\n{'🦞 OpenClaw TA Daily Brief':=^65}"</span>)
-    <span class="keyword">print</span>(f<span class="string">\"{'Generated: ' + datetime.now().strftime('%Y-%m-%d %H:%M'):^65}\n\"</span>)
-
-    rows = []
-    <span class="keyword">for</span> ticker <span class="keyword">in</span> tickers:
-        df = yf.<span class="function">download</span>(ticker, period=period, interval=<span class="string">"1d"</span>, progress=<span class="keyword">False</span>)
-        df.columns = [c.lower() <span class="keyword">for</span> c <span class="keyword">in</span> df.columns]
-        df[<span class="string">"rsi"</span>]   = ta.<span class="function">rsi</span>(df[<span class="string">"close"</span>], <span class="number">14</span>)
-        df[<span class="string">"sma50"</span>] = ta.<span class="function">sma</span>(df[<span class="string">"close"</span>], <span class="number">50</span>)
-        df[<span class="string">"sma200"</span>]= ta.<span class="function">sma</span>(df[<span class="string">"close"</span>], <span class="number">200</span>)
-        macd = ta.<span class="function">macd</span>(df[<span class="string">"close"</span>], <span class="number">12</span>, <span class="number">26</span>, <span class="number">9</span>)
-        df[<span class="string">"macd_hist"</span>] = macd.iloc[:, <span class="number">2</span>]
-        df = df.<span class="function">dropna</span>()
-        <span class="keyword">if</span> df.<span class="function">empty</span>():
-            <span class="keyword">continue</span>
-
-        cur = df.iloc[<span class="number">-1</span>]
-        trend = <span class="string">"▲ Above"</span> <span class="keyword">if</span> cur[<span class="string">"close"</span>] > cur[<span class="string">"sma50"</span>] <span class="keyword">else</span> <span class="string">"▼ Below"</span>
-        rsi_flag = <span class="string">""</span>
-        <span class="keyword">if</span> cur[<span class="string">"rsi"</span>] < <span class="number">30</span>: rsi_flag = <span class="string">" 🔴"</span>
-        <span class="keyword">if</span> cur[<span class="string">"rsi"</span>] > <span class="number">70</span>: rsi_flag = <span class="string">" 🟢"</span>
-
-        <span class="keyword">print</span>(f<span class="string">"  {ticker:<8} RSI: {cur['rsi']:>5.1f}{rsi_flag}  |  "</span>
-              f<span class="string">"vs SMA50: {trend:<10}  |  MACD hist: {cur['macd_hist']:>+7.3f}"</span>)
-
-    <span class="keyword">print</span>(f<span class="string">"\n{'':=^65}"</span>)
-
-<span class="comment"># Load config and run the brief</span>
-cfg = <span class="function">load_config</span>()
-<span class="function">ta_daily_brief</span>(cfg[<span class="string">"watchlist"</span>][<span class="string">"tickers"</span>], cfg[<span class="string">"scanner"</span>][<span class="string">"lookback_period"</span>])</code></pre>
-    </div>
-
-    <div class="info-box">
-      <strong>Integration pattern:</strong> This brief becomes the template for your OpenClaw TA ecosystem. The scanner module expands it with alert counts. The alert module triggers off it. The dashboard displays it. Start here, scale up from there.
-    </div>
-  </section>
-
-  <!-- Navigation -->
+  <!-- SECTION NAVIGATION -->
   <div class="section-nav">
-    <a href="/terminal/ta/overview" class="nav-btn prev">← Overview</a>
-    <a href="/terminal/ta/scanner" class="nav-btn next">Part 2: Multi-Stock Scanner →</a>
+    <a href="/learn/ta/openclaw-for-ta.html" class="nav-link prev">← Back to Overview</a>
+    <a href="/learn/ta/ta-scanner.html" class="nav-link next">Next: Multi-Stock Scanner →</a>
   </div>
 
 </div>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer>
-  <p>&copy; 2026 learnopenclaw.org | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
-  <p style="margin-top: 12px; font-size: 0.8rem;">Part 1 of the <strong>Technical Analysis Automation</strong> series. Next: Multi-stock scanning, signal aggregation, and backtesting.</p>
+  <p>© 2025 <a href="/">learnopenclaw.org</a> | Not financial advice |
+  <a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/learn/">Learn</a> · <a href="/faq/">FAQ</a> · <a href="/terminal/">Terminal</a></p>
 </footer>
+
+<script>
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('nav-links');
+  btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu.classList.toggle('open');
+  });
+
+  function copyCode(button) {
+    const pre = button.parentElement.nextElementSibling;
+    const code = pre.querySelector('code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      const oldText = button.textContent;
+      button.textContent = 'Copied!';
+      button.classList.add('copied');
+      setTimeout(() => {
+        button.textContent = oldText;
+        button.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
 
 <!-- JSON-LD Schema -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Core TA Indicators with pandas-ta | Claw Street Terminal",
-  "description": "Build a complete indicator stack — SMA, EMA, RSI, MACD, and Bollinger Bands — on any ticker in under 10 lines of Python.",
+  "headline": "Core Technical Indicators Explained",
+  "description": "Learn what technical indicators measure, why traders watch them, and how OpenClaw calculates them automatically. Plain English explanations for beginners.",
   "author": {
     "@type": "Organization",
-    "name": "learnopenclaw.org"
+    "name": "OpenClaw"
   },
-  "datePublished": "2026-03-28",
-  "inLanguage": "en",
+  "datePublished": "2025-03-28",
+  "image": "https://learnopenclaw.org/og-ta-indicators.png",
   "isPartOf": {
-    "@type": "Series",
-    "name": "Technical Analysis Automation",
-    "position": 1
+    "@type": "Course",
+    "name": "OpenClaw Technical Analysis Automation",
+    "hasPart": {
+      "@type": "CourseInstance",
+      "name": "Part 1 of 5: Core Indicators"
+    }
   }
 }
 </script>
@@ -1051,19 +1061,19 @@ cfg = <span class="function">load_config</span>()
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://learnopenclaw.org"
+      "item": "https://learnopenclaw.org/"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Terminal",
-      "item": "https://learnopenclaw.org/terminal"
+      "item": "https://learnopenclaw.org/terminal/"
     },
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Technical Analysis Automation",
-      "item": "https://learnopenclaw.org/terminal/ta"
+      "name": "Technical Analysis",
+      "item": "https://learnopenclaw.org/learn/ta/"
     },
     {
       "@type": "ListItem",
@@ -1073,47 +1083,6 @@ cfg = <span class="function">load_config</span>()
     }
   ]
 }
-</script>
-
-<!-- Hamburger Menu & Copy Handler -->
-<script>
-  const hamburger = document.getElementById('hamburger');
-  const navLinks = document.getElementById('navLinks');
-
-  hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navLinks.classList.toggle('open');
-  });
-
-  // Close menu when a link is clicked
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      hamburger.classList.remove('active');
-      navLinks.classList.remove('open');
-    });
-  });
-
-  // Copy code block function
-  function copyCode(button) {
-    const codeBlock = button.closest('.code-block').querySelector('code');
-    const text = codeBlock.innerText;
-
-    navigator.clipboard.writeText(text).then(() => {
-      const originalText = button.innerText;
-      button.innerText = 'Copied!';
-      button.classList.add('copied');
-
-      setTimeout(() => {
-        button.innerText = originalText;
-        button.classList.remove('copied');
-      }, 2000);
-    }).catch(() => {
-      button.innerText = 'Failed';
-      setTimeout(() => {
-        button.innerText = originalText;
-      }, 1500);
-    });
-  }
 </script>
 
 </body>

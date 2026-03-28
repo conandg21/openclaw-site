@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Automate RSI scans, moving average alerts, and multi-stock screeners with free Python tools. No data subscription needed.">
+  <title>Technical Analysis Automation with OpenClaw | Claw Street Terminal</title>
+  <meta name="description" content="Automate RSI scans, moving average alerts, and chart generation with free tools. OpenClaw handles the mechanical parts — you make the decisions.">
   <meta name="canonical" content="https://learnopenclaw.org/openclaw-for-ta.html">
-
-  <!-- OG Tags -->
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Technical Analysis Automation | Claw Street Terminal">
-  <meta property="og:description" content="Stop checking 50 charts every morning. Automate RSI scans, moving average crossovers, and custom signal alerts with free Python.">
+  <meta property="og:title" content="Technical Analysis Automation | OpenClaw">
+  <meta property="og:description" content="Automate RSI scans, moving average alerts, and chart generation with free tools. OpenClaw handles the mechanical parts — you make the decisions.">
   <meta property="og:url" content="https://learnopenclaw.org/openclaw-for-ta.html">
-  <meta property="og:image" content="https://learnopenclaw.org/og-ta.png">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -20,51 +18,78 @@
     "@graph": [
       {
         "@type": "Article",
-        "headline": "Technical Analysis Automation",
-        "description": "Automate RSI scans, moving average alerts, and multi-stock screeners with free Python tools.",
-        "url": "https://learnopenclaw.org/openclaw-for-ta.html",
-        "author": { "@type": "Organization", "name": "learnopenclaw.org" },
+        "headline": "Technical Analysis Automation with OpenClaw",
+        "description": "Automate RSI scans, moving average alerts, and chart generation with free tools. OpenClaw handles the mechanical parts — you make the decisions.",
+        "image": "https://learnopenclaw.org/images/openclaw-ta.jpg",
         "datePublished": "2025-01-01",
-        "isPartOf": { "@type": "WebSite", "name": "learnopenclaw.org" }
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/index.html" },
-          { "@type": "ListItem", "position": 2, "name": "Terminal", "item": "https://learnopenclaw.org/claw-street-terminal.html" },
-          { "@type": "ListItem", "position": 3, "name": "Technical Analysis Automation", "item": "https://learnopenclaw.org/openclaw-for-ta.html" }
-        ]
+        "author": {
+          "@type": "Organization",
+          "name": "learnopenclaw.org"
+        }
       },
       {
         "@type": "FAQPage",
         "mainEntity": [
           {
             "@type": "Question",
-            "name": "Is yfinance data reliable enough for signals?",
-            "acceptedAnswer": { "@type": "Answer", "text": "For end-of-day signals and backtesting, yes. Yahoo Finance OHLCV data is generally accurate for daily timeframes. For intraday or tick data you'll need a paid source." }
+            "name": "Do I need to know Python to use this?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You don't need to write Python from scratch. The scripts are provided — you just edit ta-config.yaml to customize your watchlist and thresholds."
+            }
           },
           {
             "@type": "Question",
-            "name": "Does pandas-ta work with crypto data?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Any OHLCV DataFrame works — yfinance can pull crypto tickers like BTC-USD directly." }
+            "name": "Is Yahoo Finance data good enough?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "For end-of-day signals and daily chart review, yes. Yahoo Finance OHLCV data is generally accurate for daily timeframes."
+            }
           },
           {
             "@type": "Question",
-            "name": "Can I automate actual trades with this?",
-            "acceptedAnswer": { "@type": "Answer", "text": "OpenClaw is a signal and monitoring framework, not an execution engine. These scripts generate signals; acting on them requires a separate brokerage integration." }
+            "name": "Can OpenClaw automatically buy stocks?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. OpenClaw is a monitoring and alerting framework — it surfaces signals and sends notifications. Execution requires a separate brokerage integration."
+            }
           },
           {
             "@type": "Question",
-            "name": "How many stocks can the scanner handle?",
-            "acceptedAnswer": { "@type": "Answer", "text": "The S&P 500 with daily candles runs in under 2 minutes on a standard laptop. For larger universes, add caching to avoid re-fetching unchanged data." }
+            "name": "How often should I run the scanner?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Once per day, after market close (around 4:15–4:30pm ET), is the right cadence for daily signals."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://learnopenclaw.org/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Terminal",
+            "item": "https://learnopenclaw.org/terminal"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Technical Analysis Automation",
+            "item": "https://learnopenclaw.org/openclaw-for-ta.html"
           }
         ]
       }
     ]
   }
   </script>
-
-  <title>Technical Analysis Automation | Claw Street Terminal | learnopenclaw.org</title>
 
   <style>
     * {
@@ -73,44 +98,22 @@
       box-sizing: border-box;
     }
 
-    :root {
-      --teal: #0d9488;
-      --teal-lt: #f0fdfa;
-      --teal-md: #99f6e4;
-      --teal-dk: #134e4a;
-    }
-
     html, body {
-      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       background: #1c1917;
       color: #e7e5e4;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       line-height: 1.6;
     }
 
-    /* Skip Link */
-    .skip-nav {
-      position: absolute;
-      left: -9999px;
-      top: auto;
-    }
-    .skip-nav:focus {
-      left: 0;
-      top: 0;
-      z-index: 9999;
-      background: var(--teal);
-      color: #fff;
-      padding: 8px 16px;
-    }
-
-    /* Navigation */
+    /* ── Navigation ────────────────────────────────────────────────── */
     .site-nav {
       background: #1c1917;
-      border-bottom: 2px solid var(--teal);
+      border-bottom: 2px solid #0d9488;
       position: sticky;
       top: 0;
       z-index: 100;
     }
+
     .nav-inner {
       max-width: 1200px;
       margin: 0 auto;
@@ -121,16 +124,23 @@
       justify-content: space-between;
       gap: 16px;
     }
+
     .nav-logo {
-      color: var(--teal);
+      color: #0d9488;
       font-weight: 800;
       font-size: 1.1rem;
       text-decoration: none;
       white-space: nowrap;
     }
+
+    .nav-logo:hover {
+      color: #0f766e;
+    }
+
     .nav-links {
       display: none;
     }
+
     .nav-links.open {
       display: flex;
       flex-direction: column;
@@ -139,11 +149,12 @@
       left: 0;
       right: 0;
       background: #1c1917;
-      border-bottom: 2px solid var(--teal);
+      border-bottom: 2px solid #0d9488;
       padding: 16px 20px;
       gap: 12px;
       z-index: 99;
     }
+
     .nav-links a {
       color: #e7e5e4;
       text-decoration: none;
@@ -151,39 +162,51 @@
       font-weight: 500;
       padding: 6px 0;
     }
+
     .nav-links a:hover {
-      color: var(--teal);
+      color: #0d9488;
     }
+
     .nav-right {
       display: flex;
       align-items: center;
       gap: 10px;
       flex-shrink: 0;
     }
-    .nav-search-form {
+
+    .search-form {
       display: flex;
       align-items: center;
-      background: #292524;
-      border: 1px solid #44403c;
-      border-radius: 20px;
-      padding: 4px 12px;
       gap: 6px;
+      background: #292522;
+      border: 1px solid #44403c;
+      border-radius: 4px;
+      padding: 4px 8px;
+      height: 36px;
     }
-    .nav-search-icon {
-      color: #a8a29e;
-      flex-shrink: 0;
+
+    .search-form input {
+      background: transparent;
+      border: none;
+      color: #e7e5e4;
+      font-size: 0.9rem;
+      width: 120px;
+      outline: none;
     }
-    .nav-search-input {
+
+    .search-form input::placeholder {
+      color: #78716b;
+    }
+
+    .search-form button {
       background: none;
       border: none;
-      outline: none;
-      color: #e7e5e4;
-      font-size: 0.875rem;
-      width: 120px;
+      color: #0d9488;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0 4px;
     }
-    .nav-search-input::placeholder {
-      color: #78716c;
-    }
+
     .hamburger {
       display: flex;
       flex-direction: column;
@@ -196,6 +219,7 @@
       padding: 0;
       flex-shrink: 0;
     }
+
     .hamburger span {
       display: block;
       height: 2px;
@@ -203,334 +227,532 @@
       border-radius: 2px;
       transition: all 0.3s;
     }
+
     .hamburger:hover span {
-      background: var(--teal);
+      background: #0d9488;
     }
 
-    /* Main Content */
-    main {
-      min-height: calc(100vh - 60px);
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Disclaimer Bar */
-    .disclaimer-bar {
-      background: var(--teal-lt);
-      border-left: 4px solid var(--teal);
-      padding: 12px 24px;
-      font-size: 0.875rem;
-      color: var(--teal-dk);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Breadcrumb */
-    .breadcrumb {
+    /* ── Main Layout ───────────────────────────────────────────────── */
+    .main-container {
       max-width: 1200px;
-      width: 100%;
       margin: 0 auto;
-      padding: 20px;
+      padding: 0 20px;
+    }
+
+    /* ── Breadcrumb ────────────────────────────────────────────────── */
+    .breadcrumb {
+      padding: 16px 0;
       font-size: 0.875rem;
       color: #a8a29e;
+      margin-bottom: 24px;
     }
+
     .breadcrumb a {
-      color: var(--teal);
+      color: #0d9488;
       text-decoration: none;
     }
+
     .breadcrumb a:hover {
       text-decoration: underline;
     }
 
-    /* Hero Section */
+    /* ── Disclaimer ────────────────────────────────────────────────── */
+    .disclaimer {
+      background: #f0fdfa;
+      border-left: 4px solid #0d9488;
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      color: #134e4a;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 32px;
+      border-radius: 2px;
+    }
+
+    .disclaimer span {
+      min-width: 20px;
+      font-size: 1.2rem;
+    }
+
+    /* ── Hero Section ──────────────────────────────────────────────── */
     .hero {
-      background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, var(--teal) 100%);
-      color: #fff;
+      background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
       padding: 60px 20px;
+      margin-bottom: 60px;
+      border-radius: 8px;
       text-align: center;
     }
-    .hero-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+
     .hero-tag {
-      display: inline-block;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      font-size: 0.75rem;
+      color: #a7f3d0;
+      font-size: 0.875rem;
       font-weight: 700;
-      letter-spacing: 0.05em;
-      padding: 6px 12px;
-      border-radius: 20px;
-      margin-bottom: 20px;
+      letter-spacing: 2px;
       text-transform: uppercase;
+      margin-bottom: 16px;
     }
-    .hero h1 {
+
+    .hero-title {
       font-size: 2.5rem;
       font-weight: 800;
       margin-bottom: 16px;
-      line-height: 1.2;
+      color: #ecfdf5;
     }
-    .hero .subtitle {
-      font-size: 1.125rem;
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #d1fae5;
       max-width: 700px;
       margin: 0 auto 32px;
-      color: rgba(255,255,255,0.95);
-      line-height: 1.6;
     }
-    .stat-pills {
+
+    .hero-pills {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 12px;
-      margin-top: 32px;
     }
-    .stat-pill {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #fff;
+
+    .pill {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ecfdf5;
       padding: 8px 16px;
-      border-radius: 6px;
+      border-radius: 20px;
       font-size: 0.875rem;
       font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
-    /* Container */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      width: 100%;
-    }
-
-    /* Sections */
+    /* ── Section Styling ───────────────────────────────────────────── */
     section {
-      padding: 60px 0;
-      border-bottom: 1px solid #292524;
-    }
-    section:last-of-type {
-      border-bottom: none;
+      margin-bottom: 60px;
     }
 
-    /* Callout Box */
-    .callout-box {
-      background: var(--teal-lt);
-      border-left: 4px solid var(--teal);
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #0d9488;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #e7e5e4;
+      margin-top: 20px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: #d4d4d0;
+      line-height: 1.8;
+    }
+
+    strong {
+      color: #e7e5e4;
+    }
+
+    /* ── What is TA Section ────────────────────────────────────────── */
+    .ta-basics {
+      background: #292522;
       padding: 24px;
+      border-left: 4px solid #0d9488;
       border-radius: 4px;
-      color: var(--teal-dk);
       margin-bottom: 24px;
     }
-    .callout-box h3 {
-      font-size: 1.25rem;
-      margin-bottom: 16px;
-      color: var(--teal-dk);
-    }
-    .callout-box ul {
+
+    .ta-basics ul {
       list-style: none;
-      padding: 0;
+      padding-left: 0;
       margin-bottom: 16px;
     }
-    .callout-box li {
-      padding: 8px 0;
-      margin-left: 20px;
+
+    .ta-basics li {
+      padding-left: 24px;
+      margin-bottom: 12px;
       position: relative;
+      color: #d4d4d0;
     }
-    .callout-box li:before {
-      content: "•";
+
+    .ta-basics li:before {
+      content: "→";
       position: absolute;
-      left: -16px;
-      color: var(--teal);
+      left: 0;
+      color: #0d9488;
       font-weight: bold;
     }
-    .callout-box strong {
-      color: var(--teal-dk);
-      font-weight: 700;
-    }
 
-    /* Section Titles */
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 32px;
-      color: #fff;
-      font-weight: 800;
-    }
-
-    /* Tables */
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    /* ── Before/After Section ──────────────────────────────────────── */
+    .before-after {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
       margin-bottom: 24px;
-      font-size: 0.95rem;
-    }
-    thead {
-      background: #292524;
-    }
-    th {
-      padding: 12px 16px;
-      text-align: left;
-      font-weight: 700;
-      color: var(--teal);
-      border-bottom: 2px solid var(--teal);
-    }
-    td {
-      padding: 12px 16px;
-      border-bottom: 1px solid #292524;
-    }
-    tr:hover {
-      background: rgba(13, 148, 136, 0.05);
     }
 
-    /* Module Grid */
+    .before-after-card {
+      background: #292522;
+      padding: 24px;
+      border-radius: 4px;
+      border: 1px solid #44403c;
+    }
+
+    .before-after-card h3 {
+      margin-top: 0;
+    }
+
+    .before {
+      border-left: 4px solid #dc2626;
+    }
+
+    .after {
+      border-left: 4px solid #0d9488;
+    }
+
+    @media (max-width: 768px) {
+      .before-after {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Stack Diagram ─────────────────────────────────────────────── */
+    .stack-diagram {
+      background: #292522;
+      padding: 32px 24px;
+      border-radius: 4px;
+      text-align: center;
+      margin-bottom: 24px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      color: #0d9488;
+      border: 1px solid #44403c;
+    }
+
+    .stack-step {
+      padding: 12px 0;
+      color: #e7e5e4;
+    }
+
+    .stack-step.highlight {
+      background: rgba(13, 148, 136, 0.1);
+      padding: 16px;
+      border-radius: 4px;
+      margin: 8px 0;
+      border: 1px solid #0d9488;
+    }
+
+    .arrow {
+      color: #0d9488;
+      margin: 8px 0;
+      font-weight: bold;
+    }
+
+    .stack-boxes {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .stack-box {
+      background: #1c1917;
+      border: 2px solid #0d9488;
+      padding: 16px;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: 600;
+      color: #0d9488;
+    }
+
+    .stack-box-label {
+      font-size: 0.85rem;
+      color: #a8a29e;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .stack-boxes {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Config File ───────────────────────────────────────────────── */
+    .config-file {
+      background: #1c1917;
+      border: 1px solid #44403c;
+      border-radius: 4px;
+      padding: 20px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    .config-file pre {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #e7e5e4;
+      margin: 0;
+    }
+
+    .config-comment {
+      color: #78716b;
+    }
+
+    .config-key {
+      color: #0d9488;
+    }
+
+    .config-value {
+      color: #a7f3d0;
+    }
+
+    .config-string {
+      color: #fb923c;
+    }
+
+    /* ── Modules Grid ──────────────────────────────────────────────– */
     .modules-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
     }
+
     .module-card {
-      background: #292524;
-      border: 2px solid #3f3936;
-      border-radius: 8px;
+      background: #292522;
+      border: 1px solid #44403c;
+      border-radius: 4px;
       padding: 24px;
       transition: all 0.3s;
       text-decoration: none;
-      color: #e7e5e4;
+      color: inherit;
       display: flex;
       flex-direction: column;
     }
+
     .module-card:hover {
-      border-color: var(--teal);
-      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.2);
-      transform: translateY(-4px);
+      border-color: #0d9488;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
+      transform: translateY(-2px);
     }
+
     .module-icon {
       font-size: 2rem;
       margin-bottom: 12px;
     }
-    .module-card h3 {
-      font-size: 1.25rem;
-      margin-bottom: 8px;
-      color: var(--teal);
+
+    .module-number {
+      color: #0d9488;
       font-weight: 700;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      margin-bottom: 8px;
     }
-    .module-card p {
+
+    .module-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #e7e5e4;
+    }
+
+    .module-desc {
+      color: #d4d4d0;
       font-size: 0.95rem;
-      color: #a8a29e;
-      line-height: 1.5;
+      line-height: 1.6;
       flex-grow: 1;
     }
 
-    /* FAQ */
-    .faq-list {
+    .module-link {
+      display: inline-block;
+      margin-top: 16px;
+      color: #0d9488;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .module-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Setup Table ───────────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      background: #292522;
+      border: 1px solid #44403c;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: #1c1917;
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      color: #0d9488;
+      font-weight: 700;
+      border-bottom: 2px solid #0d9488;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #44403c;
+      color: #d4d4d0;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ── Code Block ────────────────────────────────────────────────– */
+    .code-block {
+      background: #1c1917;
+      border: 1px solid #44403c;
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      color: #0d9488;
+    }
+
+    .code-block code {
+      line-height: 1.6;
+    }
+
+    /* ── FAQ Section ───────────────────────────────────────────────– */
+    .faq-item {
+      margin-bottom: 12px;
+    }
+
+    .faq-item details {
+      background: #292522;
+      border: 1px solid #44403c;
+      border-radius: 4px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .faq-item details:hover {
+      border-color: #0d9488;
+      background: #322d28;
+    }
+
+    .faq-item details[open] {
+      border-color: #0d9488;
+      background: #322d28;
+    }
+
+    .faq-item summary {
+      font-weight: 600;
+      color: #e7e5e4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item summary::after {
+      content: "▼";
+      color: #0d9488;
+      font-size: 0.8rem;
+      transition: transform 0.3s;
+      display: inline-block;
+    }
+
+    .faq-item details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .faq-content {
+      margin-top: 12px;
+      color: #d4d4d0;
+      line-height: 1.7;
+    }
+
+    /* ── CTA Button ────────────────────────────────────────────────– */
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+      color: #1c1917;
+      padding: 16px 32px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 60px;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(13, 148, 136, 0.3);
+    }
+
+    /* ── Footer ────────────────────────────────────────────────────– */
+    footer {
+      background: #292522;
+      border-top: 2px solid #0d9488;
+      padding: 32px 20px;
+      margin-top: 60px;
+      color: #a8a29e;
+      font-size: 0.875rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
-    details {
-      background: #292524;
-      border: 1px solid #3f3936;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    details[open] {
-      border-color: var(--teal);
-      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.1);
-    }
-    summary {
-      padding: 16px;
-      cursor: pointer;
-      font-weight: 600;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      user-select: none;
-    }
-    summary:hover {
-      background: rgba(13, 148, 136, 0.1);
-      color: var(--teal);
-    }
-    summary::marker {
-      color: var(--teal);
-    }
-    .faq-answer {
-      padding: 0 16px 16px 16px;
-      color: #a8a29e;
-      line-height: 1.6;
-      border-top: 1px solid #3f3936;
-    }
 
-    /* CTA Button */
-    .cta-button {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--teal), #14b8a6);
-      color: #fff;
-      padding: 14px 28px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 1rem;
-      transition: all 0.3s;
-      border: none;
-      cursor: pointer;
-    }
-    .cta-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(13, 148, 136, 0.3);
-    }
-
-    /* Footer */
-    footer {
-      background: #0f0d0c;
-      border-top: 1px solid #292524;
-      padding: 40px 20px;
-      margin-top: auto;
-      text-align: center;
-      font-size: 0.875rem;
-      color: #78716c;
-    }
-    footer a {
-      color: var(--teal);
-      text-decoration: none;
-      margin: 0 8px;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
     .footer-copyright {
-      margin-bottom: 12px;
+      color: #a8a29e;
     }
+
     .footer-links {
       display: flex;
-      justify-content: center;
+      gap: 16px;
       flex-wrap: wrap;
-      gap: 4px;
     }
 
-    /* Responsive */
+    .footer-links a {
+      color: #0d9488;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
     @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 1.75rem;
+      .hero-title {
+        font-size: 2rem;
       }
-      .hero .subtitle {
+
+      .hero-subtitle {
         font-size: 1rem;
       }
-      .stat-pills {
-        flex-direction: column;
-        gap: 8px;
-      }
+
       h2 {
         font-size: 1.5rem;
       }
-      table {
-        font-size: 0.85rem;
-      }
-      th, td {
-        padding: 8px 12px;
-      }
+
       .modules-grid {
         grid-template-columns: 1fr;
       }
@@ -538,317 +760,453 @@
   </style>
 </head>
 <body>
-  <a class="skip-nav" href="#main-content">Skip to main content</a>
-
-  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <!-- Navigation -->
+  <nav class="site-nav">
     <div class="nav-inner">
-      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
-      <div class="nav-links" id="nav-links" role="list">
-        <a href="index.html" role="listitem">Home</a>
-        <a href="blog.html" role="listitem">Blog</a>
-        <a href="learn.html" role="listitem">Learn</a>
-        <a href="faq.html" role="listitem">FAQ</a>
-        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      <a href="/" class="nav-logo">🦞 learnopenclaw.org</a>
+      <div class="nav-links" id="navLinks">
+        <a href="/">Home</a>
+        <a href="/blog">Blog</a>
+        <a href="/learn">Learn</a>
+        <a href="/faq">FAQ</a>
+        <a href="/terminal">Terminal</a>
       </div>
       <div class="nav-right">
-        <form class="nav-search-form" role="search" onsubmit="return false;">
-          <svg class="nav-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        <form class="search-form" onsubmit="event.preventDefault();">
+          <input type="text" placeholder="Search...">
+          <button type="submit">🔍</button>
         </form>
-        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
-          <span></span><span></span><span></span>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
         </button>
       </div>
     </div>
   </nav>
 
-  <div class="disclaimer-bar">
-    ⚠️ Technical analysis is probabilistic, not predictive. Signals generated by automation reflect historical patterns — they do not guarantee future results. Not financial advice.
-  </div>
-
-  <main id="main-content">
+  <div class="main-container">
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-      <a href="index.html">Home</a> › <a href="claw-street-terminal.html">Terminal</a> › Technical Analysis Automation
+      <a href="/">Home</a> › <a href="/terminal">Terminal</a> › Technical Analysis Automation
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+      <span>⚠️</span>
+      <div>
+        <strong>Technical analysis is probabilistic, not predictive.</strong> Signals reflect historical patterns — they do not guarantee future results. Not financial advice.
+      </div>
     </div>
 
     <!-- Hero Section -->
     <section class="hero">
-      <div class="hero-inner">
-        <div class="hero-tag">CLAW STREET TERMINAL</div>
-        <h1>Technical Analysis Automation</h1>
-        <p class="subtitle">OpenClaw makes it easy to automate RSI scans, moving average crossovers, Bollinger Band squeezes, and signal alerts using free Python libraries and Yahoo Finance data — so your morning workflow runs itself.</p>
-        <div class="stat-pills">
-          <div class="stat-pill">yfinance Free</div>
-          <div class="stat-pill">pandas-ta 130+ Indicators</div>
-          <div class="stat-pill">6 Modules</div>
-          <div class="stat-pill">No Data Subscription</div>
+      <div class="hero-tag">Claw Street Terminal</div>
+      <h1 class="hero-title">Technical Analysis Automation</h1>
+      <p class="hero-subtitle">
+        What if your watchlist checked itself every morning? OpenClaw automates the repetitive parts of technical analysis — scanning, alerting, charting — so you spend your time on decisions, not data gathering.
+      </p>
+      <div class="hero-pills">
+        <span class="pill">Free Tools Only</span>
+        <span class="pill">5 Modules</span>
+        <span class="pill">No Paid Data</span>
+        <span class="pill">Beginner Friendly</span>
+      </div>
+    </section>
+
+    <!-- Section 1: What Is Technical Analysis? -->
+    <section id="what-is-ta">
+      <h2>What Is Technical Analysis?</h2>
+
+      <p>
+        Technical analysis is the practice of using a stock's price and volume history to make judgments about where it might go next. Instead of reading earnings reports or company news, technical analysts look at charts — patterns in price movement that have historically repeated.
+      </p>
+
+      <div class="ta-basics">
+        <p><strong>Common things technical analysts watch:</strong></p>
+        <ul>
+          <li>Is the stock trending up or down over the last 50 days?</li>
+          <li>Has it been falling so fast it might be due for a bounce?</li>
+          <li>Are two different trend lines about to cross — which often signals a shift?</li>
+          <li>Is volatility compressing before a big move?</li>
+        </ul>
+        <p>
+          <strong>These are the questions technical indicators are designed to help answer.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 2: What Does OpenClaw Automate? -->
+    <section id="what-openclaw-does">
+      <h2>What Does OpenClaw Automate?</h2>
+
+      <p>
+        The honest before/after:
+      </p>
+
+      <div class="before-after">
+        <div class="before-after-card before">
+          <h3>Without OpenClaw</h3>
+          <p>
+            Every morning you open your charting platform. You pull up AAPL — check the RSI, check the moving averages, make a note. Then MSFT. Then NVDA. Then 47 more tickers. An hour later you've finished your "quick" morning check. Half the signals you spotted you've already forgotten to write down.
+          </p>
+        </div>
+        <div class="before-after-card after">
+          <h3>With OpenClaw</h3>
+          <p>
+            OpenClaw runs the scan automatically at 4:15pm every market day. You get one email summarizing every signal that fired across your entire watchlist. Your charts are already generated and waiting in a folder. Morning review: 5 minutes, not 60.
+          </p>
         </div>
       </div>
+
+      <p>
+        <strong>OpenClaw doesn't make trading decisions for you.</strong> It handles the mechanical, repetitive parts — so when you do sit down to review, you're working with organized, current information instead of spending all your time gathering it.
+      </p>
     </section>
 
-    <!-- Honest Framing -->
-    <section>
-      <div class="container">
-        <div class="callout-box">
-          <h3>What TA Automation Actually Does For You</h3>
-          <strong>What it IS:</strong>
-          <ul>
-            <li><strong>Consistency:</strong> You never miss a signal because you forgot to check.</li>
-            <li><strong>Speed:</strong> Scan 500 stocks in seconds vs hours manually.</li>
-            <li><strong>Discipline:</strong> The rules run the same way every time.</li>
-          </ul>
-          <strong>What it ISN'T:</strong>
-          <ul>
-            <li>A crystal ball. No indicator predicts the future. Automation makes you more systematic, not more accurate.</li>
-          </ul>
-          <strong>Best use:</strong> Morning watchlist generation, alert triggers, pattern confirmation across large universes — not autonomous trading.
+    <!-- Section 3: The OpenClaw TA Stack -->
+    <section id="ta-stack">
+      <h2>The OpenClaw TA Stack</h2>
+
+      <div class="stack-diagram">
+        <div class="stack-step">ta-config.yaml</div>
+        <div class="arrow">↓</div>
+        <div class="stack-step">Your Watchlist + Signal Rules</div>
+        <div class="arrow">↓</div>
+        <div class="stack-step highlight">
+          OpenClaw calculates:<br>
+          RSI · MACD · SMA · Bollinger
         </div>
-      </div>
-    </section>
-
-    <!-- Free Tool Stack -->
-    <section>
-      <div class="container">
-        <h2>Free Tool Stack</h2>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Tool</th>
-              <th scope="col">Purpose</th>
-              <th scope="col">Install</th>
-              <th scope="col">Key Required</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>yfinance</strong></td>
-              <td>OHLCV data for stocks, ETFs, crypto</td>
-              <td><code>pip install yfinance</code></td>
-              <td>No</td>
-            </tr>
-            <tr>
-              <td><strong>pandas-ta</strong></td>
-              <td>130+ TA indicators (RSI, MACD, BB, etc.)</td>
-              <td><code>pip install pandas-ta</code></td>
-              <td>No</td>
-            </tr>
-            <tr>
-              <td><strong>pandas</strong></td>
-              <td>Data manipulation and signal logic</td>
-              <td><code>pip install pandas</code></td>
-              <td>No</td>
-            </tr>
-            <tr>
-              <td><strong>Plotly</strong></td>
-              <td>Interactive HTML charts</td>
-              <td><code>pip install plotly</code></td>
-              <td>No</td>
-            </tr>
-            <tr>
-              <td><strong>matplotlib</strong></td>
-              <td>Static PNG chart generation</td>
-              <td><code>pip install matplotlib</code></td>
-              <td>No</td>
-            </tr>
-            <tr>
-              <td><strong>tabulate</strong></td>
-              <td>Clean terminal output</td>
-              <td><code>pip install tabulate</code></td>
-              <td>No</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- OpenClaw TA Config -->
-    <section>
-      <div class="container">
-        <h2>OpenClaw TA Config</h2>
-        <p style="margin-bottom: 24px; color: #a8a29e;">All scripts in this series read from a single <strong>ta-config.yaml</strong> file. Define your watchlist once, and every tool — the scanner, the alerts, the chart generator — pulls from the same source.</p>
-        <div class="code-block" style="background: #2b2622; border: 1px solid #3d3935; border-radius: 8px; padding: 0; margin: 20px 0; overflow: hidden;">
-          <div style="background: #1c1917; border-bottom: 1px solid #3d3935; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 0.75rem; font-weight: 700; color: #0d9488; letter-spacing: 0.05em;">YAML</span>
+        <div class="arrow">↓</div>
+        <div class="stack-boxes">
+          <div class="stack-box">
+            Scanner
+            <div class="stack-box-label">CSV list</div>
           </div>
-          <pre style="padding: 16px; overflow-x: auto; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.85rem; line-height: 1.5; color: #d2cec9; margin: 0;"><code><span style="color: #78716c;"># ta-config.yaml — OpenClaw Technical Analysis config</span>
+          <div class="stack-box">
+            Alerts
+            <div class="stack-box-label">Emails</div>
+          </div>
+          <div class="stack-box">
+            Charts
+            <div class="stack-box-label">HTML/PNG</div>
+          </div>
+        </div>
+      </div>
 
-<span style="color: #f97316;">watchlist:</span>
-  <span style="color: #f97316;">name:</span> <span style="color: #86efac;">"My TA Watchlist"</span>
-  <span style="color: #f97316;">tickers:</span>
-    - AAPL
-    - MSFT
-    - GOOGL
-    - NVDA
-    - SPY
-    - QQQ
-    - IWM
+      <p>
+        <strong>Everything starts from a single config file — `ta-config.yaml`.</strong> You define your tickers and thresholds once. Every OpenClaw tool reads from the same file.
+      </p>
+    </section>
 
-<span style="color: #f97316;">signals:</span>
-  <span style="color: #f97316;">rsi_oversold:</span>    <span style="color: #93c5fd;">30</span>      <span style="color: #78716c;"># alert when RSI drops below this</span>
-  <span style="color: #f97316;">rsi_overbought:</span>  <span style="color: #93c5fd;">70</span>      <span style="color: #78716c;"># alert when RSI rises above this</span>
-  <span style="color: #f97316;">macd_cross:</span>      <span style="color: #93c5fd;">true</span>    <span style="color: #78716c;"># alert on MACD bull/bear crosses</span>
-  <span style="color: #f97316;">golden_cross:</span>    <span style="color: #93c5fd;">true</span>    <span style="color: #78716c;"># alert on SMA50/SMA200 crossovers</span>
-  <span style="color: #f97316;">bb_squeeze:</span>      <span style="color: #93c5fd;">true</span>    <span style="color: #78716c;"># alert on Bollinger Band squeeze</span>
+    <!-- Section 4: The ta-config.yaml File -->
+    <section id="config-file">
+      <h2>The ta-config.yaml File — The Heart of It All</h2>
 
-<span style="color: #f97316;">alerts:</span>
-  <span style="color: #f97316;">email:</span> <span style="color: #86efac;">"you@example.com"</span>
-  <span style="color: #f97316;">daily_digest:</span> <span style="color: #93c5fd;">true</span>       <span style="color: #78716c;"># send a rolled-up digest at market close</span>
-  <span style="color: #f97316;">cooldown_hours:</span> <span style="color: #93c5fd;">4</span>        <span style="color: #78716c;"># minimum hours between same signal repeating</span>
+      <div class="config-file">
+        <pre><span class="config-comment"># ta-config.yaml</span>
+<span class="config-comment"># This is the only file you need to customize.</span>
+<span class="config-comment"># OpenClaw reads it every time any TA tool runs.</span>
 
-<span style="color: #f97316;">scanner:</span>
-  <span style="color: #f97316;">run_time:</span> <span style="color: #86efac;">"16:15"</span>        <span style="color: #78716c;"># run after market close (Mon–Fri)</span>
-  <span style="color: #f97316;">lookback_period:</span> <span style="color: #86efac;">"1y"</span>    <span style="color: #78716c;"># historical data period for indicators</span>
-  <span style="color: #f97316;">export_csv:</span> <span style="color: #93c5fd;">true</span>         <span style="color: #78716c;"># save daily results to scanner_YYYYMMDD.csv</span>
+<span class="config-comment"># ── Your watchlist ────────────────────────────────────────────────</span>
+<span class="config-key">watchlist:</span>
+  <span class="config-key">tickers:</span>
+    - <span class="config-value">AAPL</span>     <span class="config-comment"># Add any ticker Yahoo Finance supports</span>
+    - <span class="config-value">MSFT</span>     <span class="config-comment"># Stocks, ETFs, crypto (BTC-USD), indices (^SPX)</span>
+    - <span class="config-value">NVDA</span>
+    - <span class="config-value">SPY</span>      <span class="config-comment"># S&P 500 ETF — good benchmark to always include</span>
+    - <span class="config-value">QQQ</span>      <span class="config-comment"># Nasdaq ETF</span>
 
-<span style="color: #f97316;">charts:</span>
-  <span style="color: #f97316;">enabled:</span> <span style="color: #93c5fd;">true</span>
-  <span style="color: #f97316;">format:</span> <span style="color: #86efac;">"html"</span>           <span style="color: #78716c;"># html (interactive Plotly) or png (matplotlib)</span>
-  <span style="color: #f97316;">output_dir:</span> <span style="color: #86efac;">"charts/"</span>
-  <span style="color: #f97316;">tickers:</span> [<span style="color: #86efac;">"AAPL"</span>,<span style="color: #86efac;">"MSFT"</span>,<span style="color: #86efac;">"SPY"</span>]  <span style="color: #78716c;"># subset for chart generation</span></code></pre>
+<span class="config-comment"># ── Which signals to watch for ────────────────────────────────────</span>
+<span class="config-key">signals:</span>
+  <span class="config-comment"># RSI thresholds — what counts as "oversold" or "overbought"?</span>
+  <span class="config-comment"># Default values of 30/70 are the most widely used</span>
+  <span class="config-key">rsi_oversold:</span>    <span class="config-value">30</span>   <span class="config-comment"># Alert when RSI drops below this (lower = more extreme)</span>
+  <span class="config-key">rsi_overbought:</span>  <span class="config-value">70</span>   <span class="config-comment"># Alert when RSI rises above this</span>
+
+  <span class="config-comment"># Moving average crossovers — true = enable, false = ignore</span>
+  <span class="config-key">golden_cross:</span>  <span class="config-value">true</span>   <span class="config-comment"># 50-day crosses above 200-day (bullish)</span>
+  <span class="config-key">death_cross:</span>   <span class="config-value">true</span>   <span class="config-comment"># 50-day crosses below 200-day (bearish)</span>
+
+  <span class="config-comment"># MACD crossover</span>
+  <span class="config-key">macd_cross:</span>    <span class="config-value">true</span>   <span class="config-comment"># Detects momentum shifts</span>
+
+  <span class="config-comment"># Bollinger Band squeeze</span>
+  <span class="config-key">bb_squeeze:</span>    <span class="config-value">true</span>   <span class="config-comment"># Low volatility before a breakout</span>
+
+<span class="config-comment"># ── Alert delivery settings ───────────────────────────────────────</span>
+<span class="config-key">alerts:</span>
+  <span class="config-key">email:</span> <span class="config-string">"you@example.com"</span>   <span class="config-comment"># Where to send notifications</span>
+  <span class="config-key">cooldown_hours:</span> <span class="config-value">24</span>         <span class="config-comment"># Don't re-alert the same signal for 24 hours</span>
+  <span class="config-key">daily_digest:</span> <span class="config-value">true</span>         <span class="config-comment"># true = one daily email | false = instant alerts</span>
+
+<span class="config-comment"># ── Scanner settings ──────────────────────────────────────────────</span>
+<span class="config-key">scanner:</span>
+  <span class="config-key">lookback_period:</span> <span class="config-string">"1y"</span>      <span class="config-comment"># How much history to load (try "6mo" or "2y")</span>
+  <span class="config-key">export_csv:</span> <span class="config-value">true</span>           <span class="config-comment"># Save scan results to a spreadsheet?</span>
+  <span class="config-key">output_file:</span> <span class="config-string">"scan_results.csv"</span>
+
+<span class="config-comment"># ── Chart settings ────────────────────────────────────────────────</span>
+<span class="config-key">charts:</span>
+  <span class="config-key">format:</span> <span class="config-string">"plotly"</span>           <span class="config-comment"># "plotly" = interactive HTML, "matplotlib" = PNG</span>
+  <span class="config-key">period:</span> <span class="config-string">"6mo"</span>              <span class="config-comment"># How much history to show in each chart</span>
+  <span class="config-key">output_dir:</span> <span class="config-string">"charts"</span>       <span class="config-comment"># Folder where chart files are saved</span>
+  <span class="config-key">show_sma20:</span> <span class="config-value">true</span>
+  <span class="config-key">show_sma50:</span> <span class="config-value">true</span>
+  <span class="config-key">show_sma200:</span> <span class="config-value">true</span>
+  <span class="config-key">show_bollinger:</span> <span class="config-value">true</span>
+  <span class="config-key">show_volume:</span> <span class="config-value">true</span>
+  <span class="config-key">show_rsi:</span> <span class="config-value">true</span>
+
+<span class="config-comment"># ── Backtesting settings ──────────────────────────────────────────</span>
+<span class="config-key">backtest:</span>
+  <span class="config-key">strategy:</span> <span class="config-string">"rsi_mean_reversion"</span>
+  <span class="config-key">period:</span> <span class="config-string">"5y"</span>
+  <span class="config-key">rsi_buy:</span>   <span class="config-value">30</span>
+  <span class="config-key">rsi_sell:</span>  <span class="config-value">60</span>
+  <span class="config-key">max_hold:</span>  <span class="config-value">30</span></pre>
+      </div>
+
+      <p>
+        That's it. Every setting in OpenClaw starts here. You don't need to touch Python code — just edit this one file to match your watchlist and thresholds.
+      </p>
+    </section>
+
+    <!-- Section 5: The Five Modules -->
+    <section id="five-modules">
+      <h2>The Five Modules</h2>
+
+      <p>
+        This series is broken into five focused, hands-on parts. Start with Part 1 and move forward at your own pace.
+      </p>
+
+      <div class="modules-grid">
+        <div class="module-card">
+          <div class="module-icon">📊</div>
+          <div class="module-number">Part 1</div>
+          <div class="module-title">Core Indicators</div>
+          <div class="module-desc">
+            What RSI, MACD, Bollinger Bands, and moving averages actually are — explained in plain English, with OpenClaw showing you how to calculate them.
+          </div>
+          <a href="ta-indicators.html" class="module-link">View Part 1 →</a>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon">🔍</div>
+          <div class="module-number">Part 2</div>
+          <div class="module-title">The Scanner</div>
+          <div class="module-desc">
+            Build a scanner that checks your entire watchlist for signal conditions and produces a ranked daily list of tickers worth reviewing.
+          </div>
+          <a href="ta-scanner.html" class="module-link">View Part 2 →</a>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon">🔔</div>
+          <div class="module-number">Part 3</div>
+          <div class="module-title">Signal Alerts</div>
+          <div class="module-desc">
+            Set up email alerts so OpenClaw notifies you when a golden cross fires, RSI hits an extreme, or MACD flips — with cooldown logic so you're not overwhelmed.
+          </div>
+          <a href="ta-alerts.html" class="module-link">View Part 3 →</a>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon">📈</div>
+          <div class="module-number">Part 4</div>
+          <div class="module-title">Backtesting</div>
+          <div class="module-desc">
+            Test whether your rules actually had an edge historically. Build realistic expectations before using any signal in a real portfolio.
+          </div>
+          <a href="ta-backtest.html" class="module-link">View Part 4 →</a>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon">🖼️</div>
+          <div class="module-number">Part 5</div>
+          <div class="module-title">Chart Generation</div>
+          <div class="module-desc">
+            Generate a complete chart packet for your watchlist every night — candlesticks, indicators, and RSI — saved as interactive HTML files you can open in any browser.
+          </div>
+          <a href="ta-charts.html" class="module-link">View Part 5 →</a>
         </div>
       </div>
     </section>
 
-    <!-- Series Modules -->
-    <section>
-      <div class="container">
-        <h2>Series Modules</h2>
-        <div class="modules-grid">
-          <a href="ta-indicators.html" class="module-card">
-            <div class="module-icon">📊</div>
-            <h3>Core Indicators</h3>
-            <p>Build the indicator stack that powers every other OpenClaw TA tool</p>
-          </a>
-          <a href="ta-scanner.html" class="module-card">
-            <div class="module-icon">🔍</div>
-            <h3>Multi-Stock Scanner</h3>
-            <p>Run your OpenClaw watchlist through 4 signal types every market close</p>
-          </a>
-          <a href="ta-alerts.html" class="module-card">
-            <div class="module-icon">🔔</div>
-            <h3>Signal Alerts</h3>
-            <p>Get notified the moment your OpenClaw rules fire — not the next morning</p>
-          </a>
-          <a href="ta-backtest.html" class="module-card">
-            <div class="module-icon">📈</div>
-            <h3>Backtesting</h3>
-            <p>Validate your OpenClaw signal rules against history before going live</p>
-          </a>
-          <a href="ta-charts.html" class="module-card">
-            <div class="module-icon">🖼️</div>
-            <h3>Chart Generation</h3>
-            <p>Automated overnight chart packet for your entire OpenClaw watchlist</p>
-          </a>
-          <a href="#" class="module-card" style="cursor: default; opacity: 0.6;">
-            <div class="module-icon">⚙️</div>
-            <h3>Advanced Strategies</h3>
-            <p>Multi-indicator confirmation, options flow integration, market regime detection</p>
-          </a>
-        </div>
+    <!-- Section 6: What You'll Need -->
+    <section id="what-you-need">
+      <h2>What You'll Need</h2>
+
+      <p>
+        Everything you need is free, open-source, and doesn't require signing up for anything.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Tool</th>
+            <th scope="col">What It Does</th>
+            <th scope="col">How to Get It</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Python 3.8+</td>
+            <td>Runs the scripts</td>
+            <td>python.org (free)</td>
+          </tr>
+          <tr>
+            <td>yfinance</td>
+            <td>Downloads stock price data from Yahoo Finance</td>
+            <td><code>pip install yfinance</code></td>
+          </tr>
+          <tr>
+            <td>pandas-ta</td>
+            <td>Calculates 130+ technical indicators</td>
+            <td><code>pip install pandas-ta</code></td>
+          </tr>
+          <tr>
+            <td>pandas</td>
+            <td>Handles data in tables</td>
+            <td><code>pip install pandas</code></td>
+          </tr>
+          <tr>
+            <td>Plotly</td>
+            <td>Creates interactive charts</td>
+            <td><code>pip install plotly</code></td>
+          </tr>
+          <tr>
+            <td>PyYAML</td>
+            <td>Reads your ta-config.yaml file</td>
+            <td><code>pip install pyyaml</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Install Everything at Once</h3>
+      <div class="code-block">
+        <code>pip install yfinance pandas-ta pandas plotly pyyaml tabulate matplotlib</code>
+      </div>
+
+      <p>
+        <strong>That's it.</strong> No API keys, no subscriptions, no sign-ups. All data comes from Yahoo Finance's free public feed.
+      </p>
+    </section>
+
+    <!-- Section 7: FAQ -->
+    <section id="faq">
+      <h2>FAQ</h2>
+
+      <div class="faq-item">
+        <details>
+          <summary>Do I need to know Python to use this?</summary>
+          <div class="faq-content">
+            <p>
+              You don't need to write Python from scratch. The scripts are provided — you just edit <code>ta-config.yaml</code> to customize your watchlist and thresholds. If you want to modify the actual code, basic Python knowledge helps, but it's not required to get started.
+            </p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>Is Yahoo Finance data good enough?</summary>
+          <div class="faq-content">
+            <p>
+              For end-of-day signals and daily chart review, yes. Yahoo Finance OHLCV data is generally accurate for daily timeframes. For intraday signals (minute-by-minute) you'd need a paid source. Most retail technical analysts work with daily data anyway.
+            </p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>Can OpenClaw automatically buy stocks?</summary>
+          <div class="faq-content">
+            <p>
+              No. OpenClaw is a monitoring and alerting framework — it surfaces signals and sends notifications. Execution requires a separate brokerage integration and is intentionally outside the scope of this series. OpenClaw helps you make informed decisions, not automate trading.
+            </p>
+          </div>
+        </details>
+      </div>
+
+      <div class="faq-item">
+        <details>
+          <summary>How often should I run the scanner?</summary>
+          <div class="faq-content">
+            <p>
+              Once per day, after market close (around 4:15–4:30pm ET), is the right cadence for daily signals. The scheduler config in Part 3 automates this, so you don't have to remember to run it manually.
+            </p>
+          </div>
+        </details>
       </div>
     </section>
 
-    <!-- Who This Is For -->
-    <section>
-      <div class="container">
-        <h2>Who This Is For</h2>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Audience</th>
-              <th scope="col">What They'll Build</th>
-              <th scope="col">Prior Knowledge</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Momentum Trader</strong></td>
-              <td>Daily RSI + MACD scanner</td>
-              <td>Basic Python</td>
-            </tr>
-            <tr>
-              <td><strong>Systematic Investor</strong></td>
-              <td>Weekly golden cross screener</td>
-              <td>Python + pandas</td>
-            </tr>
-            <tr>
-              <td><strong>Chart Reviewer</strong></td>
-              <td>Automated overnight chart report</td>
-              <td>Python + matplotlib</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- CTA -->
+    <section id="cta">
+      <a href="ta-indicators.html" class="cta-button">Start with Part 1: Core Indicators →</a>
     </section>
-
-    <!-- FAQ -->
-    <section>
-      <div class="container">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-list">
-          <details>
-            <summary>Is yfinance data reliable enough for signals?</summary>
-            <div class="faq-answer">
-              For end-of-day signals and backtesting, yes. Yahoo Finance OHLCV data is generally accurate for daily timeframes. For intraday or tick data you'll need a paid source.
-            </div>
-          </details>
-          <details>
-            <summary>Does pandas-ta work with crypto data?</summary>
-            <div class="faq-answer">
-              Yes. Any OHLCV DataFrame works — yfinance can pull crypto tickers like BTC-USD directly.
-            </div>
-          </details>
-          <details>
-            <summary>Can I automate actual trades with this?</summary>
-            <div class="faq-answer">
-              OpenClaw is a signal and monitoring framework, not an execution engine. These scripts generate signals; acting on them requires a separate brokerage integration.
-            </div>
-          </details>
-          <details>
-            <summary>How many stocks can the scanner handle?</summary>
-            <div class="faq-answer">
-              The S&P 500 with daily candles runs in under 2 minutes on a standard laptop. For larger universes, add caching to avoid re-fetching unchanged data.
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section style="text-align: center; padding: 60px 0;">
-      <div class="container">
-        <h2>Ready to Build Your First Scanner?</h2>
-        <p style="font-size: 1.125rem; color: #a8a29e; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">Start with Part 1 and build a complete RSI + moving average indicator in under 30 minutes.</p>
-        <a href="ta-indicators.html" class="cta-button">Start with Part 1: Core Indicators →</a>
-      </div>
-    </section>
-  </main>
+  </div>
 
   <!-- Footer -->
   <footer>
-    <div class="footer-copyright">
-      © 2025 learnopenclaw.org | Not financial advice
-    </div>
-    <div class="footer-links">
-      <a href="index.html">Home</a> ·
-      <a href="blog.html">Blog</a> ·
-      <a href="learn.html">Learn</a> ·
-      <a href="faq.html">FAQ</a> ·
-      <a href="claw-street-terminal.html">Terminal</a>
+    <div class="footer-inner">
+      <div class="footer-copyright">© 2025 learnopenclaw.org | Not financial advice</div>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/blog">Blog</a>
+        <a href="/learn">Learn</a>
+        <a href="/faq">FAQ</a>
+        <a href="/terminal">Terminal</a>
+      </div>
     </div>
   </footer>
 
-  <!-- Hamburger Menu Script -->
+  <!-- Hamburger Menu JS -->
   <script>
-    const btn = document.querySelector('.hamburger');
-    const menu = document.getElementById('nav-links');
-    btn.addEventListener('click', () => {
-      const open = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!open));
-      menu.classList.toggle('open');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburgerBtn.addEventListener('click', function() {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close menu when a link is clicked
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', function() {
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!event.target.closest('.site-nav')) {
+        navLinks.classList.remove('open');
+      }
     });
   </script>
-  <script src="copy.js"></script>
+
+  <!-- Copy to Clipboard Utility -->
+  <script>
+    // Add copy-to-clipboard functionality for code blocks
+    document.querySelectorAll('.code-block').forEach(block => {
+      block.style.position = 'relative';
+      const copyBtn = document.createElement('button');
+      copyBtn.textContent = 'Copy';
+      copyBtn.style.cssText = 'position: absolute; top: 8px; right: 8px; background: #0d9488; color: #1c1917; border: none; padding: 4px 12px; border-radius: 3px; cursor: pointer; font-size: 0.85rem; font-weight: 600;';
+
+      copyBtn.addEventListener('click', function() {
+        const text = block.querySelector('code').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy';
+          }, 2000);
+        });
+      });
+
+      block.appendChild(copyBtn);
+    });
+  </script>
 </body>
 </html>
