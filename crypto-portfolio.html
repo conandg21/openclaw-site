@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Portfolio Tracking & DCA Automation | Claw Street Terminal</title>
+    <meta name="description" content="Track your multi-coin portfolio, automate dollar-cost averaging, monitor unrealized P&L, and detect rebalancing drift with CoinGecko free APIs.">
+    <link rel="canonical" href="https://learnopenclaw.org/crypto-portfolio.html">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1c1917;
+            color: #e7e5e4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navigation Styles */
+        .site-nav {
+            background: #1c1917;
+            border-bottom: 2px solid #d97706;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            color: #d97706;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .nav-links.open {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: #1c1917;
+            border-bottom: 2px solid #d97706;
+            padding: 16px 20px;
+            gap: 12px;
+            z-index: 99;
+        }
+
+        .nav-links a {
+            color: #e7e5e4;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 6px 0;
+        }
+
+        .nav-links a:hover {
+            color: #d97706;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 2px;
+            background: #e7e5e4;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger:hover span {
+            background: #d97706;
+        }
+
+        /* Disclaimer Bar */
+        .disclaimer-bar {
+            background: #fffbeb;
+            border-left: 4px solid #d97706;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 20px 0;
+            font-size: 0.875rem;
+            color: #a8a29e;
+        }
+
+        .breadcrumb a {
+            color: #d97706;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 55%, #d97706 100%);
+            padding: 60px 40px;
+            border-radius: 12px;
+            margin: 40px 0;
+            color: #fffbeb;
+        }
+
+        .hero-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fbbf24;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            color: #fde68a;
+            max-width: 800px;
+        }
+
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid #fbbf24;
+            color: #fffbeb;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Content Sections */
+        section {
+            margin: 60px 0;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+            color: #d97706;
+            border-bottom: 2px solid #d97706;
+            padding-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 32px 0 16px 0;
+            color: #fbbf24;
+        }
+
+        p {
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        a {
+            color: #d97706;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Code Block Styles */
+        .code-block-wrapper {
+            position: relative;
+            margin: 24px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #0f0d0c;
+            border: 1px solid #3f3936;
+        }
+
+        .code-block-header {
+            background: #2a2825;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3f3936;
+        }
+
+        .code-block-lang {
+            color: #d97706;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .copy-btn {
+            background: #d97706;
+            color: #1c1917;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #fbbf24;
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+        }
+
+        pre {
+            padding: 16px;
+            overflow-x: auto;
+            font-family: "Courier New", monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: #d5d4d0;
+        }
+
+        code {
+            background: none;
+            padding: 0;
+        }
+
+        /* Table Styles */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 24px 0;
+            border-radius: 8px;
+            background: #0f0d0c;
+            border: 1px solid #3f3936;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2a2825;
+            color: #d97706;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #d97706;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #3f3936;
+            color: #d5d4d0;
+        }
+
+        tr:hover {
+            background: #1f1d1b;
+        }
+
+        /* CTA Box */
+        .cta-box {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 55%, #d97706 100%);
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 60px 0;
+            color: #fffbeb;
+        }
+
+        .cta-box h2 {
+            color: #fffbeb;
+            border-bottom: 2px solid #fbbf24;
+            margin-bottom: 20px;
+        }
+
+        .cta-box p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .cta-link {
+            display: inline-block;
+            background: #fbbf24;
+            color: #451a03;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: 16px;
+            transition: all 0.2s;
+        }
+
+        .cta-link:hover {
+            background: #fde68a;
+            transform: translateY(-2px);
+        }
+
+        /* Navigation Links */
+        .nav-links-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 60px 0;
+            padding: 24px 0;
+            border-top: 2px solid #3f3936;
+            border-bottom: 2px solid #3f3936;
+        }
+
+        .nav-links-bottom a {
+            color: #d97706;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .nav-links-bottom a:hover {
+            color: #fbbf24;
+        }
+
+        .nav-link-prev,
+        .nav-link-next {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link-center {
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .pill-group {
+                gap: 8px;
+            }
+
+            .pill {
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.25rem;
+            }
+
+            .nav-links-bottom {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="site-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">🦞 learnopenclaw.org</a>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="blog.html">Blog</a>
+                <a href="learn.html">Learn</a>
+                <a href="faq.html">FAQ</a>
+                <a href="claw-street-terminal.html">Terminal</a>
+            </div>
+            <div class="nav-right">
+                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Disclaimer Bar -->
+    <div class="disclaimer-bar">
+        <span>⚠️</span>
+        <span>DCA and portfolio tracking are educational automation examples. This is not financial advice. Crypto investments carry extreme risk including total loss of principal.</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> › <a href="claw-street-terminal.html">Terminal</a> › <a href="openclaw-for-crypto.html">Crypto & DeFi</a> › Portfolio & DCA
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-tag">CRYPTO & DEFI · PART 5 OF 5</div>
+            <h1>Portfolio & DCA Automation</h1>
+            <p>Track your multi-coin portfolio, automate dollar-cost averaging logic, monitor unrealized P&L, and detect rebalancing drift — all with free APIs and local YAML config.</p>
+            <div class="pill-group">
+                <div class="pill">CoinGecko Free</div>
+                <div class="pill">YAML Config</div>
+                <div class="pill">DCA Scheduler</div>
+                <div class="pill">No Exchange API Needed</div>
+            </div>
+        </div>
+
+        <!-- Section 1: Portfolio YAML Config -->
+        <section>
+            <h2>1. Portfolio YAML Configuration</h2>
+            <p>Define all your holdings in a local YAML file — no exchange API required. This becomes the source of truth for your portfolio analysis.</p>
+
+            <p>Each position tracks:</p>
+            <ul style="margin-left: 20px; margin-bottom: 16px;">
+                <li><strong>coin_id</strong> — CoinGecko identifier (e.g., "bitcoin", "ethereum")</li>
+                <li><strong>quantity</strong> — Number of coins held</li>
+                <li><strong>avg_cost_usd</strong> — Average purchase price per coin</li>
+                <li><strong>account</strong> — Where you hold it (cold wallet, exchange, etc.)</li>
+                <li><strong>tax_lot_date</strong> — Acquisition date for tax reporting</li>
+            </ul>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span class="code-block-lang">YAML</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code># crypto-portfolio.yaml
+portfolio:
+  name: "My Crypto Portfolio"
+  currency: USD
+
+  positions:
+    - coin_id: bitcoin         # CoinGecko ID
+      symbol: BTC
+      quantity: 0.5
+      avg_cost_usd: 42500.00
+      account: cold_wallet
+      tax_lot_date: "2023-06-15"
+
+    - coin_id: ethereum
+      symbol: ETH
+      quantity: 4.2
+      avg_cost_usd: 2800.00
+      account: hardware_wallet
+      tax_lot_date: "2023-09-01"
+
+    - coin_id: solana
+      symbol: SOL
+      quantity: 50
+      avg_cost_usd: 95.00
+      account: phantom_wallet
+      tax_lot_date: "2024-01-10"
+
+    - coin_id: chainlink
+      symbol: LINK
+      quantity: 200
+      avg_cost_usd: 14.50
+      account: metamask
+      tax_lot_date: "2024-03-20"
+
+  target_allocation:
+    bitcoin:  50   # percent
+    ethereum: 30
+    solana:   15
+    chainlink: 5
+
+  dca:
+    enabled: true
+    amount_usd: 100
+    frequency: weekly    # weekly, biweekly, monthly
+    coins:
+      bitcoin:  60       # percent of DCA amount
+      ethereum: 40</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 2: P&L Calculator -->
+        <section>
+            <h2>2. Unrealized P&L Calculator</h2>
+            <p>Load your YAML portfolio and fetch live prices from CoinGecko to calculate unrealized gains/losses for each position and your total portfolio.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span class="code-block-lang">Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>import yaml
+import requests
+from datetime import datetime
+
+def load_portfolio(path: str = "crypto-portfolio.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)["portfolio"]
+
+def get_live_prices(coin_ids: list) -> dict:
+    """Fetch current prices from CoinGecko (no key needed)."""
+    ids = ",".join(coin_ids)
+    resp = requests.get(
+        "https://api.coingecko.com/api/v3/simple/price",
+        params={"ids": ids, "vs_currencies": "usd", "include_24hr_change": "true"},
+        timeout=10
+    )
+    return resp.json()
+
+def calculate_pnl(portfolio: dict) -> list:
+    """Calculate unrealized P&L for each position."""
+    positions = portfolio["positions"]
+    coin_ids = [p["coin_id"] for p in positions]
+    prices = get_live_prices(coin_ids)
+
+    results = []
+    total_cost = 0
+    total_value = 0
+
+    for pos in positions:
+        cid = pos["coin_id"]
+        price_data = prices.get(cid, {})
+        current_price = price_data.get("usd", 0)
+        change_24h = price_data.get("usd_24h_change", 0)
+
+        cost_basis = pos["quantity"] * pos["avg_cost_usd"]
+        current_value = pos["quantity"] * current_price
+        pnl = current_value - cost_basis
+        pnl_pct = (pnl / cost_basis * 100) if cost_basis > 0 else 0
+
+        results.append({
+            "symbol":        pos["symbol"],
+            "quantity":      pos["quantity"],
+            "avg_cost":      pos["avg_cost_usd"],
+            "current_price": current_price,
+            "change_24h":    change_24h,
+            "cost_basis":    cost_basis,
+            "current_value": current_value,
+            "pnl_usd":       pnl,
+            "pnl_pct":       pnl_pct,
+            "account":       pos.get("account", ""),
+        })
+        total_cost += cost_basis
+        total_value += current_value
+
+    total_pnl = total_value - total_cost
+    total_pnl_pct = (total_pnl / total_cost * 100) if total_cost > 0 else 0
+
+    # Print report
+    print(f"{'':=<70}")
+    print(f"  OpenClaw Crypto Portfolio | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"{'':=<70}")
+    print(f"{'Coin':<8} {'Qty':>8} {'Avg Cost':>10} {'Price':>10} {'24h':>7} {'P&L':>12} {'P&L%':>7}")
+    print(f"{'':-<70}")
+    for r in results:
+        arrow = "▲" if r["pnl_pct"] > 0 else "▼"
+        arrow24 = "▲" if r["change_24h"] > 0 else "▼"
+        print(f"{r['symbol']:<8} {r['quantity']:>8.4f} ${r['avg_cost']:>9,.2f} "
+              f"${r['current_price']:>9,.2f} {arrow24}{abs(r['change_24h']):>5.1f}% "
+              f"${r['pnl_usd']:>+10,.2f} {arrow}{abs(r['pnl_pct']):>5.1f}%")
+    print(f"{'':-<70}")
+    print(f"{'TOTAL':<8} {'':>8} {'':>10} {'':>10} {'':>7} "
+          f"${total_pnl:>+10,.2f} {'+' if total_pnl_pct>0 else ''}{total_pnl_pct:.1f}%")
+    print(f"\n  Cost Basis: ${total_cost:,.2f}  |  Current Value: ${total_value:,.2f}")
+    return results
+
+portfolio = load_portfolio()
+pnl_data = calculate_pnl(portfolio)</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 3: Rebalancing Drift Detector -->
+        <section>
+            <h2>3. Rebalancing Drift Detection</h2>
+            <p>Compare your current allocation against target weights. Automatically flag positions that have drifted beyond your threshold, showing whether to trim or add.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span class="code-block-lang">Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>def check_drift(portfolio: dict, pnl_data: list, drift_threshold: float = 5.0) -> list:
+    """
+    Compare current allocation vs target.
+    Flag any position drifted more than drift_threshold percentage points.
+    """
+    targets = portfolio.get("target_allocation", {})
+    if not targets:
+        print("No target allocation defined in YAML.")
+        return []
+
+    total_value = sum(r["current_value"] for r in pnl_data)
+
+    print(f"\n{'':=<55}")
+    print(f"  Rebalancing Check (threshold: ±{drift_threshold}%)")
+    print(f"{'':=<55}")
+    print(f"{'Coin':<10} {'Target':>8} {'Current':>8} {'Drift':>8} {'Action':>15}")
+    print(f"{'':-<55}")
+
+    alerts = []
+    for r in pnl_data:
+        cid = next((p["coin_id"] for p in portfolio["positions"]
+                   if p["symbol"] == r["symbol"]), None)
+        target_pct = targets.get(cid, 0)
+        current_pct = (r["current_value"] / total_value * 100) if total_value > 0 else 0
+        drift = current_pct - target_pct
+
+        if abs(drift) >= drift_threshold:
+            action = "⬇ TRIM" if drift > 0 else "⬆ ADD"
+            alerts.append({"symbol": r["symbol"], "drift": drift, "action": action})
+        else:
+            action = "✓ OK"
+
+        print(f"{r['symbol']:<10} {target_pct:>7.1f}% {current_pct:>7.1f}% "
+              f"{drift:>+7.1f}% {action:>15}")
+
+    return alerts
+
+drift_alerts = check_drift(portfolio, pnl_data, drift_threshold=5.0)
+if drift_alerts:
+    print(f"\n⚠️  {len(drift_alerts)} positions need rebalancing attention.")</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 4: DCA Scheduler -->
+        <section>
+            <h2>4. Dollar-Cost Averaging Scheduler</h2>
+            <p>Automatically calculate upcoming DCA purchase dates and amounts based on your YAML config. This scheduler is educational—use it to remind yourself when to buy, or integrate with an exchange API for execution.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span class="code-block-lang">Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>from datetime import datetime, timedelta
+import calendar
+
+def next_dca_dates(frequency: str, count: int = 4) -> list:
+    """Calculate upcoming DCA dates."""
+    now = datetime.now()
+    dates = []
+    current = now
+
+    for _ in range(count):
+        if frequency == "weekly":
+            # Next Monday
+            days_ahead = 7 - current.weekday()
+            if days_ahead == 0:
+                days_ahead = 7
+            current = current + timedelta(days=days_ahead)
+        elif frequency == "biweekly":
+            current = current + timedelta(weeks=2)
+        elif frequency == "monthly":
+            # First of next month
+            if current.month == 12:
+                current = current.replace(year=current.year+1, month=1, day=1)
+            else:
+                current = current.replace(month=current.month+1, day=1)
+        dates.append(current)
+
+    return dates
+
+def dca_plan(portfolio: dict) -> None:
+    """Print upcoming DCA schedule."""
+    dca_cfg = portfolio.get("dca", {})
+    if not dca_cfg.get("enabled"):
+        print("DCA not enabled in config.")
+        return
+
+    amount = dca_cfg["amount_usd"]
+    frequency = dca_cfg["frequency"]
+    coins = dca_cfg["coins"]
+
+    upcoming = next_dca_dates(frequency, count=4)
+
+    print(f"\n{'':=<50}")
+    print(f"  DCA Schedule — ${amount}/period ({frequency})")
+    print(f"{'':=<50}")
+
+    for date in upcoming:
+        print(f"\n  📅 {date.strftime('%Y-%m-%d (%A)')}")
+        for coin, pct in coins.items():
+            buy_usd = amount * (pct / 100)
+            print(f"     {coin.upper():<10}  ${buy_usd:.2f}")
+
+dca_plan(portfolio)</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 5: Tax Lot Awareness -->
+        <section>
+            <h2>5. Tax Lot Awareness</h2>
+            <p>Classify positions as short-term (&lt;1 year) or long-term (≥1 year). Long-term capital gains typically receive favorable tax treatment. Always consult a tax professional for your jurisdiction.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span class="code-block-lang">Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>from datetime import date
+
+def tax_lot_summary(portfolio: dict, pnl_data: list) -> None:
+    """
+    Classify each position as short-term (<1 year) or long-term (≥1 year).
+    Long-term lots qualify for lower capital gains rates in most jurisdictions.
+    NOTE: This is informational only — consult a tax professional.
+    """
+    today = date.today()
+
+    print(f"\n{'':=<65}")
+    print(f"  Tax Lot Summary (as of {today}) — Educational Only")
+    print(f"{'':=<65}")
+    print(f"{'Coin':<8} {'Acquired':>12} {'Holding':>10} {'Type':>14} {'Unrlzd P&L':>12}")
+    print(f"{'':-<65}")
+
+    pnl_map = {r["symbol"]: r for r in pnl_data}
+
+    for pos in portfolio["positions"]:
+        sym = pos["symbol"]
+        lot_date = date.fromisoformat(pos["tax_lot_date"])
+        days_held = (today - lot_date).days
+        holding_type = "Long-Term ✓" if days_held >= 365 else "Short-Term ⚠"
+
+        pnl = pnl_map.get(sym, {}).get("pnl_usd", 0)
+
+        print(f"{sym:<8} {str(lot_date):>12} {days_held:>8}d {holding_type:>14} ${pnl:>+10,.2f}")
+
+    print(f"\n  ⚠️  Tax laws vary by jurisdiction. Consult a qualified tax advisor.")
+
+tax_lot_summary(portfolio, pnl_data)</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 6: Daily Brief -->
+        <section>
+            <h2>6. Daily Portfolio Brief</h2>
+            <p>Combine all tools into one morning report: P&L snapshot, rebalancing status, upcoming DCA purchases, tax lot classification, and market sentiment.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span class="code-block-lang">Python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>def daily_brief(portfolio_path: str = "crypto-portfolio.yaml") -> None:
+    """Generate a complete daily portfolio brief."""
+    portfolio = load_portfolio(portfolio_path)
+
+    print(f"\n{'🦞 OpenClaw Crypto Daily Brief':=^70}")
+    print(f"{'Generated: ' + datetime.now().strftime('%Y-%m-%d %H:%M'):^70}")
+    print()
+
+    # 1. P&L snapshot
+    pnl_data = calculate_pnl(portfolio)
+
+    # 2. Drift check
+    drift_alerts = check_drift(portfolio, pnl_data)
+
+    # 3. DCA schedule
+    dca_plan(portfolio)
+
+    # 4. Tax summary
+    tax_lot_summary(portfolio, pnl_data)
+
+    # 5. Quick sentiment check
+    fg = requests.get("https://api.alternative.me/fng/?limit=1").json()
+    fg_val = int(fg["data"][0]["value"])
+    fg_label = fg["data"][0]["value_classification"]
+    print(f"\n{'':=<55}")
+    print(f"  Market Sentiment: {fg_val}/100 — {fg_label}")
+    print(f"{'':=<55}")
+
+# Run as cron or scheduled task
+daily_brief()</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 7: Config Reference -->
+        <section>
+            <h2>7. YAML Configuration Reference</h2>
+            <p>Quick lookup table for all available YAML fields and their meanings:</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>coin_id</code></td>
+                            <td>CoinGecko identifier (check <a href="https://api.coingecko.com/api/v3/coins/list" target="_blank">/coins/list</a>)</td>
+                            <td><code>bitcoin</code>, <code>ethereum</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>symbol</code></td>
+                            <td>Ticker symbol for display</td>
+                            <td><code>BTC</code>, <code>ETH</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>quantity</code></td>
+                            <td>Number of coins currently held</td>
+                            <td><code>0.5</code>, <code>4.2</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>avg_cost_usd</code></td>
+                            <td>Average purchase price per coin</td>
+                            <td><code>42500.00</code>, <code>2800.00</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>account</code></td>
+                            <td>Storage location (informational)</td>
+                            <td><code>cold_wallet</code>, <code>hardware_wallet</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>tax_lot_date</code></td>
+                            <td>Acquisition date (YYYY-MM-DD) for tax reporting</td>
+                            <td><code>2023-06-15</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>target_allocation</code></td>
+                            <td>Desired portfolio weight by coin_id (%)</td>
+                            <td><code>bitcoin: 50</code>, <code>ethereum: 30</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>dca.amount_usd</code></td>
+                            <td>Total USD to invest per DCA period</td>
+                            <td><code>100</code>, <code>500</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>dca.frequency</code></td>
+                            <td>How often to DCA: <code>weekly</code>, <code>biweekly</code>, or <code>monthly</code></td>
+                            <td><code>weekly</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>dca.coins</code></td>
+                            <td>Allocation of DCA amount by coin (%)</td>
+                            <td><code>bitcoin: 60</code>, <code>ethereum: 40</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+            <h2>Key Takeaways</h2>
+            <ul style="margin-left: 20px;">
+                <li><strong>YAML-first:</strong> Define your portfolio once in a simple config file. No exchange APIs needed.</li>
+                <li><strong>CoinGecko free API:</strong> Get live prices, 24h changes, and historical data without authentication.</li>
+                <li><strong>Real-time P&L:</strong> See unrealized gains/losses per coin and portfolio-wide at any time.</li>
+                <li><strong>Drift detection:</strong> Automatically alert when portfolio weights diverge from targets.</li>
+                <li><strong>DCA automation:</strong> Calculate purchase schedules and amounts for disciplined investing.</li>
+                <li><strong>Tax awareness:</strong> Track holding periods for short- vs long-term capital gains classification.</li>
+                <li><strong>Daily brief:</strong> One command generates a complete portfolio report.</li>
+            </ul>
+        </section>
+
+        <!-- Series Completion CTA -->
+        <div class="cta-box">
+            <h2>🎓 You've Completed the Crypto & DeFi Series</h2>
+            <p>You've mastered sentiment analysis, API integration, strategy backtesting, automated alerts, and portfolio tracking. Return to the Claw Street Terminal to explore all 7 modules.</p>
+            <a href="claw-street-terminal.html" class="cta-link">Return to Terminal</a>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-links-bottom">
+            <div class="nav-link-prev">
+                <span>←</span>
+                <a href="crypto-sentiment.html">Part 4: Sentiment & Fear/Greed</a>
+            </div>
+            <div class="nav-link-center">
+                <a href="openclaw-for-crypto.html">Back to Crypto & DeFi Overview</a>
+            </div>
+            <div class="nav-link-next">
+                <a href="claw-street-terminal.html">Claw Street Terminal</a>
+                <span>→</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Crypto Portfolio Tracking & DCA Automation",
+        "description": "Track your multi-coin portfolio, automate dollar-cost averaging, monitor unrealized P&L, and detect rebalancing drift with CoinGecko free APIs.",
+        "image": "https://learnopenclaw.org/images/crypto-portfolio.png",
+        "datePublished": "2026-03-28",
+        "author": {
+            "@type": "Organization",
+            "name": "Learn OpenClaw",
+            "url": "https://learnopenclaw.org"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Learn OpenClaw",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://learnopenclaw.org/logo.png"
+            }
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://learnopenclaw.org/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Terminal",
+                "item": "https://learnopenclaw.org/claw-street-terminal.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Crypto & DeFi",
+                "item": "https://learnopenclaw.org/openclaw-for-crypto.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Portfolio & DCA",
+                "item": "https://learnopenclaw.org/crypto-portfolio.html"
+            }
+        ]
+    }
+    </script>
+
+    <!-- Hamburger Navigation -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+                navLinks.classList.remove('open');
+            }
+        });
+    </script>
+
+    <!-- Copy to Clipboard Functionality -->
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block-wrapper').querySelector('pre code');
+            const text = codeBlock.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                button.textContent = 'Failed to copy';
+            });
+        }
+    </script>
+</body>
+</html>

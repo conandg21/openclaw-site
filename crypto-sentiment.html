@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Sentiment & Fear/Greed Analysis | Claw Street Terminal</title>
+    <meta name="description" content="Gauge market psychology using the Fear & Greed Index, Reddit community signals, and trending coin data — all from free APIs. Part 4 of the Crypto & DeFi series on learnopenclaw.org.">
+    <link rel="canonical" href="https://learnopenclaw.org/crypto-sentiment.html">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            background: #1c1917;
+            color: #e7e5e4;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 55%, #d97706 100%);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fef3c7;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: none;
+            position: absolute;
+            top: 4rem;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #451a03 0%, #78350f 55%, #d97706 100%);
+            flex-direction: column;
+            gap: 0;
+            border-bottom: 1px solid #92400e;
+        }
+
+        .nav-links.open {
+            display: flex;
+        }
+
+        .nav-links a {
+            color: #fef3c7;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #92400e;
+            transition: background 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .search-form {
+            display: none;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            color: #fef3c7;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .hamburger:hover {
+            transform: scale(1.1);
+        }
+
+        /* Disclaimer Bar */
+        .disclaimer {
+            background: #fffbeb;
+            border-left: 4px solid #d97706;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            background: #292524;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: #a8a29e;
+        }
+
+        .breadcrumb a {
+            color: #d97706;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 55%, #d97706 100%);
+            padding: 3rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #92400e;
+        }
+
+        .hero-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #fbbf24;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 900;
+            color: #fef3c7;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #fde68a;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.5;
+        }
+
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .pill {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fef3c7;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #fef3c7;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid #d97706;
+            padding-bottom: 0.75rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fde68a;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        p {
+            color: #d1ccc7;
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: #d97706;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #fffbeb;
+            border-left: 4px solid #d97706;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            color: #78350f;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .info-box strong {
+            color: #92400e;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #292524;
+            border-left: 4px solid #d97706;
+            border-radius: 0 4px 4px 0;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block code {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #d1ccc7;
+            line-height: 1.5;
+            display: block;
+            white-space: pre;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: #d97706;
+            color: #1c1917;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #f59e0b;
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: #292524;
+            border: 1px solid #454440;
+        }
+
+        th {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+            color: #fef3c7;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #78350f;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border: 1px solid #454440;
+            color: #d1ccc7;
+        }
+
+        tr:nth-child(even) {
+            background: #1c1917;
+        }
+
+        tr:hover {
+            background: #332f2c;
+        }
+
+        /* Navigation Links (Previous/Next) */
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #454440;
+            gap: 1rem;
+        }
+
+        .nav-footer a {
+            flex: 1;
+            padding: 1rem;
+            background: #292524;
+            border: 1px solid #454440;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #fde68a;
+            transition: all 0.2s;
+        }
+
+        .nav-footer a:hover {
+            background: #3a3530;
+            border-color: #d97706;
+            color: #fef3c7;
+        }
+
+        .nav-footer .prev {
+            text-align: left;
+        }
+
+        .nav-footer .next {
+            text-align: right;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+
+            main {
+                padding: 1.5rem 1rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            td, th {
+                padding: 0.5rem;
+            }
+
+            .nav-footer {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="nav-brand">🦌 learnopenclaw.org</a>
+        <div class="nav-links" id="navLinks">
+            <a href="/">Home</a>
+            <a href="/blog">Blog</a>
+            <a href="/learn">Learn</a>
+            <a href="/faq">FAQ</a>
+            <a href="/terminal">Terminal</a>
+        </div>
+        <div class="nav-right">
+            <form class="search-form" action="/search" method="get">
+                <input type="text" name="q" placeholder="Search..." style="padding: 0.5rem; border-radius: 4px; border: none;">
+            </form>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+        </div>
+    </nav>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <span>⚠️</span>
+        <div>Sentiment signals are lagging and noisy — they reflect crowd psychology, not fundamental value. Never use sentiment as a sole trading signal.</div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="/">Home</a> › <a href="/terminal">Terminal</a> › <a href="/learn/crypto-defi">Crypto & DeFi</a> › Sentiment & Fear/Greed
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-tag">Crypto & DeFi · Part 4 of 5</div>
+        <h1>Sentiment & Fear/Greed</h1>
+        <p class="hero-subtitle">Gauge market psychology using the Fear & Greed Index, Reddit community signals, and trending coin data — all from free APIs.</p>
+        <div class="pill-group">
+            <span class="pill">Alternative.me</span>
+            <span class="pill">Reddit OAuth</span>
+            <span class="pill">CoinGecko Trending</span>
+            <span class="pill">No Paid APIs</span>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Section 1: Fear & Greed Index -->
+        <section>
+            <h2>🎯 Alternative.me Fear & Greed Index</h2>
+            <p>The Fear & Greed Index is a free, daily sentiment indicator that measures market psychology by analyzing cryptocurrency volatility, market momentum, dominance, trending, and social volume. Values range from 0 (Extreme Fear) to 100 (Extreme Greed).</p>
+
+            <h3>Index Zones</h3>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li><strong>0–24:</strong> 😱 Extreme Fear — panic selling, potential contrarian buy opportunity</li>
+                <li><strong>25–44:</strong> 😨 Fear — uncertainty, sellers gaining momentum</li>
+                <li><strong>45–55:</strong> 😐 Neutral — balanced sentiment, choppy trading</li>
+                <li><strong>56–74:</strong> 😏 Greed — risk appetite rising, FOMO building</li>
+                <li><strong>75–100:</strong> 🤑 Extreme Greed — euphoria, potential pullback risk</li>
+            </ul>
+
+            <p><strong>API Endpoint:</strong> <code>https://api.alternative.me/fng/?limit=30&format=json</code> (no key required)</p>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <code>import requests
+from datetime import datetime
+
+def get_fear_greed(limit: int = 30) -> list:
+    """
+    Fetch Fear & Greed Index history.
+    Values: 0 (Extreme Fear) → 100 (Extreme Greed)
+    Zones: 0-24 Extreme Fear | 25-44 Fear | 45-55 Neutral | 56-74 Greed | 75-100 Extreme Greed
+    """
+    url = f"https://api.alternative.me/fng/?limit={limit}&format=json"
+    data = requests.get(url, timeout=10).json()
+    return data["data"]
+
+def classify_sentiment(value: int) -> str:
+    if value <= 24: return "😱 Extreme Fear"
+    if value <= 44: return "😨 Fear"
+    if value <= 55: return "😐 Neutral"
+    if value <= 74: return "😏 Greed"
+    return "🤑 Extreme Greed"
+
+# Current reading
+history = get_fear_greed(7)
+today = history[0]
+score = int(today["value"])
+label = today["value_classification"]
+ts = datetime.fromtimestamp(int(today["timestamp"]))
+
+print(f"Fear & Greed: {score}/100 — {classify_sentiment(score)}")
+print(f"As of: {ts.strftime('%Y-%m-%d')}")
+print()
+
+# 7-day trend
+print("7-Day History:")
+for entry in history:
+    val = int(entry["value"])
+    bar = "█" * (val // 10)
+    print(f"  {datetime.fromtimestamp(int(entry['timestamp'])).strftime('%m-%d')}  {val:>3}  {bar}")</code>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Tip:</strong> The Fear & Greed Index updates daily at midnight UTC. Historical data helps identify cycles and reversals. Watch for sustained extremes (>7 days) as they often precede corrections or recoveries.
+            </div>
+        </section>
+
+        <!-- Section 2: Contrarian Signal -->
+        <section>
+            <h2>🔄 Contrarian Signal Logic</h2>
+            <p>Extreme sentiment often marks inflection points. When the crowd is maximally fearful or greedy, contrarian traders look for reversals. This approach treats Fear & Greed as a mean-reversion indicator.</p>
+
+            <h3>Signal Interpretation</h3>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li><strong>CONTRARIAN_BUY_WATCH:</strong> Average sentiment < 25 over 14 days — market in capitulation, potential floor-building</li>
+                <li><strong>CONTRARIAN_CAUTION:</strong> Average sentiment > 75 over 14 days — euphoria phase, watch for pullbacks</li>
+                <li><strong>RECOVERING:</strong> Average 25–40 with upward trend — fear easing, recovery phase</li>
+                <li><strong>NEUTRAL:</strong> Mixed signals or mid-range averages</li>
+            </ul>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <code>import pandas as pd
+
+def fear_greed_signal(lookback_days: int = 14) -> dict:
+    """
+    Generate a contrarian signal:
+    - Sustained extreme fear (avg < 25): potential buy signal
+    - Sustained extreme greed (avg > 75): potential caution signal
+    """
+    history = get_fear_greed(lookback_days)
+    values = [int(h["value"]) for h in history]
+
+    avg = sum(values) / len(values)
+    trend = values[0] - values[-1]  # positive = rising (more greed recently)
+
+    signal = "NEUTRAL"
+    if avg < 25:
+        signal = "CONTRARIAN_BUY_WATCH"  # Market extremely fearful
+    elif avg > 75:
+        signal = "CONTRARIAN_CAUTION"    # Market extremely greedy
+    elif avg < 40 and trend > 10:
+        signal = "RECOVERING"            # Fear recovering toward neutral
+
+    return {
+        "avg_14d": round(avg, 1),
+        "current": values[0],
+        "trend_direction": "↑ Rising" if trend > 0 else "↓ Falling",
+        "signal": signal,
+    }
+
+result = fear_greed_signal()
+print(f"14-day avg:  {result['avg_14d']}")
+print(f"Current:     {result['current']}")
+print(f"Trend:       {result['trend_direction']}")
+print(f"Signal:      {result['signal']}")</code>
+            </div>
+
+            <div class="info-box">
+                <strong>⚠️ Remember:</strong> Contrarian signals work best in cyclical markets. In strong uptrends or downtrends, sustained extreme sentiment can persist for weeks. Pair with technical support/resistance and volume confirmation.
+            </div>
+        </section>
+
+        <!-- Section 3: Reddit Crypto Sentiment -->
+        <section>
+            <h2>🔴 Reddit Crypto Sentiment (OAuth)</h2>
+            <p>Reddit's crypto communities (r/CryptoCurrency, r/Bitcoin, r/ethereum) reflect real-time community mood. Using the PRAW library and free Reddit OAuth credentials, you can score posts based on bullish/bearish language.</p>
+
+            <h3>Setup Reddit OAuth</h3>
+            <ol style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li>Visit <a href="https://www.reddit.com/prefs/apps" target="_blank">reddit.com/prefs/apps</a></li>
+                <li>Create a new app (type: "script")</li>
+                <li>Note your <code>client_id</code> and <code>client_secret</code></li>
+                <li>Install: <code>pip install praw</code></li>
+            </ol>
+
+            <p><strong>API Rate Limit:</strong> ~60 requests/minute (free tier). Analyze 50–100 recent posts per subreddit for stability.</p>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <code>import praw
+
+# Free Reddit app at reddit.com/prefs/apps — choose "script" type
+reddit = praw.Reddit(
+    client_id="YOUR_CLIENT_ID",
+    client_secret="YOUR_CLIENT_SECRET",
+    user_agent="OpenClaw/1.0 (crypto-sentiment-bot)",
+)
+
+BULL_WORDS = {"moon","bullish","buy","long","pump","breakout","accumulate","hodl","ath","rally"}
+BEAR_WORDS = {"crash","bearish","sell","short","dump","correction","rug","scam","dead","rekt"}
+
+def score_post(text: str) -> int:
+    """Simple bag-of-words sentiment: +1 bull, -1 bear."""
+    words = set(text.lower().split())
+    bull = len(words & BULL_WORDS)
+    bear = len(words & BEAR_WORDS)
+    return bull - bear
+
+def subreddit_sentiment(sub_name: str, limit: int = 100) -> dict:
+    """Score recent hot posts in a subreddit."""
+    sub = reddit.subreddit(sub_name)
+    scores = []
+
+    for post in sub.hot(limit=limit):
+        text = f"{post.title} {post.selftext}"
+        score = score_post(text)
+        scores.append({
+            "title": post.title[:60],
+            "score": score,
+            "upvotes": post.score,
+            "comments": post.num_comments,
+        })
+
+    avg = sum(s["score"] for s in scores) / len(scores)
+    bull_count = sum(1 for s in scores if s["score"] > 0)
+    bear_count = sum(1 for s in scores if s["score"] < 0)
+
+    return {
+        "subreddit": sub_name,
+        "posts_analyzed": len(scores),
+        "avg_sentiment": round(avg, 3),
+        "bullish_posts": bull_count,
+        "bearish_posts": bear_count,
+        "bull_pct": round(bull_count / len(scores) * 100, 1),
+    }
+
+for sub in ["CryptoCurrency", "Bitcoin", "ethereum"]:
+    result = subreddit_sentiment(sub, limit=50)
+    emoji = "🟢" if result["avg_sentiment"] > 0 else "🔴"
+    print(f"{emoji} r/{result['subreddit']:<20} avg: {result['avg_sentiment']:+.3f} | "
+          f"bull: {result['bull_pct']}%")</code>
+            </div>
+
+            <h3>Limitations & Tuning</h3>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li><strong>Sarcasm:</strong> "This will moon" vs. "Yeah, this coin is mooning" (sarcasm) look identical to simple bag-of-words</li>
+                <li><strong>Meme speak:</strong> "HODL," "REKT," "diamond hands" require context dictionaries</li>
+                <li><strong>Spam/bots:</strong> Filter by upvote count or comment count to weight quality</li>
+                <li><strong>Language models:</strong> Consider VADER (rule-based) or transformer models (TextBlob, Hugging Face) for nuance</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>🎓 Advanced:</strong> Replace bag-of-words with VADER sentiment analyzer (<code>pip install nltk</code>) or fine-tuned transformers for more accurate sentiment classification.
+            </div>
+        </section>
+
+        <!-- Section 4: CoinGecko Trending -->
+        <section>
+            <h2>🔥 CoinGecko Trending Coins</h2>
+            <p>CoinGecko's trending endpoint shows the top 7 coins by recent search volume. This reflects what retail investors are chasing right now — useful for detecting alt-season (altcoins rallying) vs. blue-chip dominance.</p>
+
+            <p><strong>API Endpoint:</strong> <code>https://api.coingecko.com/api/v3/search/trending</code> (free, no key, updates ~every 10 minutes)</p>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <code>def get_trending_coins() -> list:
+    """
+    Top 7 trending coins on CoinGecko (by search volume).
+    Updates every ~10 minutes. No API key needed.
+    """
+    BASE = "https://api.coingecko.com/api/v3"
+    data = requests.get(f"{BASE}/search/trending", timeout=10).json()
+    coins = data.get("coins", [])
+
+    print("🔥 Trending Coins (by search volume):")
+    results = []
+    for item in coins:
+        c = item["item"]
+        results.append({
+            "rank":   c["market_cap_rank"],
+            "name":   c["name"],
+            "symbol": c["symbol"].upper(),
+            "score":  c.get("score", 0),
+            "price_btc": c.get("price_btc", 0),
+        })
+
+    for r in results:
+        print(f"  #{r['rank']:>5}  {r['symbol']:<8}  {r['name']}")
+
+    return results
+
+trending = get_trending_coins()</code>
+            </div>
+
+            <h3>Interpreting Trending</h3>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li><strong>Major coins trending (BTC, ETH, SOL, BNB):</strong> Institutional interest, broad market conviction</li>
+                <li><strong>Mostly altcoins trending:</strong> Alt-season indicator — retail FOMO, higher risk appetite</li>
+                <li><strong>Niche/meme coins trending:</strong> Speculative fervor, potential bubble zone</li>
+                <li><strong>Stable trends (same 7 coins daily):</strong> Low volatility in interest, consolidation phase</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 Signal:</strong> Compare trending composition week-over-week. A shift from 70% major coins to 30% major coins signals a sentiment change toward risk-on behavior.
+            </div>
+        </section>
+
+        <!-- Section 5: Composite Momentum Score -->
+        <section>
+            <h2>📊 Composite Crypto Sentiment Score</h2>
+            <p>Combine Fear & Greed, Reddit bullishness, and trending diversity into a single 0–100 momentum metric. This weighted approach balances multiple signal sources and reduces false positives from single indicators.</p>
+
+            <h3>Weighting Methodology</h3>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li><strong>40% Fear & Greed Index:</strong> Market structure & volatility (official, daily update)</li>
+                <li><strong>40% Reddit Bullishness:</strong> Community mood across 3 major subreddits (real-time, grassroots)</li>
+                <li><strong>20% Trending Diversity:</strong> Retail interest & alt-season phase (volume-based, 10-min updates)</li>
+            </ul>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <code>def composite_crypto_sentiment() -> dict:
+    """
+    Combine Fear/Greed + Reddit sentiment + trending signal
+    into a single 0-100 momentum score.
+
+    Weights:
+      40% Fear & Greed Index (normalized 0-100)
+      40% Reddit bullishness (bull_pct across 3 subs)
+      20% Trending diversity (are top 7 major coins or alts?)
+    """
+    # Fear & Greed (already 0-100)
+    fg = get_fear_greed(1)
+    fg_score = int(fg[0]["value"])
+
+    # Reddit (average bull_pct across 3 subs → normalize to 0-100)
+    reddit_scores = []
+    for sub in ["CryptoCurrency", "Bitcoin", "ethereum"]:
+        try:
+            r = subreddit_sentiment(sub, limit=30)
+            reddit_scores.append(r["bull_pct"])
+        except Exception:
+            reddit_scores.append(50)  # neutral fallback
+    reddit_score = sum(reddit_scores) / len(reddit_scores)
+
+    # Trending (are top coins well-known? proxy for alt-season)
+    trending = get_trending_coins()
+    major_symbols = {"BTC","ETH","SOL","BNB","XRP","ADA","DOT","AVAX","MATIC","LINK"}
+    major_count = sum(1 for t in trending if t["symbol"] in major_symbols)
+    # Alt-season = mostly unknowns trending = more speculative/risky mood
+    trending_score = (major_count / len(trending)) * 100 if trending else 50
+
+    composite = (fg_score * 0.4) + (reddit_score * 0.4) + (trending_score * 0.2)
+
+    return {
+        "fear_greed": fg_score,
+        "reddit_bullish_pct": round(reddit_score, 1),
+        "major_trending_pct": round(trending_score, 1),
+        "composite_score": round(composite, 1),
+        "interpretation": classify_sentiment(int(composite)),
+    }
+
+result = composite_crypto_sentiment()
+print(f"\n=== Composite Crypto Sentiment ===")
+for k, v in result.items():
+    print(f"  {k:<25}: {v}")</code>
+            </div>
+
+            <h3>Example Output</h3>
+            <div class="code-block" style="background: #1c1917; border-left: 4px solid #10b981;">
+                <code>=== Composite Crypto Sentiment ===
+  fear_greed              : 42
+  reddit_bullish_pct      : 58.3
+  major_trending_pct      : 71.4
+  composite_score         : 54.7
+  interpretation          : 😐 Neutral</code>
+            </div>
+
+            <div class="info-box">
+                <strong>📈 Actionable:</strong> Composite scores >60 suggest position-taking into strength; scores <40 may favor accumulation or hedging. Monitor day-over-day changes to detect sentiment shifts before they're priced in.
+            </div>
+        </section>
+
+        <!-- Section 6: Sentiment Reference Table -->
+        <section>
+            <h2>📋 Sentiment Signal Reference</h2>
+            <p>Free sentiment signals and their strengths:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Signal</th>
+                        <th scope="col">Source</th>
+                        <th scope="col">Update Freq</th>
+                        <th scope="col">Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fear & Greed Index</td>
+                        <td>Alternative.me</td>
+                        <td>Daily (UTC midnight)</td>
+                        <td>Market cycle positioning, extremes</td>
+                    </tr>
+                    <tr>
+                        <td>Subreddit hot posts</td>
+                        <td>Reddit OAuth</td>
+                        <td>Real-time</td>
+                        <td>Short-term crowd mood, community focus</td>
+                    </tr>
+                    <tr>
+                        <td>Trending search</td>
+                        <td>CoinGecko</td>
+                        <td>Every 10 min</td>
+                        <td>Momentum, alt-season detection, retail interest</td>
+                    </tr>
+                    <tr>
+                        <td>Google Trends</td>
+                        <td>pytrends (free)</td>
+                        <td>Daily</td>
+                        <td>Mainstream retail interest, top-of-market froth</td>
+                    </tr>
+                    <tr>
+                        <td>Twitter/X mentions</td>
+                        <td>Limited free access</td>
+                        <td>Real-time</td>
+                        <td>News-driven spikes, influencer impact</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 7: Caveats -->
+        <section>
+            <h2>⚠️ Sentiment Caveats & Limitations</h2>
+
+            <div class="info-box">
+                <strong>Sentiment Lags Price:</strong> Fear & Greed often reflects yesterday's volatility and dominance. By the time sentiment shifts, a significant move may already be underway. Use sentiment for confirmation, not prediction.
+            </div>
+
+            <div class="info-box">
+                <strong>Reddit Word Lists Need Tuning:</strong> "Moon" can be sarcasm ("this dog coin will moon to $0.000001"), and "hodl" vs. "hold" skew results. Context-aware models (VADER, transformer-based) improve accuracy.
+            </div>
+
+            <div class="info-box">
+                <strong>Fear & Greed Is Backward-Looking:</strong> The index is built from yesterday's volatility, momentum, and dominance data. It doesn't predict tomorrow's market behavior; it rates how scared/greedy traders were historically.
+            </div>
+
+            <div class="info-box">
+                <strong>Best Use Cases:</strong> Position sizing (reduce size in extreme greed), portfolio rebalancing (sell into euphoria), and hedging (buy puts in extremes). Sentiment works best as a macro filter, not entry/exit logic.
+            </div>
+
+            <h3>Advanced Improvements</h3>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li><strong>Sentiment velocity:</strong> Track rate of change (dF&G/dt) to detect fast reversals</li>
+                <li><strong>Divergences:</strong> Compare Fear & Greed vs. price — bullish divergence = uptrend likely to resume</li>
+                <li><strong>Macro context:</strong> Combine with Fed announcements, CPI data, macro risk-off/risk-on signals</li>
+                <li><strong>Transformer models:</strong> Fine-tune BERT/RoBERTa on labeled crypto text for state-of-art sentiment</li>
+            </ul>
+        </section>
+
+        <!-- Navigation Footer -->
+        <div class="nav-footer">
+            <a href="crypto-defi.html" class="prev">← Part 3: DeFi Protocol Data</a>
+            <a href="crypto-portfolio.html" class="next">Part 5: Portfolio & DCA →</a>
+        </div>
+    </main>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Crypto Sentiment & Fear/Greed Analysis",
+        "description": "Gauge market psychology using the Fear & Greed Index, Reddit community signals, and trending coin data — all from free APIs.",
+        "image": "https://learnopenclaw.org/images/crypto-sentiment.jpg",
+        "datePublished": "2026-03-28",
+        "author": {
+            "@type": "Organization",
+            "name": "Claw Street Terminal",
+            "url": "https://learnopenclaw.org"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "learnopenclaw.org",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://learnopenclaw.org/logo.png"
+            }
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://learnopenclaw.org/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Terminal",
+                "item": "https://learnopenclaw.org/terminal"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Crypto & DeFi",
+                "item": "https://learnopenclaw.org/learn/crypto-defi"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Sentiment & Fear/Greed",
+                "item": "https://learnopenclaw.org/crypto-sentiment.html"
+            }
+        ]
+    }
+    </script>
+
+    <!-- Hamburger Menu & Copy Script -->
+    <script>
+        // Hamburger toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const code = codeBlock.innerText;
+
+            navigator.clipboard.writeText(code).then(() => {
+                button.classList.add('copied');
+                button.innerText = 'Copied!';
+
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.innerText = 'Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Copy failed:', err);
+            });
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('nav')) {
+                navLinks.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>

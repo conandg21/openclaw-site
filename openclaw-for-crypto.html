@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto & DeFi Automation | Claw Street Terminal | learnopenclaw.org</title>
+  <meta name="description" content="Build automated crypto workflows with free APIs — CoinGecko, Etherscan, DeFiLlama, and more. No paid subscriptions required.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://learnopenclaw.org/openclaw-for-crypto.html">
+
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Crypto & DeFi Automation | Claw Street Terminal">
+  <meta property="og:description" content="Build automated crypto workflows with free APIs — CoinGecko, Etherscan, DeFiLlama, and more. No paid subscriptions required.">
+  <meta property="og:url" content="https://learnopenclaw.org/openclaw-for-crypto.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="learnopenclaw.org">
+
+  <style>
+    /* Reset & Variables */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --amber: #d97706;
+      --amber-lt: #fffbeb;
+      --amber-md: #fde68a;
+      --amber-dk: #78350f;
+      --dark-bg: #1c1917;
+      --dark-secondary: #292524;
+      --dark-tertiary: #44403c;
+      --text-primary: #e7e5e4;
+      --text-secondary: #a8a29e;
+      --text-tertiary: #78716c;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* Skip Navigation */
+    .skip-nav {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      z-index: 10000;
+      background: var(--amber);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .skip-nav:focus {
+      left: 0;
+      top: 0;
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: var(--dark-bg);
+      border-bottom: 2px solid var(--amber);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-logo {
+      color: var(--amber);
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    .nav-logo:hover {
+      color: var(--amber-md);
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: var(--dark-bg);
+      border-bottom: 2px solid var(--amber);
+      padding: 16px 20px;
+      gap: 12px;
+      z-index: 99;
+    }
+
+    .nav-links a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 6px 0;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--amber);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .nav-search-form {
+      display: flex;
+      align-items: center;
+      background: var(--dark-secondary);
+      border: 1px solid var(--dark-tertiary);
+      border-radius: 20px;
+      padding: 4px 12px;
+      gap: 6px;
+    }
+
+    .nav-search-icon {
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .nav-search-input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      width: 120px;
+    }
+
+    .nav-search-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    .hamburger:hover span {
+      background: var(--amber);
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      background: var(--dark-secondary);
+      border-bottom: 1px solid var(--dark-tertiary);
+      padding: 12px 20px;
+      font-size: 0.875rem;
+    }
+
+    .breadcrumb-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      color: var(--text-secondary);
+    }
+
+    .breadcrumb-inner a {
+      color: var(--amber);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb-inner a:hover {
+      color: var(--amber-md);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #451a03 0%, #78350f 55%, var(--amber) 100%);
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fef3c7;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: #fef3c7;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: #fed7aa;
+      margin-bottom: 40px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .hero-pill {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fef3c7;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Main Content */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Disclaimer Bar */
+    .disclaimer-bar {
+      background: var(--amber-lt);
+      border-left: 4px solid var(--amber);
+      padding: 16px 24px;
+      font-size: 0.875rem;
+      color: var(--amber-dk);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin: 60px 0;
+      border-radius: 4px;
+      line-height: 1.6;
+    }
+
+    .disclaimer-icon {
+      flex-shrink: 0;
+      font-size: 1.2rem;
+      margin-top: 2px;
+    }
+
+    /* Callout Box */
+    .callout-box {
+      background: var(--dark-secondary);
+      border-left: 4px solid var(--amber);
+      padding: 24px;
+      margin: 60px 0;
+      border-radius: 4px;
+    }
+
+    .callout-box h2 {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+      color: var(--amber);
+    }
+
+    .callout-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .callout-box li {
+      margin-bottom: 12px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .callout-box li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    /* Section Headings */
+    h2 {
+      font-size: 2rem;
+      margin: 60px 0 32px 0;
+      color: var(--amber);
+      font-weight: 800;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin: 24px 0 16px 0;
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      background: var(--dark-secondary);
+      border: 1px solid var(--dark-tertiary);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: var(--dark-tertiary);
+      border-bottom: 2px solid var(--amber);
+    }
+
+    th {
+      padding: 16px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--amber);
+      font-size: 0.875rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 16px;
+      border-bottom: 1px solid var(--dark-tertiary);
+      font-size: 0.9375rem;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: var(--dark-tertiary);
+    }
+
+    /* Module Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
+    }
+
+    .card {
+      background: var(--dark-secondary);
+      border: 1px solid var(--dark-tertiary);
+      border-left: 4px solid var(--amber);
+      padding: 28px;
+      border-radius: 4px;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card:hover {
+      background: var(--dark-tertiary);
+      border-left-color: var(--amber-md);
+      transform: translateY(-4px);
+    }
+
+    .card-emoji {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: var(--amber);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      margin: 60px 0;
+    }
+
+    details {
+      background: var(--dark-secondary);
+      border: 1px solid var(--dark-tertiary);
+      border-left: 4px solid var(--amber);
+      padding: 20px;
+      margin-bottom: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    details[open] {
+      background: var(--dark-tertiary);
+    }
+
+    summary {
+      font-weight: 600;
+      color: var(--amber);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+
+    summary:hover {
+      color: var(--amber-md);
+    }
+
+    details p {
+      margin: 16px 0 0 0;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    details code {
+      background: var(--dark-bg);
+      color: var(--amber);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.875rem;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      background: var(--dark-secondary);
+      border: 2px solid var(--amber);
+      padding: 40px;
+      border-radius: 8px;
+      text-align: center;
+      margin: 60px 0;
+    }
+
+    .cta-section h2 {
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--amber);
+      color: #1c1917;
+      padding: 12px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-button:hover {
+      background: var(--amber-md);
+      transform: scale(1.05);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dark-secondary);
+      border-top: 1px solid var(--dark-tertiary);
+      padding: 40px 20px;
+      margin-top: 60px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    footer a {
+      color: var(--amber);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--amber-md);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+
+    .footer-copyright {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--dark-tertiary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .hero-pills {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero-pill {
+        min-width: 200px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      table {
+        font-size: 0.8125rem;
+      }
+
+      th, td {
+        padding: 12px;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-section {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="breadcrumb">
+    <div class="breadcrumb-inner">
+      <a href="index.html">Home</a> › <a href="claw-street-terminal.html">Terminal</a> › Crypto & DeFi
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">CLAW STREET TERMINAL</div>
+      <h1>Crypto & DeFi Automation</h1>
+      <p class="hero-subtitle">Harness free on-chain data, DeFi protocols, and market intelligence to build automated crypto workflows with Python — no expensive subscriptions required.</p>
+      <div class="hero-pills">
+        <div class="hero-pill">📊 7 Free APIs</div>
+        <div class="hero-pill">📚 6 Modules</div>
+        <div class="hero-pill">⛓️ On-Chain + DeFi</div>
+        <div class="hero-pill">🌍 24/7 Markets</div>
+      </div>
+    </div>
+  </section>
+
+  <main id="main-content">
+    <div class="disclaimer-bar">
+      <div class="disclaimer-icon">⚠️</div>
+      <div>Crypto markets operate 24/7, carry extreme volatility, and face evolving regulations. This series is for educational and automation purposes only — not financial advice. Always consult a qualified advisor.</div>
+    </div>
+
+    <section class="callout-box">
+      <h2>Before You Automate Crypto</h2>
+      <ul>
+        <li>Crypto markets never close — your scripts need to handle that</li>
+        <li>Free API rate limits are stricter than traditional finance</li>
+        <li>Regulatory landscape shifts fast — code today may need changes tomorrow</li>
+        <li>Volatility is extreme — alerts fire constantly; design for signal, not noise</li>
+        <li>CoinGecko, DeFiLlama, Etherscan free tiers are genuinely powerful — but have limits</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>The Free API Landscape</h2>
+      <p>These seven APIs form the backbone of crypto automation. All offer robust free tiers with genuine capabilities.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">API</th>
+            <th scope="col">Coverage</th>
+            <th scope="col">Free Tier</th>
+            <th scope="col">Key Required</th>
+            <th scope="col">Rate Limit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CoinGecko</strong></td>
+            <td>Prices, market data, OHLCV</td>
+            <td>✅ Full</td>
+            <td>No</td>
+            <td>30 req/min</td>
+          </tr>
+          <tr>
+            <td><strong>Etherscan</strong></td>
+            <td>On-chain, wallet, gas, tokens</td>
+            <td>✅ Full</td>
+            <td>Yes (free)</td>
+            <td>5 req/sec</td>
+          </tr>
+          <tr>
+            <td><strong>DeFiLlama</strong></td>
+            <td>TVL, protocols, yields</td>
+            <td>✅ Full</td>
+            <td>No</td>
+            <td>Generous</td>
+          </tr>
+          <tr>
+            <td><strong>Alternative.me</strong></td>
+            <td>Fear & Greed Index</td>
+            <td>✅ Full</td>
+            <td>No</td>
+            <td>Unlimited</td>
+          </tr>
+          <tr>
+            <td><strong>CoinCap</strong></td>
+            <td>Real-time prices, WebSocket</td>
+            <td>✅ Full</td>
+            <td>No</td>
+            <td>200 req/min</td>
+          </tr>
+          <tr>
+            <td><strong>Reddit OAuth</strong></td>
+            <td>Crypto community sentiment</td>
+            <td>✅ Full</td>
+            <td>Yes (free)</td>
+            <td>60 req/min</td>
+          </tr>
+          <tr>
+            <td><strong>CoinPaprika</strong></td>
+            <td>Historical data, tickers</td>
+            <td>✅ Full</td>
+            <td>No</td>
+            <td>25k req/month</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Series Modules</h2>
+      <p>Six comprehensive modules covering every layer of crypto automation. Each includes live examples, best practices, and production patterns.</p>
+
+      <div class="cards-grid">
+        <a href="crypto-prices.html" class="card">
+          <div class="card-emoji">📈</div>
+          <h3>Price & Market Data</h3>
+          <p>CoinGecko API, OHLCV data, price alert system, multi-coin dashboard</p>
+        </a>
+
+        <a href="crypto-onchain.html" class="card">
+          <div class="card-emoji">⛓️</div>
+          <h3>On-Chain Analytics</h3>
+          <p>Etherscan API, wallet tracking, whale alerts, gas monitor</p>
+        </a>
+
+        <a href="crypto-defi.html" class="card">
+          <div class="card-emoji">🏦</div>
+          <h3>DeFi Protocol Data</h3>
+          <p>DeFiLlama API, TVL tracking, yield monitoring, depeg alerts</p>
+        </a>
+
+        <a href="crypto-sentiment.html" class="card">
+          <div class="card-emoji">💬</div>
+          <h3>Sentiment & Fear/Greed</h3>
+          <p>Alternative.me index, Reddit signals, momentum scoring</p>
+        </a>
+
+        <a href="crypto-portfolio.html" class="card">
+          <div class="card-emoji">💼</div>
+          <h3>Portfolio & DCA</h3>
+          <p>Multi-coin tracking, DCA scheduler, P&L, rebalancing</p>
+        </a>
+
+        <a href="crypto-integrations.html" class="card">
+          <div class="card-emoji">🔗</div>
+          <h3>Exchange Integrations</h3>
+          <p>Spot trading execution, order management, live fills</p>
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Who This Series Is For</h2>
+      <p>Whether you're a hodler, a DeFi researcher, or a quant, this series has a path for you.</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Audience</th>
+            <th scope="col">What They'll Build</th>
+            <th scope="col">Prior Knowledge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Crypto Holder</strong></td>
+            <td>Portfolio tracker + real-time alerts when your holdings hit price targets or face liquidation risk</td>
+            <td>Basic Python (loops, functions, imports)</td>
+          </tr>
+          <tr>
+            <td><strong>DeFi Explorer</strong></td>
+            <td>Protocol TVL monitor, yield tracker, depeg alert system for stablecoins</td>
+            <td>Python + HTTP API concepts</td>
+          </tr>
+          <tr>
+            <td><strong>Quant Researcher</strong></td>
+            <td>On-chain signal pipeline, correlation analysis, volume/liquidity snapshots for research</td>
+            <td>Python + pandas + data analysis</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="faq-section">
+      <h2>FAQ</h2>
+
+      <details>
+        <summary>Do I need to pay for any of these APIs?</summary>
+        <p>No. CoinGecko, DeFiLlama, Alternative.me, and CoinCap work without any payment or API key. Etherscan and Reddit require free registration, but the free tier is unrestricted for reasonable use. No credit card required anywhere.</p>
+      </details>
+
+      <details>
+        <summary>Can I trade crypto automatically with OpenClaw?</summary>
+        <p>OpenClaw is a data and automation framework, not a trading bot. You can monitor prices, analyze on-chain signals, track DeFi yields, and trigger alerts — but execution requires a separate exchange integration (like ccxt or an exchange's native API). This is intentional: data + decision logic should be separate from capital execution.</p>
+      </details>
+
+      <details>
+        <summary>How often can I poll CoinGecko for free?</summary>
+        <p>CoinGecko's free tier allows 30 requests per minute. For real-time data with higher frequency, use CoinCap's WebSocket feed (200 req/min) or their <code>wss://ws.coincap.io</code> endpoint which has no practical limit on subscriptions.</p>
+      </details>
+
+      <details>
+        <summary>Is on-chain data always accurate?</summary>
+        <p>Etherscan data is derived directly from the blockchain, so transaction data and token transfers are authoritative. However, interpretation requires logic: labeling a wallet as a "whale," identifying MEV patterns, or inferring intent requires heuristics and may have false positives. Always cross-reference with on-chain events.</p>
+      </details>
+
+      <details>
+        <summary>What's the difference between on-chain and DeFi data?</summary>
+        <p>On-chain data (Etherscan) is raw blockchain activity: transactions, wallet balances, gas prices. DeFi data (DeFiLlama) is protocol-level: total value locked, yields, TVL per protocol. Both are essential — on-chain finds anomalies; DeFi shows capital flows.</p>
+      </details>
+
+      <details>
+        <summary>Can I use these APIs for trading bots?</summary>
+        <p>Yes — they're explicitly designed for automation. However, remember rate limits scale with your traffic. A bot polling CoinGecko every 10 seconds uses up your free tier quickly. Production bots typically use dedicated WebSocket feeds or upgrade to higher-tier APIs for reliability.</p>
+      </details>
+    </section>
+
+    <section class="cta-section">
+      <h2>Ready to Automate?</h2>
+      <p>Start with Part 1 and build your way up. Each module stands alone but builds on foundational patterns.</p>
+      <a href="crypto-prices.html" class="cta-button">Start with Part 1: Price & Market Data →</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <span>·</span>
+        <a href="blog.html">Blog</a>
+        <span>·</span>
+        <a href="learn.html">Learn</a>
+        <span>·</span>
+        <a href="faq.html">FAQ</a>
+        <span>·</span>
+        <a href="claw-street-terminal.html">Terminal</a>
+      </div>
+      <div class="footer-copyright">
+        © 2025 learnopenclaw.org · Not financial advice · <a href="index.html">Made with 🦞</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.hamburger');
+    const menu = document.getElementById('nav-links');
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      menu.classList.toggle('open');
+    });
+  </script>
+  <script src="copy.js"></script>
+</body>
+</html>

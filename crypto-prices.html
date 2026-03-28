@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Price & Market Data with CoinGecko | Claw Street Terminal</title>
+    <meta name="description" content="Learn how to fetch live crypto prices, OHLCV historical data, and market cap rankings using the CoinGecko free API. Build price alerts and multi-coin dashboards.">
+    <meta name="canonical" content="https://learnopenclaw.org/crypto-prices.html">
+    <meta property="og:title" content="Crypto Price & Market Data with CoinGecko">
+    <meta property="og:description" content="Master CoinGecko API for live prices, historical OHLCV data, and market dashboards — no API key required.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://learnopenclaw.org/crypto-prices.html">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --amber: #d97706;
+            --amber-lt: #fffbeb;
+            --amber-md: #fde68a;
+            --amber-dk: #78350f;
+            --bg-dark: #1c1917;
+            --bg-darker: #0f0e0d;
+            --text-light: #e7e5e4;
+            --text-muted: #a8a29e;
+            --border-dark: #44403c;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* SKIP NAV */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-weight: 600;
+        }
+        .skip-nav:focus {
+            left: 0;
+            top: 0;
+            z-index: 9999;
+            background: var(--amber);
+            color: #fff;
+        }
+
+        /* SITE NAV */
+        .site-nav {
+            background: var(--bg-dark);
+            border-bottom: 2px solid var(--amber);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            color: var(--amber);
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-logo:hover { color: var(--amber-md); }
+
+        .nav-links {
+            display: none;
+        }
+
+        .nav-links.open {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: var(--bg-dark);
+            border-bottom: 2px solid var(--amber);
+            padding: 16px 20px;
+            gap: 12px;
+            z-index: 99;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 6px 0;
+            border-radius: 4px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--amber);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .nav-search-form {
+            display: flex;
+            align-items: center;
+            background: #292524;
+            border: 1px solid var(--border-dark);
+            border-radius: 20px;
+            padding: 4px 12px;
+            gap: 6px;
+        }
+
+        .nav-search-icon {
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .nav-search-input {
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            width: 120px;
+        }
+
+        .nav-search-input::placeholder {
+            color: #78716c;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 2px;
+            background: var(--text-light);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger:hover span {
+            background: var(--amber);
+        }
+
+        /* DISCLAIMER BAR */
+        .disclaimer-bar {
+            background: var(--amber-lt);
+            border-left: 4px solid var(--amber);
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: var(--amber-dk);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* BREADCRUMB */
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumb a {
+            color: var(--amber);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 55%, #d97706 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--amber-md);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 24px;
+        }
+
+        .hero-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* MAIN CONTENT */
+        #main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        section h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--amber);
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-dark);
+        }
+
+        section h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--text-light);
+        }
+
+        p, li {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: var(--text-light);
+        }
+
+        a {
+            color: var(--amber);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--amber);
+        }
+
+        a:hover {
+            color: var(--amber-md);
+            border-bottom-color: var(--amber-md);
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: var(--bg-darker);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            margin: 24px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #27251f;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        .code-header span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--amber);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .copy-btn {
+            background: var(--amber);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--amber-md);
+            transform: scale(1.05);
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+        }
+
+        pre {
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        code {
+            color: var(--text-light);
+        }
+
+        /* INFO BOX */
+        .info-box {
+            background: var(--amber-lt);
+            border-left: 4px solid var(--amber);
+            padding: 20px 24px;
+            border-radius: 4px;
+            margin: 24px 0;
+        }
+
+        .info-box strong {
+            color: var(--amber-dk);
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: var(--amber-dk);
+            margin: 0;
+        }
+
+        /* TABLE */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 24px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-darker);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+        }
+
+        thead {
+            background: #27251f;
+        }
+
+        th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--amber);
+            border-bottom: 2px solid var(--border-dark);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-dark);
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        tbody tr:hover {
+            background: #27251f;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* NAV SECTION */
+        .section-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 2px solid var(--border-dark);
+            gap: 16px;
+        }
+
+        .nav-item {
+            flex: 1;
+            padding: 16px;
+            background: var(--bg-darker);
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: #27251f;
+            border-color: var(--amber);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.prev::before {
+            content: "← ";
+            color: var(--amber);
+            font-weight: 700;
+        }
+
+        .nav-item.next::after {
+            content: " →";
+            color: var(--amber);
+            font-weight: 700;
+        }
+
+        .nav-item small {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-darker);
+            border-top: 2px solid var(--border-dark);
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--amber);
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+    <nav class="site-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+            <div class="nav-links" id="nav-links" role="list">
+                <a href="index.html" role="listitem">Home</a>
+                <a href="blog.html" role="listitem">Blog</a>
+                <a href="learn.html" role="listitem">Learn</a>
+                <a href="faq.html" role="listitem">FAQ</a>
+                <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+            </div>
+            <div class="nav-right">
+                <form class="nav-search-form" role="search" onsubmit="return false;">
+                    <svg class="nav-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+                </form>
+                <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="disclaimer-bar" role="note">
+        <span>⚠️</span>
+        <span>Crypto markets are highly volatile and operate 24/7. This page is for educational and automation purposes only — not financial advice.</span>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> › <a href="claw-street-terminal.html">Terminal</a> › <a href="claw-street-terminal.html">Crypto & DeFi</a> › <span style="color: var(--text-muted);">Price & Market Data</span>
+    </div>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <span class="hero-tag">Crypto & DeFi · Part 1 of 5</span>
+            <h1>Price & Market Data</h1>
+            <p>Fetch live prices, OHLCV history, and market cap rankings with CoinGecko's free API — no key required for basic endpoints.</p>
+            <div class="hero-pills">
+                <span class="pill">CoinGecko Free API</span>
+                <span class="pill">No Key Required</span>
+                <span class="pill">30 req/min</span>
+            </div>
+        </div>
+    </section>
+
+    <main id="main-content">
+
+        <section>
+            <h2>CoinGecko Setup</h2>
+            <p>The CoinGecko free API requires no API key for basic endpoints. You only need Python's built-in <code>requests</code> library to fetch live cryptocurrency data. Unlike other APIs, there's zero registration overhead — just start making calls.</p>
+
+            <h3>Installation & First Call</h3>
+            <p>Most Python installations include <code>requests</code> by default. If not, install it with <code>pip install requests</code>. Here's a simple function to fetch data from CoinGecko:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code># No pip install needed — just requests (standard)
+import requests
+import json
+from datetime import datetime
+
+BASE = "https://api.coingecko.com/api/v3"
+
+def cg_get(endpoint, params=None):
+    """Rate-limited CoinGecko fetch."""
+    import time
+    resp = requests.get(f"{BASE}{endpoint}", params=params, timeout=10)
+    resp.raise_for_status()
+    return resp.json()
+
+# Quick test — get BTC price
+data = cg_get("/simple/price", {"ids": "bitcoin", "vs_currencies": "usd"})
+print(f"BTC: ${data['bitcoin']['usd']:,.2f}")</code></pre>
+            </div>
+
+            <p>This simple wrapper handles error checking and will be the foundation for all our examples. The <code>timeout=10</code> parameter prevents hanging on slow network connections.</p>
+        </section>
+
+        <section>
+            <h2>Top Coins by Market Cap</h2>
+            <p>The <code>/coins/markets</code> endpoint returns detailed market data for the top cryptocurrencies by market capitalization. This is perfect for building a watchlist or dashboard of the largest crypto assets.</p>
+
+            <h3>Fetching Top 20 Coins</h3>
+            <p>Request the top 20 coins with 24h and 7d price changes in a single call:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>def get_top_coins(limit=20):
+    """Fetch top N coins by market cap."""
+    coins = cg_get("/coins/markets", {
+        "vs_currency": "usd",
+        "order": "market_cap_desc",
+        "per_page": limit,
+        "page": 1,
+        "sparkline": False,
+        "price_change_percentage": "24h,7d"
+    })
+    return coins
+
+coins = get_top_coins(20)
+print(f"{'Rank':<5} {'Coin':<15} {'Price':>12} {'24h%':>8} {'7d%':>8} {'Mkt Cap':>15}")
+print("-" * 65)
+for c in coins:
+    rank = c['market_cap_rank']
+    name = c['symbol'].upper()
+    price = c['current_price']
+    d24 = c.get('price_change_percentage_24h') or 0
+    d7 = c.get('price_change_percentage_7d_in_currency') or 0
+    mcap = c['market_cap']
+    arrow24 = "▲" if d24 > 0 else "▼"
+    print(f"{rank:<5} {name:<15} ${price:>11,.4f} {arrow24}{abs(d24):>6.2f}% {'':>8} ${mcap:>13,.0f}")</code></pre>
+            </div>
+
+            <p><strong>Key parameters:</strong></p>
+            <ul>
+                <li><code>vs_currency</code>: The fiat currency for prices (usd, eur, gbp, etc.)</li>
+                <li><code>order</code>: Sort by <code>market_cap_desc</code>, <code>gecko_desc</code>, or <code>volume_desc</code></li>
+                <li><code>per_page</code>: Number of results (max 250 per page)</li>
+                <li><code>page</code>: Pagination (1-based)</li>
+                <li><code>price_change_percentage</code>: Comma-separated list of time windows (1h,24h,7d,30d)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>OHLCV Historical Data</h2>
+            <p>OHLCV stands for Open, High, Low, Close, Volume. CoinGecko provides daily candle data via the <code>/coins/{id}/ohlc</code> endpoint, perfect for technical analysis and volatility studies.</p>
+
+            <h3>Fetching Daily Candles</h3>
+            <p>Retrieve 30 days of OHLCV data and calculate volatility metrics:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>def get_ohlcv(coin_id: str, days: int = 30):
+    """
+    Fetch OHLCV data via CoinGecko market_chart.
+    Returns DataFrame with [date, open, high, low, close].
+    """
+    data = cg_get(f"/coins/{coin_id}/ohlc", {
+        "vs_currency": "usd",
+        "days": days
+    })
+    # Each row: [timestamp_ms, open, high, low, close]
+    import pandas as pd
+    df = pd.DataFrame(data, columns=["timestamp_ms","open","high","low","close"])
+    df["date"] = pd.to_datetime(df["timestamp_ms"], unit="ms")
+    df = df[["date","open","high","low","close"]]
+    return df
+
+df = get_ohlcv("bitcoin", 30)
+print(df.tail(5).to_string(index=False))
+
+# Simple volatility check
+df["daily_range_pct"] = (df["high"] - df["low"]) / df["open"] * 100
+print(f"\nAvg daily range (30d): {df['daily_range_pct'].mean():.2f}%")
+print(f"Max daily range (30d): {df['daily_range_pct'].max():.2f}%")</code></pre>
+            </div>
+
+            <p><strong>Valid day parameters:</strong> 1, 7, 14, 30, 90, 180, 365, max (all-time)</p>
+            <p>The daily range percentage helps identify volatile periods — useful for setting stop-losses or alert thresholds.</p>
+        </section>
+
+        <section>
+            <h2>Price Alert System</h2>
+            <p>Build a simple polling-based price alert system that respects CoinGecko's rate limits (30 req/min on free tier). We use a cooldown mechanism to prevent alert spam:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>import time
+import smtplib
+from email.mime.text import MIMEText
+
+WATCHLIST = {
+    "bitcoin":  {"above": 75000, "below": 55000},
+    "ethereum": {"above": 4500,  "below": 2800},
+    "solana":   {"above": 280,   "below": 120},
+}
+COOLDOWN_SECONDS = 3600  # 1 hour between same alert
+last_alert = {}
+
+def check_prices():
+    ids = ",".join(WATCHLIST.keys())
+    prices = cg_get("/simple/price", {
+        "ids": ids,
+        "vs_currencies": "usd",
+        "include_24hr_change": True
+    })
+    for coin, levels in WATCHLIST.items():
+        price = prices[coin]["usd"]
+        change = prices[coin].get("usd_24h_change", 0)
+        key_above = f"{coin}_above"
+        key_below = f"{coin}_below"
+        now = time.time()
+
+        if price > levels["above"]:
+            if now - last_alert.get(key_above, 0) > COOLDOWN_SECONDS:
+                send_alert(coin, price, change, "ABOVE", levels["above"])
+                last_alert[key_above] = now
+
+        if price < levels["below"]:
+            if now - last_alert.get(key_below, 0) > COOLDOWN_SECONDS:
+                send_alert(coin, price, change, "BELOW", levels["below"])
+                last_alert[key_below] = now
+
+def send_alert(coin, price, change, direction, level):
+    emoji = "🚀" if direction == "ABOVE" else "📉"
+    msg = MIMEText(
+        f"{emoji} {coin.upper()} is {direction} ${level:,.0f}\n"
+        f"Current price: ${price:,.2f}\n"
+        f"24h change: {change:+.2f}%\n"
+        f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    )
+    msg["Subject"] = f"[OpenClaw] {coin.upper()} Alert: {direction} ${level:,.0f}"
+    msg["From"] = "alerts@yourdomain.com"
+    msg["To"] = "you@example.com"
+    with smtplib.SMTP("localhost") as s:
+        s.send_message(msg)
+    print(f"Alert sent: {coin} {direction} ${level:,.0f}")
+
+# Run every 2 minutes (well within 30 req/min limit)
+while True:
+    check_prices()
+    time.sleep(120)</code></pre>
+            </div>
+
+            <p><strong>Key design patterns:</strong></p>
+            <ul>
+                <li><strong>Watchlist dict:</strong> Easy to add/remove coins and set thresholds</li>
+                <li><strong>Cooldown mechanism:</strong> Prevents alert fatigue by enforcing a 1-hour minimum between identical alerts</li>
+                <li><strong>Batch calls:</strong> Fetches all coin prices in one API call via comma-separated IDs</li>
+                <li><strong>2-minute polling:</strong> Respects the 30 req/min limit with margin for other calls</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>Email Configuration</strong>
+                <p>The example uses <code>smtplib.SMTP("localhost")</code> which assumes a local mail server. For Gmail or other providers, use the provider's SMTP host and credentials. For production, consider using a service like SendGrid or Twilio.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Multi-Coin Dashboard</h2>
+            <p>Build a live updating terminal dashboard to monitor multiple coins simultaneously. This example uses the <code>tabulate</code> library for pretty-printed tables:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>from tabulate import tabulate
+import os
+
+def clear():
+    os.system("cls" if os.name == "nt" else "clear")
+
+PORTFOLIO_COINS = ["bitcoin","ethereum","solana","cardano","polkadot","chainlink","avalanche-2"]
+
+def dashboard():
+    data = cg_get("/coins/markets", {
+        "vs_currency": "usd",
+        "ids": ",".join(PORTFOLIO_COINS),
+        "order": "market_cap_desc",
+        "per_page": 50,
+        "page": 1,
+        "sparkline": False,
+        "price_change_percentage": "1h,24h,7d"
+    })
+    rows = []
+    for c in data:
+        d1h = c.get("price_change_percentage_1h_in_currency") or 0
+        d24 = c.get("price_change_percentage_24h") or 0
+        d7d = c.get("price_change_percentage_7d_in_currency") or 0
+        rows.append([
+            c["symbol"].upper(),
+            f"${c['current_price']:,.4f}",
+            f"{'+' if d1h>0 else ''}{d1h:.2f}%",
+            f"{'+' if d24>0 else ''}{d24:.2f}%",
+            f"{'+' if d7d>0 else ''}{d7d:.2f}%",
+            f"${c['market_cap']/1e9:.2f}B",
+        ])
+    clear()
+    print(f"=== OpenClaw Crypto Dashboard | {datetime.now().strftime('%H:%M:%S')} ===\n")
+    print(tabulate(rows, headers=["Coin","Price","1h","24h","7d","Mkt Cap"], tablefmt="rounded_outline"))
+    print("\nRefreshing in 2 min... (Ctrl+C to exit)")
+
+while True:
+    try:
+        dashboard()
+        time.sleep(120)
+    except KeyboardInterrupt:
+        print("\nDashboard stopped.")
+        break</code></pre>
+            </div>
+
+            <p>Install <code>tabulate</code> with <code>pip install tabulate</code>. This dashboard refreshes every 2 minutes, showing 1-hour, 24-hour, and 7-day price changes alongside current market cap. Perfect for monitoring a crypto portfolio.</p>
+        </section>
+
+        <section>
+            <h2>Rate Limiting & Best Practices</h2>
+            <p>CoinGecko's free API is rate-limited but generous for most use cases. Understanding these limits prevents your automation from being blocked:</p>
+
+            <div class="info-box">
+                <strong>Rate Limits</strong>
+                <p><strong>Free tier:</strong> 30 requests/minute. <strong>Pro Demo key:</strong> 500/minute (still free for testing). If you exceed limits, you'll get HTTP 429 (Too Many Requests) responses.</p>
+            </div>
+
+            <h3>Strategies to Stay Within Limits</h3>
+            <ul>
+                <li><strong>Batch requests:</strong> Fetch multiple coins in one call using comma-separated IDs: <code>ids=bitcoin,ethereum,solana</code></li>
+                <li><strong>Increase polling interval:</strong> Use <code>time.sleep(2)</code> or more between sequential calls in loops</li>
+                <li><strong>Cache responses:</strong> Store data locally and only refresh when necessary (e.g., every 2–5 minutes)</li>
+                <li><strong>Use websockets:</strong> For real-time data, switch to CoinCap's WebSocket API (unlimited free tier) instead of polling</li>
+                <li><strong>Avoid per-coin loops:</strong> Instead of <code>for coin in coins: cg_get(...)</code>, batch them: <code>cg_get(..., ids=",".join(coins))</code></li>
+            </ul>
+
+            <h3>Handling Rate Limit Errors</h3>
+            <p>Add retry logic with exponential backoff:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>import time
+
+def cg_get_with_retry(endpoint, params=None, max_retries=3):
+    """Fetch with exponential backoff on rate limit."""
+    for attempt in range(max_retries):
+        try:
+            resp = requests.get(f"{BASE}{endpoint}", params=params, timeout=10)
+            if resp.status_code == 429:
+                wait = 2 ** attempt  # 1, 2, 4 seconds
+                print(f"Rate limited. Waiting {wait}s...")
+                time.sleep(wait)
+                continue
+            resp.raise_for_status()
+            return resp.json()
+        except requests.RequestException as e:
+            print(f"Error: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(2 ** attempt)
+    return None</code></pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>CoinGecko Endpoints Reference</h2>
+            <p>A quick reference table of the most useful free API endpoints:</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Endpoint</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Key Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>/simple/price</code></td>
+                            <td>Live prices for 1+ coins (fastest)</td>
+                            <td><code>ids</code>, <code>vs_currencies</code>, <code>include_24hr_change</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/coins/markets</code></td>
+                            <td>Full market data + % changes (paginated)</td>
+                            <td><code>vs_currency</code>, <code>order</code>, <code>per_page</code>, <code>price_change_percentage</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/coins/{id}/ohlc</code></td>
+                            <td>OHLCV candles (daily or 4h), 1–90 days</td>
+                            <td><code>vs_currency</code>, <code>days</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/coins/{id}/market_chart</code></td>
+                            <td>Price + volume + mcap history</td>
+                            <td><code>vs_currency</code>, <code>days</code>, <code>interval</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>/search/trending</code></td>
+                            <td>Top 7 trending coins right now</td>
+                            <td>none (no params required)</td>
+                        </tr>
+                        <tr>
+                            <td><code>/global</code></td>
+                            <td>Total crypto market cap + dominance %</td>
+                            <td>none (no params required)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p><strong>Coin IDs:</strong> Use lowercase with hyphens (e.g., <code>bitcoin</code>, <code>ethereum</code>, <code>chainlink</code>). Get a full list at <code>/coins/list</code>.</p>
+        </section>
+
+        <section>
+            <h2>Common Use Cases</h2>
+
+            <h3>Get trending coins in real time</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>trending = cg_get("/search/trending")
+for coin in trending["coins"][:7]:
+    print(f"{coin['item']['name']} (#{coin['item']['market_cap_rank']})")</code></pre>
+            </div>
+
+            <h3>Get total market cap + Bitcoin dominance</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>global_data = cg_get("/global")
+mcap = global_data["data"]["total_market_cap"]["usd"]
+btc_dom = global_data["data"]["btc_dominance"]
+print(f"Total Market Cap: ${mcap/1e12:.2f}T")
+print(f"BTC Dominance: {btc_dom:.2f}%")</code></pre>
+            </div>
+
+            <h3>Get price data in multiple currencies</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>prices = cg_get("/simple/price", {
+    "ids": "bitcoin,ethereum",
+    "vs_currencies": "usd,eur,gbp,jpy"
+})
+for coin, rates in prices.items():
+    print(f"{coin}: {rates}")</code></pre>
+            </div>
+        </section>
+
+        <section style="margin-bottom: 0;">
+            <h2>Next Steps</h2>
+            <p>You now have the foundation for fetching live prices, historical OHLCV data, and building automated price alerts. In the next part of the series, we'll explore <strong>On-Chain Analytics</strong> — tracking wallet movements, transaction flows, and on-chain signals using APIs like Glassnode and The Graph.</p>
+
+            <p>Key skills to practice:</p>
+            <ul>
+                <li>Build a price alert system for your favorite coins</li>
+                <li>Create a persistent dashboard that logs prices to a CSV file</li>
+                <li>Experiment with different polling intervals and batch sizes</li>
+                <li>Integrate alerts into a Slack or Discord webhook</li>
+            </ul>
+
+            <div class="section-nav">
+                <a href="openclaw-for-crypto.html" class="nav-item prev">
+                    <small>Previous</small>
+                    Crypto & DeFi Overview
+                </a>
+                <a href="crypto-onchain.html" class="nav-item next">
+                    <small>Next</small>
+                    On-Chain Analytics
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 <strong>OpenClaw</strong> — Educational content for crypto automation & terminal trading.</p>
+        <p><a href="index.html">Home</a> | <a href="blog.html">Blog</a> | <a href="learn.html">Learn</a> | <a href="faq.html">FAQ</a> | <a href="claw-street-terminal.html">Terminal</a></p>
+    </footer>
+
+    <script>
+        const btn = document.querySelector('.hamburger');
+        const menu = document.getElementById('nav-links');
+        btn.addEventListener('click', () => {
+            const open = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', String(!open));
+            menu.classList.toggle('open');
+        });
+    </script>
+    <script src="copy.js"></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Crypto Price & Market Data with CoinGecko",
+        "description": "Learn how to fetch live crypto prices, OHLCV historical data, and market cap rankings using the CoinGecko free API. Build price alerts and multi-coin dashboards.",
+        "author": {
+            "@type": "Organization",
+            "name": "OpenClaw",
+            "url": "https://learnopenclaw.org"
+        },
+        "datePublished": "2026-03-28",
+        "image": "https://learnopenclaw.org/og-image.png",
+        "url": "https://learnopenclaw.org/crypto-prices.html",
+        "isPartOf": {
+            "@type": "Series",
+            "name": "Crypto & DeFi",
+            "description": "A 5-part series on crypto automation and DeFi protocols",
+            "position": 1
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://learnopenclaw.org"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Terminal",
+                "item": "https://learnopenclaw.org/claw-street-terminal.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Crypto & DeFi",
+                "item": "https://learnopenclaw.org/claw-street-terminal.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Price & Market Data",
+                "item": "https://learnopenclaw.org/crypto-prices.html"
+            }
+        ]
+    }
+    </script>
+
+</body>
+</html>

@@ -1474,5 +1474,41 @@
       "FAQ"
     ],
     "body": "rebalancing drift stop-loss tax-loss harvesting wash sale rule allocation targets weekly maintenance brief OpenClaw automation"
+  },
+  {
+    "url": "openclaw-for-crypto.html",
+    "title": "Crypto & DeFi Automation | Claw Street Terminal",
+    "description": "Build automated crypto workflows with free APIs \u2014 CoinGecko, Etherscan, DeFiLlama, and more. No paid subscriptions required.",
+    "section": "terminal"
+  },
+  {
+    "url": "crypto-prices.html",
+    "title": "Crypto Price & Market Data with CoinGecko | Claw Street Terminal",
+    "description": "Fetch live prices, OHLCV history, and market cap rankings with CoinGecko's free API \u2014 no key required for basic endpoints.",
+    "section": "terminal"
+  },
+  {
+    "url": "crypto-onchain.html",
+    "title": "On-Chain Analytics with Etherscan | Claw Street Terminal",
+    "description": "Track wallets, monitor whale transactions, and watch gas prices in real time using Etherscan's free API.",
+    "section": "terminal"
+  },
+  {
+    "url": "crypto-defi.html",
+    "title": "DeFi Protocol Data with DeFiLlama | Claw Street Terminal",
+    "description": "Track Total Value Locked, yield rates, and stablecoin health across hundreds of DeFi protocols using DeFiLlama's free API.",
+    "section": "terminal"
+  },
+  {
+    "url": "crypto-sentiment.html",
+    "title": "Crypto Sentiment & Fear/Greed Analysis | Claw Street Terminal",
+    "description": "Gauge market psychology using the Fear & Greed Index, Reddit community signals, and trending coin data \u2014 all from free APIs.",
+    "section": "terminal"
+  },
+  {
+    "url": "crypto-portfolio.html",
+    "title": "Crypto Portfolio Tracking & DCA Automation | Claw Street Terminal",
+    "description": "Track your multi-coin portfolio, automate dollar-cost averaging, monitor unrealized P&L, and detect rebalancing drift.",
+    "section": "terminal"
   }
 ]

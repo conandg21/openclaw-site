@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeFi Protocol Data with DeFiLlama | Claw Street Terminal</title>
+    <meta name="description" content="Track Total Value Locked, yield rates, and stablecoin health across DeFi protocols using DeFiLlama's free API. Learn TVL tracking, yield monitoring, and depeg alerts.">
+    <meta name="canonical" href="https://learnopenclaw.org/crypto-defi.html">
+    <meta name="author" content="Claw Street Terminal">
+    <meta name="keywords" content="DeFi, DeFiLlama, TVL, yield rates, stablecoin, blockchain, API, crypto">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "DeFi Protocol Data with DeFiLlama",
+        "description": "Track Total Value Locked, yield rates, and stablecoin health across hundreds of DeFi protocols using DeFiLlama's completely free API.",
+        "image": "https://learnopenclaw.org/og-defi.png",
+        "datePublished": "2026-03-28",
+        "dateModified": "2026-03-28",
+        "author": {
+            "@type": "Organization",
+            "name": "Claw Street Terminal"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "learnopenclaw.org"
+        }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://learnopenclaw.org/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Terminal",
+                "item": "https://learnopenclaw.org/terminal.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Crypto & DeFi",
+                "item": "https://learnopenclaw.org/crypto.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "DeFi Protocol Data",
+                "item": "https://learnopenclaw.org/crypto-defi.html"
+            }
+        ]
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #1c1917;
+            color: #e7e5e4;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .site-nav {
+            background: #1c1917;
+            border-bottom: 2px solid #d97706;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            color: #d97706;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .nav-links.open {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: #1c1917;
+            border-bottom: 2px solid #d97706;
+            padding: 16px 20px;
+            gap: 12px;
+            z-index: 99;
+        }
+
+        .nav-links a {
+            color: #e7e5e4;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 6px 0;
+        }
+
+        .nav-links a:hover {
+            color: #d97706;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 2px;
+            background: #e7e5e4;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger:hover span {
+            background: #d97706;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .search-form input {
+            padding: 6px 12px;
+            border: 1px solid #78350f;
+            border-radius: 4px;
+            background: #292524;
+            color: #e7e5e4;
+            font-size: 0.875rem;
+            width: 150px;
+        }
+
+        .search-form input:focus {
+            outline: none;
+            border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+
+        /* Disclaimer Bar */
+        .disclaimer-bar {
+            background: #fffbeb;
+            border-left: 4px solid #d97706;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            font-size: 0.875rem;
+            color: #a8a29e;
+        }
+
+        .breadcrumb a {
+            color: #d97706;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 55%, #d97706 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            color: #fffbeb;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            opacity: 0.95;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fffbeb;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #fffbeb;
+            margin-bottom: 24px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.95;
+        }
+
+        .hero-pills {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            display: inline-block;
+            background: rgba(255, 251, 235, 0.1);
+            border: 1px solid #d97706;
+            color: #fffbeb;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #fffbeb;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #78350f;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #d97706;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+
+        a {
+            color: #d97706;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: #292524;
+            border: 1px solid #78350f;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 24px;
+            position: relative;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        code {
+            color: #fbbf24;
+            font-family: "Courier New", monospace;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #78350f;
+        }
+
+        .code-label {
+            font-weight: 600;
+            color: #d97706;
+            font-size: 0.875rem;
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            background: #78350f;
+            color: #fffbeb;
+            border: 1px solid #d97706;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #d97706;
+            color: #1c1917;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            background: #292524;
+            border: 1px solid #78350f;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #451a03;
+            color: #d97706;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #78350f;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #78350f;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #3d3935;
+        }
+
+        /* Navigation Pills */
+        .nav-pills {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 2px solid #78350f;
+            gap: 20px;
+        }
+
+        .nav-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #292524;
+            border: 1px solid #78350f;
+            border-radius: 6px;
+            color: #d97706;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .nav-pill:hover {
+            background: #78350f;
+            color: #fffbeb;
+            border-color: #d97706;
+        }
+
+        .nav-pill.prev {
+            justify-content: flex-start;
+        }
+
+        .nav-pill.next {
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            main {
+                padding: 24px 16px;
+            }
+
+            pre {
+                font-size: 0.75rem;
+                padding: 16px;
+            }
+
+            .search-form input {
+                width: 120px;
+            }
+
+            .nav-pills {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            td, th {
+                padding: 8px;
+            }
+        }
+
+        /* Utility Classes */
+        .text-muted {
+            color: #a8a29e;
+        }
+
+        .highlight {
+            background: rgba(217, 119, 6, 0.15);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .warning-box {
+            background: rgba(217, 119, 6, 0.1);
+            border-left: 4px solid #d97706;
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+        }
+
+        .warning-box strong {
+            color: #d97706;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="site-nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">&#x1F99E; learnopenclaw.org</a>
+            <div class="nav-links" id="navLinks">
+                <a href="/">Home</a>
+                <a href="/blog.html">Blog</a>
+                <a href="/learn.html">Learn</a>
+                <a href="/faq.html">FAQ</a>
+                <a href="/terminal.html">Terminal</a>
+            </div>
+            <div class="nav-right">
+                <form class="search-form" onsubmit="return false;">
+                    <input type="text" placeholder="Search..." aria-label="Search">
+                </form>
+                <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Disclaimer Bar -->
+    <div class="disclaimer-bar">
+        <span>⚠️ DeFi protocols carry smart contract risk and impermanent loss. TVL and yield data are informational only — not investment advice.</span>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="/">Home</a> › <a href="/terminal.html">Terminal</a> › <a href="/crypto.html">Crypto & DeFi</a> › <span>DeFi Protocol Data</span>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-tag">Crypto & DeFi · Part 3 of 5</div>
+            <h1>DeFi Protocol Data</h1>
+            <p>Track Total Value Locked, yield rates, and stablecoin health across hundreds of DeFi protocols using DeFiLlama's completely free API.</p>
+            <div class="hero-pills">
+                <div class="pill">DeFiLlama API</div>
+                <div class="pill">No Key Required</div>
+                <div class="pill">Generous Rate Limits</div>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- Section 1: DeFiLlama Overview -->
+        <section>
+            <h2>DeFiLlama — The Free DeFi Data Standard</h2>
+            <p>DeFiLlama is the gold standard for decentralized finance data aggregation. It tracks over 3,000 DeFi protocols across 100+ blockchain networks, indexing real-time TVL (Total Value Locked), yield opportunities, stablecoin market caps, and governance metrics—all available via a completely free, unauthenticated REST API.</p>
+            <p><strong>Key advantages:</strong> No API key required, generous rate limits, historical data spanning years, and coverage of both established and emerging protocols across every major chain (Ethereum, Arbitrum, Polygon, Solana, Avalanche, and more).</p>
+
+            <div class="code-header">
+                <span class="code-label">Python: Connecting to DeFiLlama</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>import requests
+
+LLAMA_BASE = "https://api.llama.fi"
+YIELDS_BASE = "https://yields.llama.fi"
+
+def llama_get(path: str, base: str = LLAMA_BASE) -> dict | list:
+    """Fetch from DeFiLlama API."""
+    resp = requests.get(f"{base}{path}", timeout=15)
+    resp.raise_for_status()
+    return resp.json()
+
+# Quick test — total DeFi TVL
+global_data = llama_get("/v2/charts")
+latest = global_data[-1]
+from datetime import datetime
+dt = datetime.fromtimestamp(latest["date"])
+print(f"Total DeFi TVL: ${latest['totalLiquidityUSD']/1e9:.2f}B ({dt.strftime('%Y-%m-%d')})")</code></pre>
+        </section>
+
+        <!-- Section 2: Top Protocols by TVL -->
+        <section>
+            <h2>Top Protocols by TVL</h2>
+            <p>Explore which DeFi protocols are holding the most user capital. This ranking shifts constantly as yields, security incidents, and new features attract or repel liquidity providers.</p>
+
+            <div class="code-header">
+                <span class="code-label">Python: Fetch and Rank Top 20 Protocols</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>def get_top_protocols(limit: int = 20) -> list:
+    """Fetch all protocols sorted by TVL."""
+    protocols = llama_get("/protocols")
+    # Sort by tvl descending
+    protocols.sort(key=lambda x: x.get("tvl", 0), reverse=True)
+    return protocols[:limit]
+
+protocols = get_top_protocols(20)
+
+print(f"{'Rank':<5} {'Protocol':<20} {'Category':<18} {'Chain':<12} {'TVL (USD)':>14}")
+print("-" * 72)
+for i, p in enumerate(protocols, 1):
+    name = p["name"][:19]
+    cat = p.get("category", "Unknown")[:17]
+    chain = p.get("chain", "Multi")[:11]
+    tvl = p.get("tvl", 0)
+    print(f"{i:<5} {name:<20} {cat:<18} {chain:<12} ${tvl/1e9:>12.2f}B")</code></pre>
+
+            <p><strong>Output interpretation:</strong> Each protocol shows its current TVL in billions of USD. Decentralized exchanges (DEXs) like Uniswap and Aave dominate rankings, but lending, derivatives, and liquid staking protocols vary by season.</p>
+        </section>
+
+        <!-- Section 3: TVL History for a Protocol -->
+        <section>
+            <h2>TVL History for a Specific Protocol</h2>
+            <p>Monitor how a protocol's total value locked evolves over time. Track recovery from hacks, reaction to governance changes, or competition from new entrants.</p>
+
+            <div class="code-header">
+                <span class="code-label">Python: Historical TVL Trends</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>import pandas as pd
+
+def get_protocol_tvl_history(protocol_slug: str) -> pd.DataFrame:
+    """
+    Fetch historical TVL for a protocol.
+    Slug = lowercase name with hyphens (e.g., 'uniswap', 'aave', 'lido')
+    """
+    data = llama_get(f"/protocol/{protocol_slug}")
+    tvl_data = data.get("tvl", [])
+
+    df = pd.DataFrame(tvl_data)
+    df["date"] = pd.to_datetime(df["date"], unit="s")
+    df = df.rename(columns={"totalLiquidityUSD": "tvl_usd"})
+    df = df[["date", "tvl_usd"]].sort_values("date")
+    return df
+
+# Compare Aave vs Uniswap TVL trend (last 30 days)
+for protocol in ["aave", "uniswap"]:
+    df = get_protocol_tvl_history(protocol)
+    recent = df.tail(30)
+    change = (recent.iloc[-1]["tvl_usd"] - recent.iloc[0]["tvl_usd"]) / recent.iloc[0]["tvl_usd"] * 100
+    current_tvl = recent.iloc[-1]["tvl_usd"]
+    print(f"{protocol.title():<12} TVL: ${current_tvl/1e9:.2f}B  | 30d change: {change:+.1f}%")</code></pre>
+
+            <p><strong>Real-world use:</strong> TVL trends reveal market confidence. A sudden drop often signals a security issue, governance crisis, or migration to competing protocols. Sustained growth indicates product-market fit and user trust.</p>
+        </section>
+
+        <!-- Section 4: Yield Rate Monitor -->
+        <section>
+            <h2>Yield Rate Monitor</h2>
+            <p>DeFiLlama's yields API surfaces the highest-yield liquidity pools across DeFi. Filter by TVL to avoid "rug pull" honeypots, and track impermanent loss (IL) risk for LP positions.</p>
+
+            <div class="code-header">
+                <span class="code-label">Python: Top-Yield Pools with TVL Filter</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>def get_top_yields(min_tvl_usd: float = 10_000_000, limit: int = 20) -> pd.DataFrame:
+    """
+    Find highest-yield pools with meaningful TVL.
+    Filters out tiny/illiquid pools.
+    """
+    data = llama_get("/pools", base=YIELDS_BASE)
+    pools = data["data"]
+
+    # Filter and sort
+    filtered = [
+        p for p in pools
+        if (p.get("tvlUsd", 0) >= min_tvl_usd
+            and p.get("apy") is not None
+            and p.get("apy", 0) > 0)
+    ]
+    filtered.sort(key=lambda x: x["apy"], reverse=True)
+
+    rows = []
+    for p in filtered[:limit]:
+        rows.append({
+            "protocol": p.get("project", ""),
+            "pool":     p.get("symbol", ""),
+            "chain":    p.get("chain", ""),
+            "apy":      p.get("apy", 0),
+            "apy_base": p.get("apyBase", 0) or 0,
+            "apy_reward": p.get("apyReward") or 0,
+            "tvl_m":    p.get("tvlUsd", 0) / 1e6,
+            "il_risk":  p.get("ilRisk", "none"),
+        })
+
+    return pd.DataFrame(rows)
+
+df = get_top_yields(min_tvl_usd=50_000_000)
+print(df[["protocol","pool","chain","apy","tvl_m","il_risk"]].to_string(index=False))</code></pre>
+
+            <p><strong>Critical interpretation:</strong> APY includes base yields (from fees) and reward yields (from incentive tokens). High reward APY often signals unsustainable incentive programs. Always cross-check IL risk—impermanent loss can wipe out gains on volatile pairs.</p>
+        </section>
+
+        <!-- Section 5: Stablecoin Depeg Alert System -->
+        <section>
+            <h2>Stablecoin Depeg Alert System</h2>
+            <p>Monitor stablecoin prices in real time. When DAI, USDC, or USDT drift beyond their $1.00 peg, it signals market stress, liquidity shortages, or exchange rate imbalances that can cascade across DeFi.</p>
+
+            <div class="code-header">
+                <span class="code-label">Python: Depeg Detection & Alerts</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>def get_stablecoin_prices() -> list:
+    """Fetch current prices for major stablecoins."""
+    # DeFiLlama stablecoins endpoint
+    data = llama_get("/stablecoins?includePrices=true")
+    return data.get("peggedAssets", [])
+
+def check_depeg(peg_tolerance: float = 0.005):  # 0.5% tolerance
+    """Alert if any stablecoin depegs beyond tolerance."""
+    stables = get_stablecoin_prices()
+    alerts = []
+
+    for stable in stables:
+        name = stable.get("name", "")
+        peg_type = stable.get("pegType", "")
+        if "usd" not in peg_type.lower():
+            continue  # Only check USD pegs
+
+        # Current price (can be None if not available)
+        price_data = stable.get("price")
+        if price_data is None:
+            continue
+
+        # Price deviation from $1.00
+        deviation = abs(price_data - 1.0)
+        if deviation > peg_tolerance:
+            direction = "ABOVE" if price_data > 1.0 else "BELOW"
+            alerts.append({
+                "name": name,
+                "price": price_data,
+                "deviation_pct": deviation * 100,
+                "direction": direction,
+            })
+            print(f"🚨 DEPEG: {name} trading at ${price_data:.4f} "
+                  f"({direction} peg by {deviation*100:.2f}%)")
+
+    if not alerts:
+        print(f"✅ All stablecoins within {peg_tolerance*100:.1f}% of peg")
+
+    return alerts
+
+# Run every 10 minutes
+import time
+while True:
+    check_depeg(peg_tolerance=0.01)
+    time.sleep(600)</code></pre>
+
+            <p><strong>What triggers depegs:</strong> Bank runs on reserve custodians (USDC, 2023), algorithmic design flaws (UST, 2022), or temporary liquidity crunches on smaller exchanges. A 0.5–1% tolerance catches early stress; tighten to 0.1% for precision trading.</p>
+        </section>
+
+        <!-- Section 6: Chain TVL Breakdown -->
+        <section>
+            <h2>Chain TVL Breakdown</h2>
+            <p>Which blockchains dominate DeFi? Ethereum historically leads, but Polygon, Arbitrum, and Solana are rapidly closing the gap. Track market share shifts to identify emerging opportunities.</p>
+
+            <div class="code-header">
+                <span class="code-label">Python: TVL by Blockchain</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>def get_chain_tvl() -> pd.DataFrame:
+    """Fetch TVL broken down by blockchain."""
+    chains = llama_get("/v2/chains")
+    chains.sort(key=lambda x: x.get("tvl", 0), reverse=True)
+
+    rows = [{
+        "chain": c["name"],
+        "tvl_b": c.get("tvl", 0) / 1e9,
+        "protocols": c.get("protocols", 0),
+    } for c in chains[:15]]
+
+    df = pd.DataFrame(rows)
+    total = df["tvl_b"].sum()
+    df["share_pct"] = df["tvl_b"] / total * 100
+
+    print(f"{'Chain':<20} {'TVL ($B)':>10} {'Protocols':>12} {'Share':>8}")
+    print("-" * 55)
+    for _, row in df.iterrows():
+        print(f"{row['chain']:<20} {row['tvl_b']:>9.2f}B {row['protocols']:>12} {row['share_pct']:>7.1f}%")
+    return df
+
+get_chain_tvl()</code></pre>
+
+            <p><strong>Strategic insights:</strong> Chains with higher TVL attract developers and users due to network effects. However, emerging chains with lower TVL but growing adoption can offer arbitrage and yield farming opportunities before the market saturates.</p>
+        </section>
+
+        <!-- Section 7: DeFiLlama API Reference -->
+        <section>
+            <h2>DeFiLlama API Endpoints Reference</h2>
+            <p>Complete list of free, rate-limited endpoints for building DeFi data pipelines:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Base URL</th>
+                        <th scope="col">Endpoint</th>
+                        <th scope="col">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>api.llama.fi</td>
+                        <td>/protocols</td>
+                        <td>All protocols with current TVL, category, chain</td>
+                    </tr>
+                    <tr>
+                        <td>api.llama.fi</td>
+                        <td>/protocol/{slug}</td>
+                        <td>Historical TVL time series for one protocol</td>
+                    </tr>
+                    <tr>
+                        <td>api.llama.fi</td>
+                        <td>/v2/chains</td>
+                        <td>TVL breakdown per blockchain</td>
+                    </tr>
+                    <tr>
+                        <td>api.llama.fi</td>
+                        <td>/v2/charts</td>
+                        <td>Total DeFi TVL history over time</td>
+                    </tr>
+                    <tr>
+                        <td>api.llama.fi</td>
+                        <td>/stablecoins</td>
+                        <td>Stablecoin market caps, supplies, and prices</td>
+                    </tr>
+                    <tr>
+                        <td>yields.llama.fi</td>
+                        <td>/pools</td>
+                        <td>All yield pools with APY, TVL, IL risk, rebalance frequency</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>Rate Limiting Note:</strong> DeFiLlama doesn't publish strict rate limits, but recommend spacing requests 1–2 seconds apart in production. Use caching aggressively—TVL changes slowly, so cache /protocols for 1 hour and /v2/chains for 4 hours.
+            </div>
+        </section>
+
+        <!-- Section 8: Best Practices -->
+        <section>
+            <h2>Building Reliable DeFi Data Pipelines</h2>
+
+            <h3>1. Error Handling & Retry Logic</h3>
+            <p>Network timeouts happen. Implement exponential backoff and retry with a max of 3 attempts:</p>
+            <div class="code-header">
+                <span class="code-label">Python: Robust Requests with Retry</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+def create_session():
+    session = requests.Session()
+    retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503])
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('https://', adapter)
+    return session
+
+session = create_session()
+resp = session.get("https://api.llama.fi/protocols", timeout=15)
+data = resp.json()</code></pre>
+
+            <h3>2. Caching & Local Snapshots</h3>
+            <p>Cache API responses in JSON files to avoid re-fetching. Timestamp snapshots for backtest-ing historical strategies:</p>
+            <div class="code-header">
+                <span class="code-label">Python: File-Based Caching</span>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code>import json
+from datetime import datetime
+
+def cache_protocols(filename: str = "protocols_cache.json"):
+    """Fetch and save protocols locally."""
+    data = llama_get("/protocols")
+    timestamp = datetime.utcnow().isoformat()
+    cached = {"timestamp": timestamp, "data": data}
+    with open(filename, "w") as f:
+        json.dump(cached, f)
+    return data
+
+def load_cached_protocols(filename: str = "protocols_cache.json"):
+    """Load from cache if available."""
+    try:
+        with open(filename) as f:
+            cached = json.load(f)
+        print(f"Loaded from {cached['timestamp']}")
+        return cached["data"]
+    except FileNotFoundError:
+        return cache_protocols(filename)</code></pre>
+
+            <h3>3. Monitoring & Alerting</h3>
+            <p>Set up email or webhook alerts for major TVL swings or stablecoin depegs. Combine with your favorite notification service (Discord, PagerDuty, Slack):</p>
+
+            <div class="warning-box">
+                <strong>Data Quality Disclaimer:</strong> DeFiLlama aggregates from public sources and on-chain data. Some protocols may report inaccurate or inflated TVL. Cross-reference with official protocol dashboards and on-chain block explorers for critical decisions.
+            </div>
+        </section>
+
+        <!-- Navigation Pills -->
+        <div class="nav-pills">
+            <a href="/crypto-onchain.html" class="nav-pill prev">
+                ← Part 2: On-Chain Analytics
+            </a>
+            <a href="/crypto-sentiment.html" class="nav-pill next">
+                Part 4: Sentiment & Fear/Greed →
+            </a>
+        </div>
+    </main>
+
+    <!-- Hamburger Menu Script -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            const isOpen = navLinks.classList.contains('open');
+            navLinks.classList.toggle('open', !isOpen);
+            hamburger.setAttribute('aria-expanded', !isOpen);
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.site-nav')) {
+                navLinks.classList.remove('open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+        });
+    </script>
+
+    <!-- Copy.js Script -->
+    <script>
+        function copyCode(button) {
+            const pre = button.closest('.code-header').nextElementSibling;
+            const code = pre.querySelector('code').textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = '#d97706';
+                button.style.color = '#1c1917';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                    button.style.color = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.textContent = 'Failed';
+            });
+        }
+    </script>
+</body>
+</html>
