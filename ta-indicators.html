@@ -494,6 +494,14 @@
         font-size: 1.5rem;
       }
     }
+  
+  .part-nav { background: #292524; border-top: 1px solid #44403c; padding: 24px 20px; margin-top: 48px; }
+  .part-nav-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .part-nav-btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; transition: background .2s; }
+  .prev-btn { background: #44403c; color: #e7e5e4; }
+  .prev-btn:hover { background: #57534e; }
+  .next-btn { background: #0d9488; color: #fff; }
+  .next-btn:hover { background: #0f766e; }
   </style>
 </head>
 <body>
@@ -992,13 +1000,19 @@ python3 -c "import yfinance, pandas_ta; print('✅ OpenClaw TA ready')"</code></
 
   <!-- SECTION NAVIGATION -->
   <div class="section-nav">
-    <a href="/learn/ta/openclaw-for-ta.html" class="nav-link prev">← Back to Overview</a>
-    <a href="/learn/ta/ta-scanner.html" class="nav-link next">Next: Multi-Stock Scanner →</a>
+    <a href="openclaw-for-ta.html" class="nav-link prev">← Back to Overview</a>
+    <a href="ta-scanner.html" class="nav-link next">Next: Multi-Stock Scanner →</a>
   </div>
 
 </div>
 
 <!-- FOOTER -->
+  <!-- Part navigation -->
+  <nav class="part-nav" aria-label="Series navigation">
+    <div class="part-nav-inner">
+      <a href="openclaw-for-ta.html" class="part-nav-btn prev-btn">← Overview</a><a href="ta-scanner.html" class="part-nav-btn next-btn">Part 2: Multi-Stock Scanner →</a>
+    </div>
+  </nav>
 <footer>
   <p>© 2025 <a href="/">learnopenclaw.org</a> | Not financial advice |
   <a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="/learn/">Learn</a> · <a href="/faq/">FAQ</a> · <a href="/terminal/">Terminal</a></p>

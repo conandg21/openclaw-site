@@ -404,6 +404,14 @@
         align-items: flex-start;
       }
     }
+  
+  .part-nav { background: #292524; border-top: 1px solid #44403c; padding: 24px 20px; margin-top: 48px; }
+  .part-nav-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .part-nav-btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; transition: background .2s; }
+  .prev-btn { background: #44403c; color: #e7e5e4; }
+  .prev-btn:hover { background: #57534e; }
+  .next-btn { background: #0d9488; color: #fff; }
+  .next-btn:hover { background: #0f766e; }
   </style>
 </head>
 <body>
@@ -880,6 +888,12 @@ print(f"   Open: {OUT_DIR}/index.html")</code></pre>
 <!-- ═══════════════════════════════════════════════════════════════ -->
 <!-- FOOTER                                                            -->
 <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- Part navigation -->
+  <nav class="part-nav" aria-label="Series navigation">
+    <div class="part-nav-inner">
+      <a href="ta-backtest.html" class="part-nav-btn prev-btn">← Part 4: Backtesting</a><a href="openclaw-for-ta.html" class="part-nav-btn next-btn">Back to Overview →</a>
+    </div>
+  </nav>
 <footer>
   <p>&copy; 2026 OpenClaw. Educational use only. Not financial advice.</p>
 </footer>

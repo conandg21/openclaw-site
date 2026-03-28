@@ -500,7 +500,15 @@
             height: 40px;
         }
 
-    </style>
+    
+  .part-nav { background: #292524; border-top: 1px solid #44403c; padding: 24px 20px; margin-top: 48px; }
+  .part-nav-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .part-nav-btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; transition: background .2s; }
+  .prev-btn { background: #44403c; color: #e7e5e4; }
+  .prev-btn:hover { background: #57534e; }
+  .next-btn { background: #0d9488; color: #fff; }
+  .next-btn:hover { background: #0f766e; }
+  </style>
 </head>
 <body>
 
@@ -1093,18 +1101,24 @@ Not financial advice. | learnopenclaw.org</div>
         <section class="article-nav">
             <div class="nav-item">
                 <div class="nav-label">← Previous</div>
-                <a href="/ta-scanner.html" class="nav-link">Part 2: Multi-Stock Scanner</a>
+                <a href="ta-scanner.html" class="nav-link">Part 2: Multi-Stock Scanner</a>
             </div>
             <div class="nav-item">
                 <div class="nav-label">Next →</div>
-                <a href="/ta-backtest.html" class="nav-link">Part 4: Backtesting</a>
+                <a href="ta-backtest.html" class="nav-link">Part 4: Backtesting</a>
             </div>
         </section>
 
     </div>
 
     <!-- ===== FOOTER ===== -->
-    <footer>
+      <!-- Part navigation -->
+  <nav class="part-nav" aria-label="Series navigation">
+    <div class="part-nav-inner">
+      <a href="ta-scanner.html" class="part-nav-btn prev-btn">← Part 2: Multi-Stock Scanner</a><a href="ta-backtest.html" class="part-nav-btn next-btn">Part 4: Backtesting →</a>
+    </div>
+  </nav>
+<footer>
         <div class="container">
             <p>
                 © 2026 OpenClaw. | <a href="/">Home</a> | <a href="/blog.html">Blog</a> | <a href="/terminal.html">Terminal</a> | <a href="/">FAQ</a>
