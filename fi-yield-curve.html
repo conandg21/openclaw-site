@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yield Curve Monitor with OpenClaw | Fixed Income Automation</title>
+    <meta name="description" content="Learn how the yield curve predicts recessions. OpenClaw automatically monitors the 2s10s spread using free FRED data and alerts you on inversion.">
+    <link rel="canonical" href="https://learnopenclaw.org/fi-yield-curve.html">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: #1c1917;
+            color: #e7e5e4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* ──── Navigation ──── */
+        .skip-nav { position: absolute; left: -9999px; top: auto; }
+        .skip-nav:focus { left: 0; top: 0; z-index: 9999; background: #e11d48; color: #fff; padding: 8px 16px; }
+
+        .site-nav { background: #1c1917; border-bottom: 2px solid #e11d48; position: sticky; top: 0; z-index: 100; }
+
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+        .nav-logo { color: #e11d48; font-weight: 800; font-size: 1.1rem; text-decoration: none; white-space: nowrap; }
+
+        .nav-links { display: none; }
+        .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: #1c1917; border-bottom: 2px solid #e11d48; padding: 16px 20px; gap: 12px; z-index: 99; }
+
+        .nav-links a { color: #e7e5e4; text-decoration: none; font-size: 1rem; font-weight: 500; padding: 6px 0; }
+        .nav-links a:hover { color: #e11d48; }
+
+        .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+        .nav-search-form { display: flex; align-items: center; background: #292524; border: 1px solid #44403c; border-radius: 20px; padding: 4px 12px; gap: 6px; }
+        .nav-search-icon { color: #a8a29e; flex-shrink: 0; }
+        .nav-search-input { background: none; border: none; outline: none; color: #e7e5e4; font-size: 0.875rem; width: 120px; }
+        .nav-search-input::placeholder { color: #78716c; }
+
+        .hamburger { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0; }
+        .hamburger span { display: block; height: 2px; background: #e7e5e4; border-radius: 2px; transition: all 0.3s; }
+        .hamburger:hover span { background: #e11d48; }
+
+        /* ──── Hero Section ──── */
+        .hero {
+            background: linear-gradient(135deg, #4c0519 0%, #881337 55%, #e11d48 100%);
+            padding: 60px 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+
+        .hero-tag { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fecdd3; margin-bottom: 16px; }
+
+        .hero-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 12px; }
+        @media (max-width: 768px) { .hero-title { font-size: 2rem; } }
+
+        .hero-subtitle { font-size: 1.125rem; line-height: 1.7; margin-bottom: 32px; color: #f1f5f9; }
+
+        .hero-pills { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .pill { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); padding: 8px 16px; border-radius: 20px; font-size: 0.875rem; font-weight: 600; }
+
+        /* ──── Disclaimer ──── */
+        .disclaimer {
+            background: #fff1f2;
+            border-left: 4px solid #e11d48;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: #881337;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .disclaimer-icon { flex-shrink: 0; }
+
+        /* ──── Breadcrumb ──── */
+        .breadcrumb {
+            max-width: 900px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+            font-size: 0.875rem;
+            color: #a8a29e;
+        }
+
+        .breadcrumb a { color: #e11d48; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        /* ──── Main Content ──── */
+        main { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+        section { margin: 48px 0; }
+
+        h2 { font-size: 1.875rem; font-weight: 800; margin-bottom: 16px; color: #fff; border-bottom: 2px solid #e11d48; padding-bottom: 12px; }
+
+        h3 { font-size: 1.25rem; font-weight: 700; margin-top: 24px; margin-bottom: 12px; color: #fff; }
+
+        p { margin-bottom: 16px; line-height: 1.7; }
+
+        /* ──── Code Blocks ──── */
+        pre {
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: "Courier New", monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: #e7e5e4;
+        }
+
+        code { background: #292524; padding: 2px 6px; border-radius: 3px; font-family: "Courier New", monospace; font-size: 0.875em; color: #fda4af; }
+        pre code { background: none; padding: 0; color: inherit; }
+
+        /* ──── Tables ──── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        thead { background: #292524; }
+        th { padding: 12px; text-align: left; font-weight: 700; color: #e7e5e4; border-bottom: 2px solid #44403c; }
+        td { padding: 12px; border-bottom: 1px solid #44403c; }
+
+        tbody tr:hover { background: rgba(225, 29, 72, 0.05); }
+
+        /* ──── Text Diagram ──── */
+        .text-diagram {
+            background: #292524;
+            border: 1px solid #44403c;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
+            margin: 20px 0;
+            white-space: pre;
+            overflow-x: auto;
+            color: #fda4af;
+            line-height: 1.3;
+        }
+
+        /* ──── Alert Box ──── */
+        .alert-box {
+            background: rgba(225, 29, 72, 0.1);
+            border-left: 4px solid #e11d48;
+            padding: 16px 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .alert-box strong { color: #fda4af; }
+
+        /* ──── Brief Output ──── */
+        .brief-output {
+            background: #292524;
+            border: 2px solid #e11d48;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
+            white-space: pre;
+            overflow-x: auto;
+            color: #e7e5e4;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+
+        /* ──── Part Navigation ──── */
+        .part-nav { background: #292524; border-top: 1px solid #44403c; padding: 24px 20px; margin-top: 48px; }
+        .part-nav-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .part-nav-btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; text-decoration: none; transition: background 0.2s; }
+        .prev-btn { background: #44403c; color: #e7e5e4; }
+        .prev-btn:hover { background: #57534e; }
+        .next-btn { background: #e11d48; color: #fff; }
+        .next-btn:hover { background: #be123c; }
+
+        /* ──── Responsive ──── */
+        @media (max-width: 640px) {
+            .nav-search-form { display: none; }
+            .nav-search-input { width: 100px; }
+            h2 { font-size: 1.5rem; }
+            .hero-title { font-size: 1.75rem; }
+            .hero-subtitle { font-size: 1rem; }
+            .part-nav-inner { flex-direction: column; }
+            .part-nav-btn { width: 100%; text-align: center; }
+        }
+
+        /* ──── Utility ──── */
+        .text-muted { color: #a8a29e; }
+        .text-accent { color: #e11d48; }
+
+        strong { color: #fff; }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
+
+    <!-- Navigation -->
+    <nav class="site-nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">🦞 learnopenclaw.org</a>
+            <div class="nav-links" id="nav-menu" role="navigation">
+                <a href="index.html">Home</a>
+                <a href="blog.html">Blog</a>
+                <a href="learn.html">Learn</a>
+                <a href="faq.html">FAQ</a>
+                <a href="terminal.html">Terminal</a>
+            </div>
+            <div class="nav-right">
+                <form class="nav-search-form" role="search">
+                    <span class="nav-search-icon">🔍</span>
+                    <input type="text" class="nav-search-input" placeholder="Search docs..." aria-label="Search documentation">
+                </form>
+                <button class="hamburger" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-tag">Fixed Income · Part 1 of 5</div>
+            <h1 class="hero-title">Yield Curve Monitor</h1>
+            <p class="hero-subtitle">The yield curve has predicted every US recession since 1955. OpenClaw checks it automatically every morning using free FRED data — and alerts you the day it inverts.</p>
+            <div class="hero-pills">
+                <span class="pill">FRED Free API</span>
+                <span class="pill">2s10s Spread</span>
+                <span class="pill">Inversion Alert</span>
+                <span class="pill">Daily Brief</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <span class="disclaimer-icon">⚠️</span>
+        <div>Yield curve data is for educational monitoring only. An inverted yield curve is a historical pattern — it is not a guaranteed recession predictor. Not financial advice.</div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> › <a href="terminal.html">Terminal</a> › <a href="openclaw-for-fixedincome.html">Fixed Income</a> › <strong>Yield Curve Monitor</strong>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Section 1: What Is the Yield Curve? -->
+        <section>
+            <h2>What Is the Yield Curve?</h2>
+
+            <p>The US government borrows money by selling Treasury bonds. It sells bonds that mature (pay back) in different timeframes — 2 years, 5 years, 10 years, 30 years. Each has its own interest rate, called a <strong>yield</strong>.</p>
+
+            <p>The yield curve is simply a line connecting all those yields from shortest to longest. Normally the line slopes upward — you get paid more interest for lending longer, because you're taking more risk. It makes sense: if you lend the government money for 30 years instead of 2 years, you want more compensation for that extra risk.</p>
+
+            <p>Here's what normal and inverted curves look like:</p>
+
+            <div class="text-diagram">NORMAL CURVE (healthy economy):
+  %
+5.0│                                    ●─── 30yr
+4.5│                         ●──────────
+4.0│              ●──────────
+3.5│   ●──────────
+   └────────────────────────────────────
+       2yr       5yr      10yr     30yr
+
+INVERTED CURVE (recession warning):
+  %
+5.5│   ●──────────
+5.0│              ●──────────
+4.5│                         ●──────────
+4.2│                                    ●─── 30yr
+   └────────────────────────────────────
+       2yr       5yr      10yr     30yr</div>
+        </section>
+
+        <!-- Section 2: Why Does Inversion Matter? -->
+        <section>
+            <h2>Why Does Inversion Matter?</h2>
+
+            <p>When short-term rates are higher than long-term rates, it tells us something important: the bond market thinks things will get worse before they get better. Investors are rushing into long-term bonds as a safe haven — driving long-term yields down — while short-term rates stay high because the Federal Reserve hasn't cut yet.</p>
+
+            <p>The <strong>2s10s spread</strong> (2-year yield minus 10-year yield) is the most-watched measure. When it goes negative — <strong>inversion</strong> — it has preceded every US recession since the 1950s, typically by 6–24 months.</p>
+
+            <h3>Historical Inversions & Recessions</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Inversion Year</th>
+                        <th scope="col">Recession Followed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1978</td>
+                        <td>1980 recession</td>
+                    </tr>
+                    <tr>
+                        <td>1988</td>
+                        <td>1990 recession</td>
+                    </tr>
+                    <tr>
+                        <td>2000</td>
+                        <td>2001 recession</td>
+                    </tr>
+                    <tr>
+                        <td>2006</td>
+                        <td>2008–09 financial crisis</td>
+                    </tr>
+                    <tr>
+                        <td>2019</td>
+                        <td>2020 recession</td>
+                    </tr>
+                    <tr>
+                        <td>2022–2023</td>
+                        <td>Ongoing monitoring</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-muted"><em>Note: Past inversions are historical data, not guarantees of future recessions.</em></p>
+        </section>
+
+        <!-- Section 3: What OpenClaw Does -->
+        <section>
+            <h2>What OpenClaw Does</h2>
+
+            <p>OpenClaw fetches the 2-year and 10-year Treasury yields from FRED every morning. It calculates the spread, plots the full curve shape, and sends you a briefing. If the curve inverts — or if the spread crosses a threshold you've set — you get an alert.</p>
+
+            <p>You set up your <code>fi-config.yaml</code> once, and OpenClaw handles the rest. No API keys to juggle, no spreadsheet gymnastics, no manual checking. Just automated insights delivered to your inbox.</p>
+        </section>
+
+        <!-- Section 4: Getting Your Free FRED API Key -->
+        <section>
+            <h2>Getting Your Free FRED API Key</h2>
+
+            <p>FRED (Federal Reserve Economic Data) publishes Treasury yields for free. Getting started is simple:</p>
+
+            <h3>Step-by-Step Setup</h3>
+            <ol style="margin-left: 20px; margin-bottom: 16px;">
+                <li style="margin-bottom: 8px;">Visit <code>fred.stlouisfed.org</code></li>
+                <li style="margin-bottom: 8px;">Create a free account (30 seconds)</li>
+                <li style="margin-bottom: 8px;">Click <strong>My Account</strong> → <strong>API Keys</strong> → <strong>"Request API Key"</strong></li>
+                <li style="margin-bottom: 8px;">Copy your key into <code>fi-config.yaml</code></li>
+            </ol>
+
+            <h3>Test Your Connection</h3>
+
+            <p>Install the required library and verify FRED is working:</p>
+
+            <pre><code># Install the required library
+pip install fredapi pandas pyyaml
+
+# Verify it works
+python3 -c "
+from fredapi import Fred
+import os
+fred = Fred(api_key='your_key_here')
+print('10-year yield:', fred.get_series('DGS10').iloc[-1], '%')
+print('✅ FRED connection working')
+"</code></pre>
+        </section>
+
+        <!-- Section 5: The Yield Curve Config -->
+        <section>
+            <h2>The Yield Curve Config</h2>
+
+            <p>Save this to <code>fi-config.yaml</code> in your OpenClaw project directory:</p>
+
+            <pre><code># fi-config.yaml — yield curve section
+fred:
+  api_key: "your_fred_api_key_here"
+
+yield_curve:
+  maturities:
+    - { label: "2-Year",  series: "DGS2"  }
+    - { label: "5-Year",  series: "DGS5"  }
+    - { label: "10-Year", series: "DGS10" }
+    - { label: "30-Year", series: "DGS30" }
+  alerts:
+    inversion: true           # Alert when 2yr yield > 10yr yield
+    spread_threshold: -0.25   # Alert if 2s10s drops below -0.25%
+    steepening_move: 0.50     # Alert if spread widens 0.50% in a week
+
+alerts:
+  email: "you@example.com"
+  daily_digest: true</code></pre>
+
+            <p class="text-muted">Replace <code>your_fred_api_key_here</code> with the key you just requested. Replace <code>you@example.com</code> with your actual email.</p>
+        </section>
+
+        <!-- Section 6: The Yield Curve Script -->
+        <section>
+            <h2>The Yield Curve Script</h2>
+
+            <p>This is the core OpenClaw yield curve monitor. It fetches Treasury yields from FRED, calculates the spread, and checks alert conditions:</p>
+
+            <pre><code># fi_yield_curve.py — OpenClaw Yield Curve Monitor
+# Fetches Treasury yields from FRED and checks for inversion
+
+import yaml
+from fredapi import Fred
+import pandas as pd
+from datetime import datetime, timedelta
+
+# ── Step 1: Load your config ──────────────────────────────────────
+def load_config(path: str = "fi-config.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+cfg  = load_config()
+fred = Fred(api_key=cfg["fred"]["api_key"])
+YC   = cfg["yield_curve"]
+
+print(f"🦞 OpenClaw Yield Curve Monitor")
+print(f"   {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+print("─" * 45)
+
+# ── Step 2: Fetch current yields from FRED ────────────────────────
+def fetch_yields() -> dict:
+    """
+    Fetches the latest available yield for each maturity.
+    FRED updates daily — we take the most recent non-null value.
+    """
+    yields = {}
+    for item in YC["maturities"]:
+        series = fred.get_series(item["series"], observation_start="2020-01-01")
+        latest = series.dropna().iloc[-1]   # most recent value
+        yields[item["label"]] = round(float(latest), 3)
+        print(f"   {item['label']:<10} {latest:.3f}%")
+    return yields
+
+yields = fetch_yields()
+
+# ── Step 3: Calculate the key spread ─────────────────────────────
+two_year  = yields.get("2-Year",  0)
+ten_year  = yields.get("10-Year", 0)
+spread_2s10s = round(ten_year - two_year, 3)
+
+print(f"\n   2s10s Spread: {spread_2s10s:+.3f}%")
+if spread_2s10s < 0:
+    print(f"   ⚠️  INVERTED — short-term rates exceed long-term")
+else:
+    print(f"   ✅ Normal — curve is positively sloped")
+
+# ── Step 4: Check alert conditions ───────────────────────────────
+def check_alerts(yields: dict, spread: float) -> list:
+    """Check configured alert thresholds. Returns list of alert messages."""
+    alerts_cfg = YC.get("alerts", {})
+    fired = []
+
+    # Inversion alert
+    if alerts_cfg.get("inversion") and spread < 0:
+        fired.append({
+            "type": "INVERSION",
+            "message": f"2s10s spread is INVERTED at {spread:+.3f}% — 2yr ({yields['2-Year']}%) > 10yr ({yields['10-Year']}%)",
+            "severity": "HIGH"
+        })
+
+    # Threshold alert
+    threshold = alerts_cfg.get("spread_threshold", -0.25)
+    if spread < threshold:
+        fired.append({
+            "type": "SPREAD_BELOW_THRESHOLD",
+            "message": f"2s10s spread {spread:+.3f}% is below your threshold of {threshold:+.3f}%",
+            "severity": "MEDIUM"
+        })
+
+    return fired
+
+alerts = check_alerts(yields, spread_2s10s)
+if alerts:
+    print(f"\n   🚨 {len(alerts)} alert(s) triggered:")
+    for a in alerts:
+        print(f"   [{a['severity']}] {a['message']}")
+else:
+    print(f"\n   ✓ No alerts triggered today")</code></pre>
+        </section>
+
+        <!-- Section 7: The Weekly Trend -->
+        <section>
+            <h2>The Weekly Trend</h2>
+
+            <p>Understanding whether the spread is improving or worsening is crucial. This snippet pulls the last 90 days of spread history and shows you the trend:</p>
+
+            <pre><code>def fetch_spread_history(days: int = 90) -> pd.Series:
+    """
+    Fetches 2s10s spread history for the past N days.
+    Useful for seeing whether the inversion is deepening or recovering.
+    """
+    start = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
+
+    two_yr = fred.get_series("DGS2",  observation_start=start).dropna()
+    ten_yr = fred.get_series("DGS10", observation_start=start).dropna()
+
+    # Align the two series (some days one may be missing)
+    spread = (ten_yr - two_yr).dropna()
+    spread.name = "2s10s_spread"
+
+    return spread
+
+history = fetch_spread_history(90)
+
+# Show last 10 readings
+print(f"\n📅 2s10s Spread — Last 10 trading days:")
+print(f"   {'Date':<14} {'Spread':>8} {'Status'}")
+print("   " + "─" * 35)
+for date, val in history.tail(10).items():
+    status = "⚠️  Inverted" if val < 0 else "✅ Normal"
+    print(f"   {str(date.date()):<14} {val:>+7.3f}%  {status}")
+
+# Trend check: is it getting better or worse?
+recent_avg  = history.tail(5).mean()
+previous_avg = history.tail(15).head(10).mean()
+trend = "improving" if recent_avg > previous_avg else "worsening"
+print(f"\n   5-day avg: {recent_avg:+.3f}% | 10-day prior avg: {previous_avg:+.3f}%")
+print(f"   Trend: {trend.upper()}")</code></pre>
+        </section>
+
+        <!-- Section 8: Sample Morning Brief Output -->
+        <section>
+            <h2>Sample Morning Brief Output</h2>
+
+            <p>Here's what your OpenClaw automated brief looks like each morning:</p>
+
+            <div class="brief-output">🦞 OpenClaw Fixed Income Brief — 2025-03-14
+═══════════════════════════════════════════
+YIELD CURVE SNAPSHOT
+  2-Year:   4.891%
+  5-Year:   4.612%
+  10-Year:  4.487%
+  30-Year:  4.601%
+
+  2s10s Spread:  -0.404%  ⚠️  INVERTED
+  5s30s Spread:  -0.011%  ⚠️  Near inversion
+
+  Trend (5d vs prior 10d): Worsening
+
+ALERTS
+  🔴 [HIGH] 2s10s spread has been inverted for 180+ days
+═══════════════════════════════════════════</div>
+
+            <p>This brief is automatically emailed to you every morning at 7:00 AM ET, before US market open. No intervention needed — OpenClaw handles it all.</p>
+        </section>
+
+        <!-- Section 9: Scheduling -->
+        <section>
+            <h2>Scheduling Daily Checks</h2>
+
+            <p>To run your yield curve monitor automatically every weekday morning (before US market open at 9:30 AM ET), use cron:</p>
+
+            <pre><code># crontab -e
+# Run every weekday at 7:00 AM local time
+0 7 * * 1-5 cd /path/to/openclaw && python3 fi_yield_curve.py >> fi_brief.log 2>&1</code></pre>
+
+            <p>This creates a log file <code>fi_brief.log</code> where you can review past briefs and debug any issues.</p>
+
+            <div class="alert-box">
+                <strong>Tip:</strong> Adjust the time (the first <code>0 7</code>) to match your timezone and preferences. The format is <code>minute hour day month weekday</code>.
+            </div>
+        </section>
+
+        <!-- Section 10: FRED Series Reference -->
+        <section>
+            <h2>FRED Series Reference</h2>
+
+            <p>These are the official FRED series IDs for US Treasury yields. They update daily after market close:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Series ID</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Update Frequency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>DGS3MO</code></td>
+                        <td>3-Month Treasury Bill Rate</td>
+                        <td>Daily</td>
+                    </tr>
+                    <tr>
+                        <td><code>DGS2</code></td>
+                        <td>2-Year Treasury Constant Maturity Rate</td>
+                        <td>Daily</td>
+                    </tr>
+                    <tr>
+                        <td><code>DGS5</code></td>
+                        <td>5-Year Treasury Constant Maturity Rate</td>
+                        <td>Daily</td>
+                    </tr>
+                    <tr>
+                        <td><code>DGS10</code></td>
+                        <td>10-Year Treasury Constant Maturity Rate</td>
+                        <td>Daily</td>
+                    </tr>
+                    <tr>
+                        <td><code>DGS30</code></td>
+                        <td>30-Year Treasury Constant Maturity Rate</td>
+                        <td>Daily</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>For a complete list of all FRED series, visit <code>fred.stlouisfed.org</code>.</p>
+        </section>
+
+        <!-- Part Navigation -->
+        <nav class="part-nav" aria-label="Series navigation">
+            <div class="part-nav-inner">
+                <a href="openclaw-for-fixedincome.html" class="part-nav-btn prev-btn">← Overview</a>
+                <a href="fi-credit-spreads.html" class="part-nav-btn next-btn">Part 2: Credit Spreads →</a>
+            </div>
+        </nav>
+    </main>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Yield Curve Monitor with OpenClaw",
+        "description": "Learn how the yield curve predicts recessions. OpenClaw automatically monitors the 2s10s spread using free FRED data and alerts you on inversion.",
+        "author": {
+            "@type": "Organization",
+            "name": "OpenClaw"
+        },
+        "datePublished": "2025-01-01",
+        "image": "https://learnopenclaw.org/og-image.png",
+        "articleBody": "The yield curve has predicted every US recession since 1955. This guide teaches what the yield curve is, why inversion matters, and how to monitor it automatically with OpenClaw using free FRED API data."
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/" },
+            { "@type": "ListItem", "position": 2, "name": "Terminal", "item": "https://learnopenclaw.org/terminal.html" },
+            { "@type": "ListItem", "position": 3, "name": "Fixed Income", "item": "https://learnopenclaw.org/openclaw-for-fixedincome.html" },
+            { "@type": "ListItem", "position": 4, "name": "Yield Curve Monitor", "item": "https://learnopenclaw.org/fi-yield-curve.html" }
+        ]
+    }
+    </script>
+
+    <!-- Hamburger Toggle -->
+    <script>
+    document.getElementById('nav-toggle').addEventListener('click', function() {
+        const menu = document.getElementById('nav-menu');
+        const isOpen = menu.classList.contains('open');
+        menu.classList.toggle('open');
+        this.setAttribute('aria-expanded', !isOpen);
+    });
+
+    // Close menu when a link is clicked
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', function() {
+            document.getElementById('nav-menu').classList.remove('open');
+            document.getElementById('nav-toggle').setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const nav = document.querySelector('.site-nav');
+        if (!nav.contains(event.target)) {
+            document.getElementById('nav-menu').classList.remove('open');
+            document.getElementById('nav-toggle').setAttribute('aria-expanded', 'false');
+        }
+    });
+    </script>
+
+    <!-- Copy to Clipboard Utility -->
+    <script>
+    // Add copy buttons to all code blocks
+    document.querySelectorAll('pre').forEach((block, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        block.parentNode.insertBefore(wrapper, block);
+        wrapper.appendChild(block);
+
+        const copyBtn = document.createElement('button');
+        copyBtn.textContent = '📋 Copy';
+        copyBtn.style.cssText = `
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #e11d48;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 10;
+        `;
+
+        copyBtn.addEventListener('mouseover', () => {
+            copyBtn.style.background = '#be123c';
+        });
+        copyBtn.addEventListener('mouseout', () => {
+            copyBtn.style.background = '#e11d48';
+        });
+
+        copyBtn.addEventListener('click', () => {
+            const code = block.querySelector('code')?.textContent || block.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            });
+        });
+
+        wrapper.appendChild(copyBtn);
+    });
+    </script>
+</body>
+</html>

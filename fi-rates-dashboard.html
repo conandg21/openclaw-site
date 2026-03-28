@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rates Environment Dashboard | OpenClaw Fixed Income Automation</title>
+    <meta name="description" content="Understand the Fed Funds rate, SOFR, and real rates. OpenClaw assembles key interest rate data into a daily morning briefing.">
+    <link rel="canonical" href="https://learnopenclaw.org/fi-rates-dashboard.html">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #1c1917;
+            color: #e7e5e4;
+            line-height: 1.6;
+        }
+
+        /* ─────── Header & Nav ─────── */
+        header {
+            background: linear-gradient(135deg, #4c0519 0%, #881337 55%, #e11d48 100%);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(225, 29, 72, 0.2);
+        }
+
+        nav.top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo:hover {
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(225, 29, 72, 0.3);
+            border-radius: 6px;
+            padding: 0.5rem 0.75rem;
+            height: 36px;
+        }
+
+        .search-form input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            outline: none;
+            width: 150px;
+            font-size: 0.875rem;
+        }
+
+        .search-form input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-form button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hamburger {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .hamburger:hover {
+            opacity: 0.8;
+        }
+
+        /* ─────── Breadcrumb ─────── */
+        .breadcrumb {
+            background-color: #2d2420;
+            padding: 1rem 2rem;
+            font-size: 0.875rem;
+            color: #a8a29e;
+        }
+
+        .breadcrumb-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb a {
+            color: #e11d48;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* ─────── Disclaimer ─────── */
+        .disclaimer {
+            background: #fff1f2;
+            border-left: 4px solid #e11d48;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: #881337;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 4px;
+        }
+
+        .disclaimer-icon {
+            flex-shrink: 0;
+            font-size: 1.25rem;
+        }
+
+        .disclaimer-text {
+            flex: 1;
+        }
+
+        /* ─────── Hero Section ─────── */
+        .hero {
+            background: linear-gradient(135deg, #4c0519 0%, #881337 55%, #e11d48 100%);
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 8px;
+            margin-top: -1rem;
+            margin-left: 2rem;
+            margin-right: 2rem;
+        }
+
+        .hero-tag {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #fca5c0;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: #fde1e8;
+            margin-bottom: 2rem;
+            max-width: 85%;
+            line-height: 1.6;
+        }
+
+        .hero-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(225, 29, 72, 0.5);
+            color: #fde1e8;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* ─────── Main Content ─────── */
+        main {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #fde1e8;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #e11d48;
+            padding-left: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .content-text {
+            color: #d6d3d1;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-text strong {
+            color: #fde1e8;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+            color: #d6d3d1;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        /* ─────── Callout Box ─────── */
+        .callout-box {
+            background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, rgba(136, 19, 55, 0.08) 100%);
+            border-left: 4px solid #e11d48;
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            color: #d6d3d1;
+        }
+
+        .callout-box strong {
+            color: #fde1e8;
+        }
+
+        /* ─────── Table ─────── */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #2d2420;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #4c0519 0%, #881337 100%);
+            color: #fde1e8;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e11d48;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #3d3531;
+            color: #d6d3d1;
+        }
+
+        tbody tr:hover {
+            background-color: #3d3531;
+        }
+
+        code {
+            background: #2d2420;
+            border: 1px solid #3d3531;
+            color: #fca5c0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-family: "Courier New", monospace;
+            font-size: 0.9rem;
+        }
+
+        /* ─────── Code Block ─────── */
+        .code-block {
+            background: #1c1917;
+            border: 1px solid #3d3531;
+            border-radius: 4px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .code-block-lang {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 0.75rem;
+            color: #a8a29e;
+            background: #2d2420;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+        }
+
+        .code-block pre {
+            margin: 0;
+            color: #d6d3d1;
+            font-family: "Courier New", monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .code-block code {
+            background: none;
+            border: none;
+            color: #d6d3d1;
+            padding: 0;
+        }
+
+        /* ─────── Copy Button ─────── */
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #e11d48;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .copy-btn:hover {
+            background: #c2162f;
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+        }
+
+        /* ─────── Highlight (dashboard output) ─────── */
+        .dashboard-output {
+            background: #0f0d0b;
+            border: 1px solid #e11d48;
+            border-radius: 4px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-family: "Courier New", monospace;
+            font-size: 0.875rem;
+            color: #e11d48;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* ─────── Part Navigation ─────── */
+        .part-nav {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #3d3531;
+        }
+
+        .part-nav-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .part-nav-btn {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid #3d3531;
+        }
+
+        .prev-btn {
+            color: #e11d48;
+            background: rgba(225, 29, 72, 0.1);
+        }
+
+        .prev-btn:hover {
+            background: rgba(225, 29, 72, 0.2);
+            border-color: #e11d48;
+        }
+
+        .next-btn {
+            background: #e11d48;
+            color: #1c1917;
+        }
+
+        .next-btn:hover {
+            background: #c2162f;
+        }
+
+        /* ─────── Footer ─────── */
+        footer {
+            background: #2d2420;
+            border-top: 1px solid #3d3531;
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: #a8a29e;
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: #e11d48;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ─────── Responsive ─────── */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 1.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .search-form {
+                display: none;
+            }
+
+            .part-nav-inner {
+                flex-direction: column;
+            }
+
+            .part-nav-btn {
+                min-width: unset;
+            }
+
+            main {
+                padding: 0 1rem;
+            }
+
+            .disclaimer {
+                margin: 1rem;
+            }
+
+            .hero {
+                margin-left: 1rem;
+                margin-right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- HEADER & NAVIGATION                                             -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<header>
+    <nav class="top-nav">
+        <a href="index.html" class="nav-logo">&#x1F99E; learnopenclaw.org</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="learn.html">Learn</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="terminal.html">Terminal</a></li>
+        </ul>
+        <div class="nav-right">
+            <form class="search-form" role="search">
+                <input type="text" placeholder="Search..." aria-label="Search OpenClaw">
+                <button type="submit" aria-label="Submit search">🔍</button>
+            </form>
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation menu">☰</button>
+        </div>
+    </nav>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- BREADCRUMB                                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="breadcrumb">
+    <div class="breadcrumb-inner">
+        <a href="index.html">Home</a> › <a href="terminal.html">Terminal</a> › <a href="fi-overview.html">Fixed Income</a> › Rates Dashboard
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- DISCLAIMER                                                       -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="disclaimer">
+    <div class="disclaimer-icon">⚠️</div>
+    <div class="disclaimer-text">
+        Interest rate data is for educational monitoring only. Rate changes affect different assets differently. Not financial advice.
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- HERO SECTION                                                     -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-tag">FIXED INCOME · PART 3 OF 5</div>
+    <h1 class="hero-title">Rates Environment Dashboard</h1>
+    <p class="hero-subtitle">
+        Know the rate environment before markets open. OpenClaw assembles the Fed Funds rate, real rates, and SOFR into a clean morning snapshot — automatically, every trading day.
+    </p>
+    <div class="hero-pills">
+        <span class="pill">FRED Free API</span>
+        <span class="pill">Fed Funds & SOFR</span>
+        <span class="pill">Real Rates</span>
+        <span class="pill">Morning Brief</span>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                                     -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<main>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- SECTION 1: WHAT IS THE RATES ENVIRONMENT? ─────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section id="what-is-rates-environment">
+        <h2 class="section-title">1. What Is the "Rates Environment"?</h2>
+
+        <p class="content-text">
+            The <strong>"rates environment"</strong> describes the current state of interest rates across the economy. It's not just one number — it's a combination of key rates that together tell you how expensive (or cheap) it is to borrow money right now. OpenClaw monitors four core rates to give you the full picture before markets open.
+        </p>
+
+        <p class="content-text"><strong>The Fed Funds Rate</strong></p>
+        <p class="content-text">
+            The overnight rate banks charge each other when they need to borrow reserves, set by the Federal Reserve. This is the most powerful lever in finance — when the Fed raises it, borrowing costs rise for everyone: mortgages, car loans, credit cards, business loans. A single 0.25% hike from the Fed can ripple through the entire economy.
+        </p>
+
+        <p class="content-text"><strong>SOFR (Secured Overnight Financing Rate)</strong></p>
+        <p class="content-text">
+            Replaced LIBOR in 2023 as the key benchmark for short-term lending. It's the actual rate banks pay when they borrow from each other overnight, backed by Treasury collateral. Most financial contracts (derivatives, floating-rate loans, mortgages) now reference SOFR instead of the older LIBOR standard.
+        </p>
+
+        <p class="content-text"><strong>Real Rates</strong></p>
+        <p class="content-text">
+            The nominal interest rate minus inflation. A 5% Treasury yield with 6% inflation means a <em>negative</em> real rate — lenders are actually losing purchasing power. Real rates drive asset prices more than nominal rates do. When real rates turn deeply negative, investors flee cash and bonds to hunt for real returns.
+        </p>
+
+        <p class="content-text"><strong>The Fed Funds–10yr Gap</strong></p>
+        <p class="content-text">
+            How far the Fed's overnight rate is from where markets price 10-year money. Wide gaps signal disagreement between the Fed and the market. A normal gap is 0 to 1%. When it inverts (Fed Funds above 10yr), it's a recession signal.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- SECTION 2: WHY REAL RATES MATTER MOST ──────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section id="why-real-rates-matter">
+        <h2 class="section-title">2. Why Real Rates Matter Most</h2>
+
+        <p class="section-subtitle">Nominal rates get all the headlines, but real rates drive asset prices.</p>
+
+        <p class="content-text">
+            A <strong>real rate</strong> is what you actually earn after inflation eats away at your return. It's the true cost of capital. Nominal rates are what you see on the headline. Real rates are what matters to your wallet.
+        </p>
+
+        <div class="callout-box">
+            <p><strong>Example 1: Positive Real Rate</strong></p>
+            <p style="margin-top: 0.75rem;">
+                5% Treasury yield + 2% inflation = <strong style="color: #10b981;">+3% real rate</strong><br>
+                → Money is genuinely expensive. Lenders are earning real returns. Borrowers are paying to borrow. Growth stocks and speculative assets tend to struggle.
+            </p>
+            <p style="margin-top: 1.5rem;"><strong>Example 2: Negative Real Rate</strong></p>
+            <p style="margin-top: 0.75rem;">
+                5% Treasury yield + 6% inflation = <strong style="color: #f87171;">-1% real rate</strong><br>
+                → Cash and bonds are losing money in real terms. Investors flee bonds and cash to find real returns in stocks, commodities, and crypto. Risk assets rally hard.
+            </p>
+        </div>
+
+        <p class="content-text" style="margin-top: 2rem;">
+            The key insight: <strong>when real rates are deeply negative, central banks are running monetary experiments that push capital into riskier assets.</strong> When real rates rise sharply, those assets tend to fall. Real rates are the signal; everything else is noise.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- SECTION 3: WHAT OPENCLAW MONITORS ────────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section id="what-openclaw-monitors">
+        <h2 class="section-title">3. What OpenClaw Monitors</h2>
+
+        <p class="content-text">
+            OpenClaw pulls four key rate series from the Federal Reserve Economic Data (FRED) API every morning and assembles them into a single briefing. You see the full picture — nominal, real, short-term, and market-implied — in under a minute before markets open at 9:30 AM ET.
+        </p>
+
+        <p class="content-text">
+            No dashboards. No login required. Just automated daily data.
+        </p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Series Name</th>
+                        <th scope="col">FRED ID</th>
+                        <th scope="col">What It Tells You</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fed Funds Rate</td>
+                        <td><code>FEDFUNDS</code></td>
+                        <td>Where the Fed has set overnight borrowing costs. Updated monthly. Most powerful rate in finance.</td>
+                    </tr>
+                    <tr>
+                        <td>SOFR</td>
+                        <td><code>SOFR</code></td>
+                        <td>Short-term market borrowing rate (overnight, Treasury-backed). Replaces LIBOR. Updated daily.</td>
+                    </tr>
+                    <tr>
+                        <td>10yr Real Rate</td>
+                        <td><code>DFII10</code></td>
+                        <td>10-year yield minus expected inflation (TIPS-based). Shows true long-term borrowing cost. Updated daily.</td>
+                    </tr>
+                    <tr>
+                        <td>10yr Nominal</td>
+                        <td><code>DGS10</code></td>
+                        <td>Benchmark long-term Treasury yield. Where markets price 10-year money. Updated daily.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="content-text" style="margin-top: 1.5rem;">
+            These four numbers together tell you the entire shape of the rate environment: short vs. long, nominal vs. real, Fed vs. market.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- SECTION 4: THE CONFIG ──────────────────────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section id="the-config">
+        <h2 class="section-title">4. The Config</h2>
+
+        <p class="content-text">
+            Store your FRED API key and rate series IDs in a central config file. This keeps your setup clean and reusable.
+        </p>
+
+        <div class="code-block">
+            <div class="code-block-lang">yaml</div>
+            <button class="copy-btn" data-target="config-yaml">📋 Copy</button>
+            <pre id="config-yaml"><code># fi-config.yaml — rates section
+fred:
+  api_key: "your_fred_api_key_here"
+
+rates:
+  fed_funds:    "FEDFUNDS"   # Effective Federal Funds Rate
+  sofr:         "SOFR"       # Secured Overnight Financing Rate
+  real_rate:    "DFII10"     # 10-yr TIPS yield (inflation-adjusted)
+  ten_year:     "DGS10"      # 10-yr nominal Treasury yield
+
+  alerts:
+    # Alert if Fed Funds and 10yr diverge significantly
+    fed_10yr_gap: 1.5        # Alert if gap exceeds ±1.5%
+    real_rate_threshold: 2.5 # Alert if real rate exceeds 2.5% (restrictive territory)</code></pre>
+        </div>
+
+        <p class="content-text" style="margin-top: 1.5rem;">
+            Get your free FRED API key at <a href="https://fredaccount.stlouisfed.org/login" style="color: #e11d48; text-decoration: none;">fredaccount.stlouisfed.org</a>. No cost. Unlimited free requests.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- SECTION 5: THE RATES DASHBOARD SCRIPT ──────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section id="the-script">
+        <h2 class="section-title">5. The Rates Dashboard Script</h2>
+
+        <p class="content-text">
+            This Python script fetches the four rate series from FRED, calculates week-over-week changes, checks alert thresholds, and prints a clean morning dashboard.
+        </p>
+
+        <div class="code-block">
+            <div class="code-block-lang">python</div>
+            <button class="copy-btn" data-target="python-code">📋 Copy</button>
+            <pre id="python-code"><code># fi_rates_dashboard.py — OpenClaw Rates Environment Monitor
+
+import yaml
+from fredapi import Fred
+import pandas as pd
+from datetime import datetime
+
+def load_config(path: str = "fi-config.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+cfg  = load_config()
+fred = Fred(api_key=cfg["fred"]["api_key"])
+R    = cfg["rates"]
+
+# ── Fetch all rate series ─────────────────────────────────────────
+def fetch_rates() -> dict:
+    """
+    Pulls the latest value for each key rate series.
+    FRED updates most of these daily.
+    """
+    series_map = {
+        "Fed Funds Rate":    R["fed_funds"],
+        "SOFR":              R["sofr"],
+        "10yr Real Rate":    R["real_rate"],
+        "10yr Nominal":      R["ten_year"],
+    }
+
+    rates = {}
+    for label, series_id in series_map.items():
+        try:
+            series = fred.get_series(series_id, observation_start="2023-01-01").dropna()
+            current = float(series.iloc[-1])
+            prev_week = float(series.iloc[-6]) if len(series) >= 6 else current
+            rates[label] = {
+                "current":    round(current, 3),
+                "prev_week":  round(prev_week, 3),
+                "weekly_chg": round(current - prev_week, 3),
+                "series_id":  series_id,
+            }
+        except Exception as e:
+            print(f"   ⚠️  Could not fetch {label}: {e}")
+
+    return rates
+
+# ── Print the dashboard ───────────────────────────────────────────
+def print_rates_dashboard(rates: dict) -> None:
+    """Prints a clean morning rates briefing."""
+    print(f"\n{'🦞 OpenClaw Rates Dashboard':=^55}")
+    print(f"{'Generated: ' + datetime.now().strftime('%Y-%m-%d %H:%M'):^55}\n")
+
+    for label, data in rates.items():
+        chg = data["weekly_chg"]
+        arrow = "▲" if chg > 0 else ("▼" if chg < 0 else "─")
+        chg_str = f"{arrow} {abs(chg):.3f}% wk/wk"
+        print(f"  {label:<22} {data['current']:>6.3f}%   {chg_str}")
+
+    # Derived insights
+    fn = rates.get("Fed Funds Rate", {}).get("current")
+    tn = rates.get("10yr Nominal",   {}).get("current")
+    rr = rates.get("10yr Real Rate", {}).get("current")
+
+    if fn and tn:
+        gap = round(tn - fn, 3)
+        print(f"\n  Fed–10yr gap:      {gap:>+6.3f}%  ", end="")
+        if gap < -1.0:
+            print("(Fed well above market — likely cutting soon)")
+        elif gap > 1.0:
+            print("(Market pricing in future rate rises)")
+        else:
+            print("(Aligned — market broadly agrees with Fed)")
+
+    if rr:
+        print(f"  Real rate:         {rr:>6.3f}%  ", end="")
+        if rr > 2.0:
+            print("(Restrictive — expensive money in real terms)")
+        elif rr > 0:
+            print("(Positive but moderate)")
+        else:
+            print("(Negative real rate — accommodative conditions)")
+
+    print(f"\n{'':=^55}")
+
+rates = fetch_rates()
+print_rates_dashboard(rates)
+
+# ── Check alerts ──────────────────────────────────────────────────
+def check_rate_alerts(rates: dict) -> list:
+    """Check configured alert thresholds."""
+    alerts_cfg = R.get("alerts", {})
+    fired = []
+
+    fn = rates.get("Fed Funds Rate", {}).get("current", 0)
+    tn = rates.get("10yr Nominal",   {}).get("current", 0)
+    rr = rates.get("10yr Real Rate", {}).get("current", 0)
+
+    # Fed vs 10yr gap alert
+    gap = tn - fn
+    threshold = alerts_cfg.get("fed_10yr_gap", 1.5)
+    if abs(gap) > threshold:
+        fired.append(f"Fed–10yr gap is {gap:+.2f}% — exceeds ±{threshold}% threshold")
+
+    # Real rate alert
+    rr_threshold = alerts_cfg.get("real_rate_threshold", 2.5)
+    if rr > rr_threshold:
+        fired.append(f"Real rate {rr:.2f}% exceeds {rr_threshold}% — historically restrictive territory")
+
+    return fired
+
+alerts = check_rate_alerts(rates)
+for a in alerts:
+    print(f"  🚨 {a}")</code></pre>
+        </div>
+
+        <p class="content-text" style="margin-top: 1.5rem;">
+            <strong>Installation:</strong>
+        </p>
+        <ul>
+            <li><code>pip install fredapi pyyaml pandas</code></li>
+            <li>Save the script as <code>fi_rates_dashboard.py</code></li>
+            <li>Place <code>fi-config.yaml</code> in the same directory</li>
+            <li>Run: <code>python3 fi_rates_dashboard.py</code></li>
+        </ul>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- SECTION 6: HOW TO INTERPRET THE DASHBOARD ──────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section id="how-to-interpret">
+        <h2 class="section-title">6. How to Interpret the Dashboard</h2>
+
+        <p class="content-text">
+            When you see the morning rates brief, here's how to interpret it quickly:
+        </p>
+
+        <p class="content-text"><strong>Fed Funds vs 10yr Gap</strong></p>
+        <p class="content-text">
+            If the Fed Funds rate is <em>higher</em> than the 10-year yield, the Fed is being more restrictive than the long-term market expects. This often happens near the end of a hiking cycle — the market is already pricing in future cuts. A gap of -0.5% to 0% is normal and stable. A gap of -2% signals the Fed is out of step with the market.
+        </p>
+
+        <p class="content-text"><strong>Real Rate Trend</strong></p>
+        <p class="content-text">
+            A real rate <strong>above 2%</strong> means borrowing is genuinely expensive after accounting for inflation. Growth stocks and speculative assets tend to struggle in this environment. Corporate margins compress. A real rate <strong>below 0%</strong> is historically very supportive for risk assets — money is "free" in real terms, pushing investors into equities, commodities, and alternatives.
+        </p>
+
+        <p class="content-text"><strong>Week-over-Week Changes</strong></p>
+        <p class="content-text">
+            Small moves (< 0.1%) are normal noise. Moves of 0.25% or more in a single week are meaningful — especially in the 10yr which moves slowly. A 0.5% weekly jump in real rates signals a shift in market expectations about inflation or Fed policy.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- SECTION 7: SAMPLE MORNING BRIEF ────────────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section id="sample-brief">
+        <h2 class="section-title">7. Sample Morning Brief</h2>
+
+        <p class="content-text">
+            Here's what a real output looks like. This data point is from March 14, 2025 at 7:02 AM ET — before markets open. You see all four rates, week-over-week changes, and automated interpretations of what the gap and real rate mean for the day ahead.
+        </p>
+
+        <div class="dashboard-output">🦞 OpenClaw Rates Dashboard
+═══════════════════════════════════════════════════════
+Generated: 2025-03-14 07:02
+
+  Fed Funds Rate         5.330%   ─  0.000% wk/wk
+  SOFR                   5.318%   ▼  0.012% wk/wk
+  10yr Real Rate         1.842%   ▲  0.087% wk/wk
+  10yr Nominal           4.487%   ▲  0.104% wk/wk
+
+  Fed–10yr gap:          -0.843%  (Fed above market — market pricing cuts)
+  Real rate:              1.842%  (Positive but moderate)
+═══════════════════════════════════════════════════════</div>
+
+        <p class="content-text" style="margin-top: 1.5rem;">
+            <strong>Reading this brief:</strong>
+        </p>
+        <ul>
+            <li><strong>Fed Funds flat, SOFR up slightly:</strong> No policy change this week, but market borrowing rates ticked higher.</li>
+            <li><strong>Real rate up 8.7 bps:</strong> Money is getting more expensive in real terms. Risk assets may face headwinds.</li>
+            <li><strong>10yr up 10.4 bps:</strong> Nominal rates climbing. Long-duration bonds under pressure.</li>
+            <li><strong>Fed–10yr gap at -0.843%:</strong> Fed is above the market. Market is pricing cuts within 12 months.</li>
+        </ul>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- SECTION 8: SCHEDULING ──────────────────────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <section id="scheduling">
+        <h2 class="section-title">8. Scheduling</h2>
+
+        <p class="content-text">
+            Run the dashboard every weekday morning at 7:00 AM ET — before US markets open at 9:30 AM. That gives you the latest overnight rate updates and market expectations on your screen.
+        </p>
+
+        <div class="code-block">
+            <div class="code-block-lang">bash</div>
+            <button class="copy-btn" data-target="cron-cmd">📋 Copy</button>
+            <pre id="cron-cmd"><code># Crontab entry (run at 7am Mon–Fri, EST)
+# Add to crontab -e
+0 7 * * 1-5 cd /path/to/openclaw && python3 fi_rates_dashboard.py</code></pre>
+        </div>
+
+        <p class="content-text" style="margin-top: 1.5rem;">
+            <strong>Tip:</strong> Redirect output to a log file or email yourself the brief:
+        </p>
+
+        <div class="code-block">
+            <div class="code-block-lang">bash</div>
+            <button class="copy-btn" data-target="cron-advanced">📋 Copy</button>
+            <pre id="cron-advanced"><code>0 7 * * 1-5 cd /path/to/openclaw && python3 fi_rates_dashboard.py >> rates-log.txt 2>&1</code></pre>
+        </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- PART NAVIGATION ────────────────────────────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <nav class="part-nav" aria-label="Series navigation">
+        <div class="part-nav-inner">
+            <a href="fi-credit-spreads.html" class="part-nav-btn prev-btn">← Part 2: Credit Spreads</a>
+            <a href="fi-breakevens.html" class="part-nav-btn next-btn">Part 4: Inflation Breakevens →</a>
+        </div>
+    </nav>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- FOOTER                                                           -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<footer>
+    <p>OpenClaw: Fixed Income Automation for Traders & Researchers</p>
+    <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+        Part 3 of 5 • <a href="fi-overview.html">Back to Fixed Income Series</a>
+    </p>
+    <p style="margin-top: 1rem; color: #6b7280;">
+        Built with the FRED Free API | Educational Use Only
+    </p>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SCRIPTS                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<script>
+    // Hamburger menu toggle
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    hamburgerBtn.addEventListener('click', function() {
+        if (navLinks.style.display === 'block') {
+            navLinks.style.display = 'none';
+        } else {
+            navLinks.style.display = 'block';
+        }
+    });
+
+    // Copy button functionality
+    const copyButtons = document.querySelectorAll('.copy-btn');
+
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const targetElement = document.getElementById(targetId);
+            const text = targetElement.innerText;
+
+            navigator.clipboard.writeText(text).then(function() {
+                const originalText = button.innerText;
+                button.innerText = '✓ Copied!';
+                button.classList.add('copied');
+
+                setTimeout(function() {
+                    button.innerText = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

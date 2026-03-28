@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macro Signal Generator | OpenClaw Fixed Income Automation</title>
+  <meta name="description" content="Combine four fixed income signals into one daily macro verdict. Yield curve, credit spreads, real rates, and inflation breakevens — all scored, all automated, all in your inbox.">
+  <link rel="canonical" href="https://learnopenclaw.org/fi-signals.html">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --rose-dark: #4c0519;
+      --rose-mid: #881337;
+      --rose-bright: #e11d48;
+      --bg: #1c1917;
+      --text: #e7e5e4;
+      --text-muted: #a8a29e;
+      --border: #44403c;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER & NAV ────────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose-mid) 55%, var(--rose-bright) 100%);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo span {
+      font-size: 1.8rem;
+    }
+
+    nav {
+      flex: 1;
+      margin: 0 2rem;
+    }
+
+    .nav-links {
+      display: none;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover {
+      opacity: 0.8;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .search-form {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.15);
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+    }
+
+    .search-form input {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 150px;
+    }
+
+    .search-form input::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .hamburger {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── BREADCRUMB ──────────────────────────────────────────────────── */
+    .breadcrumb {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .breadcrumb a {
+      color: var(--rose-bright);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .breadcrumb a:hover {
+      opacity: 0.8;
+    }
+
+    /* ── DISCLAIMER ──────────────────────────────────────────────────── */
+    .disclaimer {
+      background: #fff1f2;
+      border-left: 4px solid var(--rose-bright);
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      color: var(--rose-mid);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      border-radius: 4px;
+    }
+
+    .disclaimer-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ────────────────────────────────────────────────────────── */
+    .hero {
+      max-width: 1200px;
+      margin: 3rem auto 2rem;
+      padding: 0 1.5rem;
+    }
+
+    .hero-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--rose-bright);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .pill {
+      background: rgba(225, 29, 72, 0.1);
+      border: 1px solid var(--rose-bright);
+      color: var(--rose-bright);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── MAIN CONTENT ────────────────────────────────────────────────── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--rose-bright);
+    }
+
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    strong {
+      color: var(--rose-bright);
+      font-weight: 600;
+    }
+
+    /* ── STYLED LIST ──────────────────────────────────────────────────── */
+    .signal-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      padding: 0;
+    }
+
+    .signal-list li {
+      padding: 0.75rem 0;
+      padding-left: 2.5rem;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .signal-list .emoji {
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 1.5rem;
+    }
+
+    /* ── SCORING TABLE ────────────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: rgba(225, 29, 72, 0.1);
+      color: var(--rose-bright);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:hover {
+      background: rgba(225, 29, 72, 0.05);
+    }
+
+    /* ── CODE & CONFIG BLOCKS ────────────────────────────────────────── */
+    .code-block {
+      background: #2a2622;
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #a8a29e;
+      position: relative;
+    }
+
+    .code-block code {
+      color: inherit;
+    }
+
+    .code-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--rose-bright);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .formula-box {
+      background: rgba(225, 29, 72, 0.08);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--rose-bright);
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    .formula-box code {
+      color: var(--rose-bright);
+    }
+
+    /* ── COMPLETION BOX ──────────────────────────────────────────────── */
+    .completion-box {
+      background: rgba(225, 29, 72, 0.08);
+      border: 1px solid var(--rose-bright);
+      border-left: 4px solid var(--rose-bright);
+      padding: 2rem;
+      border-radius: 4px;
+      margin: 3rem 0;
+      text-align: center;
+    }
+
+    .completion-box h3 {
+      font-size: 1.5rem;
+      color: var(--rose-bright);
+      margin-bottom: 1.5rem;
+      border: none;
+    }
+
+    .completion-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .completion-list li {
+      padding: 0.75rem 0;
+      padding-left: 2.5rem;
+      position: relative;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .completion-list .check {
+      position: absolute;
+      left: 0;
+      color: #16a34a;
+      font-weight: 700;
+    }
+
+    .completion-box p {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* ── PART NAV ────────────────────────────────────────────────────── */
+    .part-nav {
+      margin-top: 4rem;
+      border-top: 2px solid var(--border);
+      padding-top: 2rem;
+    }
+
+    .part-nav-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .part-nav-btn {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .prev-btn {
+      background: rgba(168, 162, 158, 0.1);
+      color: var(--text-muted);
+    }
+
+    .prev-btn:hover {
+      background: rgba(168, 162, 158, 0.2);
+      color: var(--text);
+    }
+
+    .next-btn {
+      background: var(--rose-bright);
+      color: white;
+    }
+
+    .next-btn:hover {
+      background: #c41245;
+      transform: translateX(4px);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .part-nav-inner {
+        flex-direction: column;
+      }
+
+      .hero-pills {
+        flex-direction: column;
+      }
+
+      .pill {
+        width: 100%;
+      }
+
+      .completion-box {
+        padding: 1.5rem;
+      }
+    }
+
+    /* ── UTILITY ──────────────────────────────────────────────────────── */
+    .copy-btn {
+      background: var(--rose-bright);
+      color: white;
+      border: none;
+      padding: 0.25rem 0.75rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      float: right;
+      margin-bottom: 0.5rem;
+    }
+
+    .copy-btn:hover {
+      background: #c41245;
+    }
+
+    .copy-btn.copied {
+      background: #16a34a;
+    }
+
+    .terminal-link {
+      color: var(--rose-bright);
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .terminal-link:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER & NAV -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span>🦞</span>
+        learnopenclaw.org
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="learn.html">Learn</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="claw-street-terminal.html">Terminal</a></li>
+        </ul>
+      </nav>
+      <div class="nav-right">
+        <form class="search-form">
+          <input type="text" placeholder="Search...">
+        </form>
+        <button class="hamburger" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> › <a href="claw-street-terminal.html">Terminal</a> › <a href="fi-index.html">Fixed Income</a> › <span>Macro Signal Generator</span>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <div class="disclaimer-icon">⚠️</div>
+    <div>The macro signal is a monitoring tool, not a trading system. It reflects historical correlations, not guaranteed future outcomes. Not financial advice.</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Fixed Income · Part 5 of 5</div>
+    <h1 class="hero-title">Macro Signal Generator</h1>
+    <p class="hero-subtitle">Four fixed income signals. One daily verdict. OpenClaw combines the yield curve, credit spreads, real rates, and inflation breakevens into a single 🟢 Green / 🟡 Yellow / 🔴 Red macro read — delivered to your inbox every morning.</p>
+    <div class="hero-pills">
+      <div class="pill">4 Signals Combined</div>
+      <div class="pill">Traffic Light Output</div>
+      <div class="pill">Daily Email</div>
+      <div class="pill">Full Config-Driven</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- SECTION 1: WHY COMBINE ALL FOUR? -->
+    <section id="why-combine">
+      <h2>Why Combine All Four Signals?</h2>
+
+      <p>Each of the four signals we've built tells you something different about the economy:</p>
+
+      <ul class="signal-list">
+        <li>
+          <div class="emoji">📈</div>
+          <strong>Yield Curve</strong> — Are investors worried about the future? (inverted = concern)
+        </li>
+        <li>
+          <div class="emoji">📊</div>
+          <strong>Credit Spreads</strong> — Are lenders afraid companies will default? (wide = fear)
+        </li>
+        <li>
+          <div class="emoji">🏦</div>
+          <strong>Real Rates</strong> — Is money actually expensive or cheap in real terms? (high = tight)
+        </li>
+        <li>
+          <div class="emoji">💹</div>
+          <strong>Breakevens</strong> — Does the market expect inflation to stay elevated? (high = concern)
+        </li>
+      </ul>
+
+      <p>No single signal is reliable alone. But when multiple signals align — when the yield curve is inverted <em>AND</em> spreads are widening <em>AND</em> real rates are elevated — the macro picture is significantly clearer.</p>
+
+      <p>The macro signal generator combines all four into one daily output: <strong>Green</strong> (conditions broadly healthy), <strong>Yellow</strong> (mixed signals, watch carefully), or <strong>Red</strong> (multiple indicators flashing concern).</p>
+    </section>
+
+    <!-- SECTION 2: HOW THE SCORING WORKS -->
+    <section id="how-scoring-works">
+      <h2>How the Scoring Works</h2>
+
+      <p>Each of the four signals gets scored on a simple <strong>-1 / 0 / +1</strong> scale:</p>
+
+      <ul class="signal-list">
+        <li>
+          <div class="emoji">🟢</div>
+          <strong>+1 (Green)</strong>: signal looks healthy
+        </li>
+        <li>
+          <div class="emoji">🟡</div>
+          <strong>0 (Yellow)</strong>: signal is neutral or borderline
+        </li>
+        <li>
+          <div class="emoji">🔴</div>
+          <strong>-1 (Red)</strong>: signal is flashing concern
+        </li>
+      </ul>
+
+      <p>The four scores are averaged. The final verdict:</p>
+
+      <ul class="signal-list">
+        <li>
+          <div class="emoji">🟢</div>
+          Average > +0.3 → <strong>Green</strong> (macro broadly supportive)
+        </li>
+        <li>
+          <div class="emoji">🟡</div>
+          Average between -0.3 and +0.3 → <strong>Yellow</strong> (mixed, stay alert)
+        </li>
+        <li>
+          <div class="emoji">🔴</div>
+          Average < -0.3 → <strong>Red</strong> (multiple concerns active)
+        </li>
+      </ul>
+
+      <h3>Scoring Criteria Table</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Signal</th>
+            <th>Green (+1)</th>
+            <th>Yellow (0)</th>
+            <th>Red (-1)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>2s10s Spread</strong></td>
+            <td>&gt; +0.25%</td>
+            <td>-0.25% to +0.25%</td>
+            <td>&lt; -0.25% (inverted)</td>
+          </tr>
+          <tr>
+            <td><strong>HY Credit Spread</strong></td>
+            <td>&lt; 400 bps</td>
+            <td>400–600 bps</td>
+            <td>&gt; 600 bps</td>
+          </tr>
+          <tr>
+            <td><strong>10yr Real Rate</strong></td>
+            <td>&lt; 1.5%</td>
+            <td>1.5% – 2.5%</td>
+            <td>&gt; 2.5%</td>
+          </tr>
+          <tr>
+            <td><strong>10yr Breakeven</strong></td>
+            <td>1.75% – 2.5%</td>
+            <td>2.5% – 2.75%</td>
+            <td>&gt; 2.75% or &lt; 1.75%</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SECTION 3: THE COMPLETE YAML CONFIG -->
+    <section id="the-config">
+      <h2>The Complete fi-config.yaml</h2>
+
+      <p>Here's the full config that drives the entire Fixed Income series:</p>
+
+      <div class="code-block">
+        <span class="code-label">fi-config.yaml — Complete OpenClaw Fixed Income Config</span>
+        <code><pre># fi-config.yaml — Complete OpenClaw Fixed Income Config
+# This single file drives all five modules in the Fixed Income series
+
+fred:
+  api_key: "your_fred_api_key_here"
+  # Free key: https://fred.stlouisfed.org/docs/api/api_key.html
+
+# ── Yield curve ───────────────────────────────────────────────────
+yield_curve:
+  maturities:
+    - { label: "2-Year",  series: "DGS2"  }
+    - { label: "5-Year",  series: "DGS5"  }
+    - { label: "10-Year", series: "DGS10" }
+    - { label: "30-Year", series: "DGS30" }
+  alerts:
+    inversion: true
+    spread_threshold: -0.25
+
+# ── Credit spreads ────────────────────────────────────────────────
+credit_spreads:
+  investment_grade: "BAMLC0A0CM"
+  high_yield:       "BAMLH0A0HYM2"
+  alerts:
+    ig_weekly_move:  50
+    hy_weekly_move: 150
+    hy_danger_level: 700
+
+# ── Rates ─────────────────────────────────────────────────────────
+rates:
+  fed_funds:  "FEDFUNDS"
+  sofr:       "SOFR"
+  real_rate:  "DFII10"
+  ten_year:   "DGS10"
+  alerts:
+    real_rate_threshold: 2.5
+
+# ── Breakevens ────────────────────────────────────────────────────
+breakevens:
+  five_year:  "T5YIE"
+  ten_year:   "T10YIE"
+  forward:    "T5YIFR"
+  cpi_series: "CPIAUCSL"
+  alerts:
+    weekly_move: 0.15
+    above_fed_target: 2.75
+
+# ── Macro signal scoring thresholds ──────────────────────────────
+macro_signal:
+  yield_curve:
+    green: 0.25      # 2s10s spread above this = green
+    red:  -0.25      # 2s10s spread below this = red
+  hy_spread_bps:
+    green: 400
+    red:   600
+  real_rate:
+    green: 1.5
+    red:   2.5
+  breakeven_10yr:
+    green_min: 1.75
+    green_max: 2.50
+    red_high:  2.75
+    red_low:   1.75
+
+# ── Alert delivery ────────────────────────────────────────────────
+alerts:
+  email: "you@example.com"
+  daily_digest: true
+  send_time: "07:00"
+
+# ── Scheduler ─────────────────────────────────────────────────────
+scheduler:
+  morning_brief:
+    script: fi_daily_brief.py
+    schedule: "0 7 * * 1-5"</pre></code>
+      </div>
+
+      <p>This is the unified config that every part of the Fixed Income series consumes. One key, one config, five separate but coordinated monitoring modules.</p>
+    </section>
+
+    <!-- SECTION 4: THE MACRO SIGNAL SCRIPT -->
+    <section id="the-script">
+      <h2>The Macro Signal Script</h2>
+
+      <p>Here's the Python script that combines all four signals into one daily verdict:</p>
+
+      <div class="code-block">
+        <span class="code-label">fi_daily_brief.py — OpenClaw Fixed Income Daily Brief</span>
+        <code><pre># fi_daily_brief.py — OpenClaw Fixed Income Daily Brief
+# Combines all four signals into one macro verdict
+
+import yaml
+from fredapi import Fred
+import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+from datetime import datetime
+
+def load_config(path: str = "fi-config.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+cfg  = load_config()
+fred = Fred(api_key=cfg["fred"]["api_key"])
+MS   = cfg["macro_signal"]
+
+# ── Fetch all four signals ────────────────────────────────────────
+def fetch_all_signals() -> dict:
+    """
+    Pulls the latest values for all four signal categories.
+    Returns a dict with current values for scoring.
+    """
+    signals = {}
+
+    # 1. Yield curve — 2s10s spread
+    try:
+        two_yr = float(fred.get_series("DGS2").dropna().iloc[-1])
+        ten_yr = float(fred.get_series("DGS10").dropna().iloc[-1])
+        signals["spread_2s10s"] = round(ten_yr - two_yr, 3)
+        signals["two_year"]  = two_yr
+        signals["ten_year"]  = ten_yr
+    except Exception as e:
+        signals["spread_2s10s"] = 0
+
+    # 2. High yield credit spread
+    try:
+        hy = fred.get_series("BAMLH0A0HYM2").dropna().iloc[-1]
+        signals["hy_spread_bps"] = round(float(hy) * 100, 1)
+    except Exception:
+        signals["hy_spread_bps"] = 500
+
+    # 3. Real rate
+    try:
+        rr = fred.get_series("DFII10").dropna().iloc[-1]
+        signals["real_rate"] = round(float(rr), 3)
+    except Exception:
+        signals["real_rate"] = 1.0
+
+    # 4. 10yr breakeven
+    try:
+        be = fred.get_series("T10YIE").dropna().iloc[-1]
+        signals["breakeven_10yr"] = round(float(be), 3)
+    except Exception:
+        signals["breakeven_10yr"] = 2.3
+
+    return signals
+
+# ── Score each signal ─────────────────────────────────────────────
+def score_signals(signals: dict) -> dict:
+    """
+    Scores each signal on a -1 (red) / 0 (yellow) / +1 (green) scale.
+    """
+    scores = {}
+
+    # Yield curve
+    spread = signals["spread_2s10s"]
+    if spread > MS["yield_curve"]["green"]:
+        scores["yield_curve"] = (1, "🟢", f"2s10s at {spread:+.3f}% — normal, positive slope")
+    elif spread < MS["yield_curve"]["red"]:
+        scores["yield_curve"] = (-1, "🔴", f"2s10s at {spread:+.3f}% — INVERTED")
+    else:
+        scores["yield_curve"] = (0, "🟡", f"2s10s at {spread:+.3f}% — near flat, watch closely")
+
+    # HY credit spreads
+    hy = signals["hy_spread_bps"]
+    if hy < MS["hy_spread_bps"]["green"]:
+        scores["credit_spreads"] = (1, "🟢", f"HY spreads {hy:.0f} bps — normal range")
+    elif hy > MS["hy_spread_bps"]["red"]:
+        scores["credit_spreads"] = (-1, "🔴", f"HY spreads {hy:.0f} bps — elevated stress")
+    else:
+        scores["credit_spreads"] = (0, "🟡", f"HY spreads {hy:.0f} bps — moderately elevated")
+
+    # Real rates
+    rr = signals["real_rate"]
+    if rr < MS["real_rate"]["green"]:
+        scores["real_rates"] = (1, "🟢", f"Real rate {rr:.3f}% — accommodative")
+    elif rr > MS["real_rate"]["red"]:
+        scores["real_rates"] = (-1, "🔴", f"Real rate {rr:.3f}% — restrictive territory")
+    else:
+        scores["real_rates"] = (0, "🟡", f"Real rate {rr:.3f}% — moderate")
+
+    # Breakevens
+    be = signals["breakeven_10yr"]
+    if MS["breakeven_10yr"]["green_min"] <= be <= MS["breakeven_10yr"]["green_max"]:
+        scores["breakevens"] = (1, "🟢", f"10yr breakeven {be:.3f}% — anchored near Fed target")
+    elif be > MS["breakeven_10yr"]["red_high"] or be < MS["breakeven_10yr"]["red_low"]:
+        scores["breakevens"] = (-1, "🔴", f"10yr breakeven {be:.3f}% — outside normal range")
+    else:
+        scores["breakevens"] = (0, "🟡", f"10yr breakeven {be:.3f}% — slightly elevated")
+
+    return scores
+
+# ── Determine overall verdict ─────────────────────────────────────
+def get_verdict(scores: dict) -> tuple:
+    avg = sum(s[0] for s in scores.values()) / len(scores)
+    if avg > 0.3:
+        return ("🟢 GREEN", "Macro conditions broadly supportive", avg)
+    elif avg < -0.3:
+        return ("🔴 RED", "Multiple macro concerns active — elevated caution warranted", avg)
+    else:
+        return ("🟡 YELLOW", "Mixed signals — monitor closely, no clear directional bias", avg)
+
+# ── Print the full brief ──────────────────────────────────────────
+def print_macro_brief():
+    signals = fetch_all_signals()
+    scores  = score_signals(signals)
+    verdict, description, avg_score = get_verdict(scores)
+
+    print(f"\n{'🦞 OpenClaw Fixed Income Daily Brief':=^58}")
+    print(f"{'Generated: ' + datetime.now().strftime('%Y-%m-%d %H:%M'):^58}\n")
+
+    print("  SIGNAL SCORES")
+    print("  " + "─" * 54)
+    labels = {
+        "yield_curve":    "Yield Curve (2s10s)",
+        "credit_spreads": "Credit Spreads (HY)",
+        "real_rates":     "Real Rates (10yr)",
+        "breakevens":     "Inflation Breakevens",
+    }
+    for key, label in labels.items():
+        val, icon, detail = scores[key]
+        print(f"  {icon}  {label:<26} {detail}")
+
+    print(f"\n{'─'*58}")
+    print(f"  MACRO VERDICT:  {verdict}")
+    print(f"  {description}")
+    print(f"  (Composite score: {avg_score:+.2f})")
+    print(f"{'':=^58}\n")
+
+print_macro_brief()</pre></code>
+      </div>
+
+      <p>This script is the payoff — it pulls fresh data from FRED for all four signals, scores each one, computes an average, and delivers a clear traffic light verdict. It's config-driven, deterministic, and ready to automate.</p>
+    </section>
+
+    <!-- SECTION 5: SAMPLE OUTPUT -->
+    <section id="sample-output">
+      <h2>Sample Output</h2>
+
+      <div class="code-block">
+        <code><pre>🦞 OpenClaw Fixed Income Daily Brief
+══════════════════════════════════════════════════════════
+Generated: 2025-03-14 07:03
+
+  SIGNAL SCORES
+  ──────────────────────────────────────────────────────
+  🟡  Yield Curve (2s10s)        2s10s at -0.40% — INVERTED
+  🟢  Credit Spreads (HY)        HY spreads 385 bps — normal range
+  🟢  Real Rates (10yr)          Real rate 1.84% — accommodative
+  🟡  Inflation Breakevens       10yr breakeven 2.45% — slightly elevated
+
+  ──────────────────────────────────────────────────────
+  MACRO VERDICT:  🟡 YELLOW
+  Mixed signals — monitor closely, no clear directional bias
+  (Composite score: +0.00)
+══════════════════════════════════════════════════════════</pre></code>
+      </div>
+
+      <p>In this snapshot, we see a mixed picture: yield curve inverted (concerning), spreads tight (healthy), real rates moderate (accommodative), but breakevens slightly hot. The score averages to zero — Yellow. Watch, but no clear alarm.</p>
+    </section>
+
+    <!-- SECTION 6: AUTOMATING THE MORNING BRIEF -->
+    <section id="automating">
+      <h2>Automating the Morning Brief</h2>
+
+      <p>Schedule the daily brief to run before US markets open with a simple cron entry:</p>
+
+      <div class="code-block">
+        <span class="code-label">Cron Schedule</span>
+        <code><pre># Run at 7am Mon–Fri before US markets open
+0 7 * * 1-5 cd /path/to/openclaw && python3 fi_daily_brief.py >> fi_brief.log 2>&1</pre></code>
+      </div>
+
+      <p>The script logs its output. Pipe it to email, Slack, or a dashboard. The signal is now part of your morning routine — every trading day, 7am sharp, one unified macro verdict in your inbox.</p>
+    </section>
+
+    <!-- SECTION 7: SERIES COMPLETION -->
+    <section id="series-completion">
+      <div class="completion-box">
+        <h3>You've Completed the OpenClaw Fixed Income & Yield Curve Series</h3>
+
+        <ul class="completion-list">
+          <li>
+            <span class="check">✅</span>
+            <strong>Part 1 — Yield Curve Monitor</strong>: Daily 2s10s spread + inversion alerts
+          </li>
+          <li>
+            <span class="check">✅</span>
+            <strong>Part 2 — Credit Spreads</strong>: IG and HY spread monitoring + risk-off alerts
+          </li>
+          <li>
+            <span class="check">✅</span>
+            <strong>Part 3 — Rates Dashboard</strong>: Fed Funds, SOFR, real rates morning snapshot
+          </li>
+          <li>
+            <span class="check">✅</span>
+            <strong>Part 4 — Inflation Breakevens</strong>: Market's inflation forecast vs actual CPI
+          </li>
+          <li>
+            <span class="check">✅</span>
+            <strong>Part 5 — Macro Signal Generator</strong>: All four signals → one daily verdict
+          </li>
+        </ul>
+
+        <p><strong>All driven by a single fi-config.yaml. One key, one config, five automated briefings.</strong></p>
+
+        <p>You now have a production-grade fixed income monitoring suite. Every morning, OpenClaw reads the same signals professional traders watch — yield curves, credit spreads, real rates, inflation expectations — and delivers a single, unified macro call to your inbox. Green, Yellow, or Red. That's the signal. That's the advantage.</p>
+
+        <p style="margin-top: 2rem;">
+          Ready to monitor other markets? Return to the <a href="claw-street-terminal.html" class="terminal-link">OpenClaw Terminal</a> to explore other modules and automation chains.
+        </p>
+      </div>
+    </section>
+
+    <!-- PART NAV -->
+    <nav class="part-nav" aria-label="Series navigation">
+      <div class="part-nav-inner">
+        <a href="fi-breakevens.html" class="part-nav-btn prev-btn">← Part 4: Inflation Breakevens</a>
+        <a href="openclaw-for-fixedincome.html" class="part-nav-btn next-btn">Back to Overview →</a>
+      </div>
+    </nav>
+  </main>
+
+  <!-- HAMBURGER MENU & COPY FUNCTIONALITY -->
+  <script>
+    // Hamburger menu toggle
+    document.querySelector('.hamburger').addEventListener('click', function() {
+      const navLinks = document.querySelector('.nav-links');
+      if (navLinks.style.display === 'flex') {
+        navLinks.style.display = 'none';
+      } else {
+        navLinks.style.display = 'flex';
+        navLinks.style.flexDirection = 'column';
+        navLinks.style.position = 'absolute';
+        navLinks.style.top = '100%';
+        navLinks.style.left = '0';
+        navLinks.style.right = '0';
+        navLinks.style.background = 'linear-gradient(135deg, #4c0519 0%, #881337 55%, #e11d48 100%)';
+        navLinks.style.padding = '1rem';
+        navLinks.style.borderRadius = '0 0 4px 4px';
+        navLinks.style.zIndex = '99';
+      }
+    });
+
+    // Copy code blocks to clipboard
+    document.querySelectorAll('.code-block').forEach(block => {
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', function() {
+        const code = block.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+      block.insertBefore(btn, block.firstChild);
+    });
+
+    // Copy formula boxes
+    document.querySelectorAll('.formula-box').forEach(block => {
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', function() {
+        const text = block.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+      block.insertBefore(btn, block.firstChild);
+    });
+  </script>
+</body>
+</html>

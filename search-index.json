@@ -1546,5 +1546,94 @@
     "title": "Automated TA Chart Generation with Plotly & matplotlib | Claw Street Terminal",
     "description": "Build candlestick charts with indicator overlays, save as interactive HTML or PNG \u2014 no charting subscription needed.",
     "section": "terminal"
+  },
+  {
+    "title": "OpenClaw for Fixed Income & Yield Curve \u2014 Series Overview",
+    "url": "openclaw-for-fixedincome.html",
+    "description": "Automate yield curve tracking, credit spread monitoring, breakeven inflation alerts, and daily macro briefs using FRED and OpenClaw. Beginner-friendly guide.",
+    "tags": [
+      "fixed income",
+      "yield curve",
+      "FRED",
+      "bonds",
+      "rates",
+      "OpenClaw",
+      "automation"
+    ],
+    "series": "Fixed Income & Yield Curve"
+  },
+  {
+    "title": "Part 1: Yield Curve Tracker \u2014 Fixed Income & Yield Curve",
+    "url": "fi-yield-curve.html",
+    "description": "Automate 2s10s spread tracking and yield curve inversion alerts with FRED API and OpenClaw. Learn what the yield curve is and why it matters.",
+    "tags": [
+      "yield curve",
+      "inversion",
+      "FRED",
+      "2s10s",
+      "DGS2",
+      "DGS10",
+      "OpenClaw"
+    ],
+    "series": "Fixed Income & Yield Curve"
+  },
+  {
+    "title": "Part 2: Credit Spreads \u2014 Fixed Income & Yield Curve",
+    "url": "fi-credit-spreads.html",
+    "description": "Track investment-grade and high-yield credit spreads using FRED BAMLC0A0CM and BAMLH0A0HYM2 series. Automate weekly move alerts with OpenClaw.",
+    "tags": [
+      "credit spreads",
+      "high yield",
+      "investment grade",
+      "FRED",
+      "BAML",
+      "OpenClaw"
+    ],
+    "series": "Fixed Income & Yield Curve"
+  },
+  {
+    "title": "Part 3: Rates Dashboard \u2014 Fixed Income & Yield Curve",
+    "url": "fi-rates-dashboard.html",
+    "description": "Build an automated morning rates snapshot covering Fed Funds, SOFR, real rates, and the 10-year Treasury using FRED and OpenClaw.",
+    "tags": [
+      "rates",
+      "Fed Funds",
+      "SOFR",
+      "real rates",
+      "10-year Treasury",
+      "FRED",
+      "OpenClaw"
+    ],
+    "series": "Fixed Income & Yield Curve"
+  },
+  {
+    "title": "Part 4: Breakeven Inflation \u2014 Fixed Income & Yield Curve",
+    "url": "fi-breakevens.html",
+    "description": "Monitor TIPS breakeven inflation expectations using FRED T5YIE, T10YIE, and T5YIFR series. Automate CPI comparison alerts with OpenClaw.",
+    "tags": [
+      "TIPS",
+      "breakeven inflation",
+      "T10YIE",
+      "T5YIE",
+      "FRED",
+      "inflation",
+      "OpenClaw"
+    ],
+    "series": "Fixed Income & Yield Curve"
+  },
+  {
+    "title": "Part 5: Macro Signal Scoring \u2014 Fixed Income & Yield Curve",
+    "url": "fi-signals.html",
+    "description": "Build a 4-signal scoring system that delivers a daily macro brief via email. Combines yield curve, credit spreads, real rates, and breakevens into a traffic-light verdict.",
+    "tags": [
+      "macro signals",
+      "daily brief",
+      "scoring",
+      "FRED",
+      "OpenClaw",
+      "automation",
+      "email alerts"
+    ],
+    "series": "Fixed Income & Yield Curve"
   }
 ]

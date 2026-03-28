@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inflation Breakevens & TIPS Monitor | OpenClaw Fixed Income</title>
+  <meta name="description" content="Learn how inflation breakevens work. Monitor 5yr, 10yr, and forward breakeven rates from FRED. Understand TIPS and market inflation expectations.">
+  <link rel="canonical" href="https://learnopenclaw.org/fi-breakevens.html">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --rose-dark: #4c0519;
+      --rose-mid: #881337;
+      --rose-bright: #e11d48;
+      --bg: #1c1917;
+      --text: #e7e5e4;
+      --text-muted: #a8a29e;
+      --border: #44403c;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER & NAV ────────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose-mid) 55%, var(--rose-bright) 100%);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo span {
+      font-size: 1.8rem;
+    }
+
+    nav {
+      flex: 1;
+      margin: 0 2rem;
+    }
+
+    .nav-links {
+      display: none;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover {
+      opacity: 0.8;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .search-form {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.15);
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+    }
+
+    .search-form input {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 0.9rem;
+      outline: none;
+      min-width: 150px;
+    }
+
+    .search-form input::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .hamburger {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── BREADCRUMB ──────────────────────────────────────────────────── */
+    .breadcrumb {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .breadcrumb a {
+      color: var(--rose-bright);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .breadcrumb a:hover {
+      opacity: 0.8;
+    }
+
+    /* ── DISCLAIMER ──────────────────────────────────────────────────── */
+    .disclaimer {
+      background: #fff1f2;
+      border-left: 4px solid var(--rose-bright);
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      color: var(--rose-mid);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      border-radius: 4px;
+    }
+
+    .disclaimer-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ────────────────────────────────────────────────────────── */
+    .hero {
+      max-width: 1200px;
+      margin: 3rem auto 2rem;
+      padding: 0 1.5rem;
+    }
+
+    .hero-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--rose-bright);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .pill {
+      background: rgba(225, 29, 72, 0.1);
+      border: 1px solid var(--rose-bright);
+      color: var(--rose-bright);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── MAIN CONTENT ────────────────────────────────────────────────── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--rose-bright);
+    }
+
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    strong {
+      color: var(--rose-bright);
+      font-weight: 600;
+    }
+
+    /* ── FORMULA BOX ──────────────────────────────────────────────────── */
+    .formula-box {
+      background: rgba(225, 29, 72, 0.08);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--rose-bright);
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    .formula-box code {
+      color: var(--rose-bright);
+    }
+
+    /* ── YAML CONFIG ──────────────────────────────────────────────────── */
+    .code-block {
+      background: #2a2622;
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin: 1.5rem 0;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #a8a29e;
+    }
+
+    .code-block code {
+      color: inherit;
+    }
+
+    .code-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--rose-bright);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    /* ── TABLE ───────────────────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: rgba(225, 29, 72, 0.1);
+      color: var(--rose-bright);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:hover {
+      background: rgba(225, 29, 72, 0.05);
+    }
+
+    /* ── PART NAV ────────────────────────────────────────────────────── */
+    .part-nav {
+      margin-top: 4rem;
+      border-top: 2px solid var(--border);
+      padding-top: 2rem;
+    }
+
+    .part-nav-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .part-nav-btn {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .prev-btn {
+      background: rgba(168, 162, 158, 0.1);
+      color: var(--text-muted);
+    }
+
+    .prev-btn:hover {
+      background: rgba(168, 162, 158, 0.2);
+      color: var(--text);
+    }
+
+    .next-btn {
+      background: var(--rose-bright);
+      color: white;
+    }
+
+    .next-btn:hover {
+      background: #c41245;
+      transform: translateX(4px);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+
+      .part-nav-inner {
+        flex-direction: column;
+      }
+
+      .hero-pills {
+        flex-direction: column;
+      }
+
+      .pill {
+        width: 100%;
+      }
+    }
+
+    /* ── UTILITY ──────────────────────────────────────────────────────── */
+    .copy-btn {
+      background: var(--rose-bright);
+      color: white;
+      border: none;
+      padding: 0.25rem 0.75rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      float: right;
+      margin-bottom: 0.5rem;
+    }
+
+    .copy-btn:hover {
+      background: #c41245;
+    }
+
+    .copy-btn.copied {
+      background: #16a34a;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER & NAV -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span>🦞</span>
+        learnopenclaw.org
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="learn.html">Learn</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="terminal.html">Terminal</a></li>
+        </ul>
+      </nav>
+      <div class="nav-right">
+        <form class="search-form">
+          <input type="text" placeholder="Search...">
+        </form>
+        <button class="hamburger" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb">
+    <a href="index.html">Home</a> › <a href="terminal.html">Terminal</a> › <a href="fi-index.html">Fixed Income</a> › <span>Inflation Breakevens</span>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <div class="disclaimer-icon">⚠️</div>
+    <div>Inflation breakevens reflect market expectations, not actual future inflation. Expectations can be wrong. Not financial advice.</div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Fixed Income · Part 4 of 5</div>
+    <h1 class="hero-title">Inflation Breakevens</h1>
+    <p class="hero-subtitle">The bond market's inflation forecast updates every single trading day — and it's often more accurate than economist surveys. OpenClaw tracks it automatically and alerts you when expectations shift.</p>
+    <div class="hero-pills">
+      <div class="pill">FRED Free API</div>
+      <div class="pill">5yr & 10yr Breakevens</div>
+      <div class="pill">TIPS Explained</div>
+      <div class="pill">CPI vs Market</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- SECTION 1: WHAT ARE TIPS? -->
+    <section id="what-are-tips">
+      <h2>What Are TIPS?</h2>
+
+      <p>TIPS stands for <strong>Treasury Inflation-Protected Securities</strong>. They're bonds issued by the US government, just like regular Treasuries — but with one key difference: the principal (the amount you're owed) adjusts with inflation.</p>
+
+      <p>If you own a regular 10-year Treasury and inflation runs hot, the purchasing power of your $1,000 repayment shrinks. With TIPS, the $1,000 adjusts upward with the CPI — so you're protected.</p>
+
+      <p>Because of this protection, TIPS pay a <strong>lower</strong> yield than regular Treasuries. That lower yield is called the "real yield" — it's what you earn above and beyond inflation.</p>
+
+      <p>Here's the intuition: if you lock in 4.5% on a regular Treasury but inflation runs at 3%, you actually earn 1.5% in "real" terms (after inflation erodes your purchasing power). With TIPS paying 2% and inflation at 3%, the principal adjusts, so you get your real 2% plus the inflation adjustment. You're guaranteed your real return, regardless of what inflation does.</p>
+    </section>
+
+    <!-- SECTION 2: WHAT IS AN INFLATION BREAKEVEN? -->
+    <section id="what-is-breakeven">
+      <h2>What Is an Inflation Breakeven?</h2>
+
+      <p>The <strong>breakeven inflation rate</strong> is the difference between a regular Treasury yield and a TIPS yield of the same maturity.</p>
+
+      <div class="formula-box">
+Breakeven Inflation = Nominal Treasury Yield − TIPS Yield
+
+Example:
+  10yr Treasury yield:  4.50%
+  10yr TIPS yield:      2.05%
+  ─────────────────────────────
+  10yr Breakeven:       2.45%
+      </div>
+
+      <p>The breakeven tells you: <strong>at what inflation rate would you be indifferent between owning a regular Treasury and a TIPS?</strong> If you expect inflation to be <em>higher</em> than 2.45%, you'd prefer TIPS. If you expect it to be <em>lower</em>, you'd prefer the regular Treasury.</p>
+
+      <p>Crucially — this is the market's collective forecast. Thousands of professional investors trading billions of dollars have priced in 2.45% inflation. That's a powerful signal.</p>
+
+      <p>When breakevens rise, the market is pricing in higher inflation expectations. When they fall, the market expects inflation to cool. OpenClaw monitors these moves in real-time and alerts you to significant shifts.</p>
+    </section>
+
+    <!-- SECTION 3: THE THREE BREAKEVENS OPENCLAW TRACKS -->
+    <section id="three-breakevens">
+      <h2>The Three Breakevens OpenClaw Tracks</h2>
+
+      <h3>5-Year Breakeven (T5YIE)</h3>
+      <p>The market's inflation forecast for the next 5 years. More sensitive to near-term Fed policy and current economic data. When the Fed raises rates, the 5yr breakeven often moves first. When jobs reports disappoint, this one reacts quickly.</p>
+
+      <h3>10-Year Breakeven (T10YIE)</h3>
+      <p>The longer-term view — where the market thinks average inflation will land over the next decade. This is the most-watched breakeven. Central banks, pension funds, and institutional investors use this as a barometer of inflation credibility. If the Fed has won the inflation fight, the 10yr breakeven sits near 2.0–2.3%. If inflation is expected to overshoot, it climbs toward 2.8% or higher.</p>
+
+      <h3>5yr/5yr Forward (T5YIFR)</h3>
+      <p>This one is slightly different — it's the market's expectation for inflation <em>5 years from now, over the following 5 years</em>. It filters out near-term noise and shows long-run inflation expectations. The Fed watches this one closely because it reveals whether markets believe inflation will settle at target in the long run, regardless of short-term gyrations.</p>
+    </section>
+
+    <!-- SECTION 4: WHY BREAKEVENS MATTER -->
+    <section id="why-breakevens-matter">
+      <h2>Why Breakevens Matter</h2>
+
+      <h3>1. Leading Indicator for CPI</h3>
+      <p>Breakevens often move before official CPI data is released. If the 5yr breakeven spikes from 2.2% to 2.8% in a few weeks, the bond market is pricing in higher inflation — that often shows up in the next few CPI prints. Professional traders and economists watch breakevens obsessively because they're a real-time gauge of inflation expectations, while CPI is backward-looking and monthly.</p>
+
+      <h3>2. Gauging Fed Credibility</h3>
+      <p>If the Fed raises rates to fight inflation but breakevens keep rising, the market doesn't believe the Fed is doing enough. If breakevens fall after hikes, the market thinks the Fed has it under control. OpenClaw tracks this relationship automatically — when the Fed moves and breakevens don't budge, it's a sign the market is skeptical.</p>
+
+      <h3>3. Portfolio Allocation Signal</h3>
+      <p>Rising breakevens hurt nominal bond prices but favor real assets (commodities, real estate, inflation-linked bonds). Falling breakevens favor pure duration. OpenClaw alerts you when breakeven moves suggest a tactical portfolio tilt is warranted.</p>
+    </section>
+
+    <!-- SECTION 5: THE CONFIG -->
+    <section id="the-config">
+      <h2>The Config</h2>
+
+      <p>Here's how OpenClaw connects to FRED and monitors all three breakeven series:</p>
+
+      <div class="code-block">
+        <span class="code-label">fi-config.yaml — breakevens section</span>
+        <code><pre>fred:
+  api_key: "your_fred_api_key_here"
+
+breakevens:
+  five_year:  "T5YIE"   # 5-Year Breakeven Inflation Rate
+  ten_year:   "T10YIE"  # 10-Year Breakeven Inflation Rate
+  forward:    "T5YIFR"  # 5yr/5yr Forward Inflation Expectation
+
+  # Also compare to recent actual CPI
+  cpi_series: "CPIAUCSL"  # CPI for All Urban Consumers (monthly)
+
+  alerts:
+    weekly_move: 0.15     # Alert if any breakeven moves more than 15 bps in a week
+    above_fed_target: 2.75  # Alert if 10yr breakeven exceeds this (Fed target is 2%)
+    below_concern: 1.75   # Alert if 10yr breakeven drops below this (deflation risk)</pre></code>
+      </div>
+
+      <p>The config is straightforward: fetch three FRED series daily, compare to recent CPI, and fire alerts when breakevens move significantly or breach key thresholds. The 15 basis point weekly threshold is tuned to catch meaningful market signals without noise.</p>
+    </section>
+
+    <!-- SECTION 6: THE BREAKEVENS SCRIPT -->
+    <section id="the-script">
+      <h2>The Breakevens Script</h2>
+
+      <p>Here's the Python monitor that OpenClaw runs to track inflation expectations in real-time:</p>
+
+      <div class="code-block">
+        <span class="code-label">fi_breakevens.py — OpenClaw Inflation Breakeven Monitor</span>
+        <code><pre>import yaml
+from fredapi import Fred
+import pandas as pd
+from datetime import datetime, timedelta
+
+def load_config(path: str = "fi-config.yaml") -> dict:
+    with open(path) as f:
+        return yaml.safe_load(f)
+
+cfg  = load_config()
+fred = Fred(api_key=cfg["fred"]["api_key"])
+BE   = cfg["breakevens"]
+
+print(f"🦞 OpenClaw Inflation Breakeven Monitor")
+print(f"   {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+print("─" * 50)
+
+# ── Fetch breakeven series ────────────────────────────────────────
+def fetch_breakevens() -> dict:
+    """
+    Fetches the three breakeven series from FRED.
+    All three are daily and highly liquid market-based measures.
+    """
+    series_map = {
+        "5yr Breakeven":     BE["five_year"],
+        "10yr Breakeven":    BE["ten_year"],
+        "5yr/5yr Forward":   BE["forward"],
+    }
+
+    results = {}
+    for label, series_id in series_map.items():
+        series = fred.get_series(series_id, observation_start="2022-01-01").dropna()
+        current   = float(series.iloc[-1])
+        week_ago  = float(series.iloc[-6]) if len(series) >= 6 else current
+        month_ago = float(series.iloc[-22]) if len(series) >= 22 else current
+
+        results[label] = {
+            "current":    round(current, 3),
+            "week_ago":   round(week_ago, 3),
+            "month_ago":  round(month_ago, 3),
+            "weekly_chg": round(current - week_ago, 3),
+            "monthly_chg":round(current - month_ago, 3),
+        }
+
+    return results
+
+data = fetch_breakevens()
+
+# ── Print snapshot ────────────────────────────────────────────────
+print(f"\n  {'Breakeven':<22} {'Current':>8} {'Wk Chg':>9} {'Mo Chg':>9}")
+print("  " + "─" * 52)
+for label, d in data.items():
+    wk_arrow = "▲" if d["weekly_chg"] > 0 else "▼"
+    mo_arrow = "▲" if d["monthly_chg"] > 0 else "▼"
+    print(f"  {label:<22} {d['current']:>7.3f}%"
+          f"  {wk_arrow}{abs(d['weekly_chg']):.3f}%"
+          f"  {mo_arrow}{abs(d['monthly_chg']):.3f}%")
+
+# ── Fetch latest CPI for comparison ──────────────────────────────
+def get_latest_cpi_yoy() -> float | None:
+    """
+    Fetches CPI and calculates year-over-year change.
+    CPI updates monthly — we use the most recent available.
+    """
+    try:
+        cpi = fred.get_series(BE["cpi_series"], observation_start="2022-01-01").dropna()
+        if len(cpi) < 13:
+            return None
+        yoy = (cpi.iloc[-1] - cpi.iloc[-13]) / cpi.iloc[-13] * 100
+        return round(float(yoy), 2)
+    except Exception:
+        return None
+
+cpi_yoy = get_latest_cpi_yoy()
+ten_yr_be = data["10yr Breakeven"]["current"]
+
+print(f"\n  Market vs Actual Inflation:")
+if cpi_yoy:
+    gap = ten_yr_be - cpi_yoy
+    print(f"  Latest CPI (YoY):    {cpi_yoy:.2f}%")
+    print(f"  10yr Breakeven:      {ten_yr_be:.3f}%")
+    print(f"  Gap:                 {gap:+.3f}%  ", end="")
+    if gap > 0.5:
+        print("(Market expects inflation to rise from here)")
+    elif gap < -0.5:
+        print("(Market expects inflation to fall from here)")
+    else:
+        print("(Market broadly in line with current inflation)")
+
+# ── Check alerts ──────────────────────────────────────────────────
+def check_breakeven_alerts(data: dict) -> list:
+    alerts_cfg = BE.get("alerts", {})
+    fired = []
+    move_threshold = alerts_cfg.get("weekly_move", 0.15)
+
+    for label, d in data.items():
+        if abs(d["weekly_chg"]) >= move_threshold:
+            direction = "rose" if d["weekly_chg"] > 0 else "fell"
+            fired.append(f"{label} {direction} {abs(d['weekly_chg']):.3f}% this week → {d['current']:.3f}%")
+
+    ten_yr = data["10yr Breakeven"]["current"]
+    if ten_yr > alerts_cfg.get("above_fed_target", 2.75):
+        fired.append(f"10yr breakeven {ten_yr:.3f}% above Fed's 2% target + 0.75% buffer — elevated inflation expectations")
+    if ten_yr < alerts_cfg.get("below_concern", 1.75):
+        fired.append(f"10yr breakeven {ten_yr:.3f}% — below 1.75%, deflation concerns building")
+
+    return fired
+
+alerts = check_breakeven_alerts(data)
+if alerts:
+    print(f"\n  🚨 {len(alerts)} alert(s):")
+    for a in alerts: print(f"  • {a}")
+else:
+    print(f"\n  ✓ Breakevens within normal range — no alerts today")</pre></code>
+      </div>
+
+      <p>This script is the heartbeat of OpenClaw's fixed income monitoring. It runs daily, fetches the three key breakeven rates from FRED, calculates week-over-week and month-over-month changes, compares to the latest CPI, and fires alerts when thresholds are breached.</p>
+    </section>
+
+    <!-- SECTION 7: SAMPLE OUTPUT -->
+    <section id="sample-output">
+      <h2>Sample Output</h2>
+
+      <div class="code-block">
+        <code><pre>🦞 OpenClaw Inflation Breakeven Monitor
+   2025-03-27 14:32
+─────────────────────────────────────────────────
+
+  Breakeven               Current   Wk Chg   Mo Chg
+  ────────────────────────────────────────────────
+  5yr Breakeven           2.418%   ▲0.031%  ▼0.082%
+  10yr Breakeven          2.313%   ▲0.027%  ▼0.094%
+  5yr/5yr Forward         2.218%   ▲0.019%  ▼0.107%
+
+  Market vs Actual Inflation:
+  Latest CPI (YoY):    2.80%
+  10yr Breakeven:      2.313%
+  Gap:                 -0.487%  (Market expects inflation to fall from here)
+
+  ✓ Breakevens within normal range — no alerts today</pre></code>
+      </div>
+
+      <p>This output tells you in a glance what the bond market is pricing in. In this example, the market expects inflation to cool from the current 2.80% down toward 2.31% over the next decade — a modest disinflationary bias. All three breakevens ticked up this week but remain well-anchored, suggesting calm inflation expectations and Fed credibility.</p>
+    </section>
+
+    <!-- SECTION 8: QUICK REFERENCE -->
+    <section id="quick-reference">
+      <h2>Quick Reference</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>FRED Series</th>
+            <th>What It Is</th>
+            <th>Typical Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>T5YIE</strong></td>
+            <td>5yr inflation breakeven</td>
+            <td>1.5% – 3.0%</td>
+          </tr>
+          <tr>
+            <td><strong>T10YIE</strong></td>
+            <td>10yr inflation breakeven</td>
+            <td>1.5% – 2.8%</td>
+          </tr>
+          <tr>
+            <td><strong>T5YIFR</strong></td>
+            <td>5yr/5yr forward expectation</td>
+            <td>2.0% – 2.8%</td>
+          </tr>
+          <tr>
+            <td><strong>CPIAUCSL</strong></td>
+            <td>Headline CPI (monthly)</td>
+            <td>Variable</td>
+          </tr>
+          <tr>
+            <td><strong>DFII10</strong></td>
+            <td>10yr TIPS real yield</td>
+            <td>-1.0% – 2.5%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>These are the five series OpenClaw monitors to track inflation expectations and TIPS markets. All are freely available via FRED, updated daily, and highly liquid — no data latency issues.</p>
+    </section>
+
+    <!-- PART NAV -->
+    <nav class="part-nav" aria-label="Series navigation">
+      <div class="part-nav-inner">
+        <a href="fi-rates-dashboard.html" class="part-nav-btn prev-btn">← Part 3: Rates Dashboard</a>
+        <a href="fi-signals.html" class="part-nav-btn next-btn">Part 5: Macro Signal Generator →</a>
+      </div>
+    </nav>
+  </main>
+
+  <!-- HAMBURGER MENU & COPY FUNCTIONALITY -->
+  <script>
+    // Hamburger menu toggle
+    document.querySelector('.hamburger').addEventListener('click', function() {
+      const navLinks = document.querySelector('.nav-links');
+      if (navLinks.style.display === 'flex') {
+        navLinks.style.display = 'none';
+      } else {
+        navLinks.style.display = 'flex';
+        navLinks.style.flexDirection = 'column';
+        navLinks.style.position = 'absolute';
+        navLinks.style.top = '100%';
+        navLinks.style.left = '0';
+        navLinks.style.right = '0';
+        navLinks.style.background = 'linear-gradient(135deg, #4c0519 0%, #881337 55%, #e11d48 100%)';
+        navLinks.style.padding = '1rem';
+        navLinks.style.borderRadius = '0 0 4px 4px';
+      }
+    });
+
+    // Copy code blocks to clipboard
+    document.querySelectorAll('.code-block').forEach(block => {
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', function() {
+        const code = block.querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+      block.insertBefore(btn, block.firstChild);
+    });
+
+    // Copy formula boxes
+    document.querySelectorAll('.formula-box').forEach(block => {
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', function() {
+        const text = block.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+      block.insertBefore(btn, block.firstChild);
+    });
+  </script>
+</body>
+</html>

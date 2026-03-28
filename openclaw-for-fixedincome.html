@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixed Income & Yield Curve Automation | Claw Street Terminal | learnopenclaw.org</title>
+  <link rel="canonical" href="https://learnopenclaw.org/openclaw-for-fixedincome.html">
+
+  <meta name="description" content="Learn how OpenClaw automates Treasury yields, credit spreads, and inflation signals. Plain-English guide to the bond market's biggest macro signals.">
+  <meta name="og:title" content="Fixed Income & Yield Curve Automation | learnopenclaw.org">
+  <meta name="og:description" content="OpenClaw monitors Treasury yields and yield curve inversion automatically. Educational guide to the bond market.">
+  <meta name="og:type" content="article">
+  <meta name="og:url" content="https://learnopenclaw.org/openclaw-for-fixedincome.html">
+
+  <style>
+    /* ── Reset & Variables ──────────────────────────────────────────────── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #e11d48;
+      --primary-dark: #881337;
+      --bg-light: #fff1f2;
+      --text-light: #e7e5e4;
+      --text-dark: #1c1917;
+      --bg-dark: #1c1917;
+      --border: #44403c;
+      --accent: #92400e;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-light);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    /* ── Navigation ────────────────────────────────────────────────────── */
+    .skip-nav {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+    }
+
+    .skip-nav:focus {
+      left: 0;
+      top: 0;
+      z-index: 9999;
+      background: var(--primary);
+      color: #fff;
+      padding: 8px 16px;
+    }
+
+    .site-nav {
+      background: var(--bg-dark);
+      border-bottom: 2px solid var(--primary);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-logo {
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: var(--bg-dark);
+      border-bottom: 2px solid var(--primary);
+      padding: 16px 20px;
+      gap: 12px;
+      z-index: 99;
+    }
+
+    .nav-links a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 6px 0;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .nav-search-form {
+      display: flex;
+      align-items: center;
+      background: #292524;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 12px;
+      gap: 6px;
+    }
+
+    .nav-search-icon {
+      color: #a8a29e;
+      flex-shrink: 0;
+    }
+
+    .nav-search-input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text-light);
+      font-size: 0.875rem;
+      width: 120px;
+    }
+
+    .nav-search-input::placeholder {
+      color: #78716c;
+    }
+
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 2px;
+      background: var(--text-light);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    .hamburger:hover span {
+      background: var(--primary);
+    }
+
+    /* ── Disclaimer Bar ────────────────────────────────────────────────── */
+    .disclaimer {
+      background: var(--bg-light);
+      border-left: 4px solid var(--primary);
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Main Content ──────────────────────────────────────────────────── */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ── Breadcrumb ────────────────────────────────────────────────────── */
+    .breadcrumb {
+      padding: 20px 0;
+      font-size: 0.95rem;
+      color: #a8a29e;
+    }
+
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Hero Section ──────────────────────────────────────────────────── */
+    .hero {
+      padding: 40px 0 60px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, #4c0519 0%, #881337 55%, var(--primary) 100%);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: #d3d3d0;
+      margin-bottom: 24px;
+      line-height: 1.7;
+      max-width: 750px;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .pill {
+      background: #292524;
+      border: 1px solid var(--border);
+      color: var(--text-light);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* ── Section ────────────────────────────────────────────────────────── */
+    section {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 24px;
+      color: var(--text-light);
+    }
+
+    section h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 24px 0 16px;
+      color: var(--primary);
+    }
+
+    section p {
+      margin-bottom: 16px;
+      line-height: 1.8;
+      color: #d3d3d0;
+    }
+
+    section p:last-child {
+      margin-bottom: 0;
+    }
+
+    section strong {
+      color: var(--primary);
+    }
+
+    /* ── Diagram ────────────────────────────────────────────────────────── */
+    .diagram {
+      background: #292524;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 24px 0;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      color: #d3d3d0;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    /* ── Before/After ──────────────────────────────────────────────────── */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 24px 0;
+    }
+
+    @media (max-width: 768px) {
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comparison-card {
+      background: #292524;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .comparison-card h4 {
+      color: var(--primary);
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    .comparison-card p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #d3d3d0;
+    }
+
+    /* ── Code Block ────────────────────────────────────────────────────── */
+    .code-block {
+      background: #1a1714;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 24px 0;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      color: #d3d3d0;
+      line-height: 1.6;
+    }
+
+    .code-block code {
+      color: #d3d3d0;
+    }
+
+    .code-copy-btn {
+      float: right;
+      padding: 4px 8px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .code-copy-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* ── Module Cards ──────────────────────────────────────────────────── */
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .module-card {
+      background: #292524;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .module-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .module-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .module-card h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-light);
+    }
+
+    .module-card p {
+      font-size: 0.95rem;
+      color: #d3d3d0;
+      margin-bottom: 16px;
+      flex-grow: 1;
+    }
+
+    .module-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .module-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Steps ─────────────────────────────────────────────────────────── */
+    .steps {
+      list-style: none;
+      counter-reset: step;
+      margin: 24px 0;
+    }
+
+    .steps li {
+      counter-increment: step;
+      margin-bottom: 16px;
+      padding-left: 40px;
+      position: relative;
+    }
+
+    .steps li:before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: var(--primary);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .steps li p {
+      margin: 0;
+    }
+
+    /* ── FAQ ────────────────────────────────────────────────────────────── */
+    .faq {
+      margin: 24px 0;
+    }
+
+    details {
+      background: #292524;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      padding: 0;
+    }
+
+    details summary {
+      padding: 16px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    details summary:hover {
+      background: #3a3835;
+    }
+
+    details summary::after {
+      content: '▼';
+      margin-left: 12px;
+      font-size: 0.8rem;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    details p {
+      padding: 0 20px 16px;
+      margin: 0;
+      color: #d3d3d0;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── CTA ────────────────────────────────────────────────────────────── */
+    .cta {
+      background: linear-gradient(135deg, #4c0519 0%, #881337 55%, var(--primary) 100%);
+      padding: 40px;
+      border-radius: 8px;
+      text-align: center;
+      margin: 48px 0;
+    }
+
+    .cta p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: white;
+      color: #881337;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: #f5f5f5;
+    }
+
+    /* ── Part Nav ──────────────────────────────────────────────────────── */
+    .part-nav {
+      background: #292524;
+      border-top: 1px solid var(--border);
+      padding: 24px 20px;
+      margin-top: 48px;
+    }
+
+    .part-nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .part-nav-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background 0.2s;
+      background: var(--primary);
+      color: white;
+    }
+
+    .part-nav-btn:hover {
+      background: #be123c;
+    }
+
+    /* ── Footer ────────────────────────────────────────────────────────── */
+    footer {
+      background: #292524;
+      border-top: 1px solid var(--border);
+      padding: 24px 20px;
+      margin-top: 60px;
+      text-align: center;
+      font-size: 0.875rem;
+      color: #a8a29e;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Utility ────────────────────────────────────────────────────────── */
+    .highlight {
+      background: #3a3835;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    <span>⚠️</span>
+    <div>Fixed income data is for educational and monitoring purposes only. Bond markets involve risk including interest rate risk and credit risk. Not financial advice.</div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> › <a href="claw-street-terminal.html">Terminal</a> › Fixed Income & Yield Curve
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-tag">Claw Street Terminal</div>
+      <h1>Fixed Income & Yield Curve</h1>
+      <p class="hero-subtitle">The bond market is the largest financial market in the world — and most investors ignore it completely. OpenClaw monitors Treasury yields, credit spreads, and inflation signals automatically, giving you the macro picture that moves everything else.</p>
+      <div class="hero-pills">
+        <div class="pill">FRED Free API</div>
+        <div class="pill">5 Modules</div>
+        <div class="pill">Yield Curve Inversion Alerts</div>
+        <div class="pill">Beginner Friendly</div>
+      </div>
+    </section>
+
+    <!-- Section 1: What Is Fixed Income? -->
+    <section>
+      <h2>What Is Fixed Income?</h2>
+
+      <p>Fixed income is a broad term for investments that pay a regular, predictable return — most commonly bonds. When you buy a bond, you're essentially lending money to a government or company, and they promise to pay you back with interest.</p>
+
+      <p>The most important fixed income market is the US Treasury market — bonds issued by the US government. These are considered the safest investments in the world, and their interest rates (called yields) are the foundation that everything else in finance is priced off of.</p>
+
+      <p>Here's what makes this market so important: when Treasury yields move, mortgage rates move. When mortgage rates move, the housing market moves. When the housing market moves, consumer spending moves. <strong>The bond market doesn't just reflect the economy — it often leads it.</strong></p>
+
+      <p>This is why every major investor, central banker, and economist watches the bond market obsessively. If you're building a morning macro briefing, it has to start with bonds. OpenClaw automates that watch for you.</p>
+    </section>
+
+    <!-- Section 2: What Is a Yield? -->
+    <section>
+      <h2>What Is a Yield?</h2>
+
+      <p>A yield is the interest rate you earn on a bond. If you buy a 10-year Treasury bond for $1,000 and it pays 4.5% annually, your yield is 4.5%.</p>
+
+      <h3>The Key Relationship</h3>
+      <p>Here's the key relationship that confuses most beginners: <strong>bond prices and yields move in opposite directions.</strong> When investors buy bonds (prices go up), yields go down. When investors sell bonds (prices go down), yields go up.</p>
+
+      <p>Think of it this way: if you own a bond paying 3% and the market yield rises to 4%, your bond becomes less attractive — its price has to fall to make the 3% competitive. The price drop is how the old bond adjusts to the new yield environment.</p>
+
+      <p>When you hear "yields are rising," it means bonds are being sold — usually because investors expect higher inflation or stronger economic growth. When you hear "yields are falling," investors are buying bonds — often a sign they're worried about the economy.</p>
+
+      <p>This inverse relationship is the foundation of everything that follows. Master it, and the rest of fixed income makes sense.</p>
+    </section>
+
+    <!-- Section 3: What Is the Yield Curve? -->
+    <section>
+      <h2>What Is the Yield Curve?</h2>
+
+      <p>The yield curve is a snapshot of yields across different time horizons — from short-term (3 months) to long-term (30 years). Normally, longer-term bonds have higher yields than short-term ones, because you're taking more risk by lending for longer.</p>
+
+      <p>Here's what that normally looks like:</p>
+
+      <div class="diagram">Normal Yield Curve:
+Yield
+  |                              ● 30-Year (4.5%)
+  |                    ● 10-Year (4.2%)
+  |          ● 5-Year (4.0%)
+  |  ● 2-Year (3.5%)
+  └──────────────────────────────────── Time
+     2yr     5yr    10yr    30yr</div>
+
+      <p>This upward slope is called a "normal" or "positive" yield curve. It says: "The economy is healthy, so we expect longer-term investments to pay more."</p>
+
+      <p>But sometimes something weird happens — the curve inverts:</p>
+
+      <div class="diagram">Inverted Yield Curve (recession warning):
+Yield
+  |  ● 2-Year (5.2%)
+  |          ● 5-Year (4.8%)
+  |                    ● 10-Year (4.4%)
+  |                              ● 30-Year (4.2%)
+  └──────────────────────────────────── Time
+     2yr     5yr    10yr    30yr</div>
+
+      <p><strong>When the curve inverts — short-term rates higher than long-term — it has preceded every US recession since 1955.</strong> It's the most-watched macro signal in markets. Investors are essentially saying: "We're so worried about near-term turbulence that we'll accept lower yields on long-term bonds just to feel safe."</p>
+
+      <p>OpenClaw monitors this automatically. It fetches the 2-year and 10-year yields every morning, calculates the spread, and alerts you if the curve inverts. You get a recession warning before it shows up on cable news.</p>
+    </section>
+
+    <!-- Section 4: What Does OpenClaw Automate? -->
+    <section>
+      <h2>What Does OpenClaw Automate?</h2>
+
+      <p>Let's compare the manual bond monitoring workflow to what OpenClaw does:</p>
+
+      <div class="comparison">
+        <div class="comparison-card">
+          <h4>Without OpenClaw</h4>
+          <p>Every morning you'd need to: go to the FRED website, look up the 2-year yield, look up the 10-year yield, calculate the spread yourself, check if it's inverted, do the same for credit spreads, check inflation expectations...</p>
+          <p>By the time you're done, the market's been open for an hour. You've lost the freshest price action and any edge from being first to know.</p>
+        </div>
+
+        <div class="comparison-card">
+          <h4>With OpenClaw</h4>
+          <p>OpenClaw runs at 7am Monday–Friday. It fetches all the yield data from FRED automatically, calculates the curve shape and key spreads, checks your alert conditions, and delivers a clean morning briefing to your inbox before you sit down at your desk.</p>
+          <p>You're reading a professional-grade macro snapshot while the market's still warming up.</p>
+        </div>
+      </div>
+
+      <p>That's the entire value proposition: <strong>turn a manual hour-long ritual into a 30-second email read.</strong> The data gathering, calculations, and threshold checks run on schedule. You get the insight without the busywork.</p>
+    </section>
+
+    <!-- Section 5: The fi-config.yaml File -->
+    <section>
+      <h2>The fi-config.yaml File</h2>
+
+      <p>OpenClaw's fixed income suite is configured entirely through one YAML file. Here's the fully annotated version with every option explained:</p>
+
+      <div class="code-block"><button class="code-copy-btn" onclick="copyCode(this)">Copy</button><pre># fi-config.yaml — OpenClaw Fixed Income Config
+# Edit this file to customize your monitoring. OpenClaw reads it automatically.
+
+fred:
+  api_key: "your_fred_api_key_here"
+  # Get a free key at: https://fred.stlouisfed.org/docs/api/api_key.html
+  # Takes about 30 seconds to register — completely free
+
+# ── Yield curve ───────────────────────────────────────────────────
+yield_curve:
+  # These FRED series IDs pull daily Treasury yields
+  maturities:
+    - { label: "2-Year",  series: "DGS2"  }
+    - { label: "5-Year",  series: "DGS5"  }
+    - { label: "10-Year", series: "DGS10" }
+    - { label: "30-Year", series: "DGS30" }
+  alerts:
+    inversion: true    # Alert when 2-year yield exceeds 10-year (2s10s inverts)
+    spread_threshold: -0.25  # Alert if 2s10s spread goes below this (in %)
+
+# ── Credit spreads ────────────────────────────────────────────────
+credit_spreads:
+  investment_grade: "BAMLC0A0CM"   # ICE BofA IG Option-Adjusted Spread
+  high_yield:       "BAMLH0A0HYM2" # ICE BofA High Yield OAS
+  alerts:
+    ig_weekly_move:  50    # Alert if IG spread widens by 50+ basis points in a week
+    hy_weekly_move: 150    # Alert if HY spread widens by 150+ basis points in a week
+
+# ── Rates environment ─────────────────────────────────────────────
+rates:
+  fed_funds:   "FEDFUNDS"  # Effective Federal Funds Rate
+  sofr:        "SOFR"      # Secured Overnight Financing Rate
+  real_rate:   "DFII10"    # 10-year TIPS yield (inflation-adjusted rate)
+
+# ── Inflation breakevens ──────────────────────────────────────────
+breakevens:
+  five_year:   "T5YIE"    # 5-year inflation breakeven
+  ten_year:    "T10YIE"   # 10-year inflation breakeven
+  forward:     "T5YIFR"   # 5yr/5yr forward inflation expectation
+  alerts:
+    move_threshold: 0.15  # Alert if any breakeven moves more than 15bps in a week
+
+# ── Alert delivery ────────────────────────────────────────────────
+alerts:
+  email: "you@example.com"
+  daily_digest: true
+  send_time: "07:00"     # Morning brief before markets open
+
+# ── Scheduler ────────────────────────────────────────────────────
+scheduler:
+  morning_brief:
+    script: fi_daily_brief.py
+    schedule: "0 7 * * 1-5"   # 7am Mon–Fri</pre></div>
+
+      <p>Every field is documented. Every threshold is configurable. You're in complete control — OpenClaw just runs the checks and delivers what you asked for.</p>
+    </section>
+
+    <!-- Section 6: The Five Modules -->
+    <section>
+      <h2>The Five Modules</h2>
+
+      <p>The fixed income series is split into five focused modules. Each one teaches a specific macro signal, then shows you exactly how to automate it with OpenClaw.</p>
+
+      <div class="modules">
+        <div class="module-card">
+          <div class="module-icon">📈</div>
+          <h4>Part 1 — Yield Curve Monitor</h4>
+          <p>Fetch live Treasury yields from FRED, track the 2s10s spread, detect inversion, and get alerted when the curve shape changes meaningfully.</p>
+          <a href="fi-yield-curve.html" class="module-link">Start Part 1 →</a>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon">📊</div>
+          <h4>Part 2 — Credit Spreads</h4>
+          <p>Monitor investment grade and high yield credit spreads — the bond market's real-time measure of how much risk investors think is out there.</p>
+          <a href="fi-credit-spreads.html" class="module-link">Start Part 2 →</a>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon">🏦</div>
+          <h4>Part 3 — Rates Dashboard</h4>
+          <p>Build a complete morning snapshot of the rates environment — Fed Funds, SOFR, real rates — in one clean automated briefing.</p>
+          <a href="fi-rates-dashboard.html" class="module-link">Start Part 3 →</a>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon">💹</div>
+          <h4>Part 4 — Inflation Breakevens</h4>
+          <p>Track the bond market's inflation forecast using TIPS breakevens — often more accurate than economist surveys and updated every day.</p>
+          <a href="fi-breakevens.html" class="module-link">Start Part 4 →</a>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon">🚦</div>
+          <h4>Part 5 — Macro Signal Generator</h4>
+          <p>Combine all four signals into a single traffic-light dashboard: Green, Yellow, or Red — your daily macro read in one glance.</p>
+          <a href="fi-signals.html" class="module-link">Start Part 5 →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: Getting Your Free FRED API Key -->
+    <section>
+      <h2>Getting Your Free FRED API Key</h2>
+
+      <p>FRED (Federal Reserve Economic Data) is the source. It's maintained by the St. Louis Federal Reserve and contains every major US economic series, updated daily. It's free, reliable, and used by professional economists worldwide.</p>
+
+      <p>Getting your key takes less than 5 minutes:</p>
+
+      <ol class="steps">
+        <li>
+          <p>Go to <strong>fred.stlouisfed.org</strong></p>
+        </li>
+        <li>
+          <p>Click <strong>"My Account"</strong> → <strong>"Create an Account"</strong> (it's free — no credit card needed)</p>
+        </li>
+        <li>
+          <p>After logging in: <strong>My Account</strong> → <strong>API Keys</strong> → <strong>"Request API Key"</strong></p>
+        </li>
+        <li>
+          <p>Copy the key and paste it into your <span class="highlight">fi-config.yaml</span> under <span class="highlight">fred.api_key</span></p>
+        </li>
+      </ol>
+
+      <p>Now test it with Python:</p>
+
+      <div class="code-block"><button class="code-copy-btn" onclick="copyCode(this)">Copy</button><pre># Install the FRED Python library (free)
+pip install fredapi pandas pyyaml
+
+# Test your key
+python3 -c "
+from fredapi import Fred
+fred = Fred(api_key='your_key_here')
+rate = fred.get_series('DGS10').iloc[-1]
+print(f'10-year Treasury yield: {rate:.2f}%')
+"</pre></div>
+
+      <p>If you see the 10-year yield printed out, you're connected. The FRED API works. You're ready to build your monitoring suite.</p>
+    </section>
+
+    <!-- Section 8: FAQ -->
+    <section>
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq">
+        <details>
+          <summary>Do I need to know about bonds to use this?</summary>
+          <p>Not at all. Each module in this series explains the concept in plain English before showing any code. The config file handles all the data fetching — you just set your alert thresholds. By the time you finish Part 1, you'll understand more about the bond market than 99% of retail investors.</p>
+        </details>
+
+        <details>
+          <summary>Is FRED data reliable?</summary>
+          <p>Yes. FRED (Federal Reserve Economic Data) is maintained by the St. Louis Federal Reserve. It's the same data source used by professional economists, central banks, and major financial institutions. It's extremely reliable and updated daily for yields and economic series. The data you're reading has been vetted by the Federal Reserve itself.</p>
+        </details>
+
+        <details>
+          <summary>Why does the bond market matter if I only invest in stocks?</summary>
+          <p>Interest rates are the single biggest influence on stock valuations. Rising rates make future earnings worth less today (hurting growth stocks). Falling rates make future earnings worth more (boosting growth stocks). An inverted yield curve has preceded every US recession since 1955. Watching bonds gives you a leading indicator for what's coming in stocks — often weeks or months before it shows up in the S&P 500.</p>
+        </details>
+
+        <details>
+          <summary>How often does the data update?</summary>
+          <p>Most FRED series update once per day, typically in the early morning. OpenClaw's morning brief runs at 7am to catch the latest data before US markets open at 9:30am ET. That means you're reading fresh data that just dropped from the Federal Reserve, before professional traders have finished their first coffee.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+      <p>Ready to automate your bond market monitoring?</p>
+      <a href="fi-yield-curve.html" class="cta-btn">Start with Part 1: Yield Curve Monitor →</a>
+    </section>
+  </main>
+
+  <!-- Part Navigation -->
+  <div class="part-nav">
+    <div class="part-nav-inner">
+      <a href="fi-yield-curve.html" class="part-nav-btn">Next: Part 1 — Yield Curve Monitor →</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 learnopenclaw.org | Not financial advice |
+    <a href="index.html">Home</a> ·
+    <a href="blog.html">Blog</a> ·
+    <a href="learn.html">Learn</a> ·
+    <a href="faq.html">FAQ</a> ·
+    <a href="claw-street-terminal.html">Terminal</a>
+  </footer>
+
+  <!-- Hamburger & Copy Script -->
+  <script>
+    const btn = document.querySelector('.hamburger');
+    const menu = document.getElementById('nav-links');
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      menu.classList.toggle('open');
+    });
+
+    function copyCode(btn) {
+      const codeBlock = btn.parentElement.querySelector('pre');
+      const text = codeBlock.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.textContent = original;
+        }, 2000);
+      });
+    }
+  </script>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": ["Article", "FAQPage"],
+    "headline": "Fixed Income & Yield Curve Automation | Claw Street Terminal",
+    "description": "Learn how OpenClaw automates Treasury yields, credit spreads, and inflation signals. Plain-English guide to the bond market's biggest macro signals.",
+    "url": "https://learnopenclaw.org/openclaw-for-fixedincome.html",
+    "image": "https://learnopenclaw.org/og-image.jpg",
+    "datePublished": "2025-03-28",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    },
+    "mainEntity": {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need to know about bonds to use this?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not at all. Each module explains concepts in plain English before showing any code."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is FRED data reliable?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. FRED is maintained by the St. Louis Federal Reserve and is used by professional economists and central banks worldwide."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the bond market matter if I only invest in stocks?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Interest rates are the single biggest influence on stock valuations. An inverted yield curve has preceded every US recession since 1955."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How often does the data update?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most FRED series update once per day in the early morning. OpenClaw's morning brief runs at 7am before US markets open."
+          }
+        }
+      ]
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://learnopenclaw.org/index.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Terminal",
+          "item": "https://learnopenclaw.org/claw-street-terminal.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Fixed Income & Yield Curve",
+          "item": "https://learnopenclaw.org/openclaw-for-fixedincome.html"
+        }
+      ]
+    }
+  }
+  </script>
+</body>
+</html>
