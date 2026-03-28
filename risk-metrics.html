@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk Metrics Dashboard with OpenClaw — Risk & Portfolio Part 4 of 5 | learnopenclaw.org</title>
+  <meta name="description" content="Automate professional risk metrics with OpenClaw. Calculate historical and parametric VaR, Sharpe ratio, Sortino ratio, and portfolio beta — the same metrics used by professional risk managers.">
+  <link rel="canonical" href="https://learnopenclaw.org/risk-metrics.html" />
+  <meta property="og:title" content="Risk Metrics Dashboard with OpenClaw — Risk & Portfolio Part 4">
+  <meta property="og:description" content="Automate professional risk metrics with OpenClaw. Calculate VaR, Sharpe, Sortino, and Beta with free data sources.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://learnopenclaw.org/risk-metrics.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Risk Metrics Dashboard with OpenClaw — Risk & Portfolio Part 4">
+  <meta name="twitter:description" content="Automate professional risk metrics with OpenClaw.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+  <meta name="article:published_time" content="2026-03-27T00:00:00Z">
+  <meta name="article:modified_time" content="2026-03-27T00:00:00Z">
+  <style>
+    :root {
+      --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0; --green-dk: #14532d;
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --purple: #7c3aed; --purple-lt: #f5f3ff;
+      --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff; --radius: 12px;
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--green); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+    .skip-nav:focus { top: 8px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+    a { color: var(--green); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); text-decoration: none; white-space: nowrap; }
+    .nav-logo:hover { text-decoration: none; color: var(--green); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--green); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+    .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+    .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+    .nav-search-input:focus { outline: none; }
+    .nav-search-input::placeholder { color: var(--gray-5); }
+    @media (max-width: 480px) { .nav-search-form { display: none; } }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .series-header { background: linear-gradient(135deg, #052e16 0%, #14532d 55%, #16a34a 100%); color: var(--white); padding: 40px 24px; text-align: center; }
+    .series-header-inner { max-width: 700px; margin: 0 auto; }
+    .part-badge { display: inline-block; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4); padding: 6px 12px; border-radius: 4px; font-size: .75rem; font-weight: 600; letter-spacing: .04em; margin-bottom: 12px; }
+    h1 { font-size: 1.9rem; font-weight: 700; margin: 12px 0 20px; line-height: 1.3; }
+    .series-meta { font-size: .9rem; color: rgba(255,255,255,.8); }
+    .main-content { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+    .intro-text { font-size: 1.05rem; line-height: 1.8; color: var(--gray-5); margin-bottom: 28px; }
+    h2 { font-size: 1.4rem; font-weight: 700; margin: 36px 0 18px; color: var(--gray-8); border-bottom: 2px solid var(--green-lt); padding-bottom: 10px; }
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 24px 0 12px; color: var(--gray-8); }
+    pre { background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 16px; overflow-x: auto; font-size: .85rem; line-height: 1.5; color: var(--gray-8); }
+    pre code { font-family: 'Courier New', monospace; }
+    .disclaimer-bar { background: var(--green-lt); border-left: 4px solid var(--green); padding: 12px 24px; font-size: .875rem; color: var(--green-dk); display: flex; align-items: center; gap: 10px; margin: 24px 0; }
+    .disclaimer-bar strong { font-weight: 700; }
+    .series-nav { background: var(--gray-1); border-bottom: 1px solid var(--gray-3); padding: 0 24px; position: sticky; top: 60px; z-index: 999; }
+    .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; overflow-x: auto; gap: 0; }
+    .series-nav a { padding: 14px 18px; font-size: .85rem; font-weight: 500; color: var(--gray-5); border-bottom: 3px solid transparent; white-space: nowrap; }
+    .series-nav a:hover { color: var(--green); border-bottom-color: var(--green); text-decoration: none; }
+    .series-nav a[aria-current="page"] { color: var(--green); border-bottom-color: var(--green); }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .9rem; }
+    table th { background: var(--green-lt); color: var(--green-dk); padding: 10px; text-align: left; font-weight: 600; border: 1px solid var(--green-md); }
+    table td { padding: 10px; border: 1px solid var(--green-md); }
+    .faq-section { background: var(--blue-lt); padding: 20px; border-radius: var(--radius); margin: 24px 0; }
+    .faq-section h3 { margin: 0 0 16px; color: var(--blue); font-size: 1.1rem; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-item:last-child { margin-bottom: 0; }
+    .faq-q { font-weight: 600; color: var(--gray-8); margin-bottom: 6px; font-size: .9rem; }
+    .faq-a { color: var(--gray-5); font-size: .9rem; margin: 0; }
+    footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
+    footer a { color: #d1d5db; font-weight: 700; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="series-header">
+    <div class="series-header-inner">
+      <div class="part-badge">PART 4 OF 5</div>
+      <h1>Risk Metrics Dashboard — VaR, Sharpe, Sortino, and Beta on Autopilot</h1>
+      <div class="series-meta">🧮 VaR · Sharpe Ratio · Sortino · Beta</div>
+    </div>
+  </header>
+
+  <nav class="series-nav" aria-label="Risk & Portfolio series">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-risk.html">🗺️ Overview</a>
+      <a href="risk-tracker.html">📊 Part 1: Portfolio Tracker</a>
+      <a href="risk-volatility.html">📉 Part 2: Volatility & Drawdown</a>
+      <a href="risk-correlation.html">🔗 Part 3: Correlation & Concentration</a>
+      <a href="risk-metrics.html" aria-current="page">🧮 Part 4: VaR, Sharpe & Beta</a>
+      <a href="risk-rebalancing.html">⚖️ Part 5: Rebalancing & Alerts</a>
+    </div>
+  </nav>
+
+  <main id="main-content" class="main-content">
+    <div class="intro-text">
+      <p>This part puts together the professional-grade risk metrics that institutional investors use daily: Value-at-Risk (both historical and parametric), Sharpe ratio, Sortino ratio, and portfolio beta. These are backward-looking statistical models that help quantify portfolio risk and risk-adjusted returns. They're powerful tools — and they have real limitations you need to understand.</p>
+    </div>
+
+    <div class="disclaimer-bar" role="note">
+      ℹ️ <strong>Not financial advice.</strong> VaR does not predict losses — it estimates probability distributions based on historical data. Sharpe and Sortino ratios are backward-looking. These are tools, not certainties.
+    </div>
+
+    <h2>Professional Risk Metrics</h2>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Metric</th>
+          <th scope="col">What it measures</th>
+          <th scope="col">Key limitation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Historical VaR 95%</strong></td>
+          <td>Max expected loss on 95% of days</td>
+          <td>Doesn't model tail events</td>
+        </tr>
+        <tr>
+          <td><strong>Historical VaR 99%</strong></td>
+          <td>Max expected loss on 99% of days</td>
+          <td>Understates black swans</td>
+        </tr>
+        <tr>
+          <td><strong>Sharpe Ratio</strong></td>
+          <td>Return per unit of total risk</td>
+          <td>Backward-looking, penalizes upside vol</td>
+        </tr>
+        <tr>
+          <td><strong>Sortino Ratio</strong></td>
+          <td>Return per unit of downside risk only</td>
+          <td>Better for asymmetric return strategies</td>
+        </tr>
+        <tr>
+          <td><strong>Portfolio Beta</strong></td>
+          <td>Market sensitivity vs SPY</td>
+          <td>Assumes linear relationship</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>VaR Calculations</h2>
+    <p>Calculate both historical and parametric VaR at 95% and 99% confidence levels:</p>
+    <pre><code>import numpy as np
+import pandas as pd
+import yfinance as yf
+
+def historical_var(returns: pd.Series, confidence: float = 0.95) -> float:
+    return float(np.percentile(returns, (1 - confidence) * 100))
+
+def parametric_var(returns: pd.Series, confidence: float = 0.95) -> float:
+    from scipy import stats
+    z = stats.norm.ppf(1 - confidence)
+    return float(returns.mean() + z * returns.std())
+
+def portfolio_var(positions: list, period: str = "1y") -> dict:
+    tickers = [p["ticker"] for p in positions]
+    prices = yf.download(tickers, period=period, auto_adjust=True, progress=False)["Close"]
+    returns = prices.pct_change().dropna()
+    total_val = sum(p["shares"] * float(prices[p["ticker"]].iloc[-1]) for p in positions)
+    weights = {p["ticker"]: (p["shares"] * float(prices[p["ticker"]].iloc[-1])) / total_val
+               for p in positions}
+    port_returns = sum(returns[t] * w for t, w in weights.items() if t in returns.columns)
+    h95 = historical_var(port_returns, 0.95)
+    h99 = historical_var(port_returns, 0.99)
+    p95 = parametric_var(port_returns, 0.95)
+    return {
+        "historical_var_95_pct": round(h95 * 100, 3),
+        "historical_var_99_pct": round(h99 * 100, 3),
+        "parametric_var_95_pct": round(p95 * 100, 3),
+        "interpretation": f"95% of days, daily loss should not exceed {abs(round(h95 * 100, 2))}%",
+    }</code></pre>
+
+    <h2>Sharpe & Sortino from FRED</h2>
+    <p>Calculate risk-adjusted returns using the 3-month T-bill rate from FRED (no API key required):</p>
+    <pre><code>def risk_adjusted_returns(returns: pd.Series) -> dict:
+    import httpx
+    # Get 3-month T-bill rate from FRED (free, no key needed for CSV endpoint)
+    try:
+        r = httpx.get("https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS3MO", timeout=10)
+        lines = r.text.strip().split("\n")
+        for line in reversed(lines[1:]):
+            val = line.split(",")[1].strip()
+            if val and val != ".":
+                rf_daily = float(val) / 100 / 252
+                break
+        else:
+            rf_daily = 0.05 / 252
+    except Exception:
+        rf_daily = 0.05 / 252
+    annual_return = returns.mean() * 252
+    annual_vol = returns.std() * np.sqrt(252)
+    rf_annual = rf_daily * 252
+    excess = annual_return - rf_annual
+    sharpe = excess / annual_vol if annual_vol > 0 else 0
+    downside_vol = returns[returns < 0].std() * np.sqrt(252)
+    sortino = excess / downside_vol if downside_vol > 0 else 0
+    return {
+        "annual_return_pct": round(annual_return * 100, 2),
+        "annual_volatility_pct": round(annual_vol * 100, 2),
+        "risk_free_rate_pct": round(rf_annual * 100, 2),
+        "sharpe_ratio": round(sharpe, 3),
+        "sortino_ratio": round(sortino, 3),
+        "sharpe_interpretation": "excellent" if sharpe > 1.5 else "good" if sharpe > 1.0 else "acceptable" if sharpe > 0.5 else "poor",
+    }</code></pre>
+
+    <h2>Weekly Risk Dashboard</h2>
+    <p>Automate weekly metrics reporting:</p>
+    <pre><code>name: risk_metrics_dashboard
+schedule: "0 8 * * 1"
+steps:
+  - load_positions:
+      file: positions.yaml
+  - fetch_prices:
+      period: "1y"
+  - portfolio_var:
+      confidence_levels: [0.95, 0.99]
+  - sharpe_sortino:
+      risk_free_source: fred_dgs3mo
+  - portfolio_beta:
+      benchmark: SPY
+  - notify:
+      subject: "🧮 Weekly Risk | Sharpe {{ sharpe }} | VaR95 {{ var_95 }}%"</code></pre>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-section">
+      <h3>Part 4 FAQs</h3>
+      <div class="faq-item">
+        <div class="faq-q">What's a good Sharpe ratio?</div>
+        <div class="faq-a">Above 1.0 is good, above 1.5 is excellent. Below 0.5 suggests poor risk-adjusted returns for the volatility taken.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why does VaR underestimate tail risk?</div>
+        <div class="faq-a">VaR is based on historical distributions. Extreme events happen more frequently than normal distribution models predict — this is called fat-tail or leptokurtic risk.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Where does OpenClaw get the risk-free rate?</div>
+        <div class="faq-a">From FRED's public CSV endpoint (DGS3MO — 3-month T-bill). No API key required.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--gray-3);">
+      <p style="font-size: 0.95rem; color: var(--gray-5);"><strong>Final Part:</strong> Move to Part 5 to build the rebalancing and alert system — <a href="risk-rebalancing.html">Rebalancing & Alert System</a>.</p>
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div style="max-width:700px;margin:0 auto;">
+      <p style="margin:0 0 8px;"><a href="index.html">🦞 learnopenclaw.org</a></p>
+      <p style="margin:0 0 8px;">
+        <a href="learn.html">Learn</a> ·
+        <a href="blog.html">Blog</a> ·
+        <a href="faq.html">FAQ</a> ·
+        <a href="privacy-policy.html">Privacy</a> ·
+        <a href="claw-street-terminal.html">Terminal</a>
+      </p>
+      <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or investment advice. For educational and informational purposes only.</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.hamburger');
+    const menu = document.getElementById('nav-links');
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      menu.classList.toggle('open');
+    });
+  </script>
+  <script src="copy.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Risk Metrics Dashboard with OpenClaw — Risk & Portfolio Part 4",
+    "description": "Automate professional risk metrics with OpenClaw. Calculate VaR, Sharpe, Sortino, and Beta with free data sources.",
+    "datePublished": "2026-03-27T00:00:00Z",
+    "dateModified": "2026-03-27T00:00:00Z",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What's a good Sharpe ratio?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Above 1.0 is good, above 1.5 is excellent. Below 0.5 suggests poor risk-adjusted returns for the volatility taken."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why does VaR underestimate tail risk?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "VaR is based on historical distributions. Extreme events happen more frequently than normal distribution models predict — this is called fat-tail or leptokurtic risk."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where does OpenClaw get the risk-free rate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "From FRED's public CSV endpoint (DGS3MO — 3-month T-bill). No API key required."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Risk & Portfolio Series",
+        "item": "https://learnopenclaw.org/openclaw-for-risk.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Risk Metrics Dashboard",
+        "item": "https://learnopenclaw.org/risk-metrics.html"
+      }
+    ]
+  }
+  </script>
+</body>
+</html>

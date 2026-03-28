@@ -1334,5 +1334,145 @@
       "FAQ"
     ],
     "body": "investor day analyst day conference calendar 8-K SEC EDGAR IR page slides audio capture JPMorgan Goldman Sachs OpenClaw monitoring"
+  },
+  {
+    "url": "openclaw-for-risk.html",
+    "title": "OpenClaw for Risk & Portfolio \u2014 Know Your Risk Before the Market Tells You",
+    "description": "Automate portfolio risk monitoring with OpenClaw: daily P&L, volatility alerts, correlation analysis, VaR, Sharpe ratio dashboards, and rebalancing alerts. Mostly free data.",
+    "tags": [
+      "risk",
+      "portfolio",
+      "VaR",
+      "Sharpe",
+      "drawdown",
+      "volatility",
+      "rebalancing",
+      "yfinance"
+    ],
+    "series": "Risk & Portfolio",
+    "headings": [
+      "Overview",
+      "Data sources",
+      "What you'll build",
+      "Honest framing",
+      "FAQ"
+    ],
+    "body": "portfolio risk monitoring VaR Sharpe Sortino drawdown volatility correlation rebalancing yfinance FRED beta concentration OpenClaw"
+  },
+  {
+    "url": "risk-tracker.html",
+    "title": "Portfolio Tracker & Daily P&L \u2014 Risk & Portfolio Part 1 of 5",
+    "description": "Build an automated portfolio tracker with OpenClaw. Track positions, daily P&L, cost basis, and unrealized gains using yfinance with a YAML positions file.",
+    "tags": [
+      "portfolio tracker",
+      "P&L",
+      "yfinance",
+      "YAML",
+      "positions",
+      "cost basis",
+      "unrealized gains"
+    ],
+    "series": "Risk & Portfolio",
+    "headings": [
+      "Positions file",
+      "P&L calculation",
+      "Portfolio summary",
+      "HEARTBEAT config",
+      "FAQ"
+    ],
+    "body": "portfolio tracker daily P&L yfinance YAML positions cost basis unrealized gains market value daily brief OpenClaw automation"
+  },
+  {
+    "url": "risk-volatility.html",
+    "title": "Volatility & Drawdown Monitor \u2014 Risk & Portfolio Part 2 of 5",
+    "description": "Automate portfolio volatility and drawdown monitoring with OpenClaw. Track rolling 20-day and 60-day volatility, drawdown from peak, and VIX as a macro risk gauge.",
+    "tags": [
+      "volatility",
+      "drawdown",
+      "VIX",
+      "rolling volatility",
+      "portfolio stress",
+      "risk gauge"
+    ],
+    "series": "Risk & Portfolio",
+    "headings": [
+      "Key metrics",
+      "Rolling volatility",
+      "Drawdown analysis",
+      "VIX monitor",
+      "HEARTBEAT config",
+      "FAQ"
+    ],
+    "body": "rolling volatility drawdown VIX portfolio stress 20-day 60-day annualized peak risk gauge OpenClaw automation"
+  },
+  {
+    "url": "risk-correlation.html",
+    "title": "Correlation & Concentration Risk \u2014 Risk & Portfolio Part 3 of 5",
+    "description": "Automate portfolio correlation and concentration analysis with OpenClaw. Build a correlation matrix, calculate HHI diversification score, sector exposure, and portfolio beta.",
+    "tags": [
+      "correlation",
+      "concentration",
+      "HHI",
+      "sector exposure",
+      "beta",
+      "diversification"
+    ],
+    "series": "Risk & Portfolio",
+    "headings": [
+      "Hidden risk",
+      "Correlation matrix",
+      "Sector concentration",
+      "HHI score",
+      "Portfolio beta",
+      "FAQ"
+    ],
+    "body": "correlation matrix concentration HHI sector exposure portfolio beta diversification score high correlation pairs SPY benchmark OpenClaw"
+  },
+  {
+    "url": "risk-metrics.html",
+    "title": "Risk Metrics Dashboard \u2014 Risk & Portfolio Part 4 of 5",
+    "description": "Automate professional risk metrics with OpenClaw. Calculate historical and parametric VaR, Sharpe ratio, Sortino ratio, and portfolio beta vs SPY using FRED risk-free rate.",
+    "tags": [
+      "VaR",
+      "Sharpe ratio",
+      "Sortino ratio",
+      "beta",
+      "FRED",
+      "risk metrics",
+      "parametric VaR"
+    ],
+    "series": "Risk & Portfolio",
+    "headings": [
+      "Metrics table",
+      "VaR calculations",
+      "Sharpe and Sortino",
+      "FRED risk-free rate",
+      "HEARTBEAT config",
+      "FAQ"
+    ],
+    "body": "VaR Value at Risk Sharpe Sortino ratio beta SPY FRED risk-free rate 3-month T-bill historical parametric portfolio risk metrics OpenClaw"
+  },
+  {
+    "url": "risk-rebalancing.html",
+    "title": "Rebalancing & Alert System \u2014 Risk & Portfolio Part 5 of 5",
+    "description": "Build an automated portfolio rebalancing alert system with OpenClaw. Monitor allocation drift, stop-loss triggers, tax-loss harvesting opportunities, and weekly maintenance briefs.",
+    "tags": [
+      "rebalancing",
+      "drift",
+      "stop-loss",
+      "tax-loss harvesting",
+      "wash sale",
+      "allocation"
+    ],
+    "series": "Risk & Portfolio",
+    "headings": [
+      "Target allocation",
+      "Drift detection",
+      "Stop-loss monitor",
+      "Tax-loss harvesting",
+      "HEARTBEAT config",
+      "FAQ"
+    ],
+    "body": "rebalancing drift stop-loss tax-loss harvesting wash sale rule allocation targets weekly maintenance brief OpenClaw automation"
   }
 ]

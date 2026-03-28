@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volatility & Drawdown Monitor with OpenClaw — Risk & Portfolio Part 2 of 5 | learnopenclaw.org</title>
+  <meta name="description" content="Automate portfolio volatility and drawdown monitoring with OpenClaw. Track rolling 20-day and 60-day volatility, current drawdown from peak, and VIX as a macro risk gauge.">
+  <link rel="canonical" href="https://learnopenclaw.org/risk-volatility.html" />
+  <meta property="og:title" content="Volatility & Drawdown Monitor with OpenClaw — Risk & Portfolio Part 2">
+  <meta property="og:description" content="Automate portfolio volatility and drawdown monitoring with OpenClaw. Track rolling volatility, current drawdown, and VIX as a macro risk gauge.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://learnopenclaw.org/risk-volatility.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Volatility & Drawdown Monitor with OpenClaw — Risk & Portfolio Part 2">
+  <meta name="twitter:description" content="Automate portfolio volatility and drawdown monitoring with OpenClaw.">
+  <meta name="twitter:image" content="https://learnopenclaw.org/og-image.png">
+  <meta name="article:published_time" content="2026-03-27T00:00:00Z">
+  <meta name="article:modified_time" content="2026-03-27T00:00:00Z">
+  <style>
+    :root {
+      --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0; --green-dk: #14532d;
+      --blue: #2563eb; --blue-lt: #eff6ff; --blue-md: #bfdbfe;
+      --purple: #7c3aed; --purple-lt: #f5f3ff;
+      --amber: #b45309; --amber-lt: #fffbeb; --amber-md: #fde68a;
+      --red: #dc2626; --red-lt: #fef2f2; --red-md: #fecaca;
+      --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
+      --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff; --radius: 12px;
+    }
+    html { scroll-behavior: smooth; }
+    .skip-nav { position: absolute; top: -100px; left: 16px; background: var(--green); color: var(--white); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: .9rem; z-index: 9999; transition: top .2s; text-decoration: none; }
+    .skip-nav:focus { top: 8px; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 4px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 16px; line-height: 1.7; color: var(--gray-8); background: var(--white); margin: 0; }
+    a { color: var(--green); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .site-nav { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--gray-3); padding: 0 24px; }
+    .nav-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; position: relative; }
+    .nav-logo { font-size: 1.15rem; font-weight: 700; color: var(--gray-8); text-decoration: none; white-space: nowrap; }
+    .nav-logo:hover { text-decoration: none; color: var(--green); }
+    .nav-links { display: none; position: absolute; top: 60px; right: 0; background: var(--white); border: 1px solid var(--gray-3); border-top: none; flex-direction: column; padding: 20px 28px; gap: 16px; box-shadow: 0 8px 28px rgba(0,0,0,.12); z-index: 999; min-width: 220px; border-radius: 0 0 12px 12px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { color: var(--gray-5); font-size: .95rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--green); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { left: 0; min-width: unset; border-radius: 0; } }
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-search-form { display: flex; align-items: center; background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: 8px; padding: 6px 12px; gap: 8px; }
+    .nav-search-icon { flex-shrink: 0; color: var(--gray-5); }
+    .nav-search-input { border: none; background: transparent; font-size: .88rem; color: var(--gray-8); width: 130px; font-family: inherit; }
+    .nav-search-input:focus { outline: none; }
+    .nav-search-input::placeholder { color: var(--gray-5); }
+    @media (max-width: 480px) { .nav-search-form { display: none; } }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--gray-8); border-radius: 2px; transition: .25s; }
+    .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .series-header { background: linear-gradient(135deg, #052e16 0%, #14532d 55%, #16a34a 100%); color: var(--white); padding: 40px 24px; text-align: center; }
+    .series-header-inner { max-width: 700px; margin: 0 auto; }
+    .part-badge { display: inline-block; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.4); padding: 6px 12px; border-radius: 4px; font-size: .75rem; font-weight: 600; letter-spacing: .04em; margin-bottom: 12px; }
+    h1 { font-size: 1.9rem; font-weight: 700; margin: 12px 0 20px; line-height: 1.3; }
+    .series-meta { font-size: .9rem; color: rgba(255,255,255,.8); }
+    .main-content { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+    .intro-text { font-size: 1.05rem; line-height: 1.8; color: var(--gray-5); margin-bottom: 28px; }
+    h2 { font-size: 1.4rem; font-weight: 700; margin: 36px 0 18px; color: var(--gray-8); border-bottom: 2px solid var(--green-lt); padding-bottom: 10px; }
+    h3 { font-size: 1.15rem; font-weight: 700; margin: 24px 0 12px; color: var(--gray-8); }
+    pre { background: var(--gray-1); border: 1px solid var(--gray-3); border-radius: var(--radius); padding: 16px; overflow-x: auto; font-size: .85rem; line-height: 1.5; color: var(--gray-8); }
+    pre code { font-family: 'Courier New', monospace; }
+    .disclaimer-bar { background: var(--green-lt); border-left: 4px solid var(--green); padding: 12px 24px; font-size: .875rem; color: var(--green-dk); display: flex; align-items: center; gap: 10px; margin: 24px 0; }
+    .disclaimer-bar strong { font-weight: 700; }
+    .series-nav { background: var(--gray-1); border-bottom: 1px solid var(--gray-3); padding: 0 24px; position: sticky; top: 60px; z-index: 999; }
+    .series-nav-inner { max-width: 900px; margin: 0 auto; display: flex; overflow-x: auto; gap: 0; }
+    .series-nav a { padding: 14px 18px; font-size: .85rem; font-weight: 500; color: var(--gray-5); border-bottom: 3px solid transparent; white-space: nowrap; }
+    .series-nav a:hover { color: var(--green); border-bottom-color: var(--green); text-decoration: none; }
+    .series-nav a[aria-current="page"] { color: var(--green); border-bottom-color: var(--green); }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .9rem; }
+    table th { background: var(--green-lt); color: var(--green-dk); padding: 10px; text-align: left; font-weight: 600; border: 1px solid var(--green-md); }
+    table td { padding: 10px; border: 1px solid var(--green-md); }
+    .faq-section { background: var(--blue-lt); padding: 20px; border-radius: var(--radius); margin: 24px 0; }
+    .faq-section h3 { margin: 0 0 16px; color: var(--blue); font-size: 1.1rem; }
+    .faq-item { margin-bottom: 16px; }
+    .faq-item:last-child { margin-bottom: 0; }
+    .faq-q { font-weight: 600; color: var(--gray-8); margin-bottom: 6px; font-size: .9rem; }
+    .faq-a { color: var(--gray-5); font-size: .9rem; margin: 0; }
+    footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
+    footer a { color: #d1d5db; font-weight: 700; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">🦞 learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="series-header">
+    <div class="series-header-inner">
+      <div class="part-badge">PART 2 OF 5</div>
+      <h1>Volatility & Drawdown Monitor — Know When Your Portfolio Is Under Stress</h1>
+      <div class="series-meta">📉 Rolling Vol · Drawdown · VIX</div>
+    </div>
+  </header>
+
+  <nav class="series-nav" aria-label="Risk & Portfolio series">
+    <div class="series-nav-inner">
+      <a href="openclaw-for-risk.html">🗺️ Overview</a>
+      <a href="risk-tracker.html">📊 Part 1: Portfolio Tracker</a>
+      <a href="risk-volatility.html" aria-current="page">📉 Part 2: Volatility & Drawdown</a>
+      <a href="risk-correlation.html">🔗 Part 3: Correlation & Concentration</a>
+      <a href="risk-metrics.html">🧮 Part 4: VaR, Sharpe & Beta</a>
+      <a href="risk-rebalancing.html">⚖️ Part 5: Rebalancing & Alerts</a>
+    </div>
+  </nav>
+
+  <main id="main-content" class="main-content">
+    <div class="intro-text">
+      <p>Knowing your P&L is only half the story. You also need to know how volatile your portfolio is and how far it has fallen from its peak. This part automates volatility and drawdown monitoring: rolling 20-day and 60-day volatility, current drawdown, and VIX as a macro risk gauge. These metrics tell you when your portfolio is in stress and when to tighten risk controls.</p>
+    </div>
+
+    <div class="disclaimer-bar" role="note">
+      ℹ️ <strong>Not financial advice.</strong> Volatility and drawdown are statistical measures, not predictions. Past volatility does not predict future returns.
+    </div>
+
+    <h2>Key Metrics Explained</h2>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Metric</th>
+          <th scope="col">What it measures</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Rolling Volatility</strong></td>
+          <td>Standard deviation of daily returns, annualized. 20-day captures recent regime, 60-day smooths noise. A spike from 12% to 28% is a signal.</td>
+        </tr>
+        <tr>
+          <td><strong>Current Drawdown</strong></td>
+          <td>Current decline from portfolio all-time high. Describes how painful the drop is right now.</td>
+        </tr>
+        <tr>
+          <td><strong>Max Drawdown</strong></td>
+          <td>Largest peak-to-trough decline over a period. Historical worst case.</td>
+        </tr>
+        <tr>
+          <td><strong>VIX as Gauge</strong></td>
+          <td>Implied volatility of S&P 500. VIX &gt;25 = tighten stops. VIX &gt;35 = consider reducing. A risk input, not a trading signal.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Volatility & Drawdown Calculations</h2>
+    <p>Load your positions, calculate daily returns, and compute rolling volatility and drawdown:</p>
+    <pre><code>import yfinance as yf
+import pandas as pd
+import numpy as np
+
+def portfolio_returns(positions: list, period: str = "6mo") -> pd.Series:
+    tickers = [p["ticker"] for p in positions]
+    prices = yf.download(tickers, period=period, auto_adjust=True, progress=False)["Close"]
+    total_val = sum(p["shares"] * float(prices[p["ticker"]].iloc[-1]) for p in positions)
+    weights = {p["ticker"]: (p["shares"] * float(prices[p["ticker"]].iloc[-1])) / total_val
+               for p in positions}
+    return sum(prices[t].pct_change() * w for t, w in weights.items()).dropna()
+
+def rolling_volatility(returns: pd.Series, windows: list = [20, 60]) -> dict:
+    result = {}
+    for w in windows:
+        vol = returns.rolling(w).std() * np.sqrt(252)
+        result[f"vol_{w}d_pct"] = round(float(vol.iloc[-1]) * 100, 2)
+        result[f"vol_{w}d_avg_pct"] = round(float(vol.mean()) * 100, 2)
+    return result
+
+def drawdown_analysis(returns: pd.Series) -> dict:
+    cumulative = (1 + returns).cumprod()
+    peak = cumulative.expanding().max()
+    drawdown = (cumulative - peak) / peak
+    return {
+        "current_drawdown_pct": round(float(drawdown.iloc[-1]) * 100, 2),
+        "max_drawdown_pct": round(float(drawdown.min()) * 100, 2),
+        "days_underwater": int((drawdown < -0.01).sum()),
+        "at_all_time_high": bool(drawdown.iloc[-1] > -0.01),
+    }
+
+def get_vix() -> dict:
+    hist = yf.Ticker("^VIX").history(period="5d")
+    current = round(float(hist["Close"].iloc[-1]), 2)
+    prior = round(float(hist["Close"].iloc[-2]), 2)
+    if current < 15: regime, note = "low", "Complacency zone — review stop-losses"
+    elif current < 25: regime, note = "normal", "Normal volatility environment"
+    elif current < 35: regime, note = "elevated", "Elevated risk — tighten alerts"
+    else: regime, note = "extreme", "Extreme stress — portfolio risk mode"
+    return {"vix": current, "prior": prior, "change": round(current - prior, 2),
+            "regime": regime, "note": note}</code></pre>
+
+    <h2>Automated Monitoring</h2>
+    <p>Set up HEARTBEAT to run at 6 PM ET (after market close) to monitor volatility and drawdown:</p>
+    <pre><code>name: volatility_drawdown_monitor
+schedule: "0 18 * * 1-5"
+steps:
+  - load_positions:
+      file: positions.yaml
+  - fetch_prices:
+      period: "6mo"
+  - calculate_returns: {}
+  - rolling_volatility:
+      windows: [20, 60]
+  - drawdown_analysis: {}
+  - get_vix: {}
+  - alert_if:
+      conditions:
+        - metric: current_drawdown_pct
+          threshold: -10
+          message: "Portfolio drawdown exceeds 10%"
+        - metric: vol_20d_pct
+          threshold: 25
+          message: "20-day vol above 25% annualized"
+        - metric: vix
+          threshold: 30
+          message: "VIX above 30 — elevated market stress"
+  - notify:
+      subject: "📉 Risk Brief: Vol {{ vol_20d }}% | DD {{ drawdown }}% | VIX {{ vix }}"</code></pre>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-section">
+      <h3>Part 2 FAQs</h3>
+      <div class="faq-item">
+        <div class="faq-q">What's normal annualized portfolio volatility?</div>
+        <div class="faq-a">A diversified equity portfolio typically runs 12–18% annualized in normal markets. Individual stocks can run 25–60%+.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How is drawdown different from a loss?</div>
+        <div class="faq-a">Drawdown measures decline from peak, not from cost basis. You can be up 40% overall but in a 15% drawdown from your portfolio's highest point.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Should I use 20-day or 60-day vol?</div>
+        <div class="faq-a">Both — 20-day changes faster and catches regime shifts, 60-day smooths noise. Comparing them reveals whether current vol is elevated vs trend.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--gray-3);">
+      <p style="font-size: 0.95rem; color: var(--gray-5);"><strong>Next:</strong> Move to Part 3 to analyze correlation and concentration risk — <a href="risk-correlation.html">Correlation & Concentration Risk</a>.</p>
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div style="max-width:700px;margin:0 auto;">
+      <p style="margin:0 0 8px;"><a href="index.html">🦞 learnopenclaw.org</a></p>
+      <p style="margin:0 0 8px;">
+        <a href="learn.html">Learn</a> ·
+        <a href="blog.html">Blog</a> ·
+        <a href="faq.html">FAQ</a> ·
+        <a href="privacy-policy.html">Privacy</a> ·
+        <a href="claw-street-terminal.html">Terminal</a>
+      </p>
+      <p style="margin:0;font-size:.8rem;color:#6b7280;">Nothing here is financial or investment advice. For educational and informational purposes only.</p>
+    </div>
+  </footer>
+
+  <script>
+    const btn = document.querySelector('.hamburger');
+    const menu = document.getElementById('nav-links');
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      menu.classList.toggle('open');
+    });
+  </script>
+  <script src="copy.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Volatility & Drawdown Monitor with OpenClaw — Risk & Portfolio Part 2",
+    "description": "Automate portfolio volatility and drawdown monitoring with OpenClaw. Track rolling volatility, current drawdown, and VIX as a macro risk gauge.",
+    "datePublished": "2026-03-27T00:00:00Z",
+    "dateModified": "2026-03-27T00:00:00Z",
+    "author": {
+      "@type": "Organization",
+      "name": "learnopenclaw.org"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What's normal annualized portfolio volatility?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A diversified equity portfolio typically runs 12–18% annualized in normal markets. Individual stocks can run 25–60%+."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How is drawdown different from a loss?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Drawdown measures decline from peak, not from cost basis. You can be up 40% overall but in a 15% drawdown from your portfolio's highest point."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use 20-day or 60-day vol?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Both — 20-day changes faster and catches regime shifts, 60-day smooths noise. Comparing them reveals whether current vol is elevated vs trend."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://learnopenclaw.org/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Learn",
+        "item": "https://learnopenclaw.org/learn.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Risk & Portfolio Series",
+        "item": "https://learnopenclaw.org/openclaw-for-risk.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Volatility & Drawdown Monitor",
+        "item": "https://learnopenclaw.org/risk-volatility.html"
+      }
+    ]
+  }
+  </script>
+</body>
+</html>
