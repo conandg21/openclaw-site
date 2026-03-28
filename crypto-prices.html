@@ -500,6 +500,44 @@
         footer a {
             color: var(--amber);
         }
+    
+        /* ─────── Series Nav ─────── */
+        .series-nav {
+            background: #292524;
+            border-bottom: 1px solid #44403c;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .series-nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            white-space: nowrap;
+        }
+        .series-nav a {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #a8a29e;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+        .series-nav a:hover { color: #d97706; }
+        .series-nav a.sn-current {
+            color: #d97706;
+            border-bottom-color: #d97706;
+        }
+    
+        @media (max-width: 768px) {
+            .nav-search-form { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -549,7 +587,18 @@
         </div>
     </section>
 
-    <main id="main-content">
+    <nav class="series-nav" aria-label="Crypto & DeFi series">
+    <div class="series-nav-inner">
+        <a href="openclaw-for-crypto.html">Overview</a>
+        <a href="crypto-prices.html" class="sn-current">Pt 1: Prices</a>
+        <a href="crypto-onchain.html">Pt 2: On-Chain</a>
+        <a href="crypto-defi.html">Pt 3: DeFi</a>
+        <a href="crypto-sentiment.html">Pt 4: Sentiment</a>
+        <a href="crypto-portfolio.html">Pt 5: Portfolio</a>
+    </div>
+</nav>
+
+<main id="main-content">
 
         <section>
             <h2>CoinGecko Setup</h2>

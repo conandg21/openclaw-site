@@ -147,6 +147,7 @@
     }
 
     @media (max-width: 768px) {
+            .nav-search { display: none; }
       .hamburger {
         display: flex;
       }
@@ -596,7 +597,41 @@
       border-top: 1px solid #44403c;
       margin: 48px 0;
     }
-  </style>
+  
+        /* ─────── Series Nav ─────── */
+        .series-nav {
+            background: #292524;
+            border-bottom: 1px solid #44403c;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .series-nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            white-space: nowrap;
+        }
+        .series-nav a {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #a8a29e;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+        .series-nav a:hover { color: #e11d48; }
+        .series-nav a.sn-current {
+            color: #e11d48;
+            border-bottom-color: #e11d48;
+        }
+    </style>
 </head>
 <body>
   <!-- Navigation -->

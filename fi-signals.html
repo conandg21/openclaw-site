@@ -436,6 +436,7 @@
 
     /* ── RESPONSIVE ──────────────────────────────────────────────────── */
     @media (max-width: 768px) {
+            .search-form { display: none; }
       .hero-title {
         font-size: 2rem;
       }
@@ -493,7 +494,41 @@
     .terminal-link:hover {
       opacity: 0.8;
     }
-  </style>
+  
+        /* ─────── Series Nav ─────── */
+        .series-nav {
+            background: #292524;
+            border-bottom: 1px solid #44403c;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .series-nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            white-space: nowrap;
+        }
+        .series-nav a {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #a8a29e;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+        .series-nav a:hover { color: #e11d48; }
+        .series-nav a.sn-current {
+            color: #e11d48;
+            border-bottom-color: #e11d48;
+        }
+    </style>
 </head>
 <body>
   <!-- HEADER & NAV -->
@@ -546,7 +581,18 @@
   </div>
 
   <!-- MAIN CONTENT -->
-  <main>
+  <nav class="series-nav" aria-label="Fixed Income series">
+    <div class="series-nav-inner">
+        <a href="openclaw-for-fixedincome.html">Overview</a>
+        <a href="fi-yield-curve.html">Pt 1: Yield Curve</a>
+        <a href="fi-credit-spreads.html">Pt 2: Credit Spreads</a>
+        <a href="fi-rates-dashboard.html">Pt 3: Rates</a>
+        <a href="fi-breakevens.html">Pt 4: Breakevens</a>
+        <a href="fi-signals.html" class="sn-current">Pt 5: Signals</a>
+    </div>
+</nav>
+
+<main>
     <!-- SECTION 1: WHY COMBINE ALL FOUR? -->
     <section id="why-combine">
       <h2>Why Combine All Four Signals?</h2>
