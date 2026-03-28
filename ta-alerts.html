@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TA Signal Alerts — MA Cross, RSI, MACD | Claw Street Terminal</title>
+    <meta name="description" content="Get notified when golden crosses, RSI extremes, and MACD flips occur. Learn polling loops, cooldown logic, and daily digests.">
+    <meta name="canonical" href="https://learnopenclaw.org/ta-alerts.html">
+    <meta name="robots" content="index, follow">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Signal Alerts",
+        "description": "Get notified the moment a golden cross fires, RSI hits an extreme, or MACD flips — without watching charts all day. Polling loop, cooldown logic, and daily digest included.",
+        "author": {"@type": "Organization", "name": "OpenClaw"},
+        "datePublished": "2026-03-28",
+        "image": "https://learnopenclaw.org/assets/ta-alerts-hero.jpg",
+        "articleSection": "Technical Analysis Automation",
+        "keywords": "signal alerts, MA crossover, RSI, MACD, email notifications, trading automation"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/"},
+            {"@type": "ListItem", "position": 2, "name": "Terminal", "item": "https://learnopenclaw.org/terminal.html"},
+            {"@type": "ListItem", "position": 3, "name": "Technical Analysis Automation", "item": "https://learnopenclaw.org/ta-series.html"},
+            {"@type": "ListItem", "position": 4, "name": "Signal Alerts", "item": "https://learnopenclaw.org/ta-alerts.html"}
+        ]
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #1c1917;
+            color: #e7e5e4;
+            line-height: 1.6;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .site-nav {
+            background: #1c1917;
+            border-bottom: 2px solid #0d9488;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            color: #0d9488;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .nav-links.open {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: #1c1917;
+            border-bottom: 2px solid #0d9488;
+            padding: 16px 20px;
+            gap: 12px;
+            z-index: 99;
+        }
+
+        .nav-links a {
+            color: #e7e5e4;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 6px 0;
+        }
+
+        .nav-links a:hover {
+            color: #0d9488;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .nav-search {
+            display: flex;
+            align-items: center;
+            background: #292522;
+            border: 1px solid #44403c;
+            border-radius: 4px;
+            padding: 6px 10px;
+            gap: 8px;
+        }
+
+        .nav-search input {
+            background: none;
+            border: none;
+            color: #e7e5e4;
+            width: 150px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .nav-search input::placeholder {
+            color: #78716c;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 2px;
+            background: #e7e5e4;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger:hover span {
+            background: #0d9488;
+        }
+
+        /* ===== BREADCRUMB ===== */
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            font-size: 0.9rem;
+            color: #a8a29e;
+        }
+
+        .breadcrumb a {
+            color: #0d9488;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: #06b6d4;
+        }
+
+        /* ===== DISCLAIMER ===== */
+        .disclaimer {
+            background: #f0fdfa;
+            border-left: 4px solid #0d9488;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: #134e4a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .disclaimer strong {
+            font-weight: 600;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 40px auto;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="rgba(255,255,255,.05)" fill-rule="evenodd"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .hero-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #0d9488;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #f5f5f4;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: #f0f0f0;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .hero-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pill {
+            background: rgba(13, 148, 136, 0.2);
+            border: 1px solid #0d9488;
+            color: #0d9488;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .content {
+            background: #292522;
+            border: 1px solid #44403c;
+            border-radius: 8px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        section h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #f5f5f4;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #0d9488;
+        }
+
+        section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0d9488;
+            margin: 24px 0 12px 0;
+        }
+
+        section p {
+            margin-bottom: 16px;
+            line-height: 1.7;
+            color: #e7e5e4;
+        }
+
+        .info-box {
+            background: #1c1917;
+            border-left: 4px solid #0d9488;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .info-box strong {
+            color: #0d9488;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            margin-top: 12px;
+        }
+
+        .info-box li {
+            margin-bottom: 10px;
+            color: #e7e5e4;
+        }
+
+        .info-box li strong {
+            color: #0d9488;
+            display: inline;
+            margin-bottom: 0;
+        }
+
+        /* ===== CODE BLOCKS ===== */
+        .code-block {
+            background: #0f0d0a;
+            border: 1px solid #44403c;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 24px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #44403c;
+        }
+
+        .code-block-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #0d9488;
+        }
+
+        .copy-btn {
+            background: #0d9488;
+            color: #0f0d0a;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #06b6d4;
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background: #10b981;
+        }
+
+        pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #e7e5e4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        code {
+            color: #0d9488;
+        }
+
+        /* ===== TABLE ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: #1c1917;
+            border: 1px solid #44403c;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #0d9488;
+            color: #0f0d0a;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-top: 1px solid #44403c;
+            color: #e7e5e4;
+        }
+
+        tr:hover {
+            background: #292522;
+        }
+
+        /* ===== NAVIGATION ARROWS ===== */
+        .nav-arrows {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 50px 0;
+            padding: 24px;
+            background: #292522;
+            border-radius: 8px;
+            border: 1px solid #44403c;
+        }
+
+        .nav-arrow {
+            text-decoration: none;
+            color: #0d9488;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-arrow:hover {
+            color: #06b6d4;
+            gap: 12px;
+        }
+
+        .nav-arrow.prev {
+            flex-direction: row-reverse;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #1c1917;
+            border-top: 2px solid #0d9488;
+            padding: 30px 20px;
+            text-align: center;
+            color: #78716c;
+            font-size: 0.9rem;
+            margin-top: 60px;
+        }
+
+        footer a {
+            color: #0d9488;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #06b6d4;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .content {
+                padding: 24px;
+            }
+
+            section h2 {
+                font-size: 1.5rem;
+            }
+
+            section h3 {
+                font-size: 1.1rem;
+            }
+
+            .nav-arrows {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .nav-arrow {
+                width: 100%;
+                justify-content: center;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="site-nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">&#x1F99E; learnopenclaw.org</a>
+            <div class="nav-right">
+                <form class="nav-search">
+                    <input type="text" placeholder="Search docs...">
+                </form>
+                <button class="hamburger" aria-label="Toggle menu" id="hamburger-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        <div class="nav-links" id="nav-links">
+            <a href="/">Home</a>
+            <a href="/blog.html">Blog</a>
+            <a href="/learn.html">Learn</a>
+            <a href="/faq.html">FAQ</a>
+            <a href="/terminal.html">Terminal</a>
+        </div>
+    </nav>
+
+    <!-- ===== BREADCRUMB ===== -->
+    <div class="breadcrumb">
+        <a href="/">Home</a> › <a href="/terminal.html">Terminal</a> › <a href="/ta-series.html">Technical Analysis Automation</a> › Signal Alerts
+    </div>
+
+    <!-- ===== DISCLAIMER ===== -->
+    <div class="disclaimer">
+        <span>⚠️</span>
+        <div><strong>Not Financial Advice:</strong> Signal alerts are informational triggers based on historical indicator patterns — not trading recommendations.</div>
+    </div>
+
+    <!-- ===== HERO ===== -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-tag">Technical Analysis · Part 3 of 5</div>
+            <h1>Signal Alerts</h1>
+            <p>Get notified the moment a golden cross fires, RSI hits an extreme, or MACD flips — without watching charts all day. Polling loop, cooldown logic, and daily digest included.</p>
+            <div class="hero-pills">
+                <span class="pill">Email Alerts</span>
+                <span class="pill">Cooldown Logic</span>
+                <span class="pill">Daily Digest</span>
+                <span class="pill">File Log</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container">
+        <div class="content">
+
+            <!-- SECTION 1: Alert Architecture -->
+            <section>
+                <h2>Alert Architecture</h2>
+                <p>Most traders don't have time to watch charts 24/7. Signal alerts solve this by triggering automated notifications when key patterns occur — then you can decide whether to act. Three output modes, each with tradeoffs:</p>
+
+                <div class="info-box">
+                    <strong>Three Output Modes</strong>
+                    <ul>
+                        <li><strong>Email (smtplib):</strong> Best for important signals and low frequency. Requires SMTP credentials, but ensures alerts reach you anywhere.</li>
+                        <li><strong>File log (append to .txt):</strong> Full audit trail with no dependencies. Works without email setup. Spin up a separate monitoring script to read the file.</li>
+                        <li><strong>Daily digest (one email per day):</strong> Aggregate all signals into a single email at market close. Less noise, better pattern spotting.</li>
+                    </ul>
+                    <br>
+                    <strong>Recommended approach:</strong> Run file log always (cheap insurance), email only for high-priority signals (golden cross, BB squeeze breakout). Schedule daily digest for 4pm ET Mon-Fri to catch end-of-day opportunities.
+                </div>
+            </section>
+
+            <!-- SECTION 2: Base Alert Engine -->
+            <section>
+                <h2>Base Alert Engine</h2>
+                <p>Start with this foundation. It handles logging, email dispatch, and configuration via environment variables (no hardcoded secrets):</p>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-label">Python</span>
+                        <button class="copy-btn" data-code="import yfinance as yf
+import pandas_ta as ta
+import pandas as pd
+import smtplib
+import time
+import os
+from datetime import datetime, date
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+# Configuration
+ALERT_EMAIL = os.getenv('ALERT_EMAIL', 'you@example.com')
+SMTP_HOST   = os.getenv('SMTP_HOST', 'localhost')
+SMTP_PORT   = int(os.getenv('SMTP_PORT', '587'))
+SMTP_USER   = os.getenv('SMTP_USER', '')
+SMTP_PASS   = os.getenv('SMTP_PASS', '')
+LOG_FILE    = 'signal_alerts.log'
+
+def log_alert(message: str) -> None:
+    '''Append alert to log file with timestamp.'''
+    ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f'[{ts}] {message}'
+    print(line)
+    with open(LOG_FILE, 'a') as f:
+        f.write(line + '\n')
+
+def send_email(subject: str, body: str) -> bool:
+    '''Send alert email. Returns True on success.'''
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = ALERT_EMAIL
+        msg['To']   = ALERT_EMAIL
+        msg.attach(MIMEText(body, 'plain'))
+
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+            server.starttls()
+            if SMTP_USER:
+                server.login(SMTP_USER, SMTP_PASS)
+            server.send_message(msg)
+        return True
+    except Exception as e:
+        log_alert(f'EMAIL FAILED: {e}')
+        return False">Copy</button>
+                    </div>
+                    <pre><code>import yfinance as yf
+import pandas_ta as ta
+import pandas as pd
+import smtplib
+import time
+import os
+from datetime import datetime, date
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+# Configuration
+ALERT_EMAIL = os.getenv('ALERT_EMAIL', 'you@example.com')
+SMTP_HOST   = os.getenv('SMTP_HOST', 'localhost')
+SMTP_PORT   = int(os.getenv('SMTP_PORT', '587'))
+SMTP_USER   = os.getenv('SMTP_USER', '')
+SMTP_PASS   = os.getenv('SMTP_PASS', '')
+LOG_FILE    = 'signal_alerts.log'
+
+def log_alert(message: str) -> None:
+    '''Append alert to log file with timestamp.'''
+    ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f'[{ts}] {message}'
+    print(line)
+    with open(LOG_FILE, 'a') as f:
+        f.write(line + '\n')
+
+def send_email(subject: str, body: str) -> bool:
+    '''Send alert email. Returns True on success.'''
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = ALERT_EMAIL
+        msg['To']   = ALERT_EMAIL
+        msg.attach(MIMEText(body, 'plain'))
+
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+            server.starttls()
+            if SMTP_USER:
+                server.login(SMTP_USER, SMTP_PASS)
+            server.send_message(msg)
+        return True
+    except Exception as e:
+        log_alert(f'EMAIL FAILED: {e}')
+        return False</code></pre>
+                </div>
+            </section>
+
+            <!-- SECTION 3: Indicator Snapshot -->
+            <section>
+                <h2>Indicator Snapshot for One Ticker</h2>
+                <p>Before alerting, you need clean data and computed indicators. This function fetches one year of daily OHLCV, computes SMA20/50/200, RSI, Bollinger Bands width, and MACD:</p>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-label">Python</span>
+                        <button class="copy-btn" data-code="def get_snapshot(ticker: str) -> dict | None:
+    '''Fetch and compute indicators for a single ticker.'''
+    try:
+        df = yf.download(ticker, period='1y', interval='1d', progress=False)
+        if df.empty or len(df) < 210:
+            return None
+        df.columns = [c.lower() for c in df.columns]
+        df = df[['open','high','low','close','volume']].dropna()
+
+        df['sma20']  = ta.sma(df['close'], 20)
+        df['sma50']  = ta.sma(df['close'], 50)
+        df['sma200'] = ta.sma(df['close'], 200)
+        df['rsi']    = ta.rsi(df['close'], 14)
+        bb = ta.bbands(df['close'], 20, 2)
+        df['bb_bw']  = bb[[c for c in bb.columns if 'BBB' in c][0]]
+        macd = ta.macd(df['close'], 12, 26, 9)
+        df['macd']   = macd[[c for c in macd.columns if c.startswith('MACD_')][0]]
+        df['macd_s'] = macd[[c for c in macd.columns if c.startswith('MACDs_')][0]]
+        df = df.dropna()
+
+        cur  = df.iloc[-1]
+        prev = df.iloc[-2]
+        return {'cur': cur, 'prev': prev, 'df': df, 'ticker': ticker}
+    except Exception:
+        return None">Copy</button>
+                    </div>
+                    <pre><code>def get_snapshot(ticker: str) -> dict | None:
+    '''Fetch and compute indicators for a single ticker.'''
+    try:
+        df = yf.download(ticker, period='1y', interval='1d', progress=False)
+        if df.empty or len(df) < 210:
+            return None
+        df.columns = [c.lower() for c in df.columns]
+        df = df[['open','high','low','close','volume']].dropna()
+
+        df['sma20']  = ta.sma(df['close'], 20)
+        df['sma50']  = ta.sma(df['close'], 50)
+        df['sma200'] = ta.sma(df['close'], 200)
+        df['rsi']    = ta.rsi(df['close'], 14)
+        bb = ta.bbands(df['close'], 20, 2)
+        df['bb_bw']  = bb[[c for c in bb.columns if 'BBB' in c][0]]
+        macd = ta.macd(df['close'], 12, 26, 9)
+        df['macd']   = macd[[c for c in macd.columns if c.startswith('MACD_')][0]]
+        df['macd_s'] = macd[[c for c in macd.columns if c.startswith('MACDs_')][0]]
+        df = df.dropna()
+
+        cur  = df.iloc[-1]
+        prev = df.iloc[-2]
+        return {'cur': cur, 'prev': prev, 'df': df, 'ticker': ticker}
+    except Exception:
+        return None</code></pre>
+                </div>
+            </section>
+
+            <!-- SECTION 4: Signal Detection -->
+            <section>
+                <h2>Signal Detection Functions</h2>
+                <p>Each detector runs on the current vs. previous bar, looking for a cross or threshold breach. Return a list of alert dicts with message, type, and priority:</p>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-label">Python — RSI Oversold/Overbought</span>
+                        <button class="copy-btn" data-code="def check_rsi_alert(snap: dict, oversold: float = 30, overbought: float = 70) -> list:
+    '''Detect RSI threshold crosses (entering oversold/overbought).'''
+    alerts = []
+    cur_rsi  = snap['cur']['rsi']
+    prev_rsi = snap['prev']['rsi']
+
+    if cur_rsi < oversold and prev_rsi >= oversold:
+        alerts.append({
+            'type': 'RSI_OVERSOLD',
+            'msg':  f\"{snap['ticker']} RSI entered oversold: {cur_rsi:.1f} (was {prev_rsi:.1f})\",
+            'priority': 'medium',
+        })
+    if cur_rsi > overbought and prev_rsi <= overbought:
+        alerts.append({
+            'type': 'RSI_OVERBOUGHT',
+            'msg':  f\"{snap['ticker']} RSI entered overbought: {cur_rsi:.1f} (was {prev_rsi:.1f})\",
+            'priority': 'medium',
+        })
+    return alerts">Copy</button>
+                    </div>
+                    <pre><code>def check_rsi_alert(snap: dict, oversold: float = 30, overbought: float = 70) -> list:
+    '''Detect RSI threshold crosses (entering oversold/overbought).'''
+    alerts = []
+    cur_rsi  = snap['cur']['rsi']
+    prev_rsi = snap['prev']['rsi']
+
+    if cur_rsi < oversold and prev_rsi >= oversold:
+        alerts.append({
+            'type': 'RSI_OVERSOLD',
+            'msg':  f"{snap['ticker']} RSI entered oversold: {cur_rsi:.1f} (was {prev_rsi:.1f})",
+            'priority': 'medium',
+        })
+    if cur_rsi > overbought and prev_rsi <= overbought:
+        alerts.append({
+            'type': 'RSI_OVERBOUGHT',
+            'msg':  f"{snap['ticker']} RSI entered overbought: {cur_rsi:.1f} (was {prev_rsi:.1f})",
+            'priority': 'medium',
+        })
+    return alerts</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-label">Python — Moving Average Crosses</span>
+                        <button class="copy-btn" data-code="def check_ma_cross_alert(snap: dict) -> list:
+    '''Detect golden and death crosses.'''
+    alerts = []
+    cur  = snap['cur']
+    prev = snap['prev']
+
+    if cur['sma50'] > cur['sma200'] and prev['sma50'] <= prev['sma200']:
+        price = cur['close']
+        alerts.append({
+            'type': 'GOLDEN_CROSS',
+            'msg':  f\"🟡 {snap['ticker']} GOLDEN CROSS — SMA50 crossed above SMA200 | Price: ${price:.2f}\",
+            'priority': 'high',
+        })
+    if cur['sma50'] < cur['sma200'] and prev['sma50'] >= prev['sma200']:
+        price = cur['close']
+        alerts.append({
+            'type': 'DEATH_CROSS',
+            'msg':  f\"💀 {snap['ticker']} DEATH CROSS — SMA50 crossed below SMA200 | Price: ${price:.2f}\",
+            'priority': 'high',
+        })
+    return alerts">Copy</button>
+                    </div>
+                    <pre><code>def check_ma_cross_alert(snap: dict) -> list:
+    '''Detect golden and death crosses.'''
+    alerts = []
+    cur  = snap['cur']
+    prev = snap['prev']
+
+    if cur['sma50'] > cur['sma200'] and prev['sma50'] <= prev['sma200']:
+        price = cur['close']
+        alerts.append({
+            'type': 'GOLDEN_CROSS',
+            'msg':  f"🟡 {snap['ticker']} GOLDEN CROSS — SMA50 crossed above SMA200 | Price: ${price:.2f}",
+            'priority': 'high',
+        })
+    if cur['sma50'] < cur['sma200'] and prev['sma50'] >= prev['sma200']:
+        price = cur['close']
+        alerts.append({
+            'type': 'DEATH_CROSS',
+            'msg':  f"💀 {snap['ticker']} DEATH CROSS — SMA50 crossed below SMA200 | Price: ${price:.2f}",
+            'priority': 'high',
+        })
+    return alerts</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-label">Python — Price Crossing Moving Averages</span>
+                        <button class="copy-btn" data-code="def check_price_ma_cross(snap: dict) -> list:
+    '''Detect price crossing above/below key MAs.'''
+    alerts = []
+    cur  = snap['cur']
+    prev = snap['prev']
+    ticker = snap['ticker']
+
+    for ma, label in [('sma20','SMA20'),('sma50','SMA50'),('sma200','SMA200')]:
+        if cur['close'] > cur[ma] and prev['close'] <= prev[ma]:
+            alerts.append({
+                'type': f'PRICE_ABOVE_{ma.upper()}',
+                'msg':  f'⬆ {ticker} price crossed ABOVE {label}: ${cur[\"close\"]:.2f}',
+                'priority': 'low' if ma == 'sma20' else 'medium',
+            })
+        if cur['close'] < cur[ma] and prev['close'] >= prev[ma]:
+            alerts.append({
+                'type': f'PRICE_BELOW_{ma.upper()}',
+                'msg':  f'⬇ {ticker} price crossed BELOW {label}: ${cur[\"close\"]:.2f}',
+                'priority': 'low' if ma == 'sma20' else 'medium',
+            })
+    return alerts">Copy</button>
+                    </div>
+                    <pre><code>def check_price_ma_cross(snap: dict) -> list:
+    '''Detect price crossing above/below key MAs.'''
+    alerts = []
+    cur  = snap['cur']
+    prev = snap['prev']
+    ticker = snap['ticker']
+
+    for ma, label in [('sma20','SMA20'),('sma50','SMA50'),('sma200','SMA200')]:
+        if cur['close'] > cur[ma] and prev['close'] <= prev[ma]:
+            alerts.append({
+                'type': f'PRICE_ABOVE_{ma.upper()}',
+                'msg':  f'⬆ {ticker} price crossed ABOVE {label}: ${cur["close"]:.2f}',
+                'priority': 'low' if ma == 'sma20' else 'medium',
+            })
+        if cur['close'] < cur[ma] and prev['close'] >= prev[ma]:
+            alerts.append({
+                'type': f'PRICE_BELOW_{ma.upper()}',
+                'msg':  f'⬇ {ticker} price crossed BELOW {label}: ${cur["close"]:.2f}',
+                'priority': 'low' if ma == 'sma20' else 'medium',
+            })
+    return alerts</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-label">Python — MACD Crossovers</span>
+                        <button class="copy-btn" data-code="def check_macd_cross(snap: dict) -> list:
+    '''Detect MACD/signal line crossovers.'''
+    alerts = []
+    cur  = snap['cur']
+    prev = snap['prev']
+
+    if cur['macd'] > cur['macd_s'] and prev['macd'] <= prev['macd_s']:
+        alerts.append({
+            'type': 'MACD_BULL_CROSS',
+            'msg':  f\"🟢 {snap['ticker']} MACD bullish crossover | Price: ${cur['close']:.2f}\",
+            'priority': 'medium',
+        })
+    if cur['macd'] < cur['macd_s'] and prev['macd'] >= prev['macd_s']:
+        alerts.append({
+            'type': 'MACD_BEAR_CROSS',
+            'msg':  f\"🔴 {snap['ticker']} MACD bearish crossover | Price: ${cur['close']:.2f}\",
+            'priority': 'medium',
+        })
+    return alerts">Copy</button>
+                    </div>
+                    <pre><code>def check_macd_cross(snap: dict) -> list:
+    '''Detect MACD/signal line crossovers.'''
+    alerts = []
+    cur  = snap['cur']
+    prev = snap['prev']
+
+    if cur['macd'] > cur['macd_s'] and prev['macd'] <= prev['macd_s']:
+        alerts.append({
+            'type': 'MACD_BULL_CROSS',
+            'msg':  f"🟢 {snap['ticker']} MACD bullish crossover | Price: ${cur['close']:.2f}",
+            'priority': 'medium',
+        })
+    if cur['macd'] < cur['macd_s'] and prev['macd'] >= prev['macd_s']:
+        alerts.append({
+            'type': 'MACD_BEAR_CROSS',
+            'msg':  f"🔴 {snap['ticker']} MACD bearish crossover | Price: ${cur['close']:.2f}",
+            'priority': 'medium',
+        })
+    return alerts</code></pre>
+                </div>
+            </section>
+
+            <!-- SECTION 5: Alert Loop with Cooldown -->
+            <section>
+                <h2>Alert Loop with Cooldown</h2>
+                <p>Prevent spam: track which signals you've already alerted on, and skip re-alerting within a cooldown window (usually 1 day for daily bars):</p>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-label">Python</span>
+                        <button class="copy-btn" data-code="# Prevent re-alerting on the same signal within a cooldown window
+alert_history: dict[str, date] = {}  # key: 'TICKER_SIGNAL_TYPE'
+
+def should_alert(ticker: str, signal_type: str, cooldown_days: int = 1) -> bool:
+    '''Return True if we haven't already alerted on this signal today.'''
+    key = f'{ticker}_{signal_type}'
+    last = alert_history.get(key)
+    if last is None or (date.today() - last).days >= cooldown_days:
+        return True
+    return False
+
+def record_alert(ticker: str, signal_type: str) -> None:
+    alert_history[f'{ticker}_{signal_type}'] = date.today()
+
+def process_alerts(alerts: list, email_priorities: list = ['high']) -> None:
+    '''Process a list of alert dicts — log all, email high priority.'''
+    for alert in alerts:
+        ticker, sig_type = alert['msg'].split()[1], alert['type']
+        if not should_alert(ticker, sig_type):
+            continue
+
+        log_alert(alert['msg'])
+        record_alert(ticker, sig_type)
+
+        if alert['priority'] in email_priorities:
+            send_email(
+                subject=f\"[OpenClaw Alert] {alert['type']} — {ticker}\",
+                body=alert['msg'] + f\"\n\nGenerated by OpenClaw TA Alert System\n{datetime.now()}\"
+            )
+
+def run_alert_loop(watchlist: list, check_interval: int = 3600) -> None:
+    '''
+    Poll watchlist every check_interval seconds.
+    Default: once per hour (daily candles don't change more often).
+    '''
+    print(f'🔔 Alert loop started | {len(watchlist)} tickers | interval: {check_interval}s')
+
+    while True:
+        print(f\"\\n[{datetime.now().strftime('%H:%M:%S')}] Running checks...\")
+
+        for ticker in watchlist:
+            snap = get_snapshot(ticker)
+            if not snap:
+                continue
+
+            all_alerts = (
+                check_rsi_alert(snap) +
+                check_ma_cross_alert(snap) +
+                check_price_ma_cross(snap) +
+                check_macd_cross(snap)
+            )
+            process_alerts(all_alerts)
+
+        print(f'  Next check in {check_interval // 60} minutes...')
+        time.sleep(check_interval)
+
+WATCHLIST = ['AAPL','MSFT','GOOGL','NVDA','SPY','QQQ','GLD','TLT']
+run_alert_loop(WATCHLIST, check_interval=3600)">Copy</button>
+                    </div>
+                    <pre><code># Prevent re-alerting on the same signal within a cooldown window
+alert_history: dict[str, date] = {}  # key: 'TICKER_SIGNAL_TYPE'
+
+def should_alert(ticker: str, signal_type: str, cooldown_days: int = 1) -> bool:
+    '''Return True if we haven't already alerted on this signal today.'''
+    key = f'{ticker}_{signal_type}'
+    last = alert_history.get(key)
+    if last is None or (date.today() - last).days >= cooldown_days:
+        return True
+    return False
+
+def record_alert(ticker: str, signal_type: str) -> None:
+    alert_history[f'{ticker}_{signal_type}'] = date.today()
+
+def process_alerts(alerts: list, email_priorities: list = ['high']) -> None:
+    '''Process a list of alert dicts — log all, email high priority.'''
+    for alert in alerts:
+        ticker, sig_type = alert['msg'].split()[1], alert['type']
+        if not should_alert(ticker, sig_type):
+            continue
+
+        log_alert(alert['msg'])
+        record_alert(ticker, sig_type)
+
+        if alert['priority'] in email_priorities:
+            send_email(
+                subject=f"[OpenClaw Alert] {alert['type']} — {ticker}",
+                body=alert['msg'] + f"\n\nGenerated by OpenClaw TA Alert System\n{datetime.now()}"
+            )
+
+def run_alert_loop(watchlist: list, check_interval: int = 3600) -> None:
+    '''
+    Poll watchlist every check_interval seconds.
+    Default: once per hour (daily candles don't change more often).
+    '''
+    print(f'🔔 Alert loop started | {len(watchlist)} tickers | interval: {check_interval}s')
+
+    while True:
+        print(f"\n[{datetime.now().strftime('%H:%M:%S')}] Running checks...")
+
+        for ticker in watchlist:
+            snap = get_snapshot(ticker)
+            if not snap:
+                continue
+
+            all_alerts = (
+                check_rsi_alert(snap) +
+                check_ma_cross_alert(snap) +
+                check_price_ma_cross(snap) +
+                check_macd_cross(snap)
+            )
+            process_alerts(all_alerts)
+
+        print(f'  Next check in {check_interval // 60} minutes...')
+        time.sleep(check_interval)
+
+WATCHLIST = ['AAPL','MSFT','GOOGL','NVDA','SPY','QQQ','GLD','TLT']
+run_alert_loop(WATCHLIST, check_interval=3600)</code></pre>
+                </div>
+            </section>
+
+            <!-- SECTION 6: Daily Digest -->
+            <section>
+                <h2>Daily Digest</h2>
+                <p>Instead of individual alert emails throughout the day, buffer all signals and send one comprehensive digest at market close. Less noise, easier to spot patterns:</p>
+
+                <div class="code-block">
+                    <div class="code-block-header">
+                        <span class="code-block-label">Python</span>
+                        <button class="copy-btn" data-code="from collections import defaultdict
+
+daily_buffer: list[dict] = []
+
+def buffer_alert(alert: dict) -> None:
+    '''Add alert to daily buffer instead of sending immediately.'''
+    daily_buffer.append({**alert, 'time': datetime.now().strftime('%H:%M')})
+
+def send_daily_digest(watchlist: list) -> None:
+    '''Scan all tickers and send one summary email.'''
+    global daily_buffer
+    daily_buffer = []
+
+    for ticker in watchlist:
+        snap = get_snapshot(ticker)
+        if not snap:
+            continue
+        all_alerts = (
+            check_rsi_alert(snap) +
+            check_ma_cross_alert(snap) +
+            check_price_ma_cross(snap) +
+            check_macd_cross(snap)
+        )
+        for a in all_alerts:
+            buffer_alert(a)
+
+    if not daily_buffer:
+        log_alert('Daily digest: no signals today.')
+        return
+
+    # Group by priority
+    by_priority = defaultdict(list)
+    for a in daily_buffer:
+        by_priority[a['priority']].append(a['msg'])
+
+    body_lines = [f'OpenClaw Daily Signal Digest — {date.today()}\n' + '='*50 + '\n']
+    for priority in ['high','medium','low']:
+        if priority in by_priority:
+            body_lines.append(f'\n[{priority.upper()} PRIORITY]')
+            body_lines.extend(f'  • {m}' for m in by_priority[priority])
+
+    body = '\n'.join(body_lines)
+    send_email(
+        subject=f'[OpenClaw] Daily Digest — {len(daily_buffer)} signals — {date.today()}',
+        body=body
+    )
+    log_alert(f'Daily digest sent: {len(daily_buffer)} signals')
+
+# Schedule with cron at market close (4pm ET Mon-Fri):
+# 0 16 * * 1-5 python3 /home/user/openclaw/daily_digest.py
+send_daily_digest(WATCHLIST)">Copy</button>
+                    </div>
+                    <pre><code>from collections import defaultdict
+
+daily_buffer: list[dict] = []
+
+def buffer_alert(alert: dict) -> None:
+    '''Add alert to daily buffer instead of sending immediately.'''
+    daily_buffer.append({**alert, 'time': datetime.now().strftime('%H:%M')})
+
+def send_daily_digest(watchlist: list) -> None:
+    '''Scan all tickers and send one summary email.'''
+    global daily_buffer
+    daily_buffer = []
+
+    for ticker in watchlist:
+        snap = get_snapshot(ticker)
+        if not snap:
+            continue
+        all_alerts = (
+            check_rsi_alert(snap) +
+            check_ma_cross_alert(snap) +
+            check_price_ma_cross(snap) +
+            check_macd_cross(snap)
+        )
+        for a in all_alerts:
+            buffer_alert(a)
+
+    if not daily_buffer:
+        log_alert('Daily digest: no signals today.')
+        return
+
+    # Group by priority
+    by_priority = defaultdict(list)
+    for a in daily_buffer:
+        by_priority[a['priority']].append(a['msg'])
+
+    body_lines = [f'OpenClaw Daily Signal Digest — {date.today()}\n' + '='*50 + '\n']
+    for priority in ['high','medium','low']:
+        if priority in by_priority:
+            body_lines.append(f'\n[{priority.upper()} PRIORITY]')
+            body_lines.extend(f'  • {m}' for m in by_priority[priority])
+
+    body = '\n'.join(body_lines)
+    send_email(
+        subject=f'[OpenClaw] Daily Digest — {len(daily_buffer)} signals — {date.today()}',
+        body=body
+    )
+    log_alert(f'Daily digest sent: {len(daily_buffer)} signals')
+
+# Schedule with cron at market close (4pm ET Mon-Fri):
+# 0 16 * * 1-5 python3 /home/user/openclaw/daily_digest.py
+send_daily_digest(WATCHLIST)</code></pre>
+                </div>
+            </section>
+
+            <!-- SECTION 7: Configuration Reference -->
+            <section>
+                <h2>Alert Configuration Reference</h2>
+                <p>Customize these parameters based on your trading style and alert preferences:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Parameter</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Recommended</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>oversold threshold</strong></td>
+                            <td>RSI level to trigger buy watch</td>
+                            <td>30</td>
+                        </tr>
+                        <tr>
+                            <td><strong>overbought threshold</strong></td>
+                            <td>RSI level to trigger sell watch</td>
+                            <td>70</td>
+                        </tr>
+                        <tr>
+                            <td><strong>cooldown_days</strong></td>
+                            <td>Days before re-alerting same signal</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><strong>email_priorities</strong></td>
+                            <td>Which signals trigger immediate email</td>
+                            <td>["high"]</td>
+                        </tr>
+                        <tr>
+                            <td><strong>check_interval</strong></td>
+                            <td>Seconds between polling runs</td>
+                            <td>3600 (hourly)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LOG_FILE</strong></td>
+                            <td>Path for alert audit trail</td>
+                            <td>signal_alerts.log</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Navigation Arrows -->
+            <div class="nav-arrows">
+                <a href="/ta-scanner.html" class="nav-arrow prev">← Part 2: Multi-Stock Scanner</a>
+                <a href="/ta-backtest.html" class="nav-arrow next">Part 4: Backtesting →</a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>&copy; 2026 <strong>OpenClaw</strong> — Technical Analysis Automation for the Command Line</p>
+        <p><a href="/license.html">License</a> · <a href="/contribute.html">Contribute</a> · <a href="/contact.html">Contact</a></p>
+    </footer>
+
+    <!-- ===== HAMBURGER & COPY JAVASCRIPT ===== -->
+    <script>
+        // Hamburger menu toggle
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburgerBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Copy-to-clipboard functionality
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const code = this.dataset.code;
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = this.textContent;
+                    this.textContent = '✓ Copied';
+                    this.classList.add('copied');
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    this.textContent = 'Copy failed';
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

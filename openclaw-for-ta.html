@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Automate RSI scans, moving average alerts, and multi-stock screeners with free Python tools. No data subscription needed.">
+  <meta name="canonical" content="https://learnopenclaw.org/openclaw-for-ta.html">
+
+  <!-- OG Tags -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Technical Analysis Automation | Claw Street Terminal">
+  <meta property="og:description" content="Stop checking 50 charts every morning. Automate RSI scans, moving average crossovers, and custom signal alerts with free Python.">
+  <meta property="og:url" content="https://learnopenclaw.org/openclaw-for-ta.html">
+  <meta property="og:image" content="https://learnopenclaw.org/og-ta.png">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "Technical Analysis Automation",
+        "description": "Automate RSI scans, moving average alerts, and multi-stock screeners with free Python tools.",
+        "url": "https://learnopenclaw.org/openclaw-for-ta.html",
+        "author": { "@type": "Organization", "name": "learnopenclaw.org" },
+        "datePublished": "2025-01-01",
+        "isPartOf": { "@type": "WebSite", "name": "learnopenclaw.org" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://learnopenclaw.org/index.html" },
+          { "@type": "ListItem", "position": 2, "name": "Terminal", "item": "https://learnopenclaw.org/claw-street-terminal.html" },
+          { "@type": "ListItem", "position": 3, "name": "Technical Analysis Automation", "item": "https://learnopenclaw.org/openclaw-for-ta.html" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is yfinance data reliable enough for signals?",
+            "acceptedAnswer": { "@type": "Answer", "text": "For end-of-day signals and backtesting, yes. Yahoo Finance OHLCV data is generally accurate for daily timeframes. For intraday or tick data you'll need a paid source." }
+          },
+          {
+            "@type": "Question",
+            "name": "Does pandas-ta work with crypto data?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Any OHLCV DataFrame works — yfinance can pull crypto tickers like BTC-USD directly." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I automate actual trades with this?",
+            "acceptedAnswer": { "@type": "Answer", "text": "OpenClaw is a signal and monitoring framework, not an execution engine. These scripts generate signals; acting on them requires a separate brokerage integration." }
+          },
+          {
+            "@type": "Question",
+            "name": "How many stocks can the scanner handle?",
+            "acceptedAnswer": { "@type": "Answer", "text": "The S&P 500 with daily candles runs in under 2 minutes on a standard laptop. For larger universes, add caching to avoid re-fetching unchanged data." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <title>Technical Analysis Automation | Claw Street Terminal | learnopenclaw.org</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --teal: #0d9488;
+      --teal-lt: #f0fdfa;
+      --teal-md: #99f6e4;
+      --teal-dk: #134e4a;
+    }
+
+    html, body {
+      height: 100%;
+      background: #1c1917;
+      color: #e7e5e4;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* Skip Link */
+    .skip-nav {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+    }
+    .skip-nav:focus {
+      left: 0;
+      top: 0;
+      z-index: 9999;
+      background: var(--teal);
+      color: #fff;
+      padding: 8px 16px;
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: #1c1917;
+      border-bottom: 2px solid var(--teal);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .nav-logo {
+      color: var(--teal);
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-links {
+      display: none;
+    }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: #1c1917;
+      border-bottom: 2px solid var(--teal);
+      padding: 16px 20px;
+      gap: 12px;
+      z-index: 99;
+    }
+    .nav-links a {
+      color: #e7e5e4;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 6px 0;
+    }
+    .nav-links a:hover {
+      color: var(--teal);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .nav-search-form {
+      display: flex;
+      align-items: center;
+      background: #292524;
+      border: 1px solid #44403c;
+      border-radius: 20px;
+      padding: 4px 12px;
+      gap: 6px;
+    }
+    .nav-search-icon {
+      color: #a8a29e;
+      flex-shrink: 0;
+    }
+    .nav-search-input {
+      background: none;
+      border: none;
+      outline: none;
+      color: #e7e5e4;
+      font-size: 0.875rem;
+      width: 120px;
+    }
+    .nav-search-input::placeholder {
+      color: #78716c;
+    }
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 24px;
+      height: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .hamburger span {
+      display: block;
+      height: 2px;
+      background: #e7e5e4;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .hamburger:hover span {
+      background: var(--teal);
+    }
+
+    /* Main Content */
+    main {
+      min-height: calc(100vh - 60px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Disclaimer Bar */
+    .disclaimer-bar {
+      background: var(--teal-lt);
+      border-left: 4px solid var(--teal);
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      color: var(--teal-dk);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      font-size: 0.875rem;
+      color: #a8a29e;
+    }
+    .breadcrumb a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, var(--teal) 100%);
+      color: #fff;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 6px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .hero .subtitle {
+      font-size: 1.125rem;
+      max-width: 700px;
+      margin: 0 auto 32px;
+      color: rgba(255,255,255,0.95);
+      line-height: 1.6;
+    }
+    .stat-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .stat-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    /* Sections */
+    section {
+      padding: 60px 0;
+      border-bottom: 1px solid #292524;
+    }
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    /* Callout Box */
+    .callout-box {
+      background: var(--teal-lt);
+      border-left: 4px solid var(--teal);
+      padding: 24px;
+      border-radius: 4px;
+      color: var(--teal-dk);
+      margin-bottom: 24px;
+    }
+    .callout-box h3 {
+      font-size: 1.25rem;
+      margin-bottom: 16px;
+      color: var(--teal-dk);
+    }
+    .callout-box ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 16px;
+    }
+    .callout-box li {
+      padding: 8px 0;
+      margin-left: 20px;
+      position: relative;
+    }
+    .callout-box li:before {
+      content: "•";
+      position: absolute;
+      left: -16px;
+      color: var(--teal);
+      font-weight: bold;
+    }
+    .callout-box strong {
+      color: var(--teal-dk);
+      font-weight: 700;
+    }
+
+    /* Section Titles */
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 32px;
+      color: #fff;
+      font-weight: 800;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+    thead {
+      background: #292524;
+    }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--teal);
+      border-bottom: 2px solid var(--teal);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #292524;
+    }
+    tr:hover {
+      background: rgba(13, 148, 136, 0.05);
+    }
+
+    /* Module Grid */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .module-card {
+      background: #292524;
+      border: 2px solid #3f3936;
+      border-radius: 8px;
+      padding: 24px;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: #e7e5e4;
+      display: flex;
+      flex-direction: column;
+    }
+    .module-card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.2);
+      transform: translateY(-4px);
+    }
+    .module-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .module-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+      color: var(--teal);
+      font-weight: 700;
+    }
+    .module-card p {
+      font-size: 0.95rem;
+      color: #a8a29e;
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+
+    /* FAQ */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    details {
+      background: #292524;
+      border: 1px solid #3f3936;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    details[open] {
+      border-color: var(--teal);
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.1);
+    }
+    summary {
+      padding: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    summary:hover {
+      background: rgba(13, 148, 136, 0.1);
+      color: var(--teal);
+    }
+    summary::marker {
+      color: var(--teal);
+    }
+    .faq-answer {
+      padding: 0 16px 16px 16px;
+      color: #a8a29e;
+      line-height: 1.6;
+      border-top: 1px solid #3f3936;
+    }
+
+    /* CTA Button */
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--teal), #14b8a6);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(13, 148, 136, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background: #0f0d0c;
+      border-top: 1px solid #292524;
+      padding: 40px 20px;
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.875rem;
+      color: #78716c;
+    }
+    footer a {
+      color: var(--teal);
+      text-decoration: none;
+      margin: 0 8px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    .footer-copyright {
+      margin-bottom: 12px;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 1.75rem;
+      }
+      .hero .subtitle {
+        font-size: 1rem;
+      }
+      .stat-pills {
+        flex-direction: column;
+        gap: 8px;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      table {
+        font-size: 0.85rem;
+      }
+      th, td {
+        padding: 8px 12px;
+      }
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-nav" href="#main-content">Skip to main content</a>
+
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">&#x1F99E; learnopenclaw.org</a>
+      <div class="nav-links" id="nav-links" role="list">
+        <a href="index.html" role="listitem">Home</a>
+        <a href="blog.html" role="listitem">Blog</a>
+        <a href="learn.html" role="listitem">Learn</a>
+        <a href="faq.html" role="listitem">FAQ</a>
+        <a href="claw-street-terminal.html" role="listitem">Terminal</a>
+      </div>
+      <div class="nav-right">
+        <form class="nav-search-form" role="search" onsubmit="return false;">
+          <svg class="nav-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="nav-search-input" placeholder="Search" aria-label="Search learnopenclaw.org" autocomplete="off" spellcheck="false"/>
+        </form>
+        <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="disclaimer-bar">
+    ⚠️ Technical analysis is probabilistic, not predictive. Signals generated by automation reflect historical patterns — they do not guarantee future results. Not financial advice.
+  </div>
+
+  <main id="main-content">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="index.html">Home</a> › <a href="claw-street-terminal.html">Terminal</a> › Technical Analysis Automation
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-tag">CLAW STREET TERMINAL</div>
+        <h1>Technical Analysis Automation</h1>
+        <p class="subtitle">Stop checking 50 charts every morning. Automate RSI scans, moving average crossovers, Bollinger Band squeezes, and custom signal alerts using free Python libraries and Yahoo Finance data.</p>
+        <div class="stat-pills">
+          <div class="stat-pill">yfinance Free</div>
+          <div class="stat-pill">pandas-ta 130+ Indicators</div>
+          <div class="stat-pill">6 Modules</div>
+          <div class="stat-pill">No Data Subscription</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Honest Framing -->
+    <section>
+      <div class="container">
+        <div class="callout-box">
+          <h3>What TA Automation Actually Does For You</h3>
+          <strong>What it IS:</strong>
+          <ul>
+            <li><strong>Consistency:</strong> You never miss a signal because you forgot to check.</li>
+            <li><strong>Speed:</strong> Scan 500 stocks in seconds vs hours manually.</li>
+            <li><strong>Discipline:</strong> The rules run the same way every time.</li>
+          </ul>
+          <strong>What it ISN'T:</strong>
+          <ul>
+            <li>A crystal ball. No indicator predicts the future. Automation makes you more systematic, not more accurate.</li>
+          </ul>
+          <strong>Best use:</strong> Morning watchlist generation, alert triggers, pattern confirmation across large universes — not autonomous trading.
+        </div>
+      </div>
+    </section>
+
+    <!-- Free Tool Stack -->
+    <section>
+      <div class="container">
+        <h2>Free Tool Stack</h2>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Tool</th>
+              <th scope="col">Purpose</th>
+              <th scope="col">Install</th>
+              <th scope="col">Key Required</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>yfinance</strong></td>
+              <td>OHLCV data for stocks, ETFs, crypto</td>
+              <td><code>pip install yfinance</code></td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><strong>pandas-ta</strong></td>
+              <td>130+ TA indicators (RSI, MACD, BB, etc.)</td>
+              <td><code>pip install pandas-ta</code></td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><strong>pandas</strong></td>
+              <td>Data manipulation and signal logic</td>
+              <td><code>pip install pandas</code></td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><strong>Plotly</strong></td>
+              <td>Interactive HTML charts</td>
+              <td><code>pip install plotly</code></td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><strong>matplotlib</strong></td>
+              <td>Static PNG chart generation</td>
+              <td><code>pip install matplotlib</code></td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><strong>tabulate</strong></td>
+              <td>Clean terminal output</td>
+              <td><code>pip install tabulate</code></td>
+              <td>No</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Series Modules -->
+    <section>
+      <div class="container">
+        <h2>Series Modules</h2>
+        <div class="modules-grid">
+          <a href="ta-indicators.html" class="module-card">
+            <div class="module-icon">📊</div>
+            <h3>Core Indicators</h3>
+            <p>SMA, EMA, RSI, MACD, Bollinger Bands on any ticker</p>
+          </a>
+          <a href="ta-scanner.html" class="module-card">
+            <div class="module-icon">🔍</div>
+            <h3>Multi-Stock Scanner</h3>
+            <p>Screen 500 stocks for RSI, golden cross, BB squeeze in seconds</p>
+          </a>
+          <a href="ta-alerts.html" class="module-card">
+            <div class="module-icon">🔔</div>
+            <h3>Signal Alerts</h3>
+            <p>Email/file alerts when conditions hit — MA crossover, RSI threshold, MACD flip</p>
+          </a>
+          <a href="ta-backtest.html" class="module-card">
+            <div class="module-icon">📈</div>
+            <h3>Backtesting</h3>
+            <p>Test a strategy over historical data — win rate, avg return, drawdown</p>
+          </a>
+          <a href="ta-charts.html" class="module-card">
+            <div class="module-icon">🖼️</div>
+            <h3>Chart Generation</h3>
+            <p>Automated candlestick charts with indicator overlays, saved to HTML or PNG</p>
+          </a>
+          <a href="#" class="module-card" style="cursor: default; opacity: 0.6;">
+            <div class="module-icon">⚙️</div>
+            <h3>Advanced Strategies</h3>
+            <p>Multi-indicator confirmation, options flow integration, market regime detection</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who This Is For -->
+    <section>
+      <div class="container">
+        <h2>Who This Is For</h2>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Audience</th>
+              <th scope="col">What They'll Build</th>
+              <th scope="col">Prior Knowledge</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Momentum Trader</strong></td>
+              <td>Daily RSI + MACD scanner</td>
+              <td>Basic Python</td>
+            </tr>
+            <tr>
+              <td><strong>Systematic Investor</strong></td>
+              <td>Weekly golden cross screener</td>
+              <td>Python + pandas</td>
+            </tr>
+            <tr>
+              <td><strong>Chart Reviewer</strong></td>
+              <td>Automated overnight chart report</td>
+              <td>Python + matplotlib</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section>
+      <div class="container">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <details>
+            <summary>Is yfinance data reliable enough for signals?</summary>
+            <div class="faq-answer">
+              For end-of-day signals and backtesting, yes. Yahoo Finance OHLCV data is generally accurate for daily timeframes. For intraday or tick data you'll need a paid source.
+            </div>
+          </details>
+          <details>
+            <summary>Does pandas-ta work with crypto data?</summary>
+            <div class="faq-answer">
+              Yes. Any OHLCV DataFrame works — yfinance can pull crypto tickers like BTC-USD directly.
+            </div>
+          </details>
+          <details>
+            <summary>Can I automate actual trades with this?</summary>
+            <div class="faq-answer">
+              OpenClaw is a signal and monitoring framework, not an execution engine. These scripts generate signals; acting on them requires a separate brokerage integration.
+            </div>
+          </details>
+          <details>
+            <summary>How many stocks can the scanner handle?</summary>
+            <div class="faq-answer">
+              The S&P 500 with daily candles runs in under 2 minutes on a standard laptop. For larger universes, add caching to avoid re-fetching unchanged data.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="text-align: center; padding: 60px 0;">
+      <div class="container">
+        <h2>Ready to Build Your First Scanner?</h2>
+        <p style="font-size: 1.125rem; color: #a8a29e; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto;">Start with Part 1 and build a complete RSI + moving average indicator in under 30 minutes.</p>
+        <a href="ta-indicators.html" class="cta-button">Start with Part 1: Core Indicators →</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-copyright">
+      © 2025 learnopenclaw.org | Not financial advice
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a> ·
+      <a href="blog.html">Blog</a> ·
+      <a href="learn.html">Learn</a> ·
+      <a href="faq.html">FAQ</a> ·
+      <a href="claw-street-terminal.html">Terminal</a>
+    </div>
+  </footer>
+
+  <!-- Hamburger Menu Script -->
+  <script>
+    const btn = document.querySelector('.hamburger');
+    const menu = document.getElementById('nav-links');
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      menu.classList.toggle('open');
+    });
+  </script>
+  <script src="copy.js"></script>
+</body>
+</html>

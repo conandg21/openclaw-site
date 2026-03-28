@@ -1510,5 +1510,41 @@
     "title": "Crypto Portfolio Tracking & DCA Automation | Claw Street Terminal",
     "description": "Track your multi-coin portfolio, automate dollar-cost averaging, monitor unrealized P&L, and detect rebalancing drift.",
     "section": "terminal"
+  },
+  {
+    "url": "openclaw-for-ta.html",
+    "title": "Technical Analysis Automation | Claw Street Terminal",
+    "description": "Automate RSI scans, moving average alerts, and multi-stock screeners with free Python tools. No data subscription needed.",
+    "section": "terminal"
+  },
+  {
+    "url": "ta-indicators.html",
+    "title": "Core TA Indicators with pandas-ta | Claw Street Terminal",
+    "description": "Build a complete SMA, EMA, RSI, MACD, and Bollinger Band stack on any ticker using pandas-ta and yfinance.",
+    "section": "terminal"
+  },
+  {
+    "url": "ta-scanner.html",
+    "title": "Multi-Stock TA Scanner with Python | Claw Street Terminal",
+    "description": "Scan the S&P 500 for RSI extremes, golden crosses, BB squeezes, and MACD crossovers in under 2 minutes.",
+    "section": "terminal"
+  },
+  {
+    "url": "ta-alerts.html",
+    "title": "TA Signal Alerts \u2014 MA Cross, RSI, MACD | Claw Street Terminal",
+    "description": "Get notified when a golden cross fires, RSI hits an extreme, or MACD flips \u2014 with cooldown logic and daily digest.",
+    "section": "terminal"
+  },
+  {
+    "url": "ta-backtest.html",
+    "title": "Simple TA Backtesting with Python | Claw Street Terminal",
+    "description": "Test a strategy over historical data \u2014 win rate, average return, max drawdown \u2014 with honest framing about past performance.",
+    "section": "terminal"
+  },
+  {
+    "url": "ta-charts.html",
+    "title": "Automated TA Chart Generation with Plotly & matplotlib | Claw Street Terminal",
+    "description": "Build candlestick charts with indicator overlays, save as interactive HTML or PNG \u2014 no charting subscription needed.",
+    "section": "terminal"
   }
 ]

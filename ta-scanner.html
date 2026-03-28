@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Scan your entire watchlist or S&P 500 for RSI extremes, golden crosses, Bollinger Band squeezes, and MACD crossovers in under 2 minutes.">
+    <meta name="canonical" content="https://learnopenclaw.org/ta-scanner.html">
+    <title>Multi-Stock TA Scanner with Python | Claw Street Terminal</title>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Multi-Stock Scanner",
+        "description": "Technical Analysis scanner for screening watchlists and S&P 500 tickers",
+        "url": "https://learnopenclaw.org/ta-scanner.html",
+        "image": "https://learnopenclaw.org/images/ta-scanner.png",
+        "author": {
+            "@type": "Organization",
+            "name": "Claw Street Terminal"
+        },
+        "datePublished": "2026-03-28",
+        "dateModified": "2026-03-28"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://learnopenclaw.org/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Terminal",
+                "item": "https://learnopenclaw.org/terminal"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Technical Analysis Automation",
+                "item": "https://learnopenclaw.org/ta-automation"
+            },
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Multi-Stock Scanner",
+                "item": "https://learnopenclaw.org/ta-scanner.html"
+            }
+        ]
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #1c1917;
+            color: #e7e5e4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .site-nav {
+            background: #1c1917;
+            border-bottom: 2px solid #0d9488;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            color: #0d9488;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .nav-links.open {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: #1c1917;
+            border-bottom: 2px solid #0d9488;
+            padding: 16px 20px;
+            gap: 12px;
+            z-index: 99;
+        }
+
+        .nav-links a {
+            color: #e7e5e4;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 6px 0;
+        }
+
+        .nav-links a:hover {
+            color: #0d9488;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .nav-search {
+            display: none;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 2px;
+            background: #e7e5e4;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .hamburger:hover span {
+            background: #0d9488;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding: 0 20px;
+            font-size: 0.875rem;
+            color: #a1a1a1;
+        }
+
+        .breadcrumb a {
+            color: #0d9488;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            background: #f0fdfa;
+            border-left: 4px solid #0d9488;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: #134e4a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 1200px;
+            margin: 24px auto 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .disclaimer-icon {
+            flex-shrink: 0;
+            font-size: 1.25rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #0d9488 100%);
+            padding: 60px 20px;
+            text-align: center;
+            color: #f0fdfa;
+        }
+
+        .hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(13, 148, 136, 0.2);
+            color: #0d9488;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            border: 1px solid #0d9488;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #d1fae5;
+            margin-bottom: 32px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-pills {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.15);
+            color: #f0fdfa;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: rgba(13, 148, 136, 0.1);
+            color: #0d9488;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: #f0fdfa;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: #e7e5e4;
+        }
+
+        h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: #d1fae5;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: #a8a8a8;
+            line-height: 1.8;
+        }
+
+        .highlight {
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        /* Code Blocks */
+        .code-block-wrapper {
+            background: #2d2421;
+            border: 1px solid #3d3a37;
+            border-radius: 8px;
+            margin: 24px 0;
+            overflow: hidden;
+        }
+
+        .code-block-header {
+            background: #1c1917;
+            padding: 12px 16px;
+            border-bottom: 1px solid #3d3a37;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #a8a8a8;
+        }
+
+        .code-block-header span {
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: #0d9488;
+            color: #1c1917;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #0f766e;
+        }
+
+        .copy-btn.copied {
+            background: #059669;
+        }
+
+        pre {
+            background: #2d2421;
+            color: #e7e5e4;
+            padding: 16px;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        code {
+            font-family: "Fira Code", "Courier New", monospace;
+            color: #e7e5e4;
+        }
+
+        /* Inline code */
+        p code, li code {
+            background: #2d2421;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #0d9488;
+            font-size: 0.9em;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            border: 1px solid #3d3a37;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #2d2421;
+            border-bottom: 2px solid #0d9488;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 700;
+            color: #0d9488;
+            font-size: 0.875rem;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #3d3a37;
+            color: #a8a8a8;
+            font-size: 0.875rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #2d2421;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #a8a8a8;
+        }
+
+        li code {
+            background: #2d2421;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #0d9488;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid #3d3a37;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 16px 20px;
+            background: #2d2421;
+            border: 1px solid #3d3a37;
+            border-radius: 8px;
+            color: #e7e5e4;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background: #3d3a37;
+            border-color: #0d9488;
+            color: #0d9488;
+        }
+
+        .nav-btn.next {
+            text-align: right;
+        }
+
+        .nav-btn-label {
+            display: block;
+            font-size: 0.75rem;
+            color: #a8a8a8;
+            margin-bottom: 4px;
+            font-weight: 400;
+        }
+
+        /* Footer */
+        footer {
+            background: #2d2421;
+            border-top: 2px solid #0d9488;
+            padding: 40px 20px;
+            margin-top: 60px;
+            color: #a8a8a8;
+        }
+
+        footer .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: #0d9488;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.875rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .nav-btn-label {
+                display: none;
+            }
+
+            table {
+                font-size: 0.75rem;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="site-nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">🦞 learnopenclaw.org</a>
+            <div class="nav-links" id="navLinks">
+                <a href="/">Home</a>
+                <a href="/blog">Blog</a>
+                <a href="/learn">Learn</a>
+                <a href="/faq">FAQ</a>
+                <a href="/terminal">Terminal</a>
+            </div>
+            <div class="nav-right">
+                <form class="nav-search" style="display: none;">
+                    <input type="search" placeholder="Search...">
+                </form>
+                <button class="hamburger" id="hamburgerBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="/">Home</a> › <a href="/terminal">Terminal</a> › <a href="/ta-automation">Technical Analysis Automation</a> › <span>Multi-Stock Scanner</span>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <div class="disclaimer-icon">⚠️</div>
+        <div>Scanner outputs are not buy or sell recommendations. Technical signals reflect historical patterns only. Always do your own research.</div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-inner">
+            <div class="hero-tag">TECHNICAL ANALYSIS · PART 2 OF 5</div>
+            <h1>Multi-Stock Scanner</h1>
+            <p class="hero-subtitle">Scan your entire watchlist — or the full S&P 500 — for RSI extremes, golden crosses, Bollinger Band squeezes, and MACD crossovers in under 2 minutes.</p>
+            <div class="hero-pills">
+                <div class="pill">S&P 500 Ready</div>
+                <div class="pill">4 Signal Types</div>
+                <div class="pill">CSV Export</div>
+                <div class="pill">~2 Min Runtime</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Section 1: Scanner Architecture -->
+        <section class="section">
+            <div class="section-tag">ARCHITECTURE</div>
+            <h2>Scanner Architecture</h2>
+            <p>The multi-stock scanner follows a simple but powerful pipeline:</p>
+            <ul>
+                <li><strong>Input:</strong> List of tickers (your watchlist or full S&P 500)</li>
+                <li><strong>Fetch:</strong> Download 1 year of daily OHLCV (Open, High, Low, Close, Volume) for each ticker</li>
+                <li><strong>Compute:</strong> Calculate all technical indicators (SMA, RSI, Bollinger Bands, MACD) on the fetched data</li>
+                <li><strong>Evaluate:</strong> Check signal conditions (RSI extremes, moving average crosses, band squeezes, MACD crossovers)</li>
+                <li><strong>Rank:</strong> Sort results by signal count and RSI extremity</li>
+                <li><strong>Output:</strong> Display results in a terminal table and export to CSV</li>
+            </ul>
+            <p><span class="highlight">Key principle:</span> Fetch once, evaluate multiple conditions. Cache data to avoid redundant downloads and speed up re-runs on the same day.</p>
+        </section>
+
+        <!-- Section 2: Fetching S&P 500 -->
+        <section class="section">
+            <div class="section-tag">DATA SOURCING</div>
+            <h2>Fetching the Full S&P 500 Ticker List</h2>
+            <p>You can scan either your own watchlist or pull all 500+ tickers from the S&P 500 directly from Wikipedia. Choose your universe, then pass it to the scanner.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code># pip install yfinance pandas-ta pandas requests tabulate
+import pandas as pd
+import requests
+
+def get_sp500_tickers() -> list:
+    """Scrape S&P 500 tickers from Wikipedia."""
+    url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+    tables = pd.read_html(url)
+    sp500 = tables[0]
+    tickers = sp500["Symbol"].str.replace(".", "-", regex=False).tolist()
+    return tickers
+
+# Or define your own watchlist
+WATCHLIST = [
+    "AAPL","MSFT","GOOGL","AMZN","NVDA","META","TSLA","BRK-B",
+    "JPM","V","UNH","MA","HD","PG","XOM","JNJ","MRK","ABBV",
+    "SPY","QQQ","IWM","GLD","TLT","SLV"
+]
+
+# Use WATCHLIST for daily focus, get_sp500_tickers() for full scan
+tickers = WATCHLIST  # swap for get_sp500_tickers() to scan all 500+
+print(f"Scanning {len(tickers)} tickers...")</code></pre>
+            </div>
+
+            <p>The <code>get_sp500_tickers()</code> function scrapes the Wikipedia list of S&P 500 companies and extracts all symbols (replacing dots with dashes for Yahoo Finance compatibility). You can then pass this list or your own custom watchlist to the scanner.</p>
+        </section>
+
+        <!-- Section 3: Core Scanner Function -->
+        <section class="section">
+            <div class="section-tag">CORE LOGIC</div>
+            <h2>Core Scanner Function</h2>
+            <p>This function handles a single ticker: fetch data, compute all indicators, and evaluate signal conditions. It returns a result dictionary containing price, RSI, Bollinger Bands width, and all detected signals.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>import yfinance as yf
+import pandas_ta as ta
+import time
+from datetime import datetime
+
+def scan_ticker(ticker: str, period: str = "1y") -> dict | None:
+    """
+    Fetch data and evaluate all signal conditions for one ticker.
+    Returns a result dict, or None on error.
+    """
+    try:
+        df = yf.download(ticker, period=period, interval="1d", progress=False)
+        if df.empty or len(df) < 210:
+            return None
+        df.columns = [c.lower() for c in df.columns]
+        df = df[["open","high","low","close","volume"]].dropna()
+
+        # Compute indicators
+        df["sma50"]  = ta.sma(df["close"], 50)
+        df["sma200"] = ta.sma(df["close"], 200)
+        df["rsi"]    = ta.rsi(df["close"], 14)
+        bb = ta.bbands(df["close"], 20, 2)
+        df["bb_bw"]  = bb[[c for c in bb.columns if "BBB" in c][0]]
+        df["bb_upper"] = bb[[c for c in bb.columns if "BBU" in c][0]]
+        df["bb_lower"] = bb[[c for c in bb.columns if "BBL" in c][0]]
+        macd = ta.macd(df["close"], 12, 26, 9)
+        df["macd"]   = macd[[c for c in macd.columns if c.startswith("MACD_")][0]]
+        df["macd_s"] = macd[[c for c in macd.columns if c.startswith("MACDs_")][0]]
+        df = df.dropna()
+
+        if len(df) < 2:
+            return None
+
+        cur = df.iloc[-1]
+        prev = df.iloc[-2]
+
+        # Signal evaluations
+        rsi_val = cur["rsi"]
+        bw_20th = df["bb_bw"].quantile(0.20)
+
+        signals = []
+        if rsi_val < 30:   signals.append("RSI_OVERSOLD")
+        if rsi_val > 70:   signals.append("RSI_OVERBOUGHT")
+        if (cur["sma50"] > cur["sma200"]) and (prev["sma50"] <= prev["sma200"]):
+            signals.append("GOLDEN_CROSS")
+        if (cur["sma50"] < cur["sma200"]) and (prev["sma50"] >= prev["sma200"]):
+            signals.append("DEATH_CROSS")
+        if cur["bb_bw"] < bw_20th:
+            signals.append("BB_SQUEEZE")
+        if (cur["macd"] > cur["macd_s"]) and (prev["macd"] <= prev["macd_s"]):
+            signals.append("MACD_BULL_CROSS")
+        if (cur["macd"] < cur["macd_s"]) and (prev["macd"] >= prev["macd_s"]):
+            signals.append("MACD_BEAR_CROSS")
+
+        # Above/below key MAs
+        ma_status = []
+        if cur["close"] > cur["sma50"]:  ma_status.append("Above50")
+        if cur["close"] > cur["sma200"]: ma_status.append("Above200")
+
+        pct_change_1d = (cur["close"] - prev["close"]) / prev["close"] * 100
+
+        return {
+            "ticker":     ticker,
+            "price":      cur["close"],
+            "chg_1d":     pct_change_1d,
+            "rsi":        rsi_val,
+            "bb_bw":      cur["bb_bw"],
+            "macd_hist":  cur["macd"] - cur["macd_s"],
+            "signals":    signals,
+            "ma_status":  " ".join(ma_status) if ma_status else "Below both",
+            "signal_count": len(signals),
+        }
+    except Exception as e:
+        return None</code></pre>
+            </div>
+
+            <p>The function uses <span class="highlight">pandas_ta</span> to compute all indicators efficiently. It checks for 7 distinct signal types, tracks moving average positioning, and returns a compact dictionary for each ticker. All calculations happen on the same dataframe to minimize memory overhead.</p>
+        </section>
+
+        <!-- Section 4: Run the Full Scanner -->
+        <section class="section">
+            <div class="section-tag">EXECUTION</div>
+            <h2>Run the Full Scanner</h2>
+            <p>The <code>run_scanner()</code> function loops through all tickers, calls <code>scan_ticker()</code> on each, and collects results. It includes a small delay between requests (to be polite to Yahoo Finance) and sorts results by signal count.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>from tabulate import tabulate
+import csv
+
+def run_scanner(tickers: list, period: str = "1y", delay: float = 0.1) -> list:
+    """
+    Scan all tickers. Returns list of result dicts sorted by signal count.
+    delay: seconds between requests (be polite to Yahoo Finance)
+    """
+    results = []
+    errors = 0
+
+    print(f"\n🔍 Scanning {len(tickers)} tickers | {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print("─" * 50)
+
+    for i, ticker in enumerate(tickers, 1):
+        result = scan_ticker(ticker, period)
+        if result:
+            if result["signals"]:
+                results.append(result)
+                print(f"  [{i:>3}/{len(tickers)}] {ticker:<8} ✓  {', '.join(result['signals'])}")
+            else:
+                print(f"  [{i:>3}/{len(tickers)}] {ticker:<8} —  no signals")
+        else:
+            errors += 1
+            print(f"  [{i:>3}/{len(tickers)}] {ticker:<8} ✗  error/skip")
+        time.sleep(delay)
+
+    # Sort: most signals first, then by RSI extremity
+    results.sort(key=lambda x: (x["signal_count"], abs(x["rsi"] - 50)), reverse=True)
+    return results
+
+results = run_scanner(WATCHLIST)</code></pre>
+            </div>
+
+            <p>The scanner prints progress in real-time, showing each ticker's status and detected signals. Tickers with no signals are noted but not included in the results. With a 24-ticker watchlist, the full scan completes in 30–40 seconds. The full S&P 500 takes 2–3 minutes depending on network speed.</p>
+        </section>
+
+        <!-- Section 5: Output Functions -->
+        <section class="section">
+            <div class="section-tag">OUTPUT</div>
+            <h2>Output: Terminal Table + CSV</h2>
+            <p>After scanning, format the results as a clean terminal table and optionally save to CSV for further analysis or record-keeping.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>def print_scanner_results(results: list) -> None:
+    """Pretty-print scanner results."""
+    if not results:
+        print("\nNo signals found.")
+        return
+
+    rows = []
+    for r in results:
+        rows.append([
+            r["ticker"],
+            f"${r['price']:,.2f}",
+            f"{r['chg_1d']:+.1f}%",
+            f"{r['rsi']:.1f}",
+            r["ma_status"],
+            ", ".join(r["signals"]) or "—",
+        ])
+
+    print(f"\n{'═'*70}")
+    print(f"  Scanner Results — {datetime.now().strftime('%Y-%m-%d')} | {len(results)} signals found")
+    print(f"{'═'*70}")
+    print(tabulate(rows,
+        headers=["Ticker","Price","1d%","RSI","vs MAs","Signals"],
+        tablefmt="rounded_outline",
+        colalign=("left","right","right","right","left","left")
+    ))
+
+def save_to_csv(results: list, path: str = None) -> None:
+    """Save scanner results to CSV."""
+    filename = path or f"scanner_{datetime.now().strftime('%Y%m%d')}.csv"
+    if not results:
+        return
+
+    keys = ["ticker","price","chg_1d","rsi","bb_bw","ma_status","signals","signal_count"]
+    with open(filename, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
+        writer.writeheader()
+        for r in results:
+            row = dict(r)
+            row["signals"] = " | ".join(row["signals"])
+            writer.writerow(row)
+    print(f"\nSaved: {filename}")
+
+print_scanner_results(results)
+save_to_csv(results)</code></pre>
+            </div>
+
+            <p>The terminal table uses <span class="highlight">tabulate</span> with rounded box borders and right-aligned numeric columns for easy scanning. The CSV export preserves all fields and joins multiple signals with a pipe separator for clean parsing later.</p>
+        </section>
+
+        <!-- Section 6: Filtering -->
+        <section class="section">
+            <div class="section-tag">FILTERING</div>
+            <h2>Filtering to Specific Signal Types</h2>
+            <p>Once you have results, filter them to focus on a single signal type. This is useful for trading strategies that target specific patterns.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>def filter_signals(results: list, signal_type: str) -> list:
+    """Filter results to a specific signal type."""
+    return [r for r in results if signal_type in r["signals"]]
+
+# Examples
+oversold  = filter_signals(results, "RSI_OVERSOLD")
+squeezes  = filter_signals(results, "BB_SQUEEZE")
+gold_x    = filter_signals(results, "GOLDEN_CROSS")
+macd_bull = filter_signals(results, "MACD_BULL_CROSS")
+
+print(f"RSI Oversold:   {len(oversold)} tickers")
+print(f"BB Squeezes:    {len(squeezes)} tickers")
+print(f"Golden Crosses: {len(gold_x)} tickers")
+print(f"MACD Bull:      {len(macd_bull)} tickers")</code></pre>
+            </div>
+
+            <p>Each filter returns a subset of the results containing only tickers with that specific signal. You can chain filters or use them to build custom alerts for different trading strategies.</p>
+        </section>
+
+        <!-- Section 7: Performance Tips -->
+        <section class="section">
+            <div class="section-tag">OPTIMIZATION</div>
+            <h2>Performance Tips for Large Universes</h2>
+            <p>When scanning the full S&P 500 repeatedly, caching is essential. Store results locally keyed by date, so re-runs on the same day are nearly instantaneous.</p>
+
+            <div class="code-block-wrapper">
+                <div class="code-block-header">
+                    <span>python</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code>import os
+import pickle
+from datetime import date
+
+CACHE_DIR = ".scanner_cache"
+
+def cached_scan_ticker(ticker: str, period: str = "1y") -> dict | None:
+    """Cache results so re-runs don't re-fetch the same day's data."""
+    os.makedirs(CACHE_DIR, exist_ok=True)
+    cache_file = os.path.join(CACHE_DIR, f"{ticker}_{date.today()}.pkl")
+
+    if os.path.exists(cache_file):
+        with open(cache_file, "rb") as f:
+            return pickle.load(f)
+
+    result = scan_ticker(ticker, period)
+    if result:
+        with open(cache_file, "wb") as f:
+            pickle.dump(result, f)
+    return result
+
+# With caching, re-running the scanner on the same day takes < 5 seconds</code></pre>
+            </div>
+
+            <p>Each cache file stores a single ticker's scan result for the day. When you run the scanner again, it loads from cache instead of re-fetching data from Yahoo Finance. Old cache files can be safely deleted at the end of each week.</p>
+        </section>
+
+        <!-- Section 8: Signal Types Reference -->
+        <section class="section">
+            <div class="section-tag">REFERENCE</div>
+            <h2>Signal Types Reference</h2>
+            <p>All 7 signal types detected by the scanner, their conditions, typical frequency, and trading use cases:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Signal</th>
+                        <th>Condition</th>
+                        <th>Frequency</th>
+                        <th>Typical Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>RSI_OVERSOLD</strong></td>
+                        <td>RSI &lt; 30</td>
+                        <td>~5–10% of universe</td>
+                        <td>Mean reversion watch</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RSI_OVERBOUGHT</strong></td>
+                        <td>RSI &gt; 70</td>
+                        <td>~5–10% of universe</td>
+                        <td>Momentum or fade watch</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GOLDEN_CROSS</strong></td>
+                        <td>SMA50 crosses above SMA200</td>
+                        <td>Rare, 1–3x/year per ticker</td>
+                        <td>Trend following entry</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DEATH_CROSS</strong></td>
+                        <td>SMA50 crosses below SMA200</td>
+                        <td>Rare, 1–3x/year per ticker</td>
+                        <td>Trend following exit</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BB_SQUEEZE</strong></td>
+                        <td>Bandwidth &lt; 20th percentile</td>
+                        <td>~20% of universe at any time</td>
+                        <td>Breakout anticipation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MACD_BULL_CROSS</strong></td>
+                        <td>MACD crosses above signal</td>
+                        <td>Monthly</td>
+                        <td>Momentum entry</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MACD_BEAR_CROSS</strong></td>
+                        <td>MACD crosses below signal</td>
+                        <td>Monthly</td>
+                        <td>Momentum exit</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>RSI and Bollinger Band signals are continuous — they update daily as prices move in and out of extremes. Moving average crosses (golden/death) and MACD crossovers are rare events that trigger only once per occurrence. Combine signals for stronger conviction.</p>
+        </section>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="ta-indicators.html" class="nav-btn">
+                <span class="nav-btn-label">← Previous</span>
+                <span>Part 1: Core Indicators</span>
+            </a>
+            <a href="ta-alerts.html" class="nav-btn next">
+                <span class="nav-btn-label">Next →</span>
+                <span>Part 3: Signal Alerts</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <p>&copy; 2026 Claw Street Terminal. <a href="/">Home</a> | <a href="/learn">Learn</a> | <a href="/faq">FAQ</a></p>
+            <p style="margin-top: 12px; font-size: 0.75rem;">Part 2 of Technical Analysis Automation series on learnopenclaw.org</p>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger menu toggle
+        const hamburgerBtn = document.getElementById("hamburgerBtn");
+        const navLinks = document.getElementById("navLinks");
+
+        hamburgerBtn.addEventListener("click", () => {
+            navLinks.classList.toggle("open");
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                navLinks.classList.remove("open");
+            });
+        });
+
+        // Copy button functionality
+        function copyCode(btn) {
+            const codeBlock = btn.closest(".code-block-wrapper");
+            const code = codeBlock.querySelector("pre code").textContent;
+
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = "Copied!";
+                btn.classList.add("copied");
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove("copied");
+                }, 2000);
+            }).catch(err => {
+                console.error("Failed to copy:", err);
+            });
+        }
+    </script>
+</body>
+</html>
