@@ -3,312 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pre-Market Earnings Brief | Part 5 of 5 | Learn OpenClaw</title>
-    <meta name="description" content="OpenClaw Part 5: Automate a daily pre-market earnings brief that combines calendar, estimates, beat rate, and price reaction data into one email. The capstone of the Earnings & Estimates automation series.">
+    <title>Pre-Market Earnings Brief | Part 5 of 5 | OpenClaw Earnings Automation</title>
+    <meta name="description" content="Automate a daily pre-market earnings brief combining calendar alerts, consensus estimates, historical beat rate, and price reaction data into one email. The capstone of the OpenClaw Earnings series.">
+    <link rel="canonical" href="https://learnopenclaw.org/earnings-brief.html">
+
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Article","headline":"Pre-Market Earnings Brief — OpenClaw Earnings Automation Part 5","description":"Automate a daily pre-market earnings brief combining calendar, estimates, beat rate, and price reaction into one automated email.","author":{"@type":"Organization","name":"learnopenclaw.org","url":"https://learnopenclaw.org"},"publisher":{"@type":"Organization","name":"learnopenclaw.org"},"datePublished":"2026-03-28","url":"https://learnopenclaw.org/earnings-brief.html"}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://learnopenclaw.org"},{"@type":"ListItem","position":2,"name":"Terminal","item":"https://learnopenclaw.org/claw-street-terminal.html"},{"@type":"ListItem","position":3,"name":"Earnings & Estimates","item":"https://learnopenclaw.org/openclaw-for-earnings.html"},{"@type":"ListItem","position":4,"name":"Part 5: Pre-Market Brief","item":"https://learnopenclaw.org/earnings-brief.html"}]}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How long until the earnings brief is useful?","acceptedAnswer":{"@type":"Answer","text":"The calendar and estimates work from day one. The beat rate and average move sections need 2–3 months of data from Parts 3 and 4 (roughly 8–12 earnings cycles) to be meaningful. After that, the context is genuinely useful."}},{"@type":"Question","name":"Does this work for any stock?","acceptedAnswer":{"@type":"Answer","text":"Any stock covered by yfinance. Works best for large-caps with 20+ analyst estimates. Small-cap stocks may not have earnings date data or consensus estimates — always test your ticker first."}},{"@type":"Question","name":"Can I use Gmail to send the emails?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use Gmail App Passwords — enable 2FA on your Google account, generate an app-specific password in Security settings, and use that password in the SMTP code. Never use your regular Gmail password in scripts."}}]}
+    </script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: #1c1917;
             color: #e7e5e4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
             line-height: 1.6;
+            font-size: 16px;
         }
 
         /* ──── Navigation ──── */
-        
+        .skip-nav { position: absolute; left: -9999px; top: auto; }
+        .skip-nav:focus { left: 0; top: 0; z-index: 9999; background: #4f46e5; color: #fff; padding: 8px 16px; }
 
-        
-
-        
-
-        
-
-        
-
-        
-
-        .nav-links a:last-child {
-            border-bottom: none;
-        }
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        @media (max-width: 640px) {
-            .nav-search-form { display: none; }
-            
-        }
+        .site-nav { background: #1c1917; border-bottom: 2px solid #4f46e5; position: sticky; top: 0; z-index: 100; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .nav-logo { color: #4f46e5; font-weight: 800; font-size: 1.1rem; text-decoration: none; white-space: nowrap; }
+        .nav-links { display: none; }
+        .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: #1c1917; border-bottom: 2px solid #4f46e5; padding: 16px 20px; gap: 12px; z-index: 99; }
+        .nav-links a { color: #e7e5e4; text-decoration: none; font-size: 1rem; font-weight: 500; padding: 6px 0; }
+        .nav-links a:hover { color: #4f46e5; }
+        .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .nav-search-form { display: flex; align-items: center; background: #292524; border: 1px solid #44403c; border-radius: 20px; padding: 4px 12px; gap: 6px; }
+        .nav-search-icon { color: #a8a29e; flex-shrink: 0; }
+        .nav-search-input { background: none; border: none; outline: none; color: #e7e5e4; font-size: 0.875rem; width: 120px; }
+        .nav-search-input::placeholder { color: #78716c; }
+        .hamburger { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0; }
+        .hamburger span { display: block; height: 2px; background: #e7e5e4; border-radius: 2px; transition: all 0.3s; }
+        .hamburger:hover span { background: #4f46e5; }
 
         /* ──── Hero ──── */
         .hero {
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #4f46e5 100%);
             padding: 60px 20px;
             text-align: center;
-        }
-
-        .hero-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .hero-tag {
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #a5b4fc;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-
-        .hero-title {
-            font-size: 48px;
-            font-weight: 900;
             color: #fff;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
         }
+        .hero-inner { max-width: 900px; margin: 0 auto; }
+        .hero-tag { font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #c7d2fe; margin-bottom: 16px; }
+        .hero-title { font-size: 2.5rem; font-weight: 900; margin-bottom: 12px; line-height: 1.15; }
+        .hero-subtitle { font-size: 1.125rem; line-height: 1.7; margin-bottom: 32px; color: #e0e7ff; }
+        .hero-pills { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .pill { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 0.875rem; font-weight: 600; }
 
-        .hero-subtitle {
-            font-size: 18px;
-            color: #f3f4f6;
-            margin-bottom: 32px;
-            line-height: 1.7;
-        }
-
-        .hero-pills {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .pill {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 36px;
-            }
-
-            .hero-subtitle {
-                font-size: 16px;
-            }
-        }
-
-        /* ──── Series Nav Strip ──── */
-        .series-nav {
-            background: #292524;
-            border-bottom: 1px solid #44403c;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .series-nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            gap: 0;
-        }
-
-        .series-nav-item {
-            flex: 0 0 auto;
-            padding: 12px 16px;
-            border-bottom: 3px solid transparent;
-            text-decoration: none;
-            color: #a8a29e;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .series-nav-item:hover {
-            color: #e7e5e4;
-            background: #3c3a39;
-        }
-
-        .series-nav-item.current {
-            border-bottom-color: #4f46e5;
-            color: #4f46e5;
-        }
+        /* ──── Series Nav ──── */
+        .series-nav { background: #292524; border-bottom: 1px solid #44403c; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .series-nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: flex; align-items: stretch; white-space: nowrap; }
+        .series-nav a { display: inline-flex; align-items: center; padding: 10px 14px; font-size: 0.78rem; font-weight: 600; color: #a8a29e; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
+        .series-nav a:hover { color: #4f46e5; }
+        .series-nav a.sn-current { color: #4f46e5; border-bottom-color: #4f46e5; }
 
         /* ──── Breadcrumb ──── */
-        .breadcrumb {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            font-size: 13px;
-            color: #78716b;
-        }
-
-        .breadcrumb a {
-            color: #4f46e5;
-            text-decoration: none;
-        }
-
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
+        .breadcrumb { max-width: 900px; margin: 20px auto 0; padding: 0 20px; font-size: 0.875rem; color: #a8a29e; }
+        .breadcrumb a { color: #4f46e5; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
 
         /* ──── Disclaimer ──── */
         .disclaimer {
-            background: rgba(79, 70, 229, 0.1);
+            background: rgba(79, 70, 229, 0.08);
             border-left: 4px solid #4f46e5;
-            max-width: 1200px;
-            margin: 0 auto 40px;
-            padding: 16px 20px;
-            font-size: 13px;
-            color: #d4d4d8;
+            padding: 12px 24px;
+            font-size: 0.875rem;
+            color: #c7d2fe;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            max-width: 900px;
+            margin: 32px auto;
+            border-radius: 4px;
         }
+        .disclaimer-icon { flex-shrink: 0; }
 
-        /* ──── Main content ──── */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px 60px;
+        /* ──── Main ──── */
+        main { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        section { margin: 48px 0; }
+        h2 { font-size: 1.875rem; font-weight: 800; margin-bottom: 16px; color: #fff; border-bottom: 2px solid #4f46e5; padding-bottom: 12px; }
+        h3 { font-size: 1.25rem; font-weight: 700; margin-top: 24px; margin-bottom: 12px; color: #fff; }
+        p { margin-bottom: 16px; line-height: 1.7; }
+        ul, ol { padding-left: 20px; margin-bottom: 16px; }
+        li { margin-bottom: 10px; line-height: 1.7; }
+        strong { color: #fff; }
+
+        /* ──── Code ──── */
+        pre {
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: "Courier New", monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #e7e5e4;
+            white-space: pre;
         }
+        code { background: #292524; padding: 2px 6px; border-radius: 3px; font-family: "Courier New", monospace; font-size: 0.875em; color: #a5b4fc; }
+        pre code { background: none; padding: 0; color: inherit; }
 
-        h2 {
-            font-size: 32px;
-            font-weight: 800;
-            color: #fff;
-            margin: 48px 0 24px;
-            padding-top: 40px;
-            border-top: 1px solid #44403c;
-        }
-
-        h2:first-of-type {
-            border-top: none;
-            padding-top: 0;
-            margin-top: 0;
-        }
-
-        h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            margin: 32px 0 16px;
-        }
-
-        p {
-            margin-bottom: 16px;
-            font-size: 15px;
-        }
-
-        /* ──── Brief Output ──── */
+        /* ──── Brief output ──── */
         .brief-output {
             background: #292524;
             border: 2px solid #4f46e5;
             border-radius: 8px;
             padding: 24px;
-            margin: 24px 0;
-            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
-            font-size: 13px;
+            margin: 20px 0;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
             line-height: 1.8;
             color: #e7e5e4;
             overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            white-space: pre;
         }
 
-        /* ──── Code block ──── */
-        pre {
-            background: #292524;
-            border: 1px solid #44403c;
-            border-radius: 6px;
-            padding: 20px;
-            margin: 24px 0;
-            overflow-x: auto;
-            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
-            font-size: 13px;
-            line-height: 1.6;
-            color: #e7e5e4;
-        }
-
-        code {
-            background: #292524;
-            border-radius: 3px;
-            color: #a5b4fc;
-            padding: 2px 6px;
-            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
-            font-size: 13px;
-        }
-
-        pre code {
-            background: none;
-            color: #e7e5e4;
-            padding: 0;
-        }
-
-        /* ──── Lists ──── */
-        ul, ol {
-            margin-left: 20px;
-            margin-bottom: 16px;
-        }
-
-        li {
-            margin-bottom: 12px;
-        }
-
-        /* ──── Alert/Info boxes ──── */
-        .alert {
+        /* ──── Alert box ──── */
+        .alert-box {
             background: rgba(79, 70, 229, 0.1);
             border-left: 4px solid #4f46e5;
             padding: 16px 20px;
-            margin: 24px 0;
             border-radius: 4px;
-            font-size: 14px;
+            margin: 20px 0;
+            font-size: 0.95rem;
         }
+        .alert-box strong { color: #a5b4fc; }
 
-        .alert strong {
-            color: #a5b4fc;
-        }
-
-        /* ──── Congratulations section ──── */
-        .congrats-section {
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(79, 70, 229, 0.05) 100%);
-            border: 1px solid #4f46e5;
-            border-radius: 8px;
-            padding: 32px;
-            margin: 40px 0;
-        }
-
-        .congrats-section h3 {
-            color: #a5b4fc;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
+        /* ──── Pipeline grid ──── */
         .pipeline-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 24px 0;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
         }
-
         .pipeline-item {
             background: #292524;
             border: 1px solid #44403c;
@@ -316,168 +159,76 @@
             padding: 16px;
             border-radius: 4px;
         }
+        .pipeline-item strong { color: #a5b4fc; display: block; margin-bottom: 8px; }
+        .pipeline-item p { font-size: 0.9rem; color: #a8a29e; margin: 0; }
 
-        .pipeline-item strong {
-            color: #4f46e5;
-        }
-
-        .related-series {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
+        /* ──── Congrats ──── */
+        .congrats-section {
+            background: linear-gradient(135deg, rgba(79,70,229,0.12) 0%, rgba(79,70,229,0.04) 100%);
+            border: 1px solid #4f46e5;
+            border-radius: 8px;
+            padding: 32px;
             margin: 24px 0;
         }
+        .congrats-section h3 { color: #a5b4fc; font-size: 1.5rem; margin-top: 0; margin-bottom: 16px; }
 
-        .series-card {
+        /* ──── Related series ──── */
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .related-card {
             background: #292524;
             border: 1px solid #44403c;
             border-top: 3px solid #4f46e5;
             padding: 20px;
             border-radius: 6px;
-        }
-
-        .series-card strong {
-            color: #4f46e5;
-        }
-
-        .series-card p {
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-
-        /* ──── FAQ ──── */
-        .faq-section {
-            margin: 40px 0;
-        }
-
-        .faq-item {
-            margin-bottom: 24px;
-        }
-
-        .faq-question {
-            font-weight: 700;
-            color: #4f46e5;
-            font-size: 16px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .faq-answer {
-            color: #e7e5e4;
-            font-size: 14px;
-            line-height: 1.7;
-            padding-left: 16px;
-        }
-
-        /* ──── Part navigation ──── */
-        .part-nav {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin: 48px 0;
-            padding-top: 40px;
-            border-top: 1px solid #44403c;
-        }
-
-        .nav-button {
-            padding: 16px 20px;
-            border-radius: 6px;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            display: block;
+            transition: transform 0.15s;
         }
+        .related-card:hover { transform: translateY(-2px); }
+        .related-card strong { color: #a5b4fc; display: block; margin-bottom: 8px; font-size: 1rem; }
+        .related-card p { font-size: 0.875rem; color: #a8a29e; margin: 0; line-height: 1.6; }
 
-        .nav-button.prev {
-            background: #44403c;
-            color: #e7e5e4;
-            border: 1px solid #56524f;
-        }
-
-        .nav-button.prev:hover {
-            background: #56524f;
-            color: #fff;
-        }
-
-        .nav-button.next {
-            background: #4f46e5;
-            color: #fff;
-            border: 1px solid #4f46e5;
-        }
-
-        .nav-button.next:hover {
-            background: #6366f1;
-            border-color: #6366f1;
-        }
+        /* ──── Part nav ──── */
+        .part-nav { background: #292524; border-top: 1px solid #44403c; padding: 24px 20px; margin-top: 48px; }
+        .part-nav-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .part-nav-btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; text-decoration: none; transition: background 0.2s; }
+        .prev-btn { background: #44403c; color: #e7e5e4; }
+        .prev-btn:hover { background: #57534e; }
+        .next-btn { background: #4f46e5; color: #fff; }
+        .next-btn:hover { background: #4338ca; }
 
         /* ──── Footer ──── */
-        footer {
-            background: #0f0e0c;
-            border-top: 1px solid #44403c;
-            padding: 40px 20px;
-            margin-top: 80px;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 32px;
-            margin-bottom: 40px;
-        }
-
-        .footer-section h4 {
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-section a {
-            display: block;
-            color: #a8a29e;
-            text-decoration: none;
-            font-size: 13px;
-            padding: 6px 0;
-        }
-
-        .footer-section a:hover {
-            color: #4f46e5;
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 24px;
-            border-top: 1px solid #44403c;
-            text-align: center;
-            color: #78716b;
-            font-size: 13px;
-        }
+        footer { background: #0f0e0d; border-top: 1px solid #44403c; padding: 32px 20px; margin-top: 0; text-align: center; }
+        .footer-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; margin-bottom: 16px; }
+        .footer-links a { color: #a8a29e; text-decoration: none; font-size: 0.875rem; }
+        .footer-links a:hover { color: #4f46e5; }
+        footer p { color: #57534e; font-size: 0.8rem; }
 
         /* ──── Responsive ──── */
-        @media (max-width: 768px) {
-            .part-nav {
-                grid-template-columns: 1fr;
-            }
-
-            .pipeline-grid,
-            .related-series {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 640px) {
+            .nav-search-form { display: none; }
+            h2 { font-size: 1.5rem; }
+            .hero-title { font-size: 1.75rem; }
+            .hero-subtitle { font-size: 1rem; }
+            .part-nav-inner { flex-direction: column; }
+            .part-nav-btn { width: 100%; text-align: center; }
+            .pipeline-grid, .related-grid { grid-template-columns: 1fr; }
         }
+
+        .text-muted { color: #a8a29e; }
+        .text-accent { color: #4f46e5; }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="site-nav" role="navigation" aria-label="Site navigation">
+
+<a href="#main-content" class="skip-nav">Skip to content</a>
+
+<nav class="site-nav" role="navigation" aria-label="Site navigation">
     <div class="nav-inner">
         <a href="index.html" class="nav-logo">&#x1F99E; learnopenclaw.org</a>
         <ul class="nav-links" id="nav-links" role="list">
@@ -493,116 +244,126 @@
                 <input type="text" class="nav-search-input" placeholder="Search docs..." aria-label="Search documentation">
             </form>
             <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
         </div>
     </div>
 </nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-tag">Earnings Automation · Part 5 of 5</div>
-            <h1 class="hero-title">Pre-Market Earnings Brief</h1>
-            <p class="hero-subtitle">One email before the open on every earnings day. OpenClaw pulls together the calendar, estimates, historical beat rate, and average price reaction into a single automated brief — so you're prepared before the market opens.</p>
-            <div class="hero-pills">
-                <span class="pill">Daily Email</span>
-                <span class="pill">Beat Rate</span>
-                <span class="pill">EPS Consensus</span>
-                <span class="pill">Avg Move</span>
-                <span class="pill">Cron Scheduler</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Series nav strip -->
-    <div class="series-nav">
-        <div class="series-nav-container">
-            <a href="openclaw-for-earnings.html" class="series-nav-item">Overview</a>
-            <a href="earnings-calendar.html" class="series-nav-item">Pt 1: Calendar</a>
-            <a href="earnings-estimates.html" class="series-nav-item">Pt 2: Estimates</a>
-            <a href="earnings-surprise.html" class="series-nav-item">Pt 3: Surprise</a>
-            <a href="earnings-reaction.html" class="series-nav-item">Pt 4: Reaction</a>
-            <a href="earnings-brief.html" class="series-nav-item current">Pt 5: Brief</a>
+<!-- ── Hero ── -->
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-tag">Earnings Automation &middot; Part 5 of 5</div>
+        <h1 class="hero-title">Pre-Market Earnings Brief</h1>
+        <p class="hero-subtitle">One email before the open on every earnings day. OpenClaw pulls together the calendar, estimates, historical beat rate, and average price reaction into a single automated brief — so you're prepared before the market opens.</p>
+        <div class="hero-pills">
+            <span class="pill">Daily Email</span>
+            <span class="pill">Beat Rate</span>
+            <span class="pill">EPS Consensus</span>
+            <span class="pill">Avg Move</span>
+            <span class="pill">Cron Scheduler</span>
         </div>
     </div>
+</section>
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <a href="/">Home</a> › <a href="/terminal">Terminal</a> › <a href="openclaw-for-earnings.html">Earnings & Estimates</a> › Part 5: Daily Brief
+<!-- ── Series nav ── -->
+<nav class="series-nav" aria-label="Earnings & Estimates series navigation">
+    <div class="series-nav-inner">
+        <a href="openclaw-for-earnings.html">Overview</a>
+        <a href="earnings-calendar.html">Pt 1: Calendar</a>
+        <a href="earnings-estimates.html">Pt 2: Estimates</a>
+        <a href="earnings-surprise.html">Pt 3: Surprise Tracker</a>
+        <a href="earnings-reaction.html">Pt 4: Price Reaction</a>
+        <a href="earnings-brief.html" class="sn-current">Pt 5: Daily Brief</a>
     </div>
+</nav>
 
-    <!-- Disclaimer -->
-    <div class="disclaimer">
-        <strong>Research monitoring only.</strong> Earnings data is for research monitoring only. Not financial advice. Always consult a financial advisor before making investment decisions.
-    </div>
+<!-- ── Breadcrumb ── -->
+<div class="breadcrumb">
+    <a href="index.html">Home</a> &rsaquo;
+    <a href="claw-street-terminal.html">Terminal</a> &rsaquo;
+    <a href="openclaw-for-earnings.html">Earnings &amp; Estimates</a> &rsaquo;
+    Part 5: Pre-Market Brief
+</div>
 
-    <!-- Main content -->
-    <div class="main-container">
+<!-- ── Disclaimer ── -->
+<div class="disclaimer">
+    <span class="disclaimer-icon">&#x26A0;&#xFE0F;</span>
+    <span>Earnings data is for research monitoring only. Not financial advice.</span>
+</div>
+
+<!-- ── Main content ── -->
+<main id="main-content">
+
+    <section>
         <h2>What the Brief Delivers</h2>
-        <p>The earnings brief is the capstone of Parts 1–4. It's a single pre-market email that shows you everything you need to know about earnings happening today and tomorrow. Here's what it looks like:</p>
+        <p>The earnings brief is the capstone of Parts 1–4. It's a single pre-market email that shows you everything you need to know about earnings happening today and in the next few days. Here's what a real output looks like:</p>
 
-        <div class="brief-output">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  📋 OPENCLAW EARNINGS BRIEF — Wednesday Apr 30 2026
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        <div class="brief-output">&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;
+  &#x1F4CB; OPENCLAW EARNINGS BRIEF &#x2014; Wednesday Apr 30 2026
+&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;
 
-  TODAY'S REPORTS (your watchlist)
-  ─────────────────────────────────
-  MSFT  →  Reports TODAY (after close)
-     EPS Estimate:     $3.22  (range: $3.10–$3.38, 38 analysts)
+  TODAY&#x27;S REPORTS (your watchlist)
+  &#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;
+  MSFT  &#x2192;  Reports TODAY (after close)
+     EPS Estimate:     $3.22  (range: $3.10&#x2013;$3.38, 38 analysts)
      Beat Rate:        7/8 = 88%
      Avg EPS Surprise: +4.2%
-     Avg Price Move:   ±4.1%  (3 up, 1 down)
+     Avg Price Move:   &#xB1;4.1%  (3 up, 1 down)
 
   REPORTING TOMORROW
-  ─────────────────────────────────
-  AAPL  →  Reports TOMORROW (after close Thursday May 1)
+  &#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;&#x2500;
+  AAPL  &#x2192;  Reports TOMORROW (after close, May 1)
      EPS Estimate:     $1.61
      Beat Rate:        8/8 = 100%
-     Avg Price Move:   ±3.0%  (5 up, 1 down)
+     Avg Price Move:   &#xB1;3.0%  (5 up, 1 down)
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  OpenClaw · learnopenclaw.org · Not financial advice
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;
+  OpenClaw &middot; learnopenclaw.org &middot; Not financial advice
+&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;&#x2501;</div>
 
         <h3>What Each Field Means</h3>
         <ul>
-            <li><strong>EPS Estimate:</strong> The consensus EPS projection from all analysts, plus the range (low–high) and total number of analyst forecasts.</li>
-            <li><strong>Beat Rate:</strong> Historical percentage of earnings beats. "7/8 = 88%" means 7 of the last 8 reports beat consensus.</li>
-            <li><strong>Avg EPS Surprise:</strong> Average percentage the company beat or missed by (positive = beat, negative = miss).</li>
-            <li><strong>Avg Price Move:</strong> Average stock move (up or down) on the next trading day after earnings. Also shows the split (e.g., "3 up, 1 down").</li>
+            <li><strong>EPS Estimate</strong> — The consensus EPS projection from all covering analysts, plus the range (low–high) and the number of forecasts. A tight range means analysts agree. A wide range means uncertainty — and often a bigger move.</li>
+            <li><strong>Beat Rate</strong> — How often this company has beaten EPS consensus historically. "7/8 = 88%" means it beat in 7 of its last 8 reports. High beat rates are often priced in by the market, but still useful context.</li>
+            <li><strong>Avg EPS Surprise</strong> — The average percentage the company has beaten or missed by. +4.2% means they beat by an average of 4.2% of the estimate.</li>
+            <li><strong>Avg Price Move</strong> — How much the stock has moved overnight after past reports (prior close to next open). The split (3 up, 1 down) shows the direction bias. Useful for options sizing.</li>
         </ul>
 
-        <p>The brief only shows earnings happening within your alert window (default: next 3 days). It's sent every weekday morning at 6:30 AM, so you can review before the market opens at 9:30 AM.</p>
+        <div class="alert-box">
+            <strong>Timing note:</strong> The brief is sent at 6:30 AM, three hours before the 9:30 AM open. That gives you time to review your positions, look up the relevant filings or transcripts, and decide if you want to adjust anything before the report.
+        </div>
+    </section>
 
+    <section>
         <h2>How It Combines All 5 Parts</h2>
-        <p>The earnings brief is the payoff of the entire automation pipeline. Here's how each part feeds into it:</p>
+        <p>The earnings brief is the payoff of the entire pipeline. Every field in the brief comes from one of the four earlier scripts:</p>
 
         <div class="pipeline-grid">
             <div class="pipeline-item">
                 <strong>Part 1: Calendar</strong>
-                <p>Knows which tickers on your watchlist report today and tomorrow. This determines who appears in the brief.</p>
+                <p>Knows which tickers on your watchlist report today and tomorrow. This is what determines who appears in the brief.</p>
             </div>
             <div class="pipeline-item">
                 <strong>Part 2: Estimates</strong>
-                <p>Pulls the current EPS and revenue consensus from yfinance, including analyst count and the range (low–high).</p>
+                <p>Pulls current EPS and revenue consensus from yfinance — including analyst count and the low-to-high range.</p>
             </div>
             <div class="pipeline-item">
-                <strong>Part 3: Surprise</strong>
-                <p>Reads the <code>earnings_history.csv</code> built by the surprise tracker. Calculates beat rate and average surprise percentage for each ticker.</p>
+                <strong>Part 3: Surprise Tracker</strong>
+                <p>Reads <code>earnings_history.csv</code> to calculate beat rate and average surprise percentage for each ticker.</p>
             </div>
             <div class="pipeline-item">
                 <strong>Part 4: Price Reaction</strong>
-                <p>Reads the <code>price_reactions.csv</code> to calculate average move magnitude and direction breakdown (how many ups vs. downs).</p>
+                <p>Reads <code>price_reactions.csv</code> to calculate average move magnitude and the up/down split.</p>
             </div>
         </div>
 
-        <p>When you run the brief script at 6:30 AM, it simply fetches today's date, looks up which tickers report today/tomorrow, pulls their current estimates, and looks up their historical context from the CSVs built by Parts 3 and 4. All in seconds.</p>
+        <p>When the brief script runs at 6:30 AM, it fetches today's date, checks which tickers report soon, pulls live estimates, and looks up historical context from the CSVs. All in a few seconds — no manual work.</p>
+    </section>
 
+    <section>
         <h2>Full Configuration</h2>
-        <p>Before running the brief script, you need the complete configuration file. This file ties together all 5 parts:</p>
+        <p>Save this as <code>earnings-config.yaml</code> in your OpenClaw working directory. This single file drives all 5 scripts in the series:</p>
 
         <pre>watchlist:
   tickers: [AAPL, MSFT, NVDA, AMZN, GOOGL]
@@ -610,7 +371,7 @@
 calendar:
   lookahead_days: 5
   alert_days_before: 3
-  market_hours_only: false
+  market_hours_only: false   # include pre/after-market reports
 
 estimates:
   track_revisions: true
@@ -640,22 +401,25 @@ scheduler:
     script: earnings_brief.py
     schedule: "30 6 * * 1-5"</pre>
 
-        <p>Save this as <code>earnings-config.yaml</code> in your OpenClaw working directory. Update the <code>tickers</code> list and <code>email</code> address to match your watchlist.</p>
+        <p>Update <code>tickers</code> with your watchlist and <code>email</code> with your address. Everything else works out of the box.</p>
+    </section>
 
+    <section>
         <h2>The Complete Script</h2>
-        <p>This is the capstone script. It runs every weekday at 6:30 AM and checks for earnings happening today and tomorrow. It pulls estimates from yfinance, reads the history CSVs built by Parts 3 and 4, and formats everything into a clean pre-market brief.</p>
+        <p>Save this as <code>earnings_brief.py</code>. It reads the config, checks upcoming earnings, pulls live estimates, loads your historical CSVs, and formats the brief. The email-sending code is included but commented out — uncomment and configure once you've tested the output.</p>
 
         <pre>"""
 earnings_brief.py — OpenClaw Pre-Market Earnings Brief
 
 The capstone script. Runs every weekday at 6:30 AM.
-Checks for earnings today/tomorrow, pulls estimates,
-loads historical beat rate + price reaction data,
-and sends a clean pre-market email brief.
+Checks for earnings today/tomorrow on your watchlist,
+pulls live estimates from yfinance, loads historical
+beat rate + price reaction data, and sends the brief.
 
-Requires: data/earnings_history.csv  (from earnings_surprise.py)
-          data/price_reactions.csv   (from earnings_reaction.py)
-          earnings-config.yaml
+Requires:
+  data/earnings_history.csv   (built by earnings_surprise.py)
+  data/price_reactions.csv    (built by earnings_reaction.py)
+  earnings-config.yaml
 """
 
 import yaml
@@ -670,81 +434,62 @@ import os
 with open("earnings-config.yaml") as f:
     cfg = yaml.safe_load(f)
 
-tickers       = cfg["watchlist"]["tickers"]
-lookahead     = cfg["calendar"]["lookahead_days"]
-alert_window  = cfg["calendar"]["alert_days_before"]
-alert_email   = cfg["alerts"]["email"]
+tickers      = cfg["watchlist"]["tickers"]
+alert_window = cfg["calendar"]["alert_days_before"]
+alert_email  = cfg["alerts"]["email"]
 
-today    = datetime.today().date()
-tomorrow = today + timedelta(days=1)
+today = datetime.today().date()
 
 # ── Load historical data (built by earlier scripts) ────────────────────────
-def load_surprise_history():
-    """Load the earnings beat/miss history CSV built by Part 3."""
-    path = cfg["surprise"]["csv_path"]
+def load_csv(path):
+    """Load a CSV if it exists, otherwise return empty DataFrame."""
     if os.path.exists(path):
         return pd.read_csv(path)
     return pd.DataFrame()
 
-def load_reaction_history():
-    """Load the price reaction history CSV built by Part 4."""
-    path = cfg["reaction"]["csv_path"]
-    if os.path.exists(path):
-        return pd.read_csv(path)
-    return pd.DataFrame()
+surprise_df = load_csv(cfg["surprise"]["csv_path"])
+reaction_df = load_csv(cfg["reaction"]["csv_path"])
 
-surprise_df = load_surprise_history()
-reaction_df = load_reaction_history()
-
-# ── Helper: get beat rate for a ticker ────────────────────────────────────
+# ── Helper: historical beat rate ──────────────────────────────────────────
 def get_beat_rate(ticker):
-    """Calculate historical beat rate from surprise CSV."""
+    """Calculate beat rate and avg surprise from surprise CSV."""
     if surprise_df.empty:
-        return None, None
-
+        return "No history yet", None
     rows = surprise_df[surprise_df["Ticker"] == ticker]
     if rows.empty:
-        return None, None
-
+        return "No history yet", None
     beats = (rows["Result"] == "BEAT").sum()
     total = len(rows)
-    rate  = round(beats / total * 100) if total > 0 else None
-    avg_surprise = round(rows["Surprise %"].mean(), 1)
-    return f"{beats}/{total} = {rate}%", avg_surprise
+    rate  = round(beats / total * 100) if total > 0 else 0
+    avg   = round(rows["Surprise %"].mean(), 1)
+    return f"{beats}/{total} = {rate}%", avg
 
-# ── Helper: get average price move for a ticker ───────────────────────────
+# ── Helper: average price move ────────────────────────────────────────────
 def get_avg_move(ticker):
-    """Calculate average price reaction magnitude from reaction CSV."""
+    """Calculate avg overnight move from reaction CSV."""
     if reaction_df.empty:
         return None, None, None
-
     rows = reaction_df[reaction_df["Ticker"] == ticker]
     if rows.empty:
         return None, None, None
-
     avg_move = round(rows["Move %"].abs().mean(), 1)
-    up_count = (rows["Direction"] == "UP").sum()
-    dn_count = (rows["Direction"] == "DOWN").sum()
-    return avg_move, up_count, dn_count
+    up_ct    = (rows["Direction"] == "UP").sum()
+    dn_ct    = (rows["Direction"] == "DOWN").sum()
+    return avg_move, up_ct, dn_ct
 
-# ── Check upcoming earnings on watchlist ──────────────────────────────────
-print(f"{'='*52}")
-print(f"  📋 OPENCLAW EARNINGS BRIEF — {today.strftime('%A %b %d %Y')}")
-print(f"{'='*52}\n")
+# ── Check upcoming earnings ────────────────────────────────────────────────
+today_reports = []
+soon_reports  = []
 
-brief_sections = []
-today_reports  = []
-soon_reports   = []
+print(f"\nChecking {len(tickers)} tickers for upcoming earnings...\n")
 
 for ticker in tickers:
-    stock = yf.Ticker(ticker)
-
     try:
-        cal = stock.earnings_dates
+        stock = yf.Ticker(ticker)
+        cal   = stock.earnings_dates
         if cal is None or cal.empty:
             continue
 
-        # Look at upcoming dates only
         upcoming = cal[cal.index.date >= today].head(1)
         if upcoming.empty:
             continue
@@ -753,39 +498,34 @@ for ticker in tickers:
         days_away   = (report_date - today).days
 
         if days_away > alert_window:
-            continue
+            continue  # outside alert window
 
-        # Get estimates
-        estimates = stock.earnings_estimate
-        eps_est   = "N/A"
-        eps_low   = "N/A"
-        eps_high  = "N/A"
-        analysts  = "N/A"
+        # Fetch live estimates
+        est      = stock.earnings_estimate
+        eps_est  = eps_low = eps_high = analysts = "N/A"
+        if est is not None and not est.empty:
+            row      = est.iloc[0]
+            eps_est  = row.get("avg",              "N/A")
+            eps_low  = row.get("low",              "N/A")
+            eps_high = row.get("high",             "N/A")
+            analysts = row.get("numberOfAnalysts", "N/A")
 
-        if estimates is not None and not estimates.empty:
-            row      = estimates.iloc[0]
-            eps_est  = row.get("avg",             "N/A")
-            eps_low  = row.get("low",             "N/A")
-            eps_high = row.get("high",            "N/A")
-            analysts = row.get("numberOfAnalysts","N/A")
-
-        # Get historical context
         beat_str, avg_surprise = get_beat_rate(ticker)
         avg_move, up_ct, dn_ct = get_avg_move(ticker)
 
         entry = {
-            "ticker":      ticker,
-            "date":        report_date,
-            "days_away":   days_away,
-            "eps_est":     eps_est,
-            "eps_low":     eps_low,
-            "eps_high":    eps_high,
-            "analysts":    analysts,
-            "beat_str":    beat_str or "No history yet",
-            "avg_surprise":avg_surprise,
-            "avg_move":    avg_move,
-            "up_ct":       up_ct,
-            "dn_ct":       dn_ct,
+            "ticker":       ticker,
+            "date":         report_date,
+            "days_away":    days_away,
+            "eps_est":      eps_est,
+            "eps_low":      eps_low,
+            "eps_high":     eps_high,
+            "analysts":     analysts,
+            "beat_str":     beat_str,
+            "avg_surprise": avg_surprise,
+            "avg_move":     avg_move,
+            "up_ct":        up_ct,
+            "dn_ct":        dn_ct,
         }
 
         if days_away == 0:
@@ -794,195 +534,169 @@ for ticker in tickers:
             soon_reports.append(entry)
 
     except Exception as e:
-        print(f"  {ticker}: Error — {e}")
+        print(f"  {ticker}: skipped ({e})")
 
 # ── Format the brief ──────────────────────────────────────────────────────
+SEP = "=" * 52
+
 def format_entry(e):
-    timing = "TODAY (after close)" if e["days_away"] == 0 else f"in {e['days_away']} day(s) — {e['date']}"
-    lines  = [
+    timing = "TODAY (after close)" if e["days_away"] == 0 \
+             else f"in {e['days_away']} day(s)  —  {e['date']}"
+    lines = [
         f"  {e['ticker']}  →  Reports {timing}",
-        f"     EPS Estimate:     ${e['eps_est']}  (range: ${e['eps_low']}–${e['eps_high']}, {e['analysts']} analysts)",
+        f"     EPS Estimate:     ${e['eps_est']}  "
+        f"(range: ${e['eps_low']}–${e['eps_high']}, {e['analysts']} analysts)",
         f"     Beat Rate:        {e['beat_str']}",
     ]
-    if e["avg_surprise"]:
+    if e["avg_surprise"] is not None:
         lines.append(f"     Avg EPS Surprise: +{e['avg_surprise']}%")
-    if e["avg_move"]:
-        lines.append(f"     Avg Price Move:   ±{e['avg_move']}%  ({e['up_ct']} up, {e['dn_ct']} down)")
+    if e["avg_move"] is not None:
+        lines.append(
+            f"     Avg Price Move:   ±{e['avg_move']}%  "
+            f"({e['up_ct']} up, {e['dn_ct']} down)"
+        )
     return "\n".join(lines)
 
-brief_text = f"{'='*52}\n"
-brief_text += f"  📋 OPENCLAW EARNINGS BRIEF — {today.strftime('%A %b %d %Y')}\n"
-brief_text += f"{'='*52}\n\n"
+brief  = f"{SEP}\n"
+brief += f"  📋 OPENCLAW EARNINGS BRIEF — {today.strftime('%A %b %d %Y')}\n"
+brief += f"{SEP}\n\n"
 
 if today_reports:
-    brief_text += "  TODAY'S REPORTS (your watchlist)\n"
-    brief_text += "  " + "─"*40 + "\n"
+    brief += "  TODAY'S REPORTS (your watchlist)\n"
+    brief += "  " + "─" * 40 + "\n"
     for e in today_reports:
-        brief_text += format_entry(e) + "\n\n"
+        brief += format_entry(e) + "\n\n"
 
 if soon_reports:
-    brief_text += "  REPORTING SOON\n"
-    brief_text += "  " + "─"*40 + "\n"
+    brief += "  REPORTING SOON\n"
+    brief += "  " + "─" * 40 + "\n"
     for e in soon_reports:
-        brief_text += format_entry(e) + "\n\n"
+        brief += format_entry(e) + "\n\n"
 
 if not today_reports and not soon_reports:
-    brief_text += "  ✅ No earnings on your watchlist in the next few days.\n\n"
+    brief += "  ✅ No earnings on your watchlist in the next few days.\n\n"
 
-brief_text += f"{'='*52}\n"
-brief_text += "  OpenClaw · learnopenclaw.org · Not financial advice\n"
-brief_text += f"{'='*52}\n"
+brief += f"{SEP}\n"
+brief += "  OpenClaw · learnopenclaw.org · Not financial advice\n"
+brief += f"{SEP}\n"
 
 # ── Print to terminal ─────────────────────────────────────────────────────
-print(brief_text)
+print(brief)
 
 # ── Send email ────────────────────────────────────────────────────────────
 if today_reports or soon_reports:
-    msg = MIMEText(brief_text)
+    msg            = MIMEText(brief)
     msg["Subject"] = f"OpenClaw Earnings Brief — {today.strftime('%b %d')}"
     msg["From"]    = alert_email
     msg["To"]      = alert_email
 
-    # Uncomment and configure your SMTP settings:
+    # Configure Gmail App Password and uncomment to enable:
     # with smtplib.SMTP("smtp.gmail.com", 587) as server:
     #     server.starttls()
     #     server.login("your@gmail.com", "your_app_password")
     #     server.send_message(msg)
+    #     print(f"📧 Brief sent to {alert_email}")
 
-    print(f"\n📧 Brief ready to send to: {alert_email}")
-    print("   (Configure SMTP settings above to enable sending)")
-</pre>
+    print(f"📧 Brief ready to send to: {alert_email}")
+    print("   Uncomment the SMTP block above to enable email delivery.")</pre>
+    </section>
 
-        <p>Paste this script as <code>earnings_brief.py</code> in your OpenClaw working directory. The script prints the brief to your terminal every time it runs, and includes commented-out SMTP code for email sending (see the FAQ below for Gmail setup).</p>
-
+    <section>
         <h2>Setting Up the Daily Schedule</h2>
-        <p>Once your script is ready, add a cron job to run it every weekday at 6:30 AM:</p>
+        <p>Add one line to your crontab and the brief arrives every weekday morning:</p>
 
         <pre>30 6 * * 1-5 cd /path/to/openclaw && python earnings_brief.py</pre>
 
-        <h3>Step-by-Step Setup</h3>
+        <h3>Step-by-step setup</h3>
         <ol>
             <li>Install dependencies: <code>pip install yfinance pyyaml pandas</code></li>
-            <li>Create the directory structure:
-                <pre>mkdir -p data
-cp earnings-config.yaml ./</pre>
-            </li>
-            <li>Save the script as <code>earnings_brief.py</code></li>
-            <li>Test the script manually:
-                <pre>python earnings_brief.py</pre>
-            </li>
-            <li>If it works, add the cron job: <code>crontab -e</code> and paste the line above.</li>
-            <li>Verify the cron was added: <code>crontab -l</code></li>
+            <li>Create the data directory: <code>mkdir -p data</code></li>
+            <li>Save <code>earnings-config.yaml</code> and <code>earnings_brief.py</code> in the same folder</li>
+            <li>Test manually: <code>python earnings_brief.py</code> — you should see the brief printed to the terminal</li>
+            <li>Open your crontab: <code>crontab -e</code> and paste the line above</li>
+            <li>Verify it was added: <code>crontab -l</code></li>
         </ol>
 
-        <p>That's it. Your brief will arrive every weekday morning at 6:30 AM (or whenever you set it).</p>
+        <p>That's it. The brief will run automatically every weekday at 6:30 AM. The first few weeks it will show estimates only — beat rate and average move sections fill in as Parts 3 and 4 accumulate data.</p>
+    </section>
 
-        <h2>Series Complete — What You've Built</h2>
-
+    <section>
         <div class="congrats-section">
-            <h3>✨ Congratulations</h3>
-            <p>You've built a complete, production-grade earnings automation pipeline. Here's what you now have:</p>
-
+            <h3>&#x2728; Series Complete — What You've Built</h3>
+            <p>You now have a production-grade earnings automation pipeline. Here's the full stack:</p>
             <div class="pipeline-grid">
                 <div class="pipeline-item">
                     <strong>Part 1: Calendar Alerts</strong>
-                    <p>3-day advance warning before earnings. Never miss a report again.</p>
+                    <p>3-day advance warning before any ticker on your watchlist reports.</p>
                 </div>
                 <div class="pipeline-item">
                     <strong>Part 2: Estimate Tracker</strong>
-                    <p>Daily consensus and revisions. Spot estimates changing before the street does.</p>
+                    <p>Daily consensus and analyst revision tracking. Spot estimate changes before the street does.</p>
                 </div>
                 <div class="pipeline-item">
                     <strong>Part 3: Surprise Logger</strong>
-                    <p>Historical beat rate database. Know which companies beat consistently.</p>
+                    <p>Historical beat rate database. Know which companies consistently beat estimates.</p>
                 </div>
                 <div class="pipeline-item">
                     <strong>Part 4: Price Reaction Logger</strong>
-                    <p>Average move magnitude dataset. Understand how much a stock typically moves.</p>
+                    <p>Average move magnitude dataset. Know how much a stock typically moves on earnings.</p>
                 </div>
             </div>
-
-            <p style="margin-top: 24px; font-weight: 600;">And now: <strong>Part 5 combines all of them into a single pre-market email.</strong> You have context, history, and expectations — all automated.</p>
+            <p style="margin-top: 20px;"><strong>Part 5 ties all four together</strong> into one pre-market email — context, history, and expectations, fully automated.</p>
         </div>
 
-        <h3>What Comes Next</h3>
-        <p>The earnings brief is a standalone tool, but it pairs perfectly with other Terminal series:</p>
-
-        <div class="related-series">
-            <div class="series-card">
+        <h3>Pairs well with these Terminal series</h3>
+        <div class="related-grid">
+            <a href="openclaw-for-options.html" class="related-card">
                 <strong>Options Trading</strong>
-                <p>Use your historical beat rate + average move to calculate implied moves. Price straddles or collars based on earnings volatility.</p>
-            </div>
-            <div class="series-card">
+                <p>Use beat rate + average move to price straddles and collars around earnings. IV rank context from the options series.</p>
+            </a>
+            <a href="openclaw-for-filings.html" class="related-card">
                 <strong>Corporate Filings</strong>
                 <p>When earnings drop, the 8-K is filed the same day. Automate reading the filing to understand what drove the surprise.</p>
-            </div>
-            <div class="series-card">
-                <strong>Transcripts & Audio</strong>
+            </a>
+            <a href="openclaw-for-transcripts.html" class="related-card">
+                <strong>Transcripts &amp; Audio</strong>
                 <p>Parse the earnings call transcript for sentiment. Did management guidance change? Use NLP to find the signal.</p>
-            </div>
+            </a>
         </div>
+    </section>
 
+    <section>
         <h2>FAQ</h2>
-        <div class="faq-section">
-            <div class="faq-item">
-                <div class="faq-question">Q: How long until the brief is actually useful?</div>
-                <div class="faq-answer">The calendar and estimates work from day one. But the beat rate and average move sections need historical data. Run Parts 3 and 4 for 2–3 months (roughly 8–12 earnings cycles) to build meaningful datasets. After that, the brief context is gold.</div>
-            </div>
 
-            <div class="faq-item">
-                <div class="faq-question">Q: Does this work for any stock?</div>
-                <div class="faq-answer">Any stock covered by yfinance. Works best for large-cap stocks with many analyst estimates (20+). Small-cap stocks may not have earnings date data or consensus estimates. Always test your ticker first: <code>yf.Ticker("TICK").earnings_dates</code></div>
-            </div>
+        <h3>How long until the brief is actually useful?</h3>
+        <p>The calendar and estimates work from day one. The beat rate and average move sections need 2–3 months of running Parts 3 and 4 (roughly 8–12 earnings cycles per stock) to have meaningful data. After that, the historical context in the brief is genuinely useful.</p>
 
-            <div class="faq-item">
-                <div class="faq-question">Q: Can I use Gmail to send the emails?</div>
-                <div class="faq-answer">Yes. Gmail blocks direct login in scripts for security reasons, but supports "App Passwords" for automation. Enable 2FA on your Google account, then generate an app-specific password in your Security settings. Use that password in the SMTP code (not your regular Gmail password). <a href="https://support.google.com/accounts/answer/185833" style="color: #4f46e5;">Google's app password guide</a>.</div>
-            </div>
-        </div>
+        <h3>Does this work for any stock?</h3>
+        <p>Any stock covered by yfinance — which includes most US-listed stocks. It works best for large-caps with 20+ analyst estimates. Small-cap stocks may not have earnings date data or consensus estimates. Always test your ticker first: <code>import yfinance as yf; print(yf.Ticker("TICK").earnings_dates)</code></p>
 
-        <!-- Part navigation -->
-        <div class="part-nav">
-            <a href="earnings-reaction.html" class="nav-button prev">← Part 4: Price Reaction</a>
-            <a href="openclaw-for-earnings.html" class="nav-button next">↩ Back to Series Overview →</a>
-        </div>
+        <h3>Can I use Gmail to send the emails?</h3>
+        <p>Yes. Gmail blocks regular password login in scripts, but supports App Passwords for automation. Enable 2-factor authentication on your Google account, then go to <strong>Security → App passwords</strong> and generate one for "Mail". Use that password in the SMTP block — not your regular Gmail password. <a href="https://support.google.com/accounts/answer/185833" style="color: #4f46e5;">Google's App Password guide →</a></p>
+    </section>
+
+</main>
+
+<nav class="part-nav" aria-label="Series navigation">
+    <div class="part-nav-inner">
+        <a href="earnings-reaction.html" class="part-nav-btn prev-btn">&larr; Part 4: Price Reaction</a>
+        <a href="openclaw-for-earnings.html" class="part-nav-btn next-btn">&#x21A9; Back to Series Overview</a>
     </div>
+</nav>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Learn</h4>
-                <a href="/">Home</a>
-                <a href="/terminal">Terminal</a>
-                <a href="/series">Series</a>
-                <a href="/guides">Guides</a>
-            </div>
-            <div class="footer-section">
-                <h4>Resources</h4>
-                <a href="/api">API Docs</a>
-                <a href="/examples">Examples</a>
-                <a href="/github">GitHub</a>
-                <a href="/community">Community</a>
-            </div>
-            <div class="footer-section">
-                <h4>Company</h4>
-                <a href="/about">About</a>
-                <a href="/blog">Blog</a>
-                <a href="/contact">Contact</a>
-                <a href="/privacy">Privacy</a>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <p style="font-size: 13px; color: #a8a29e; line-height: 1.8;">OpenClaw is a free, open-source automation framework. Not financial advice. Always consult a qualified financial advisor.</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            © 2026 Learn OpenClaw · Earnings data is for research monitoring only · <a href="/privacy" style="color: #4f46e5;">Privacy Policy</a>
-        </div>
-    </footer>
+<footer role="contentinfo">
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="learn.html">Learn</a>
+        <a href="claw-street-terminal.html">Terminal</a>
+        <a href="blog.html">Blog</a>
+        <a href="faq.html">FAQ</a>
+        <a href="privacy.html">Privacy</a>
+    </div>
+    <p>&copy; 2026 learnopenclaw.org &middot; Not affiliated with Anthropic. &middot; Nothing here is financial advice.</p>
+</footer>
 
-    <script>
+<script>
     const btn = document.getElementById('hamburger-btn');
     const nav = document.getElementById('nav-links');
     if (btn && nav) {
@@ -994,86 +708,5 @@ cp earnings-config.yaml ./</pre>
     }
 </script>
 
-    <!-- JSON-LD Schema -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "Pre-Market Earnings Brief - Part 5 of 5",
-        "description": "Automate a daily pre-market earnings brief that combines calendar, estimates, beat rate, and price reaction data into one email.",
-        "image": "https://learnopenclaw.org/og-earnings-brief.jpg",
-        "author": {
-            "@type": "Organization",
-            "name": "Learn OpenClaw"
-        },
-        "datePublished": "2026-01-15"
-    }
-    </script>
-
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://learnopenclaw.org"
-            },
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Terminal",
-                "item": "https://learnopenclaw.org/terminal"
-            },
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Earnings & Estimates",
-                "item": "https://learnopenclaw.org/earnings"
-            },
-            {
-                "@type": "ListItem",
-                "position": 4,
-                "name": "Part 5: Daily Brief",
-                "item": "https://learnopenclaw.org/earnings-brief.html"
-            }
-        ]
-    }
-    </script>
-
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "How long until the brief is actually useful?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "The calendar and estimates work from day one. But the beat rate and average move sections need historical data. Run Parts 3 and 4 for 2–3 months (roughly 8–12 earnings cycles) to build meaningful datasets. After that, the brief context is gold."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Does this work for any stock?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Any stock covered by yfinance. Works best for large-cap stocks with many analyst estimates (20+). Small-cap stocks may not have earnings date data or consensus estimates. Always test your ticker first."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Can I use Gmail to send the emails?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes. Gmail blocks direct login in scripts for security reasons, but supports App Passwords for automation. Enable 2FA on your Google account, then generate an app-specific password in your Security settings."
-                }
-            }
-        ]
-    }
-    </script>
 </body>
 </html>
