@@ -24,6 +24,23 @@
             font-size: 16px;
         }
 
+        /* ──── Navigation ──── */
+        .site-nav { background: #1c1917; border-bottom: 2px solid #4f46e5; position: sticky; top: 0; z-index: 100; }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .nav-logo { color: #4f46e5; font-weight: 800; font-size: 1.1rem; text-decoration: none; white-space: nowrap; }
+        .nav-links { display: none; }
+        .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: #1c1917; border-bottom: 2px solid #4f46e5; padding: 16px 20px; gap: 12px; z-index: 99; }
+        .nav-links a { color: #e7e5e4; text-decoration: none; font-size: 1rem; font-weight: 500; padding: 6px 0; }
+        .nav-links a:hover { color: #4f46e5; }
+        .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .nav-search-form { display: flex; align-items: center; background: #292524; border: 1px solid #44403c; border-radius: 20px; padding: 4px 12px; gap: 6px; }
+        .nav-search-icon { color: #a8a29e; flex-shrink: 0; }
+        .nav-search-input { background: none; border: none; outline: none; color: #e7e5e4; font-size: 0.875rem; width: 120px; }
+        .nav-search-input::placeholder { color: #78716c; }
+        .hamburger { display: flex; flex-direction: column; justify-content: space-between; width: 24px; height: 18px; background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0; }
+        .hamburger span { display: block; height: 2px; background: #e7e5e4; border-radius: 2px; transition: all 0.3s; }
+        .hamburger:hover span { background: #4f46e5; }
+
         a {
             color: #4f46e5;
             text-decoration: none;
@@ -36,111 +53,33 @@
         /* ============================================================================
            NAVIGATION
            ============================================================================ */
-        .site-nav {
-            background: #1c1917;
-            border-bottom: 2px solid #4f46e5;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+        
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
+        
 
-        .nav-logo {
-            color: #4f46e5;
-            font-weight: 800;
-            font-size: 1.1rem;
-            text-decoration: none;
-            white-space: nowrap;
-        }
+        
 
-        .nav-links {
-            display: none;
-        }
+        
 
-        .nav-links.open {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 60px;
-            left: 0;
-            right: 0;
-            background: #1c1917;
-            border-bottom: 2px solid #4f46e5;
-            padding: 16px 20px;
-            gap: 12px;
-            z-index: 99;
-        }
+        
 
-        .nav-links a {
-            color: #e7e5e4;
-            text-decoration: none;
-            font-size: 0.95rem;
-        }
+        
 
-        .nav-links a:hover {
-            color: #4f46e5;
-        }
+        
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
+        
 
-        .nav-search-form {
-            display: flex;
-            align-items: center;
-            background: #292524;
-            border: 1px solid #44403c;
-            border-radius: 20px;
-            padding: 4px 12px;
-            gap: 6px;
-        }
+        
 
-        .nav-search-input {
-            background: none;
-            border: none;
-            outline: none;
-            color: #e7e5e4;
-            font-size: 0.875rem;
-            width: 120px;
-        }
+        
 
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 24px;
-            height: 18px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            flex-shrink: 0;
-        }
+        
 
-        .hamburger span {
-            display: block;
-            height: 2px;
-            background: #e7e5e4;
-            border-radius: 2px;
-        }
+        
 
         @media (max-width: 640px) {
-            .nav-search-form {
-                display: none;
-            }
+            .nav-search-form { display: none; }
+            
         }
 
         /* ============================================================================
@@ -750,28 +689,29 @@
     <!-- ========================================================================
          NAVIGATION
          ======================================================================== -->
-    <nav class="site-nav">
-        <div class="nav-inner">
-            <a href="index.html" class="nav-logo">LearnOpenClaw</a>
-            <div class="nav-links" id="nav-links">
-                <a href="index.html">Home</a>
-                <a href="learn.html">Learn</a>
-                <a href="claw-street-terminal.html">Terminal</a>
-                <a href="blog.html">Blog</a>
-                <a href="faq.html">FAQ</a>
-            </div>
-            <div class="nav-right">
-                <form class="nav-search-form">
-                    <input type="text" class="nav-search-input" placeholder="Search...">
-                </form>
-                <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
+    <nav class="site-nav" role="navigation" aria-label="Site navigation">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">&#x1F99E; learnopenclaw.org</a>
+        <ul class="nav-links" id="nav-links" role="list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="learn.html">Learn</a></li>
+            <li><a href="claw-street-terminal.html">Terminal</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+        </ul>
+        <div class="nav-right">
+            <form class="nav-search-form" role="search">
+                <span class="nav-search-icon" aria-hidden="true">&#x1F50D;</span>
+                <input type="text" class="nav-search-input" placeholder="Search docs..." aria-label="Search documentation">
+            </form>
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- ========================================================================
          HERO SECTION
@@ -1219,22 +1159,15 @@ scheduler:
          JAVASCRIPT
          ======================================================================== -->
     <script>
-        const hamburgerBtn = document.querySelector('.hamburger');
-        const navLinks = document.getElementById('nav-links');
-
-        hamburgerBtn.addEventListener('click', () => {
-            const isOpen = hamburgerBtn.getAttribute('aria-expanded') === 'true';
-            hamburgerBtn.setAttribute('aria-expanded', !isOpen);
-            navLinks.classList.toggle('open');
+    const btn = document.getElementById('hamburger-btn');
+    const nav = document.getElementById('nav-links');
+    if (btn && nav) {
+        btn.addEventListener('click', () => {
+            const open = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', String(!open));
+            nav.classList.toggle('open');
         });
-
-        // Close nav when a link is clicked
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburgerBtn.setAttribute('aria-expanded', 'false');
-                navLinks.classList.remove('open');
-            });
-        });
-    </script>
+    }
+</script>
 </body>
 </html>

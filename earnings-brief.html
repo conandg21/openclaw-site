@@ -21,110 +21,37 @@
         }
 
         /* ──── Navigation ──── */
-        .site-nav {
-            background: #1c1917;
-            border-bottom: 2px solid #4f46e5;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 0 20px;
-        }
+        
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 60px;
-        }
+        
 
-        .nav-brand {
-            font-size: 20px;
-            font-weight: 700;
-            color: #4f46e5;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
+        
 
-        .nav-links {
-            display: none;
-        }
+        
 
-        .nav-links.open {
-            display: flex;
-            flex-direction: column;
-            position: absolute;
-            top: 60px;
-            left: 0;
-            right: 0;
-            background: #1c1917;
-            border-bottom: 2px solid #4f46e5;
-            padding: 16px 20px;
-            gap: 12px;
-            z-index: 99;
-        }
+        
 
-        .nav-links a {
-            color: #e7e5e4;
-            text-decoration: none;
-            font-size: 14px;
-            padding: 8px 0;
-            border-bottom: 1px solid #44403c;
-        }
+        
 
         .nav-links a:last-child {
             border-bottom: none;
         }
 
-        .nav-links a:hover {
-            color: #4f46e5;
-        }
+        
 
-        .nav-search-form {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            max-width: 300px;
-            margin: 0 20px;
-        }
+        
 
-        .nav-search-form input {
-            background: #292524;
-            border: 1px solid #44403c;
-            color: #e7e5e4;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            flex: 1;
-        }
+        
 
-        .nav-search-form input::placeholder {
-            color: #78716b;
-        }
+        
 
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 8px;
-        }
+        
 
-        .hamburger span {
-            width: 24px;
-            height: 2px;
-            background: #e7e5e4;
-            border-radius: 1px;
-        }
+        
 
         @media (max-width: 640px) {
-            .nav-search-form {
-                display: none;
-            }
+            .nav-search-form { display: none; }
+            
         }
 
         /* ──── Hero ──── */
@@ -550,26 +477,29 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="site-nav">
-        <div class="nav-container">
-            <a href="/" class="nav-brand">OpenClaw</a>
-            <form class="nav-search-form">
-                <input type="text" placeholder="Search docs...">
+    <nav class="site-nav" role="navigation" aria-label="Site navigation">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">&#x1F99E; learnopenclaw.org</a>
+        <ul class="nav-links" id="nav-links" role="list">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="learn.html">Learn</a></li>
+            <li><a href="claw-street-terminal.html">Terminal</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+        </ul>
+        <div class="nav-right">
+            <form class="nav-search-form" role="search">
+                <span class="nav-search-icon" aria-hidden="true">&#x1F50D;</span>
+                <input type="text" class="nav-search-input" placeholder="Search docs..." aria-label="Search documentation">
             </form>
-            <button class="hamburger" id="hamburger">
+            <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
         </div>
-        <div class="nav-links" id="navLinks">
-            <a href="/">Home</a>
-            <a href="/terminal">Terminal</a>
-            <a href="/series">Series</a>
-            <a href="/api">API Reference</a>
-            <a href="/examples">Examples</a>
-        </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Hero -->
     <section class="hero">
@@ -1053,28 +983,16 @@ cp earnings-config.yaml ./</pre>
     </footer>
 
     <script>
-        // Hamburger menu toggle
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('navLinks');
-
-        hamburger.addEventListener('click', function() {
-            navLinks.classList.toggle('open');
+    const btn = document.getElementById('hamburger-btn');
+    const nav = document.getElementById('nav-links');
+    if (btn && nav) {
+        btn.addEventListener('click', () => {
+            const open = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', String(!open));
+            nav.classList.toggle('open');
         });
-
-        // Close menu when a link is clicked
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function() {
-                navLinks.classList.remove('open');
-            });
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.site-nav')) {
-                navLinks.classList.remove('open');
-            }
-        });
-    </script>
+    }
+</script>
 
     <!-- JSON-LD Schema -->
     <script type="application/ld+json">
