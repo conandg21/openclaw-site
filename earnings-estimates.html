@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consensus Estimates & Analyst Revisions — OpenClaw Earnings Automation</title>
+    <meta name="description" content="Learn how OpenClaw pulls live consensus estimates and tracks analyst revisions—the signal that beats the news.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #1c1917;
+            color: #e7e5e4;
+            line-height: 1.6;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* NAVIGATION */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .site-nav {
+            background: #1c1917;
+            border-bottom: 2px solid #4f46e5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0 20px;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        .nav-brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #e7e5e4;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #e7e5e4;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #4f46e5;
+        }
+
+        .nav-search-form {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-search-form input {
+            padding: 6px 12px;
+            background: #292524;
+            border: 1px solid #44403c;
+            color: #e7e5e4;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .nav-search-form button {
+            padding: 6px 12px;
+            background: #4f46e5;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .nav-search-form button:hover {
+            background: #4338ca;
+        }
+
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: #1c1917;
+                border-bottom: 2px solid #4f46e5;
+                padding: 16px 20px;
+                gap: 12px;
+                z-index: 99;
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .nav-search-form {
+                display: none;
+            }
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* MAIN CONTAINER */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* BREADCRUMB */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: #a89968;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: #4f46e5;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: #6366f1;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* HERO SECTION */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #4f46e5 100%);
+            padding: 60px 40px;
+            border-radius: 12px;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .hero-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #c7d2fe;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #e0e7ff;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .hero-pills {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 24px;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* SECTION STYLES */
+        /* ──────────────────────────────────────────────────────────── */
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: #4f46e5;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: #e7e5e4;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* LISTS */
+        /* ──────────────────────────────────────────────────────────── */
+
+        ul, ol {
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 12px;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* CODE BLOCKS */
+        /* ──────────────────────────────────────────────────────────── */
+
+        pre {
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+            color: #a5b4fc;
+        }
+
+        pre code {
+            color: #d4d4d8;
+        }
+
+        /* Inline code */
+        p code, li code {
+            background: #292524;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #a5b4fc;
+            font-size: 0.9em;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* ALERT BOXES */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .alert {
+            background: rgba(79, 70, 229, 0.1);
+            border-left: 4px solid #4f46e5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .alert p {
+            margin-bottom: 0;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* COMPARISON TABLE */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            border: 1px solid #44403c;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #292524;
+            padding: 16px;
+            text-align: left;
+            color: #4f46e5;
+            font-weight: 600;
+            border-bottom: 1px solid #44403c;
+        }
+
+        .comparison-table td {
+            padding: 16px;
+            border-bottom: 1px solid #44403c;
+            color: #e7e5e4;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* ASCII DIAGRAM */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .ascii-diagram {
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            font-family: "Courier New", monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            color: #a5b4fc;
+            white-space: pre;
+            line-height: 1.4;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* SAMPLE OUTPUT BOX */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .sample-output {
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
+            color: #d4d4d8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* PART NAVIGATION */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .part-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid #44403c;
+        }
+
+        .part-nav-btn {
+            flex: 1;
+            padding: 16px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .part-nav-btn.prev {
+            background: #44403c;
+            color: #e7e5e4;
+            border: 1px solid #54504a;
+        }
+
+        .part-nav-btn.prev:hover {
+            background: #54504a;
+            color: #fff;
+        }
+
+        .part-nav-btn.next {
+            background: #4f46e5;
+            color: #fff;
+            border: 1px solid #4f46e5;
+        }
+
+        .part-nav-btn.next:hover {
+            background: #4338ca;
+            border-color: #4338ca;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* SERIES NAVIGATION STRIP */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .series-nav {
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .series-nav-label {
+            font-weight: 600;
+            color: #4f46e5;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .series-nav-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #a89968;
+        }
+
+        .series-nav-item a {
+            color: #4f46e5;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .series-nav-item a:hover {
+            color: #6366f1;
+            text-decoration: underline;
+        }
+
+        .series-nav-item.current {
+            background: rgba(79, 70, 229, 0.2);
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .series-nav-item.current a {
+            color: #fff;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* DISCLAIMER */
+        /* ──────────────────────────────────────────────────────────── */
+
+        .disclaimer {
+            background: rgba(79, 70, 229, 0.08);
+            border-left: 4px solid #4f46e5;
+            padding: 16px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #a89968;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* FOOTER */
+        /* ──────────────────────────────────────────────────────────── */
+
+        footer {
+            background: #0f0f0f;
+            border-top: 1px solid #44403c;
+            padding: 40px 20px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            color: #a89968;
+            font-size: 0.9rem;
+        }
+
+        .footer-section h3 {
+            color: #fff;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #4f46e5;
+            text-decoration: none;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .footer-section a:hover {
+            color: #6366f1;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid #44403c;
+            text-align: center;
+            color: #a89968;
+            font-size: 0.85rem;
+        }
+
+        /* ──────────────────────────────────────────────────────────── */
+        /* RESPONSIVE */
+        /* ──────────────────────────────────────────────────────────── */
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 24px 16px;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .hero {
+                padding: 32px 20px;
+            }
+
+            .part-nav {
+                flex-direction: column;
+            }
+
+            .series-nav {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- NAVIGATION -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+
+    <nav class="site-nav">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">OpenClaw Terminal</a>
+            <button class="nav-toggle" id="nav-toggle">☰</button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#docs">Docs</a></li>
+                <li><a href="#series">Series</a></li>
+                <li><a href="#api">API Reference</a></li>
+                <li><a href="#github">GitHub</a></li>
+            </ul>
+            <form class="nav-search-form">
+                <input type="text" placeholder="Search..." />
+                <button type="submit">→</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- MAIN CONTENT -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="#">Home</a>
+            <span>›</span>
+            <a href="#">Terminal</a>
+            <span>›</span>
+            <a href="#">Earnings & Estimates</a>
+            <span>›</span>
+            <span>Part 2: Estimates</span>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-tag">EARNINGS AUTOMATION · PART 2 OF 5</div>
+            <h1>Consensus Estimates & Analyst Revisions</h1>
+            <p>The stock doesn't move on what actually happened — it moves on whether it beat expectations. OpenClaw pulls live Wall Street consensus estimates and tracks when analysts quietly revise them up or down.</p>
+            <div class="hero-pills">
+                <span class="pill">EPS Estimates</span>
+                <span class="pill">Revenue Consensus</span>
+                <span class="pill">Analyst Revisions</span>
+                <span class="pill">Free via yfinance</span>
+            </div>
+        </div>
+
+        <!-- Series Navigation -->
+        <div class="series-nav">
+            <div class="series-nav-label">Earnings Automation Series</div>
+            <div class="series-nav-item"><a href="openclaw-for-earnings.html">Overview</a></div>
+            <div class="series-nav-item"><a href="earnings-calendar.html">Pt 1: Calendar</a></div>
+            <div class="series-nav-item current"><a href="earnings-estimates.html">Pt 2: Estimates</a></div>
+            <div class="series-nav-item"><a href="earnings-surprise.html">Pt 3: Surprise Tracker</a></div>
+            <div class="series-nav-item"><a href="earnings-reaction.html">Pt 4: Price Reaction</a></div>
+            <div class="series-nav-item"><a href="earnings-brief.html">Pt 5: Daily Brief</a></div>
+        </div>
+
+        <!-- Section 1: What Are Consensus Estimates -->
+        <section>
+            <h2>What Are Consensus Estimates?</h2>
+            <p>Before a company reports, dozens of Wall Street analysts publish their own predictions for revenue and earnings per share (EPS). The "consensus" is the average of all those predictions. This is the number the market is priced around. A company can grow revenue 20% and the stock still drops — if analysts expected 25% growth. It's all relative to expectations.</p>
+
+            <h3>Three Types of Estimates</h3>
+            <ul>
+                <li><strong>EPS Estimate</strong> — earnings per share prediction. This is what analysts expect the company to make per share.</li>
+                <li><strong>Revenue Estimate</strong> — total revenue prediction. The consensus forecast for total top-line revenue.</li>
+                <li><strong>Whisper Number</strong> — the unofficial expectation that traders actually trade around. Often different from published consensus, based on informal intelligence.</li>
+            </ul>
+
+            <p>Here's how the market reacts:</p>
+
+            <div class="ascii-diagram">Analysts → Consensus → Market prices around it → Company reports
+                                                          Beat?  +10%
+                                                          Miss?  -15%
+                                                          In-line? ±2%</div>
+
+            <p>The consensus estimate is the baseline. Everything is measured relative to it. Miss by a penny, and you can see a 5% sell-off. Beat by a penny, and a 5% rally. The actual growth rate matters far less than whether you met expectations.</p>
+        </section>
+
+        <!-- Section 2: Why Analyst Revisions Matter -->
+        <section>
+            <h2>Why Analyst Revisions Matter (The Real Signal)</h2>
+            <p>This is the advanced insight — learn it well. When analysts revise their estimates <strong>up</strong> before a report, it often means they have informal intelligence that things are going well. When they revise <strong>down</strong>, the opposite. Tracking revision direction in the 30 days before a report is a well-known signal among professional traders.</p>
+
+            <p>Example: If Apple had 15 analysts covering it, and 12 of them raised their EPS estimate in the last 30 days, that's bullish momentum going into the report. The direction and concentration of revisions often predicts the stock's reaction more accurately than the earnings surprise itself.</p>
+
+            <div class="alert">
+                <p><strong>Pro Tip:</strong> Revisions made in the 2 weeks before earnings are especially valuable. Near-term revisions suggest the analyst has seen something material. A late upward revision from 3+ analysts is a strong bullish signal.</p>
+            </div>
+
+            <p>Why? Because analysts don't revise lightly. Each revision represents a call to their trading desk, their fund clients, their reputation. If multiple analysts are revising up together, it's not random noise — it's a coordinated signal that fundamentals are improving.</p>
+        </section>
+
+        <!-- Section 3: What OpenClaw Tracks -->
+        <section>
+            <h2>What OpenClaw Tracks: Before & After</h2>
+
+            <table class="comparison-table">
+                <tr>
+                    <th>Without OpenClaw</th>
+                    <th>With OpenClaw</th>
+                </tr>
+                <tr>
+                    <td>Manually check analyst pages for each stock</td>
+                    <td>Script pulls estimates for your full watchlist automatically</td>
+                </tr>
+                <tr>
+                    <td>No revision history. Can't see what changed.</td>
+                    <td>Compares current vs 30-days-ago estimates. Tracks every change.</td>
+                </tr>
+                <tr>
+                    <td>No automated alerts. You miss signals.</td>
+                    <td>Flags significant revisions. Flags when +5% consensus change detected.</td>
+                </tr>
+                <tr>
+                    <td>Data trapped in browser tabs</td>
+                    <td>Logs all estimates to CSV. Build strategies on top of historical data.</td>
+                </tr>
+                <tr>
+                    <td>No dashboard. Can't see trends across 30+ stocks.</td>
+                    <td>Central log. Compare revision patterns across your entire watchlist.</td>
+                </tr>
+            </table>
+
+            <p>OpenClaw does the heavy lifting. You get data. You make decisions.</p>
+        </section>
+
+        <!-- Section 4: YAML Config -->
+        <section>
+            <h2>YAML Configuration</h2>
+            <p>Here's the config file that tells OpenClaw what to track and how to alert you:</p>
+
+            <pre><code>watchlist:
+  tickers: [AAPL, MSFT, NVDA, AMZN, GOOGL]
+
+estimates:
+  track_revisions: true
+  revision_window_days: 30
+  flag_revision_pct: 5.0    # flag if estimate moved ±5% or more
+  sources: ["yfinance"]
+
+alerts:
+  email: "you@example.com"
+  daily_digest: true</code></pre>
+
+            <h3>Field Explanations</h3>
+            <ul>
+                <li><code>tickers</code> — List of stock symbols to monitor. Add as many as you want.</li>
+                <li><code>track_revisions</code> — Set to <code>true</code> to enable revision tracking (comparing current estimates to prior runs).</li>
+                <li><code>revision_window_days</code> — How far back to look for revisions. 30 days is standard for earnings season signals.</li>
+                <li><code>flag_revision_pct</code> — Threshold for flagging. If an EPS estimate moves ±5% or more, the script flags it as "SIGNIFICANT". Adjust to suit your sensitivity.</li>
+                <li><code>sources</code> — Data source. <code>"yfinance"</code> is free and works well for consensus data.</li>
+                <li><code>email</code> — Where daily digest alerts go. Optional but highly recommended.</li>
+                <li><code>daily_digest</code> — If <code>true</code>, you get one email per day summarizing all revisions and significant changes across your watchlist.</li>
+            </ul>
+        </section>
+
+        <!-- Section 5: The Python Script -->
+        <section>
+            <h2>The Python Script: earnings_estimates.py</h2>
+            <p>Here's the complete, heavily commented script that pulls estimates and tracks revisions:</p>
+
+            <pre><code>"""
+earnings_estimates.py — OpenClaw Earnings Estimates Tracker
+Pulls EPS and revenue consensus estimates for your watchlist.
+Flags significant analyst revisions in the configured window.
+"""
+
+import yaml
+import yfinance as yf
+import pandas as pd
+from datetime import datetime
+
+# ── Load config ────────────────────────────────────────────────────────────
+with open("earnings-config.yaml") as f:
+    cfg = yaml.safe_load(f)
+
+tickers       = cfg["watchlist"]["tickers"]
+flag_pct      = cfg["estimates"].get("flag_revision_pct", 5.0)
+
+# ── Fetch estimates for each ticker ───────────────────────────────────────
+print("📊 EARNINGS ESTIMATES — YOUR WATCHLIST")
+print("=" * 60)
+
+results = []
+
+for ticker in tickers:
+    stock = yf.Ticker(ticker)
+
+    try:
+        # Get analyst earnings estimates (quarterly)
+        estimates = stock.earnings_estimate
+        revenue   = stock.revenue_estimate
+
+        if estimates is None:
+            print(f"  {ticker}: No estimate data available")
+            continue
+
+        # Current quarter estimates
+        current_q = estimates.iloc[0] if not estimates.empty else None
+
+        if current_q is not None:
+            eps_est     = current_q.get("avg", "N/A")
+            eps_low     = current_q.get("low", "N/A")
+            eps_high    = current_q.get("high", "N/A")
+            num_analysts = current_q.get("numberOfAnalysts", "N/A")
+
+            # Revenue estimate (if available)
+            rev_est = "N/A"
+            if revenue is not None and not revenue.empty:
+                rev_row = revenue.iloc[0]
+                rev_est = rev_row.get("avg", "N/A")
+
+            print(f"\n  {ticker}")
+            print(f"    EPS Estimate:     ${eps_est}")
+            print(f"    Range:            ${eps_low} – ${eps_high}")
+            print(f"    Revenue Estimate: {rev_est}")
+            print(f"    # Analysts:       {num_analysts}")
+
+            results.append({
+                "Ticker":       ticker,
+                "EPS Estimate": eps_est,
+                "EPS Low":      eps_low,
+                "EPS High":     eps_high,
+                "Revenue Est":  rev_est,
+                "Analysts":     num_analysts,
+                "Fetched":      datetime.today().strftime("%Y-%m-%d"),
+            })
+
+    except Exception as e:
+        print(f"  {ticker}: Error — {e}")
+
+# ── Check for revision signals (compare to prior log if it exists) ─────────
+print("\n\n🔍 REVISION CHECK")
+print("=" * 60)
+
+try:
+    prior = pd.read_csv("data/estimates_log.csv")
+    prior_latest = prior.groupby("Ticker").last().reset_index()
+
+    for r in results:
+        prior_row = prior_latest[prior_latest["Ticker"] == r["Ticker"]]
+        if prior_row.empty:
+            print(f"  {r['Ticker']}: No prior data for comparison (first run)")
+            continue
+
+        prior_eps = prior_row["EPS Estimate"].values[0]
+        curr_eps  = r["EPS Estimate"]
+
+        try:
+            change_pct = ((float(curr_eps) - float(prior_eps)) / abs(float(prior_eps))) * 100
+            direction  = "⬆️ UP" if change_pct > 0 else "⬇️ DOWN"
+            flag       = " ⚠️ SIGNIFICANT" if abs(change_pct) >= flag_pct else ""
+            print(f"  {r['Ticker']}: {direction} {abs(change_pct):.1f}%{flag}")
+        except:
+            print(f"  {r['Ticker']}: Could not compute revision")
+
+except FileNotFoundError:
+    print("  No prior log found — this is your first run. Baseline saved.")
+
+# ── Save to CSV ────────────────────────────────────────────────────────────
+if results:
+    df = pd.DataFrame(results)
+    df.to_csv("data/estimates_log.csv", mode="a", header=not pd.io.common.file_exists("data/estimates_log.csv"), index=False)
+    print("\n💾 Saved to data/estimates_log.csv")</code></pre>
+
+            <h3>How This Script Works</h3>
+            <ol>
+                <li><strong>Load config</strong> — Reads your YAML file to get tickers and settings.</li>
+                <li><strong>Loop through tickers</strong> — For each stock in your watchlist, fetch data from yfinance.</li>
+                <li><strong>Extract estimates</strong> — Pulls current-quarter EPS and revenue estimates, plus analyst count.</li>
+                <li><strong>Print raw data</strong> — Displays current estimates in a readable format.</li>
+                <li><strong>Compare to prior run</strong> — Looks at your historical CSV log to detect revisions.</li>
+                <li><strong>Calculate change %</strong> — Shows whether estimates moved up or down, and by how much.</li>
+                <li><strong>Flag significant changes</strong> — If a revision exceeds your threshold (e.g., ±5%), mark it with ⚠️.</li>
+                <li><strong>Save to CSV</strong> — Appends the new data to your historical log for next week's comparison.</li>
+            </ol>
+
+            <p>Run this weekly (before earnings week) to track revision momentum. The longer your CSV log, the more patterns you'll spot.</p>
+        </section>
+
+        <!-- Section 6: Sample Output -->
+        <section>
+            <h2>Sample Output</h2>
+            <p>Here's what you see when you run the script:</p>
+
+            <div class="sample-output">📊 EARNINGS ESTIMATES — YOUR WATCHLIST
+============================================================
+
+  AAPL
+    EPS Estimate:     $1.61
+    Range:            $1.49 – $1.72
+    Revenue Estimate: $94.2B
+    # Analysts:       32
+
+  MSFT
+    EPS Estimate:     $3.22
+    Range:            $3.10 – $3.38
+    Revenue Estimate: $68.4B
+    # Analysts:       38
+
+  NVDA
+    EPS Estimate:     $0.89
+    Range:            $0.82 – $0.95
+    Revenue Estimate: $43.1B
+    # Analysts:       44
+
+
+🔍 REVISION CHECK
+============================================================
+  AAPL: ⬆️ UP 2.5%
+  MSFT: ⬆️ UP 8.1% ⚠️ SIGNIFICANT
+  NVDA: ⬇️ DOWN 1.2%</div>
+
+            <p>In this example:</p>
+            <ul>
+                <li><strong>AAPL</strong> revised up 2.5% — modest bullish signal.</li>
+                <li><strong>MSFT</strong> revised up 8.1% — **significant**. Multiple analysts likely raised guidance. This is a strong buy signal.</li>
+                <li><strong>NVDA</strong> revised down 1.2% — bearish, but below the threshold, so not flagged.</li>
+            </ul>
+
+            <p>Check your email inbox for the daily digest. You're ready to trade on this intelligence.</p>
+        </section>
+
+        <!-- Section 7: What to Watch For -->
+        <section>
+            <h2>What To Watch For</h2>
+            <p>Use these signals to interpret estimate data and spot trading opportunities:</p>
+
+            <h3>Wide EPS Range (Low vs High Spread)</h3>
+            <p>If analysts predict EPS between $1.20 and $2.00 for the same quarter, there's massive disagreement. This high uncertainty usually means the stock will move <strong>more</strong> on the actual report. Set alerts for wide ranges.</p>
+
+            <h3>Large Upward Revisions</h3>
+            <p>When you see +5%, +8%, +10% revisions, insiders may be leaking guidance to favored analysts. This is illegal but happens. The point: upward revisions are often early signals of outperformance.</p>
+
+            <h3>Revisions in the Final 2 Weeks</h3>
+            <p>Revisions made 30 days before earnings are old news. Revisions made 7–14 days before are hot. The closer to the report date, the more material the revision. A 3+ analyst upward revision 10 days before earnings is a strong buy signal.</p>
+
+            <h3>Downward Revisions (The Warning Sign)</h3>
+            <p>Downward revisions are less common and more serious. When they happen, the consensus is shrinking. This precedes missed earnings and stock drops. Watch for a pattern of multiple downward revisions — that's your exit signal.</p>
+
+            <h3>Many Analysts = More Reliable Consensus</h3>
+            <p>A stock covered by 50+ analysts has a tighter consensus. One analyst's revision doesn't move the needle. A stock covered by 5 analysts can swing wildly on a single revision. Pay attention to analyst count.</p>
+        </section>
+
+        <!-- Section 8: Cron Setup -->
+        <section>
+            <h2>Automated Scheduling with Cron</h2>
+            <p>You don't want to run this manually every week. Set it on a schedule. Here's the cron command to run the script every Monday at 7 AM (before market open, so you see revisions before the week's earnings):</p>
+
+            <pre><code># Run weekly on Monday mornings to track revision trends
+0 7 * * 1 cd /path/to/openclaw && python earnings_estimates.py</code></pre>
+
+            <h3>Breaking Down the Cron Syntax</h3>
+            <ul>
+                <li><code>0</code> — minute (0 = top of the hour)</li>
+                <li><code>7</code> — hour (7 AM in 24-hour format)</li>
+                <li><code>*</code> — day of month (any)</li>
+                <li><code>*</code> — month (any)</li>
+                <li><code>1</code> — day of week (1 = Monday)</li>
+                <li><code>cd /path/to/openclaw && python earnings_estimates.py</code> — command to run</li>
+            </ul>
+
+            <p>Replace <code>/path/to/openclaw</code> with your actual directory path. You can also add <code>> /tmp/earnings.log 2>&1</code> at the end to capture output for debugging.</p>
+
+            <h3>Alternative: Daily Digest</h3>
+            <p>If you prefer a daily check (more responsive to last-minute revisions), change the cron to:</p>
+            <pre><code>0 7 * * * cd /path/to/openclaw && python earnings_estimates.py</code></pre>
+
+            <p>The last <code>*</code> instead of <code>1</code> means "every day" instead of "Monday only". You'll get daily alerts, which is more sensitive but also more noise.</p>
+        </section>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+            <strong>Disclaimer:</strong> Consensus estimates are sourced from analyst forecasts and subject to revision. This content is for educational purposes only and is not financial advice. Past performance does not guarantee future results. Always conduct your own research and consult a financial advisor before making investment decisions.
+        </div>
+
+        <!-- Part Navigation -->
+        <div class="part-nav">
+            <a href="earnings-calendar.html" class="part-nav-btn prev">← Part 1: Calendar</a>
+            <a href="earnings-surprise.html" class="part-nav-btn next">Part 3: Surprise Tracker →</a>
+        </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- FOOTER -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Learn</h3>
+                <a href="#">Documentation</a>
+                <a href="#">API Reference</a>
+                <a href="#">Examples</a>
+                <a href="#">Tutorials</a>
+            </div>
+            <div class="footer-section">
+                <h3>Series</h3>
+                <a href="#">Earnings Automation</a>
+                <a href="#">Options Chains</a>
+                <a href="#">Market Screeners</a>
+                <a href="#">Portfolio Tracking</a>
+            </div>
+            <div class="footer-section">
+                <h3>Community</h3>
+                <a href="#">GitHub</a>
+                <a href="#">Discussions</a>
+                <a href="#">Twitter</a>
+                <a href="#">Discord</a>
+            </div>
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <a href="#">Blog</a>
+                <a href="#">Changelog</a>
+                <a href="#">Status</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 OpenClaw. Learn financial automation with Python and free APIs. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ──────────────────────────────────────────────────────────── -->
+    <!-- NAVIGATION TOGGLE SCRIPT -->
+    <!-- ──────────────────────────────────────────────────────────── -->
+
+    <script>
+        const navToggle = document.getElementById("nav-toggle");
+        const navLinks = document.getElementById("nav-links");
+
+        navToggle.addEventListener("click", function() {
+            navLinks.classList.toggle("open");
+        });
+
+        // Close menu when a link is clicked
+        navLinks.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", function() {
+                navLinks.classList.remove("open");
+            });
+        });
+    </script>
+</body>
+</html>

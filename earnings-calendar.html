@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnings Calendar Monitor — Learn OpenClaw</title>
+    <style>
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* RESET & BASE                                                         */
+        /* ──────────────────────────────────────────────────────────────────── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            background: #1c1917;
+            color: #e7e5e4;
+            line-height: 1.6;
+        }
+        a { color: #4f46e5; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code, pre { font-family: "Monaco", "Courier New", monospace; }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* NAVIGATION                                                           */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .site-nav {
+            background: #1c1917;
+            border-bottom: 2px solid #4f46e5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            color: #4f46e5;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .nav-links.open {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: #1c1917;
+            border-bottom: 2px solid #4f46e5;
+            padding: 16px 20px;
+            gap: 12px;
+            z-index: 99;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            padding: 8px 0;
+        }
+
+        .nav-hamburger {
+            background: none;
+            border: none;
+            color: #4f46e5;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-search-form {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .nav-search-form { display: none; }
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* HERO                                                                 */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #4f46e5 100%);
+            padding: 60px 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .hero-tag {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            margin-bottom: 24px;
+            color: rgba(255, 255, 255, 0.95);
+            max-width: 720px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .hero-pills {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 32px; }
+            .hero-subtitle { font-size: 16px; }
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* BREADCRUMB                                                           */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .breadcrumb {
+            background: #0f0f0e;
+            border-bottom: 1px solid #44403c;
+            padding: 12px 20px;
+            font-size: 12px;
+            color: #a3a3a2;
+        }
+
+        .breadcrumb a { color: #4f46e5; }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* SERIES NAV (TABS)                                                    */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .series-nav {
+            background: #0f0f0e;
+            border-bottom: 1px solid #44403c;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 20px;
+            display: flex;
+            gap: 0;
+        }
+
+        .series-nav a {
+            display: block;
+            padding: 12px 16px;
+            border-bottom: 3px solid transparent;
+            font-size: 13px;
+            font-weight: 500;
+            color: #a3a3a2;
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+
+        .series-nav a:hover {
+            color: #e7e5e4;
+        }
+
+        .series-nav a.sn-current {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* MAIN LAYOUT                                                          */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* DISCLAIMER                                                           */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .disclaimer {
+            background: rgba(79, 70, 229, 0.1);
+            border-left: 4px solid #4f46e5;
+            padding: 12px 16px;
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-bottom: 32px;
+            border-radius: 2px;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* CONTENT SECTIONS                                                     */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #44403c;
+        }
+
+        .section-text {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: #d6d3d1;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* COMPARISON TABLE                                                     */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: #3a3533;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: #4f46e5;
+            border-bottom: 1px solid #44403c;
+        }
+
+        .comparison-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #44403c;
+            font-size: 14px;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* ASCII DIAGRAM                                                        */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .ascii-diagram {
+            background: #292524;
+            border: 1px solid #44403c;
+            padding: 20px;
+            border-radius: 4px;
+            font-family: "Monaco", "Courier New", monospace;
+            font-size: 13px;
+            color: #a5b4fc;
+            overflow-x: auto;
+            margin: 24px 0;
+            white-space: pre;
+            line-height: 1.5;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* CODE BLOCKS                                                          */
+        /* ──────────────────────────────────────────────────────────────────── */
+        pre {
+            background: #292524;
+            border: 1px solid #44403c;
+            padding: 16px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 24px 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #e7e5e4;
+        }
+
+        code {
+            color: #a5b4fc;
+        }
+
+        pre code {
+            color: #e7e5e4;
+        }
+
+        .code-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* ALERT BOX                                                            */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .alert {
+            background: rgba(79, 70, 229, 0.1);
+            border-left: 4px solid #4f46e5;
+            padding: 16px;
+            border-radius: 2px;
+            margin: 24px 0;
+            font-size: 14px;
+            color: #d6d3d1;
+        }
+
+        .alert strong {
+            color: #4f46e5;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* NAVIGATION BUTTONS (PREV/NEXT)                                       */
+        /* ──────────────────────────────────────────────────────────────────── */
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 60px;
+            margin-bottom: 40px;
+        }
+
+        .nav-btn {
+            padding: 16px;
+            border-radius: 4px;
+            border: 1px solid #44403c;
+            background: #292524;
+            color: #e7e5e4;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .nav-btn:hover {
+            text-decoration: none;
+            background: #3a3533;
+        }
+
+        .nav-btn.prev {
+            border-color: #44403c;
+        }
+
+        .nav-btn.next {
+            grid-column: 2;
+            background: #4f46e5;
+            border-color: #4f46e5;
+            color: #fff;
+        }
+
+        .nav-btn.next:hover {
+            background: #5f56f5;
+            border-color: #5f56f5;
+        }
+
+        .nav-btn-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .nav-btn-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* ──────────────────────────────────────────────────────────────────── */
+        /* FOOTER                                                               */
+        /* ──────────────────────────────────────────────────────────────────── */
+        footer {
+            background: #0f0f0e;
+            border-top: 1px solid #44403c;
+            padding: 40px 20px;
+            color: #a3a3a2;
+            font-size: 13px;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #4f46e5;
+        }
+
+        .footer-copyright {
+            border-top: 1px solid #44403c;
+            padding-top: 20px;
+            margin-top: 20px;
+            color: #6f6f6e;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<!-- NAVIGATION                                                              -->
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<nav class="site-nav">
+    <div class="nav-brand">LEARN OPENCLAW</div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+        <span style="width: 20px; height: 2px; background: #4f46e5; border-radius: 1px;"></span>
+        <span style="width: 20px; height: 2px; background: #4f46e5; border-radius: 1px;"></span>
+        <span style="width: 20px; height: 2px; background: #4f46e5; border-radius: 1px;"></span>
+    </button>
+    <div class="nav-links" id="nav-links">
+        <a href="/">Home</a>
+        <a href="/terminal">Terminal</a>
+        <a href="/earnings">Earnings Series</a>
+        <a href="/docs">Docs</a>
+    </div>
+</nav>
+
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<!-- HERO                                                                    -->
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<div class="hero">
+    <div class="hero-tag">EARNINGS AUTOMATION · PART 1 OF 5</div>
+    <h1 class="hero-title">Earnings Calendar Monitor</h1>
+    <p class="hero-subtitle">
+        Never get caught off guard by an earnings report again. OpenClaw checks your watchlist every morning
+        and alerts you 3 days before any ticker reports — using free data, zero paid subscriptions.
+    </p>
+    <div class="hero-pills">
+        <div class="pill">yfinance Free</div>
+        <div class="pill">No API Key</div>
+        <div class="pill">3-Day Alerts</div>
+        <div class="pill">Watchlist-Driven</div>
+    </div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<!-- BREADCRUMB                                                              -->
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<div class="breadcrumb">
+    <a href="/">Home</a> › <a href="/terminal">Terminal</a> › <a href="/earnings">Earnings & Estimates</a> › Part 1: Calendar
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<!-- SERIES NAV                                                              -->
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<div class="series-nav">
+    <a href="openclaw-for-earnings.html">Overview</a>
+    <a href="earnings-calendar.html" class="sn-current">Pt 1: Calendar</a>
+    <a href="earnings-estimates.html">Pt 2: Estimates</a>
+    <a href="earnings-surprise.html">Pt 3: Surprise Tracker</a>
+    <a href="earnings-reaction.html">Pt 4: Price Reaction</a>
+    <a href="earnings-brief.html">Pt 5: Daily Brief</a>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<!-- MAIN CONTENT                                                            -->
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<div class="container">
+
+    <div class="disclaimer">
+        <strong>Disclaimer:</strong> Earnings calendar data is for research monitoring only. Dates may shift.
+        Not financial advice.
+    </div>
+
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <!-- SECTION 1: WHAT IS AN EARNINGS CALENDAR?                            -->
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <section class="section">
+        <h2 class="section-title">What Is an Earnings Calendar?</h2>
+
+        <p class="section-text">
+            Every public company is required by law to report its financial results four times a year—once
+            each quarter. The dates when these reports will be published are announced in advance on the
+            earnings calendar. This is public information. You can find it on Yahoo Finance, CNBC, MarketWatch,
+            or any financial data provider.
+        </p>
+
+        <p class="section-text">
+            But here's the problem: if you have a diversified watchlist of 20+ stocks, manually checking each
+            one on different financial sites every single day is tedious and error-prone. You might miss a
+            ticker entirely. You might be unaware that your largest position is reporting in two days. That's
+            when an earnings report can move a stock 10–20% or more in minutes, and you're caught off guard.
+        </p>
+
+        <p class="section-text">
+            <strong>Before Market Open (BMO)</strong> vs <strong>After Market Close (AMC)</strong> timing matters
+            for how you position. A report released BMO can gap your position at the open; AMC gives you time
+            to react after the close. OpenClaw tracks both, so you can plan accordingly.
+        </p>
+
+        <p class="section-text" style="margin-top: 24px; margin-bottom: 12px;">
+            <strong>The Earnings Cycle Timeline</strong>
+        </p>
+
+        <div class="ascii-diagram">Q1 Ends    →  Earnings     →  Analyst    →  Stock
+Mar 31        Report Due     Call Live      Reacts
+              (Apr–May)                     ±10–20%</div>
+
+        <p class="section-text">
+            Most earnings happen within 4–6 weeks of the quarter's end. Earnings calls (where executives
+            explain the results) typically happen within days. The stock can react anywhere from 30 minutes
+            to several hours after the announcement.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <!-- SECTION 2: WHAT OPENCLAW AUTOMATES                                  -->
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <section class="section">
+        <h2 class="section-title">What OpenClaw Automates</h2>
+
+        <p class="section-text">
+            The traditional approach is manual. You. Every morning, checking 20 different sites for 20 tickers.
+            Hoping you don't skip one.
+        </p>
+
+        <p class="section-text">
+            OpenClaw replaces that with a single script that runs automatically every morning and does the work
+            for you. Here's the before-and-after:
+        </p>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Without OpenClaw</th>
+                    <th>With OpenClaw</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Manually check Yahoo Finance, Seeking Alpha, etc. every day</td>
+                    <td>Script runs automatically at 6:30 AM every weekday</td>
+                </tr>
+                <tr>
+                    <td>Easy to miss a ticker. No alerts if you don't check.</td>
+                    <td>Checks all tickers in your config. Sends email if anything reports in the next 3 days.</td>
+                </tr>
+                <tr>
+                    <td>Inconsistent record-keeping. Dates scribbled in notes.</td>
+                    <td>Results logged to CSV automatically. Historical record for backtesting.</td>
+                </tr>
+                <tr>
+                    <td>Reacts to earnings. Positioned during the move.</td>
+                    <td>Gets a 3-day heads-up. Time to review position size, check IV, read filings.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p class="section-text">
+            That 3-day window is your edge. You're not reacting—you're <em>preparing</em>. You can check if the
+            stock is overbought (high IV rank), pull the latest 10-Q filing, read the last earnings call transcript,
+            and decide whether to trim, hold, or add to your position. By the time the report hits, you're ready.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <!-- SECTION 3: THE YAML CONFIG                                          -->
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <section class="section">
+        <h2 class="section-title">The <code>earnings-config.yaml</code> Snippet</h2>
+
+        <p class="section-text">
+            All OpenClaw scripts read from a single config file. This is where you tell OpenClaw what to do:
+            which tickers to watch, how many days ahead to look, when to send alerts, and when to run.
+        </p>
+
+        <p class="section-text">Here's the earnings calendar section of the config:</p>
+
+        <div class="code-label">earnings-config.yaml</div>
+        <pre><code>watchlist:
+  tickers: [AAPL, MSFT, NVDA, AMZN, GOOGL]
+
+calendar:
+  lookahead_days: 5
+  alert_days_before: 3
+  market_hours_only: false   # include pre-market & after-hours reports
+
+alerts:
+  email: "you@example.com"
+  daily_digest: true
+  send_time: "06:30"
+
+scheduler:
+  earnings_calendar:
+    script: earnings_calendar.py
+    schedule: "30 6 * * 1-5"  # Weekdays at 6:30 AM</code></pre>
+
+        <p class="section-text"><strong>Field Explanations:</strong></p>
+
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><code>watchlist.tickers</code> — The tickers you want to monitor. Add or remove as needed.</li>
+            <li><code>lookahead_days</code> — How far ahead to search for earnings (5 days = next work week).</li>
+            <li><code>alert_days_before</code> — Trigger an alert if an earnings date is this many days away (3 = get warned 3 days out).</li>
+            <li><code>market_hours_only</code> — Set to <code>true</code> if you only care about BMO (before market open) reports. <code>false</code> includes AMC too.</li>
+            <li><code>alerts.email</code> — Where to send the alert email. Can be your Gmail, Outlook, or work email.</li>
+            <li><code>alerts.send_time</code> — Time of day to send alerts (24-hour format). 06:30 = 6:30 AM.</li>
+            <li><code>scheduler.schedule</code> — Cron expression. <code>"30 6 * * 1-5"</code> means 6:30 AM, every weekday.</li>
+        </ul>
+
+        <div class="alert">
+            <strong>Pro Tip:</strong> Start with 5 tickers (a small watchlist) and tune the alert window to 3 days.
+            Once it's running smoothly, expand your watchlist and adjust the lookahead. Too many alerts = you'll
+            ignore them.
+        </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <!-- SECTION 4: THE PYTHON SCRIPT                                        -->
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <section class="section">
+        <h2 class="section-title">The Python Script: <code>earnings_calendar.py</code></h2>
+
+        <p class="section-text">
+            This is the script that OpenClaw runs every morning. It reads your config, fetches earnings dates
+            from yfinance (a free, open-source library), checks for upcoming reports, and sends an email alert
+            if anything falls within your alert window.
+        </p>
+
+        <p class="section-text">
+            Every line is commented so you can understand what's happening. You don't need to modify this script
+            to use it—just save it, and let the cron scheduler run it.
+        </p>
+
+        <div class="code-label">earnings_calendar.py</div>
+        <pre><code>"""
+earnings_calendar.py — OpenClaw Earnings Calendar Monitor
+
+Reads earnings-config.yaml, checks upcoming earnings for your watchlist,
+and sends an email alert if any ticker reports within your alert window.
+
+Usage:  python earnings_calendar.py
+        (Typically run by cron each morning)
+"""
+
+import yaml
+import yfinance as yf
+import pandas as pd
+from datetime import datetime, timedelta
+import smtplib
+from email.mime.text import MIMEText
+import csv
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# 1. LOAD CONFIGURATION
+# ──────────────────────────────────────────────────────────────────────────
+
+with open("earnings-config.yaml") as f:
+    cfg = yaml.safe_load(f)
+
+# Extract settings from config
+tickers       = cfg["watchlist"]["tickers"]
+lookahead     = cfg["calendar"]["lookahead_days"]
+alert_window  = cfg["calendar"]["alert_days_before"]
+alert_email   = cfg["alerts"]["email"]
+send_time     = cfg["alerts"]["send_time"]
+
+print("\n" + "="*60)
+print("OpenClaw Earnings Calendar Monitor")
+print("="*60)
+print(f"Scanning {len(tickers)} tickers for earnings in next {lookahead} days")
+print(f"Alert threshold: {alert_window} days before report")
+print()
+
+# Calculate date boundaries
+today = datetime.today().date()
+cutoff = today + timedelta(days=lookahead)
+
+print(f"Date range: {today} to {cutoff}\n")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# 2. FETCH EARNINGS DATES FROM YFINANCE
+# ──────────────────────────────────────────────────────────────────────────
+
+upcoming = []
+
+for ticker in tickers:
+    try:
+        print(f"  Fetching {ticker}...", end=" ")
+        stock = yf.Ticker(ticker)
+
+        # yfinance.earnings_dates returns a DataFrame indexed by date
+        # Columns: "EPS Estimate" and "Reported EPS"
+        cal = stock.earnings_dates
+
+        if cal is None or cal.empty:
+            print("(no earnings data)")
+            continue
+
+        # Filter to future dates within our lookahead window
+        cal = cal[cal.index.date >= today]
+        cal = cal[cal.index.date <= cutoff]
+
+        # If nothing found, skip
+        if cal.empty:
+            print("(none in window)")
+            continue
+
+        # Iterate over matching earnings dates
+        for date, row in cal.iterrows():
+            days_away = (date.date() - today).days
+
+            upcoming.append({
+                "Ticker":       ticker,
+                "Date":         date.strftime("%Y-%m-%d"),
+                "Days Away":    days_away,
+                "Alert":        "⚠️ ALERT" if days_away <= alert_window else "",
+                "EPS Estimate": row.get("EPS Estimate", "N/A"),
+            })
+
+        print(f"({len(cal)} earnings)")
+
+    except Exception as e:
+        print(f"(error: {e})")
+        continue
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# 3. PRINT RESULTS TO TERMINAL
+# ──────────────────────────────────────────────────────────────────────────
+
+if upcoming:
+    # Sort by days away (nearest first)
+    df = pd.DataFrame(upcoming).sort_values("Days Away")
+
+    print("\n📅 UPCOMING EARNINGS ON YOUR WATCHLIST")
+    print("="*65)
+    print(df.to_string(index=False))
+    print()
+else:
+    print("✅ No earnings found in the next", lookahead, "days for your watchlist.")
+    print()
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# 4. SEND EMAIL ALERT IF ANY REPORTS ARE WITHIN THE ALERT WINDOW
+# ──────────────────────────────────────────────────────────────────────────
+
+# Filter to only upcoming reports (within alert_days_before)
+alerts = [u for u in upcoming if u["Days Away"] <= alert_window]
+
+if alerts:
+    # Build email body
+    body = "OpenClaw Earnings Alert\n"
+    body += "="*50 + "\n\n"
+    body += "The following stocks on your watchlist report earnings soon:\n\n"
+
+    for a in alerts:
+        body += f"  {a['Ticker']:6s}  —  {a['Date']}  ({a['Days Away']:2d} days away)\n"
+        body += f"           EPS Estimate: {a['EPS Estimate']}\n\n"
+
+    body += "---\n"
+    body += "Next steps: Review your position size, check IV rank,\n"
+    body += "pull the latest filing, and read the last earnings transcript.\n"
+    body += "This is your 3-day heads-up to prepare.\n\n"
+    body += "Not financial advice. Automated from OpenClaw.\n"
+
+    # NOTE: To actually send email, configure SMTP credentials below.
+    # This is a stub. In production, you'd use:
+    #
+    #   import os
+    #   smtp_server = "smtp.gmail.com"
+    #   smtp_port = 587
+    #   sender_email = os.getenv("OPENCLAW_EMAIL")
+    #   sender_password = os.getenv("OPENCLAW_PASSWORD")
+    #
+    #   msg = MIMEText(body)
+    #   msg["Subject"] = f"OpenClaw: {len(alerts)} earnings report(s) coming up"
+    #   msg["From"] = sender_email
+    #   msg["To"] = alert_email
+    #
+    #   server = smtplib.SMTP(smtp_server, smtp_port)
+    #   server.starttls()
+    #   server.login(sender_email, sender_password)
+    #   server.send_message(msg)
+    #   server.quit()
+
+    print("📧 ALERT WOULD BE SENT")
+    print("="*65)
+    print(f"To: {alert_email}")
+    print(f"Subject: OpenClaw: {len(alerts)} earnings report(s) coming up")
+    print()
+    print(body)
+else:
+    print("✅ No alerts triggered (no earnings within", alert_window, "day window)")
+    print()
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# 5. LOG RESULTS TO CSV (FOR HISTORICAL RECORD)
+# ──────────────────────────────────────────────────────────────────────────
+
+if upcoming:
+    import os
+    os.makedirs("data", exist_ok=True)
+
+    log_file = "data/earnings_calendar_log.csv"
+
+    # Add a timestamp column
+    df["Timestamp"] = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Append to existing CSV or create new
+    if os.path.exists(log_file):
+        df.to_csv(log_file, mode='a', header=False, index=False)
+    else:
+        df.to_csv(log_file, index=False)
+
+    print("💾 LOGGED TO CSV")
+    print("="*65)
+    print(f"File: {log_file}")
+    print(f"Rows: {len(df)}")
+    print()
+
+print("Done.\n")</code></pre>
+
+        <div class="alert">
+            <strong>Email Setup Note:</strong> The script above has email functionality stubbed out with comments.
+            To enable real email alerts, you'll need to configure an SMTP server (Gmail, Outlook, or your own) and
+            store credentials as environment variables. See the comments in the code for setup instructions. For now,
+            the script will print the alert to the terminal.
+        </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <!-- SECTION 5: SAMPLE OUTPUT                                            -->
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <section class="section">
+        <h2 class="section-title">Sample Output</h2>
+
+        <p class="section-text">
+            Here's what the script prints to your terminal when it runs in the morning:
+        </p>
+
+        <pre><code>============================================================
+OpenClaw Earnings Calendar Monitor
+============================================================
+Scanning 5 tickers for earnings in next 5 days
+Alert threshold: 3 days before report
+
+Date range: 2026-03-28 to 2026-04-02
+
+  Fetching AAPL... (1 earnings)
+  Fetching MSFT... (1 earnings)
+  Fetching NVDA... (none in window)
+  Fetching AMZN... (1 earnings)
+  Fetching GOOGL... (none in window)
+
+📅 UPCOMING EARNINGS ON YOUR WATCHLIST
+=================================================================
+    Ticker        Date  Days Away Alert       EPS Estimate
+      MSFT  2026-03-29          1 ⚠️ ALERT              3.22
+      AAPL  2026-04-01          4                       1.61
+      AMZN  2026-04-02          5                       1.37
+
+📧 ALERT WOULD BE SENT
+=================================================================
+To: you@example.com
+Subject: OpenClaw: 1 earnings report(s) coming up
+
+OpenClaw Earnings Alert
+==================================================
+
+The following stocks on your watchlist report earnings soon:
+
+  MSFT    —  2026-03-29  ( 1 days away)
+           EPS Estimate: 3.22
+
+---
+Next steps: Review your position size, check IV rank,
+pull the latest filing, and read the last earnings transcript.
+This is your 3-day heads-up to prepare.
+
+Not financial advice. Automated from OpenClaw.
+
+💾 LOGGED TO CSV
+=================================================================
+File: data/earnings_calendar_log.csv
+Rows: 3
+
+Done.</code></pre>
+
+        <p class="section-text" style="margin-top: 24px;">
+            Notice that MSFT is flagged with ⚠️ ALERT because it reports in 1 day (within the 3-day window).
+            The script logs all three upcoming reports to CSV for your historical record. You can review this
+            log later to see which earnings moved your portfolio, and which ones you handled well.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <!-- SECTION 6: CRON SETUP                                               -->
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <section class="section">
+        <h2 class="section-title">Cron Setup: Run Automatically Every Morning</h2>
+
+        <p class="section-text">
+            Right now, you run the script manually. But the whole point of OpenClaw is automation. You want the
+            script to run every morning at 6:30 AM, while you're still asleep, and have the email waiting for you
+            when you wake up. That's what cron does.
+        </p>
+
+        <p class="section-text">
+            Cron is a job scheduler on Unix-like systems (Linux, macOS). You give it a command and a schedule,
+            and it runs the command at that time, every day.
+        </p>
+
+        <p class="section-text">
+            Open your terminal and edit your crontab:
+        </p>
+
+        <pre><code>crontab -e</code></pre>
+
+        <p class="section-text">
+            Add this line at the bottom:
+        </p>
+
+        <pre><code>30 6 * * 1-5 cd /path/to/openclaw && python earnings_calendar.py</code></pre>
+
+        <p class="section-text">
+            Save and exit. That's it. The script will now run every weekday at 6:30 AM.
+        </p>
+
+        <p class="section-text"><strong>Cron Syntax Breakdown:</strong></p>
+
+        <pre><code>30 6 * * 1-5
+│  │ │ │ └─ Day of week (0-6, where 0=Sunday)
+│  │ │ │    1-5 = Monday through Friday
+│  │ │ └─── Month (*, or 1-12)
+│  │ └───── Day of month (*, or 1-31)
+│  └─────── Hour (0-23, 24-hour format)
+└────────── Minute (0-59)</code></pre>
+
+        <p class="section-text">
+            So <code>30 6 * * 1-5</code> means: "At 6:30 AM (06:30), every day, every month, Monday through Friday."
+        </p>
+
+        <p class="section-text">
+            The command <code>cd /path/to/openclaw && python earnings_calendar.py</code> means:
+        </p>
+
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><code>cd /path/to/openclaw</code> — Navigate to your OpenClaw directory</li>
+            <li><code>&&</code> — Then (if successful)…</li>
+            <li><code>python earnings_calendar.py</code> — Run the Python script</li>
+        </ul>
+
+        <div class="alert">
+            <strong>Important:</strong> Replace <code>/path/to/openclaw</code> with the actual path to your OpenClaw
+            directory. For example: <code>/Users/john/openclaw</code> or <code>/home/trader/projects/openclaw</code>.
+        </div>
+
+        <p class="section-text" style="margin-top: 24px;">
+            To verify your crontab is set:
+        </p>
+
+        <pre><code>crontab -l</code></pre>
+
+        <p class="section-text">
+            This will print your scheduled jobs. If you see your earnings_calendar line, you're good.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <!-- SECTION 7: WHAT TO DO WITH THIS                                     -->
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <section class="section">
+        <h2 class="section-title">What To Do With This 3-Day Heads-Up</h2>
+
+        <p class="section-text">
+            Getting an alert that MSFT reports in 3 days is only the start. That's when the real work begins.
+            Here's how the Terminal series stacks together:
+        </p>
+
+        <ul style="margin-left: 20px; line-height: 1.8; margin-top: 16px;">
+            <li>
+                <strong>Part 2: Earnings Estimates</strong> — Pull the consensus EPS estimate for MSFT. Is it higher
+                or lower than the last quarter? This tells you market expectations.
+            </li>
+            <li>
+                <strong>Part 3: Earnings Surprise Tracker</strong> — Check how often MSFT beats or misses. Historical
+                surprise direction can predict the direction of the move.
+            </li>
+            <li>
+                <strong>Part 4: Price Reaction</strong> — Look at how MSFT's stock has reacted to past earnings. Did
+                it gap up, hold flat, or sell off after good reports? Market psychology matters.
+            </li>
+            <li>
+                <strong>Part 5: Daily Brief</strong> — Combine all four monitors into a single morning briefing. You
+                see earnings, estimates, historical surprises, and reactions all in one email. Zero manual work.
+            </li>
+        </ul>
+
+        <p class="section-text" style="margin-top: 24px;">
+            Each piece is automated. Each runs from the same <code>earnings-config.yaml</code>. Each can be triggered
+            by cron. By the end of the series, you have a full earnings surveillance system that runs automatically
+            every morning and gives you the intelligence you need to trade with confidence.
+        </p>
+
+        <p class="section-text" style="margin-top: 16px;">
+            That's OpenClaw.
+        </p>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <!-- NAVIGATION BUTTONS                                                   -->
+    <!-- ──────────────────────────────────────────────────────────────────── -->
+    <div class="nav-buttons">
+        <a href="openclaw-for-earnings.html" class="nav-btn prev">
+            <div class="nav-btn-label">← Previous</div>
+            <div class="nav-btn-title">Overview</div>
+        </a>
+        <a href="earnings-estimates.html" class="nav-btn next">
+            <div class="nav-btn-label">Next →</div>
+            <div class="nav-btn-title">Part 2: Estimates</div>
+        </a>
+    </div>
+
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<!-- FOOTER                                                                  -->
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/terminal">Terminal Series</a>
+            <a href="/earnings">Earnings & Estimates</a>
+            <a href="/docs">Documentation</a>
+            <a href="/github">GitHub</a>
+        </div>
+        <div class="footer-copyright">
+            © 2026 Learn OpenClaw. OpenClaw is an automation framework for financial workflows.
+            All content is educational. Not financial advice.
+        </div>
+    </div>
+</footer>
+
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<!-- HAMBURGER MENU TOGGLE                                                   -->
+<!-- ──────────────────────────────────────────────────────────────────────── -->
+<script>
+    document.getElementById('hamburger').addEventListener('click', function() {
+        var navLinks = document.getElementById('nav-links');
+        navLinks.classList.toggle('open');
+    });
+</script>
+
+</body>
+</html>

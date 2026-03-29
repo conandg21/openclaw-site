@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw for Earnings & Estimates Automation | Claw Street Terminal</title>
+    <meta name="description" content="Automate earnings season with OpenClaw. Track earnings calendars, consensus estimates, surprise logs, and price reactions using free APIs — no financial background required.">
+
+    <style>
+        /* ============================================================================
+           GLOBAL STYLES
+           ============================================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            background: #1c1917;
+            color: #e7e5e4;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        a {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ============================================================================
+           NAVIGATION
+           ============================================================================ */
+        .site-nav {
+            background: #1c1917;
+            border-bottom: 2px solid #4f46e5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .nav-logo {
+            color: #4f46e5;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        .nav-links.open {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: #1c1917;
+            border-bottom: 2px solid #4f46e5;
+            padding: 16px 20px;
+            gap: 12px;
+            z-index: 99;
+        }
+
+        .nav-links a {
+            color: #e7e5e4;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: #4f46e5;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .nav-search-form {
+            display: flex;
+            align-items: center;
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 20px;
+            padding: 4px 12px;
+            gap: 6px;
+        }
+
+        .nav-search-input {
+            background: none;
+            border: none;
+            outline: none;
+            color: #e7e5e4;
+            font-size: 0.875rem;
+            width: 120px;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 2px;
+            background: #e7e5e4;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 640px) {
+            .nav-search-form {
+                display: none;
+            }
+        }
+
+        /* ============================================================================
+           HERO SECTION
+           ============================================================================ */
+        .hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #4f46e5 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-tag {
+            color: #a5b4fc;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #e7e5e4;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }
+
+        .hero-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 0;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(165, 180, 252, 0.3);
+            color: #a5b4fc;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        /* ============================================================================
+           SERIES NAVIGATION STRIP
+           ============================================================================ */
+        .series-nav {
+            background: #292524;
+            border-bottom: 1px solid #44403c;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .series-nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: stretch;
+            white-space: nowrap;
+        }
+
+        .series-nav a {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #a8a29e;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .series-nav a:hover {
+            color: #4f46e5;
+        }
+
+        .series-nav a.sn-current {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+        }
+
+        /* ============================================================================
+           MAIN CONTENT CONTAINER
+           ============================================================================ */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* ============================================================================
+           BREADCRUMB
+           ============================================================================ */
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: #a8a29e;
+            margin-bottom: 32px;
+        }
+
+        .breadcrumb a {
+            color: #4f46e5;
+        }
+
+        /* ============================================================================
+           DISCLAIMER
+           ============================================================================ */
+        .disclaimer {
+            background: rgba(79, 70, 229, 0.1);
+            border-left: 4px solid #4f46e5;
+            padding: 16px;
+            margin-bottom: 40px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #e7e5e4;
+        }
+
+        /* ============================================================================
+           SECTIONS
+           ============================================================================ */
+        section {
+            margin-bottom: 48px;
+        }
+
+        section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #e7e5e4;
+        }
+
+        section p {
+            margin-bottom: 16px;
+            line-height: 1.7;
+            color: #e7e5e4;
+        }
+
+        section ul, section ol {
+            margin: 16px 0 16px 24px;
+            line-height: 1.8;
+        }
+
+        section li {
+            margin-bottom: 12px;
+            color: #e7e5e4;
+        }
+
+        strong {
+            color: #ffffff;
+        }
+
+        /* ============================================================================
+           TIMELINE DIAGRAM
+           ============================================================================ */
+        .timeline-diagram {
+            background: #292524;
+            border: 1px solid #44403c;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            color: #a5b4fc;
+        }
+
+        /* ============================================================================
+           COMPARISON TABLE
+           ============================================================================ */
+        .comparison {
+            margin: 32px 0;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .comparison-card {
+            background: #292524;
+            border: 1px solid #44403c;
+            padding: 24px;
+            border-radius: 6px;
+        }
+
+        .comparison-card h4 {
+            color: #e7e5e4;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        .comparison-card ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .comparison-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid #44403c;
+            color: #a8a29e;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .comparison-card li:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================================================
+           DATA TABLE
+           ============================================================================ */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #292524;
+            border: 1px solid #44403c;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #1e1b4b;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #a5b4fc;
+            border-bottom: 1px solid #44403c;
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #44403c;
+            color: #e7e5e4;
+            font-size: 0.9rem;
+        }
+
+        tbody tr:hover {
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ============================================================================
+           CODE BLOCKS
+           ============================================================================ */
+        .code-block {
+            background: #292524;
+            border: 1px solid #44403c;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: "Courier New", monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #e7e5e4;
+        }
+
+        .code-block-label {
+            color: #a5b4fc;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        code {
+            background: #292524;
+            color: #a5b4fc;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "Courier New", monospace;
+            font-size: 0.9em;
+        }
+
+        /* ============================================================================
+           MODULE CARDS GRID
+           ============================================================================ */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .module-card {
+            background: #292524;
+            border: 1px solid #44403c;
+            border-top: 3px solid #4f46e5;
+            padding: 28px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(79, 70, 229, 0.2);
+        }
+
+        .module-tag {
+            color: #4f46e5;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .module-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .module-desc {
+            color: #a8a29e;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        .module-link {
+            color: #4f46e5;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .module-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================================================
+           FAQ SECTION
+           ============================================================================ */
+        .faq {
+            margin: 48px 0;
+        }
+
+        .faq-item {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #44403c;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .faq-answer {
+            color: #a8a29e;
+            line-height: 1.7;
+        }
+
+        /* ============================================================================
+           NAVIGATION BUTTONS
+           ============================================================================ */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 48px 0 40px 0;
+            gap: 16px;
+        }
+
+        .nav-button {
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-button.prev {
+            background: #44403c;
+            color: #e7e5e4;
+        }
+
+        .nav-button.prev:hover {
+            background: #52504b;
+        }
+
+        .nav-button.next {
+            background: #4f46e5;
+            color: #ffffff;
+            margin-left: auto;
+        }
+
+        .nav-button.next:hover {
+            background: #6366f1;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ============================================================================
+           FOOTER
+           ============================================================================ */
+        footer {
+            background: #292524;
+            border-top: 1px solid #44403c;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-links {
+            max-width: 900px;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        footer p {
+            text-align: center;
+            color: #7c7971;
+            font-size: 0.85rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ============================================================================
+           QUICK START BOX
+           ============================================================================ */
+        .quick-start {
+            background: #1e1b4b;
+            border: 1px solid #4f46e5;
+            padding: 24px;
+            border-radius: 6px;
+            margin: 32px 0;
+        }
+
+        .quick-start h3 {
+            color: #a5b4fc;
+            margin-bottom: 16px;
+        }
+    </style>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "OpenClaw for Earnings & Estimates Automation",
+        "description": "Automate earnings season with OpenClaw. Track earnings calendars, consensus estimates, surprise logs, and price reactions using free APIs.",
+        "author": {
+            "@type": "Organization",
+            "name": "learnopenclaw.org"
+        },
+        "datePublished": "2026-03-28",
+        "image": "https://learnopenclaw.org/images/earnings-hero.png"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://learnopenclaw.org/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Terminal",
+                "item": "https://learnopenclaw.org/claw-street-terminal.html"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Earnings & Estimates",
+                "item": "https://learnopenclaw.org/openclaw-for-earnings.html"
+            }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Does this cost anything?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "All APIs used are free. yfinance is free with no API key required. OpenBB is free with no key (optional for deeper data). Seeking Alpha RSS feeds are free. FRED API is free and requires only a quick registration."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How accurate are the consensus estimates?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "These are the same Wall Street consensus numbers used by Bloomberg and FactSet, sourced via yfinance. They represent the median estimate from all covering analysts."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I use this for options trading?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Knowing expected move vs. historical move is useful for structuring straddles and strangles. The surprise tracker and reaction logger give you the data to build a statistical edge."
+                }
+            }
+        ]
+    }
+    </script>
+</head>
+<body>
+
+    <!-- ========================================================================
+         NAVIGATION
+         ======================================================================== -->
+    <nav class="site-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">LearnOpenClaw</a>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="learn.html">Learn</a>
+                <a href="claw-street-terminal.html">Terminal</a>
+                <a href="blog.html">Blog</a>
+                <a href="faq.html">FAQ</a>
+            </div>
+            <div class="nav-right">
+                <form class="nav-search-form">
+                    <input type="text" class="nav-search-input" placeholder="Search...">
+                </form>
+                <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================================================
+         HERO SECTION
+         ======================================================================== -->
+    <div class="hero">
+        <div class="hero-inner">
+            <div class="hero-tag">Earnings Automation · Claw Street Terminal</div>
+            <h1 class="hero-title">OpenClaw for Earnings & Estimates</h1>
+            <p class="hero-subtitle">
+                Earnings season is the most chaotic week in finance. OpenClaw automates the calendar, tracks consensus estimates, logs every beat and miss, and delivers a pre-market brief before the open — all from free APIs.
+            </p>
+            <div class="hero-pills">
+                <div class="pill">yfinance Free</div>
+                <div class="pill">No API Key</div>
+                <div class="pill">Email Alerts</div>
+                <div class="pill">Cron Scheduler</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         SERIES NAVIGATION STRIP
+         ======================================================================== -->
+    <div class="series-nav">
+        <div class="series-nav-inner">
+            <a href="openclaw-for-earnings.html" class="sn-current">Overview</a>
+            <a href="earnings-calendar.html">Pt 1: Calendar</a>
+            <a href="earnings-estimates.html">Pt 2: Estimates</a>
+            <a href="earnings-surprise.html">Pt 3: Surprise Tracker</a>
+            <a href="earnings-reaction.html">Pt 4: Price Reaction</a>
+            <a href="earnings-brief.html">Pt 5: Daily Brief</a>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         MAIN CONTENT
+         ======================================================================== -->
+    <main class="main">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> ›
+            <a href="claw-street-terminal.html">Terminal</a> ›
+            <span>Earnings & Estimates</span>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+            <strong>⚠ Research Only:</strong> Earnings data and estimates are for research automation only. Not financial advice. Always do your own analysis before making investment decisions.
+        </div>
+
+        <!-- ====================================================================
+             SECTION 1: WHAT IS EARNINGS SEASON?
+             ==================================================================== -->
+        <section>
+            <h2>What Is Earnings Season?</h2>
+
+            <p>
+                Four times a year, a wave of chaos hits Wall Street: earnings season. This is when public companies report their quarterly financial results — revenue, profit, earnings per share (EPS), forward guidance, and more. For 4–6 weeks, hundreds of stocks report, and the market reacts hard.
+            </p>
+
+            <h3>The Three Stages</h3>
+            <p>
+                Understanding the earnings cycle is key to automating what happens next:
+            </p>
+
+            <div class="timeline-diagram">
+Pre-Announcement
+    ↓ (Analysts make predictions)
+    Consensus Estimates
+    ↓
+Report Date
+    ↓ (Company announces results)
+    Actual EPS / Revenue
+    ↓
+Reaction
+    ↓ (Stock moves up or down)
+    Next Day Open / Close
+            </div>
+
+            <h3>Why It Matters</h3>
+            <p>
+                Earnings season is violent. A single report can move a stock 10–20% overnight, sometimes more. It's not about whether the company made money — it's about whether they made <strong>as much money as Wall Street expected</strong>.
+            </p>
+
+            <p>
+                Here's the key insight: Wall Street analysts publish their predictions weeks ahead of time. The consensus estimate is the median forecast across all covering analysts. When the company reports, the market compares:
+            </p>
+
+            <ul>
+                <li><strong>Actual EPS</strong> vs. <strong>Consensus EPS</strong> → Beat or Miss?</li>
+                <li><strong>Actual Revenue</strong> vs. <strong>Consensus Revenue</strong> → Better or Worse?</li>
+                <li><strong>Forward Guidance</strong> → Will earnings grow or shrink?</li>
+            </ul>
+
+            <p>
+                If a company beats expectations by even a penny per share, the stock can pop 5%. If it misses by the same margin, it can drop 8%. This volatility creates both risk and opportunity — but only if you track it systematically.
+            </p>
+        </section>
+
+        <!-- ====================================================================
+             SECTION 2: WHAT OPENCLAW TRACKS
+             ==================================================================== -->
+        <section>
+            <h2>What OpenClaw Automates</h2>
+
+            <p>
+                Without automation, earnings season is a sprint of manual checking. With OpenClaw, it's systematic, repeatable, and hands-off. Here's the before and after:
+            </p>
+
+            <div class="comparison">
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>❌ Without OpenClaw</h4>
+                        <ul>
+                            <li>Manually check financial sites for upcoming reports</li>
+                            <li>Miss ex-dividend dates and pre-market reports</li>
+                            <li>Surprised by after-hours earnings surprises</li>
+                            <li>No historical log of who beat and who missed</li>
+                            <li>Miss the open because you weren't watching</li>
+                            <li>Analyst revisions lost to time and noise</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>✅ With OpenClaw</h4>
+                        <ul>
+                            <li>Automated calendar for your entire watchlist</li>
+                            <li>3-day advance email alerts before reports</li>
+                            <li>Real-time consensus estimates and revisions</li>
+                            <li>Historical surprise log in CSV format</li>
+                            <li>Pre-market brief email every earnings day</li>
+                            <li>Automatic price reaction tracking</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                OpenClaw does five distinct jobs:
+            </p>
+
+            <ol>
+                <li><strong>Earnings Calendar:</strong> Pulls your watchlist's upcoming earnings dates from yfinance. Alerts you 3 days before any company reports.</li>
+                <li><strong>Consensus Estimates:</strong> Tracks EPS and revenue estimates. Shows when analysts revise up or down — that's the real signal.</li>
+                <li><strong>Surprise Tracker:</strong> Logs every beat and miss automatically. Over time, you see which companies consistently beat estimates — that's edge.</li>
+                <li><strong>Price Reaction Logger:</strong> Captures the overnight move after each report. Build your own dataset of how stocks actually react to earnings.</li>
+                <li><strong>Daily Brief:</strong> One email before the open on every earnings day. Who reports today, what analysts expect, historical beat rate, and average move.</li>
+            </ol>
+        </section>
+
+        <!-- ====================================================================
+             SECTION 3: THE FREE API STACK
+             ==================================================================== -->
+        <section>
+            <h2>The Free API Stack</h2>
+
+            <p>
+                Every tool here uses completely free APIs. No credit cards, no rate limits that matter, no surprises on your bill.
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>What It Does</th>
+                        <th>Cost</th>
+                        <th>API Key?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>yfinance</strong></td>
+                        <td>Earnings calendar, EPS estimates, historical prices, quarterly data</td>
+                        <td>Free</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpenBB</strong></td>
+                        <td>Deeper estimate revisions, analyst ratings, target prices</td>
+                        <td>Free</td>
+                        <td>No (optional)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Seeking Alpha RSS</strong></td>
+                        <td>Earnings transcript headlines and summaries</td>
+                        <td>Free</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>FRED API</strong></td>
+                        <td>Macro context: GDP, interest rates, VIX around reporting season</td>
+                        <td>Free</td>
+                        <td>Yes (free registration)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                yfinance is the workhorse. It has earnings dates, consensus estimates, actual reported numbers, and historical price data all in one place. The others layer on depth, but yfinance alone is enough to build a serious earnings automation system.
+            </p>
+        </section>
+
+        <!-- ====================================================================
+             SECTION 4: THE CONFIGURATION FILE
+             ==================================================================== -->
+        <section>
+            <h2>The <code>earnings-config.yaml</code> File</h2>
+
+            <p>
+                This is the single source of truth. You edit this file once, then all five automation tools use it. No code changes needed.
+            </p>
+
+            <div class="code-block">
+                <div class="code-block-label">earnings-config.yaml</div>
+                <pre>watchlist:
+  tickers: [AAPL, MSFT, NVDA, AMZN, GOOGL]
+
+calendar:
+  lookahead_days: 5
+  alert_days_before: 3
+  market_hours_only: false   # include pre/after market reports
+
+estimates:
+  track_revisions: true
+  revision_window_days: 30
+  sources: ["yfinance"]
+
+surprise:
+  log_history: true
+  flag_threshold: 5.0   # % beat/miss worth flagging
+  csv_path: "data/earnings_history.csv"
+
+reaction:
+  capture_window: "open_next_day"
+  log_to_csv: true
+  csv_path: "data/price_reactions.csv"
+
+alerts:
+  email: "you@example.com"
+  daily_digest: true
+  send_time: "06:30"
+
+scheduler:
+  earnings_brief:
+    script: earnings_brief.py
+    schedule: "30 6 * * 1-5"  # Every weekday at 6:30 AM</pre>
+            </div>
+
+            <p>
+                Everything is a parameter:
+            </p>
+
+            <ul>
+                <li><code>watchlist.tickers</code> — Your list of stocks to track</li>
+                <li><code>calendar.lookahead_days</code> — How far ahead to pull earnings dates (5 days = coming week)</li>
+                <li><code>calendar.alert_days_before</code> — Email alert this many days before report (3 = Wednesday before Friday report)</li>
+                <li><code>estimates.track_revisions</code> — Monitor when analysts change their EPS forecasts</li>
+                <li><code>surprise.flag_threshold</code> — Only log beats/misses above this percentage (5% = meaningful surprises)</li>
+                <li><code>reaction.capture_window</code> — Which price point to log (next day open is best for overnight move)</li>
+                <li><code>scheduler.earnings_brief.schedule</code> — Cron expression for when to send the pre-market email</li>
+            </ul>
+
+            <h3>Installation</h3>
+            <p>
+                First, install the Python libraries:
+            </p>
+
+            <div class="code-block">
+                <div class="code-block-label">Terminal</div>
+                <pre>pip install yfinance pyyaml pandas requests</pre>
+            </div>
+
+            <p>
+                That's it. yfinance, PyYAML, and pandas are all that's needed for the core system. requests is for API calls if you add OpenBB or FRED later.
+            </p>
+        </section>
+
+        <!-- ====================================================================
+             SECTION 5: THE 5-PART SERIES
+             ==================================================================== -->
+        <section>
+            <h2>The 5-Part Series</h2>
+
+            <p>
+                Each module teaches one piece of the earnings automation system. Start with <strong>Earnings Calendar</strong>, end with <strong>Daily Brief</strong>. Each builds on the last.
+            </p>
+
+            <div class="module-grid">
+                <div class="module-card">
+                    <div class="module-tag">Part 1</div>
+                    <h3 class="module-title">Earnings Calendar</h3>
+                    <p class="module-desc">
+                        Pull your watchlist's upcoming earnings dates automatically. Get alerted 3 days before any ticker reports. Set up the calendar scraper and learn how to build a pre-market email trigger.
+                    </p>
+                    <a href="earnings-calendar.html" class="module-link">Start reading →</a>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-tag">Part 2</div>
+                    <h3 class="module-title">Consensus Estimates</h3>
+                    <p class="module-desc">
+                        Track EPS and revenue consensus estimates. See when analysts revise up or down — that's the real signal. Learn which revisions are worth acting on.
+                    </p>
+                    <a href="earnings-estimates.html" class="module-link">Start reading →</a>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-tag">Part 3</div>
+                    <h3 class="module-title">Surprise Tracker</h3>
+                    <p class="module-desc">
+                        Log every beat and miss automatically. Over time, see which companies consistently beat estimates — that's edge. Build a CSV database of historical surprises.
+                    </p>
+                    <a href="earnings-surprise.html" class="module-link">Start reading →</a>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-tag">Part 4</div>
+                    <h3 class="module-title">Price Reaction Logger</h3>
+                    <p class="module-desc">
+                        Capture the overnight move after each report. Build your own dataset of how stocks actually react to earnings. Find statistical patterns in your data.
+                    </p>
+                    <a href="earnings-reaction.html" class="module-link">Start reading →</a>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-tag">Part 5</div>
+                    <h3 class="module-title">Pre-Market Brief</h3>
+                    <p class="module-desc">
+                        One email before the open on every earnings day. Who reports today, what analysts expect, your historical beat rate, and average move. Pure signal, no noise.
+                    </p>
+                    <a href="earnings-brief.html" class="module-link">Start reading →</a>
+                </div>
+
+                <div class="module-card" style="opacity: 0.6;">
+                    <div class="module-tag">Bonus</div>
+                    <h3 class="module-title">Advanced: Options Edge</h3>
+                    <p class="module-desc">
+                        Compare expected move vs. historical move. Structure straddles and strangles. Coming soon.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             QUICK START
+             ==================================================================== -->
+        <section>
+            <h2>Quick Start (5 Minutes)</h2>
+
+            <div class="quick-start">
+                <h3>1. Install</h3>
+                <div class="code-block">
+                    <pre>pip install yfinance pyyaml pandas</pre>
+                </div>
+
+                <h3>2. Create Config</h3>
+                <p>
+                    Copy the <code>earnings-config.yaml</code> file above into your project folder. Edit the <code>watchlist.tickers</code> and <code>alerts.email</code> fields.
+                </p>
+
+                <h3>3. Run the Calendar Script</h3>
+                <div class="code-block">
+                    <pre>python earnings_calendar.py</pre>
+                </div>
+
+                <p>
+                    This pulls earnings dates for your watchlist and prints them to the console. Move on to Part 1 to learn how to build the full automation chain.
+                </p>
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             FAQ
+             ==================================================================== -->
+        <section class="faq">
+            <h2>Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+                <div class="faq-question">Does this cost anything?</div>
+                <div class="faq-answer">
+                    No. All APIs used are free. yfinance is free with no API key required. OpenBB is free with no key (optional for deeper data). Seeking Alpha RSS feeds are free. FRED API is free and requires only a quick registration.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How accurate are the consensus estimates?</div>
+                <div class="faq-answer">
+                    These are the same Wall Street consensus numbers used by Bloomberg and FactSet, sourced via yfinance. They represent the median estimate from all covering analysts. They're as accurate as any data available to retail investors.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I use this for options trading?</div>
+                <div class="faq-answer">
+                    Yes. Knowing expected move vs. historical move is useful for structuring straddles and strangles. The surprise tracker and reaction logger give you the data to build a statistical edge in earnings volatility.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">What if I don't know Python?</div>
+                <div class="faq-answer">
+                    Start with the series. Each module explains the logic in plain English first, then shows the Python code. By the end of Part 1, you'll understand what's happening. By Part 5, you'll be able to modify the code for your own use case.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">How often should I run the scripts?</div>
+                <div class="faq-answer">
+                    The calendar script should run daily (before market open) to catch new earnings. The surprise tracker runs after market close on earnings days. The daily brief runs every morning at 6:30 AM. The scheduler section of the config handles all this automatically using cron.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">Can I add more stocks to my watchlist?</div>
+                <div class="faq-answer">
+                    Yes. Just add tickers to the <code>watchlist.tickers</code> array in the config file. All five tools will automatically pick them up.
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             NAVIGATION BUTTONS
+             ==================================================================== -->
+        <div class="nav-buttons">
+            <button class="nav-button prev" disabled>← Previous</button>
+            <a href="earnings-calendar.html" class="nav-button next">Part 1: Earnings Calendar →</a>
+        </div>
+    </main>
+
+    <!-- ========================================================================
+         FOOTER
+         ======================================================================== -->
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="learn.html">Learn</a>
+            <a href="claw-street-terminal.html">Terminal</a>
+            <a href="blog.html">Blog</a>
+            <a href="faq.html">FAQ</a>
+            <a href="privacy.html">Privacy</a>
+        </div>
+        <p>© 2026 learnopenclaw.org · Not affiliated with Anthropic. · Nothing here is financial advice.</p>
+    </footer>
+
+    <!-- ========================================================================
+         JAVASCRIPT
+         ======================================================================== -->
+    <script>
+        const hamburgerBtn = document.querySelector('.hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburgerBtn.addEventListener('click', () => {
+            const isOpen = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+            hamburgerBtn.setAttribute('aria-expanded', !isOpen);
+            navLinks.classList.toggle('open');
+        });
+
+        // Close nav when a link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
+                navLinks.classList.remove('open');
+            });
+        });
+    </script>
+</body>
+</html>

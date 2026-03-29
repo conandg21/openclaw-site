@@ -1635,5 +1635,87 @@
       "email alerts"
     ],
     "series": "Fixed Income & Yield Curve"
+  },
+  {
+    "title": "OpenClaw for Earnings & Estimates \u2014 Series Overview",
+    "url": "openclaw-for-earnings.html",
+    "description": "Automate earnings calendar alerts, consensus estimates, beat rate tracking, and pre-market briefs using yfinance and OpenClaw. Beginner-friendly guide.",
+    "tags": [
+      "earnings",
+      "estimates",
+      "EPS",
+      "yfinance",
+      "OpenClaw",
+      "automation"
+    ],
+    "series": "Earnings & Estimates"
+  },
+  {
+    "title": "Part 1: Earnings Calendar Monitor \u2014 Earnings & Estimates",
+    "url": "earnings-calendar.html",
+    "description": "Automate earnings calendar tracking for your watchlist. Get 3-day advance alerts before any ticker reports using yfinance and OpenClaw.",
+    "tags": [
+      "earnings calendar",
+      "yfinance",
+      "alerts",
+      "watchlist",
+      "OpenClaw"
+    ],
+    "series": "Earnings & Estimates"
+  },
+  {
+    "title": "Part 2: Consensus Estimates & Analyst Revisions \u2014 Earnings & Estimates",
+    "url": "earnings-estimates.html",
+    "description": "Track EPS and revenue consensus estimates. Detect when analysts revise up or down \u2014 a leading signal before earnings reports.",
+    "tags": [
+      "EPS estimates",
+      "consensus",
+      "analyst revisions",
+      "yfinance",
+      "OpenClaw"
+    ],
+    "series": "Earnings & Estimates"
+  },
+  {
+    "title": "Part 3: Earnings Surprise Tracker \u2014 Earnings & Estimates",
+    "url": "earnings-surprise.html",
+    "description": "Log every earnings beat and miss automatically. Build a historical beat rate database for your watchlist using yfinance and OpenClaw.",
+    "tags": [
+      "earnings surprise",
+      "beat rate",
+      "EPS",
+      "yfinance",
+      "CSV",
+      "OpenClaw"
+    ],
+    "series": "Earnings & Estimates"
+  },
+  {
+    "title": "Part 4: Post-Earnings Price Reaction Logger \u2014 Earnings & Estimates",
+    "url": "earnings-reaction.html",
+    "description": "Capture the overnight price move after each earnings report. Build a dataset of actual vs expected moves for options context.",
+    "tags": [
+      "price reaction",
+      "earnings move",
+      "overnight",
+      "options",
+      "yfinance",
+      "OpenClaw"
+    ],
+    "series": "Earnings & Estimates"
+  },
+  {
+    "title": "Part 5: Pre-Market Earnings Brief \u2014 Earnings & Estimates",
+    "url": "earnings-brief.html",
+    "description": "Automated pre-market email combining earnings calendar, estimates, beat rate, and price reaction into one daily brief via OpenClaw.",
+    "tags": [
+      "earnings brief",
+      "pre-market",
+      "email",
+      "daily",
+      "automation",
+      "OpenClaw"
+    ],
+    "series": "Earnings & Estimates"
   }
 ]

@@ -41,7 +41,7 @@
         {
           "@type": "Question",
           "name": "What is the Claw Street Terminal?",
-          "acceptedAnswer": {"@type": "Answer", "text": "The Claw Street Terminal is a curated collection of OpenClaw series focused entirely on financial market automation. It covers options trading research, economic indicator monitoring, corporate filings analysis, transcripts and audio processing, alternative data ingestion, risk and portfolio monitoring, crypto and DeFi tracking, technical analysis automation, and fixed income and yield curve monitoring. Each series is an independent engineering guide — not trading advice."}
+          "acceptedAnswer": {"@type": "Answer", "text": "The Claw Street Terminal is a curated collection of OpenClaw series focused entirely on financial market automation. It covers options trading research, economic indicator monitoring, corporate filings analysis, transcripts and audio processing, alternative data ingestion, risk and portfolio monitoring, crypto and DeFi tracking, technical analysis automation, and fixed income and yield curve monitoring, and earnings and estimates automation. Each series is an independent engineering guide — not trading advice."}
         },
         {
           "@type": "Question",
@@ -69,6 +69,7 @@
     --green: #16a34a; --green-lt: #f0fdf4; --green-md: #bbf7d0;
     --orange: #ea580c; --orange-lt: #fff7ed; --orange-md: #fed7aa;
     --rose: #e11d48; --rose-lt: #fff1f2; --rose-md: #fecdd3;
+    --indigo: #4f46e5; --indigo-lt: #eef2ff; --indigo-md: #c7d2fe;
     --gray-1: #f9fafb; --gray-2: #f3f4f6; --gray-3: #e5e7eb;
     --gray-5: #6b7280; --gray-8: #1f2937; --white: #ffffff;
     --radius: 12px; --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
@@ -170,6 +171,7 @@
   .module-card.orange::before { background: var(--orange); }
   .module-card.green::before { background: var(--green); }
   .module-card.rose::before { background: var(--rose); }
+  .module-card.indigo::before { background: var(--indigo); }
   .module-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
   .module-icon { font-size: 1.6rem; }
   .module-status { display: inline-flex; align-items: center; gap: 5px; font-size: .7rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
@@ -279,11 +281,11 @@
   <div class="stats-bar" aria-label="Terminal statistics">
     <div class="stats-inner">
       <div class="stat">
-        <div class="stat-num">9</div>
+        <div class="stat-num">10</div>
         <div class="stat-label">Series modules</div>
       </div>
       <div class="stat">
-        <div class="stat-num">9</div>
+        <div class="stat-num">10</div>
         <div class="stat-label">Live now</div>
       </div>
       <div class="stat">
@@ -353,8 +355,8 @@
   <section class="section section-mid" id="modules" aria-labelledby="modules-heading">
     <div class="section-inner">
       <div class="section-label">The curriculum</div>
-      <h2 class="section-title section-title-dark" id="modules-heading">All nine modules</h2>
-      <p class="section-desc">All nine series are live. Each module is standalone — start with what's most relevant to your workflow, or follow one of the recommended paths below.</p>
+      <h2 class="section-title section-title-dark" id="modules-heading">All ten modules</h2>
+      <p class="section-desc">All ten series are live. Each module is standalone — start with what's most relevant to your workflow, or follow one of the recommended paths below.</p>
 
       <div class="module-grid">
 
@@ -498,6 +500,16 @@
           <p class="module-desc">FRED-powered yield curve tracker, credit spread alerts, breakeven inflation monitor, and daily macro brief automation.</p>
           <span class="module-parts">5 parts</span>
         </a>
+        <!-- Earnings & Estimates — LIVE -->
+        <a class="module-card live indigo" href="openclaw-for-earnings.html" aria-label="Earnings and Estimates Automation series — live">
+          <div class="module-top">
+            <span class="module-icon" aria-hidden="true">📋</span>
+            <span class="module-status live-badge">Live</span>
+          </div>
+          <h3 class="module-title">Earnings &amp; Estimates</h3>
+          <p class="module-desc">Earnings calendar alerts, consensus estimate tracking, beat/miss logging, price reaction data, and automated pre-market brief.</p>
+          <span class="module-parts">5 parts</span>
+        </a>
     </div>
   </section>
 
@@ -586,6 +598,17 @@
             <li><strong>Fixed Income Part 3</strong> — rates dashboard (Fed Funds, SOFR, real rates)</li>
             <li><strong>Fixed Income Part 4</strong> — breakeven inflation and TIPS monitoring</li>
             <li><strong>Fixed Income Part 5</strong> — daily macro brief with 4-signal scoring</li>
+          </ol>
+        </div>
+
+        <div class="path-card">
+          <div class="path-persona">Earnings Trader</div>
+          <h4>Pre-market earnings automation</h4>
+          <ol>
+            <li><strong>Earnings Parts 1–2</strong> — calendar alerts and consensus estimates</li>
+            <li><strong>Earnings Part 3</strong> — build your beat rate database over time</li>
+            <li><strong>Earnings Parts 4–5</strong> — price reaction logger and daily brief</li>
+            <li><strong>Options Trading Parts 3–4</strong> — IV rank and expected move for earnings plays</li>
           </ol>
         </div>
       </div>
