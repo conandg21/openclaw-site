@@ -504,9 +504,103 @@
             color: #0d9488;
             border-bottom-color: #0d9488;
         }
-    </style>
+    
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0d9488;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0d9488;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #0d9488;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Backtesting TA Strategies with OpenClaw | Technical Analysis Automation">
+    <meta property="og:description" content="Understand backtesting, test your indicator rules against historical data, and see how your strategies would have performed with OpenClaw.">
+    <meta property="og:url" content="https://learnopenclaw.org/ta-backtest.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Backtesting TA Strategies with OpenClaw | Technical Analysis Automation">
+    <meta name="twitter:description" content="Understand backtesting, test your indicator rules against historical data, and see how your strategies would have performed with OpenClaw.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
 
 <!-- ───────────────────────────────────────────────────────────────── -->
 <!-- NAVIGATION                                                         -->
@@ -578,12 +672,12 @@
         <a href="ta-indicators.html">Pt 1: Indicators</a>
         <a href="ta-scanner.html">Pt 2: Scanner</a>
         <a href="ta-alerts.html">Pt 3: Alerts</a>
-        <a href="ta-backtest.html" class="sn-current">Pt 4: Backtest</a>
+        <a href="ta-backtest.html" class="sn-current" aria-current="page">Pt 4: Backtest</a>
         <a href="ta-charts.html">Pt 5: Charts</a>
     </div>
 </nav>
 
-<main class="container">
+<main id="main-content" class="container">
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <!-- SECTION 1: WHAT IS BACKTESTING?                                 -->
@@ -677,7 +771,9 @@
 
     <p>OpenClaw reads backtesting settings from your config file. Here's what a typical setup looks like:</p>
 
-    <pre><code># ta-config.yaml — backtesting section
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># ta-config.yaml — backtesting section
 # OpenClaw reads these settings when running ta_backtest.py
 
 watchlist:
@@ -694,6 +790,7 @@ backtest:
   rsi_buy:    30    # Buy when RSI drops below this
   rsi_sell:   60    # Sell when RSI rises above this
   max_hold:   30    # Sell after this many days if RSI hasn't recovered</code></pre>
+            </div>
 
     <h3>What Each Setting Does</h3>
 
@@ -720,7 +817,9 @@ backtest:
 
     <p>Now let's look at the actual Python code that runs the backtest. This script loads your config, downloads historical data, and simulates your strategy.</p>
 
-    <pre><code># ta_backtest.py — OpenClaw Backtesting Module
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># ta_backtest.py — OpenClaw Backtesting Module
 # Tests your signal rules against historical price data
 
 import yaml
@@ -848,6 +947,7 @@ def print_results(ticker: str, trades: list) -> None:
 for ticker in cfg["watchlist"]["tickers"]:
     trades = run_backtest(ticker)
     print_results(ticker, trades)</code></pre>
+            </div>
 
     <h3>How This Code Works (Plain English)</h3>
 

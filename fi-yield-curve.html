@@ -238,7 +238,72 @@
             color: #e11d48;
             border-bottom-color: #e11d48;
         }
-    </style>
+    
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #e11d48;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #e11d48;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #e11d48;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #e11d48;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Yield Curve Monitor with OpenClaw | Fixed Income Automation">
+    <meta property="og:description" content="Learn how the yield curve predicts recessions. OpenClaw automatically monitors the 2s10s spread using free FRED data and alerts you on inversion.">
+    <meta property="og:url" content="https://learnopenclaw.org/fi-yield-curve.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yield Curve Monitor with OpenClaw | Fixed Income Automation">
+    <meta name="twitter:description" content="Learn how the yield curve predicts recessions. OpenClaw automatically monitors the 2s10s spread using free FRED data and alerts you on inversion.">
 </head>
 <body>
     <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -298,7 +363,7 @@
     <nav class="series-nav" aria-label="Fixed Income series">
     <div class="series-nav-inner">
         <a href="openclaw-for-fixedincome.html">Overview</a>
-        <a href="fi-yield-curve.html" class="sn-current">Pt 1: Yield Curve</a>
+        <a href="fi-yield-curve.html" class="sn-current" aria-current="page">Pt 1: Yield Curve</a>
         <a href="fi-credit-spreads.html">Pt 2: Credit Spreads</a>
         <a href="fi-rates-dashboard.html">Pt 3: Rates</a>
         <a href="fi-breakevens.html">Pt 4: Breakevens</a>
@@ -411,6 +476,8 @@ INVERTED CURVE (recession warning):
 
             <p>Install the required library and verify FRED is working:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code># Install the required library
 pip install fredapi pandas pyyaml
 
@@ -422,6 +489,7 @@ fred = Fred(api_key='your_key_here')
 print('10-year yield:', fred.get_series('DGS10').iloc[-1], '%')
 print('✅ FRED connection working')
 "</code></pre>
+            </div>
         </section>
 
         <!-- Section 5: The Yield Curve Config -->
@@ -430,6 +498,8 @@ print('✅ FRED connection working')
 
             <p>Save this to <code>fi-config.yaml</code> in your OpenClaw project directory:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code># fi-config.yaml — yield curve section
 fred:
   api_key: "your_fred_api_key_here"
@@ -448,6 +518,7 @@ yield_curve:
 alerts:
   email: "you@example.com"
   daily_digest: true</code></pre>
+            </div>
 
             <p class="text-muted">Replace <code>your_fred_api_key_here</code> with the key you just requested. Replace <code>you@example.com</code> with your actual email.</p>
         </section>
@@ -458,6 +529,8 @@ alerts:
 
             <p>This is the core OpenClaw yield curve monitor. It fetches Treasury yields from FRED, calculates the spread, and checks alert conditions:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code># fi_yield_curve.py — OpenClaw Yield Curve Monitor
 # Fetches Treasury yields from FRED and checks for inversion
 
@@ -538,6 +611,7 @@ if alerts:
         print(f"   [{a['severity']}] {a['message']}")
 else:
     print(f"\n   ✓ No alerts triggered today")</code></pre>
+            </div>
         </section>
 
         <!-- Section 7: The Weekly Trend -->
@@ -546,6 +620,8 @@ else:
 
             <p>Understanding whether the spread is improving or worsening is crucial. This snippet pulls the last 90 days of spread history and shows you the trend:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code>def fetch_spread_history(days: int = 90) -> pd.Series:
     """
     Fetches 2s10s spread history for the past N days.
@@ -578,6 +654,7 @@ previous_avg = history.tail(15).head(10).mean()
 trend = "improving" if recent_avg > previous_avg else "worsening"
 print(f"\n   5-day avg: {recent_avg:+.3f}% | 10-day prior avg: {previous_avg:+.3f}%")
 print(f"   Trend: {trend.upper()}")</code></pre>
+            </div>
         </section>
 
         <!-- Section 8: Sample Morning Brief Output -->
@@ -612,9 +689,12 @@ ALERTS
 
             <p>To run your yield curve monitor automatically every weekday morning (before US market open at 9:30 AM ET), use cron:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code># crontab -e
 # Run every weekday at 7:00 AM local time
 0 7 * * 1-5 cd /path/to/openclaw && python3 fi_yield_curve.py >> fi_brief.log 2>&1</code></pre>
+            </div>
 
             <p>This creates a log file <code>fi_brief.log</code> where you can review past briefs and debug any issues.</p>
 

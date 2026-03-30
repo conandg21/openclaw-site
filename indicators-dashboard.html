@@ -165,7 +165,46 @@ footer { background: #1f2937; color: #d1d5db; text-align: center; padding: 36px 
 footer a { color: #60a5fa; }
 .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
 @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0f766e;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0f766e;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -256,7 +295,9 @@ footer a { color: #60a5fa; }
     <h2 id="architecture">Dashboard Architecture</h2>
     <p>The Monday dashboard agent is a <strong>master agent</strong> that calls sub-agents (or makes multiple API calls) to fetch and compute 8 different modules, assembles the results into a single brief, and delivers it by 8:00 AM ET every Monday.</p>
     <p><strong>Pseudo-code architecture:</strong></p>
-    <pre>Monday 8:00 AM agent trigger:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>Monday 8:00 AM agent trigger:
   For each of 8 modules:
     - Call sub-agent or fetch data
     - Compute current value and status
@@ -269,6 +310,7 @@ footer a { color: #60a5fa; }
     - One paragraph of week-ahead context
 
   Deliver report via chosen channel (email, Slack, etc)</pre>
+            </div>
 
     <h2 id="8-modules">The 8 Indicator Modules</h2>
     <p>Each module represents a different facet of the economy. The dashboard pulls the most recent value for each, regardless of when it was last updated.</p>
@@ -404,11 +446,14 @@ footer a { color: #60a5fa; }
     <p>The modular architecture makes this easy. Each module is independent; adding one is just a new API call + status classification rule.</p>
 
     <h2 id="heartbeat">HEARTBEAT Schedule</h2>
-    <pre># Master Monday dashboard (primary)
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre># Master Monday dashboard (primary)
 0 8 * * 1 — 8:00 AM ET every Monday: run full 8-module dashboard
 
 # Weekday brief (optional light version)
 0 8 * * 2-5 — 8:00 AM ET Tuesday-Friday: lighter version showing only what changed since Monday</pre>
+            </div>
 
     <div class="callout callout--green">
       <strong>The Monday schedule is the most important job in the entire series.</strong> This is where all the data from Parts 1-4 comes together. Treat this as your weekly macro briefing that never misses.
@@ -605,6 +650,46 @@ The yield curve's persistent inversion (-0.18%) is historically predictive of re
   }
 }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

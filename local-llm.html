@@ -356,7 +356,62 @@
     /* ── Mobile: table scroll wrapper ── */
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -744,7 +799,10 @@
             <div class="step-content">
               <strong>Install Ollama</strong>
               <p>Download from <a href="https://ollama.com" target="_blank" rel="noopener">ollama.com</a> and run the installer. On Mac, drag to Applications. On Linux, run the one-liner:</p>
-              <pre><code><span class="c-cmd">curl -fsSL https://ollama.com/install.sh | sh</span></code></pre>
+              <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="c-cmd">curl -fsSL https://ollama.com/install.sh | sh</span></code></pre>
+            </div>
             </div>
           </li>
           <li class="step-item">
@@ -752,7 +810,9 @@
             <div class="step-content">
               <strong>Pull a model</strong>
               <p>Open your terminal and pull a model. For most machines, Llama 3.1 8B is the best starting point:</p>
-              <pre><code><span class="c-cmd">ollama pull llama3.1:8b</span>
+              <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="c-cmd">ollama pull llama3.1:8b</span>
 
 <span class="c-com"># For low-end hardware (under 8GB RAM), use a smaller model:</span>
 <span class="c-cmd">ollama pull phi3:mini</span>
@@ -760,13 +820,17 @@
 <span class="c-com"># For Apple Silicon / powerful GPU, try a larger model:</span>
 <span class="c-cmd">ollama pull llama3.1:8b-instruct-q5_k_m</span></code></pre>
             </div>
+            </div>
           </li>
           <li class="step-item">
             <div class="step-num" aria-hidden="true"></div>
             <div class="step-content">
               <strong>Verify Ollama is running</strong>
               <p>Ollama starts automatically after install. Confirm it's running and your model responds:</p>
-              <pre><code><span class="c-cmd">ollama run llama3.1:8b "Say hello in one sentence"</span></code></pre>
+              <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="c-cmd">ollama run llama3.1:8b "Say hello in one sentence"</span></code></pre>
+            </div>
               <p>You should get a response within a few seconds.</p>
             </div>
           </li>
@@ -775,7 +839,9 @@
             <div class="step-content">
               <strong>Configure OpenClaw to use Ollama</strong>
               <p>Add this to your <code>openclaw.json</code> (or <code>config.yaml</code>):</p>
-              <pre><code>{
+              <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   <span class="c-key">"llm"</span>: {
     <span class="c-key">"provider"</span>: <span class="c-str">"ollama"</span>,
     <span class="c-key">"model"</span>: <span class="c-str">"llama3.1:8b"</span>,
@@ -783,6 +849,7 @@
     <span class="c-com">// No apiKey needed!</span>
   }
 }</code></pre>
+            </div>
             </div>
           </li>
           <li class="step-item">
@@ -828,7 +895,9 @@
             <div class="step-content">
               <strong>Configure OpenClaw</strong>
               <p>Add this to your <code>openclaw.json</code>:</p>
-              <pre><code>{
+              <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   <span class="c-key">"llm"</span>: {
     <span class="c-key">"provider"</span>: <span class="c-str">"openai"</span>,
     <span class="c-key">"model"</span>: <span class="c-str">"local-model"</span>,
@@ -836,6 +905,7 @@
     <span class="c-key">"baseUrl"</span>: <span class="c-str">"http://localhost:1234/v1"</span>
   }
 }</code></pre>
+            </div>
               <p style="margin-top:8px;font-size:.88rem;color:var(--gray-5);">LM Studio uses the OpenAI API format. The <code>apiKey</code> value doesn't matter — just set it to anything non-empty.</p>
             </div>
           </li>
@@ -870,7 +940,9 @@
             <div class="step-num" aria-hidden="true"></div>
             <div class="step-content">
               <strong>Configure OpenClaw</strong>
-              <pre><code>{
+              <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   <span class="c-key">"llm"</span>: {
     <span class="c-key">"provider"</span>: <span class="c-str">"openai"</span>,
     <span class="c-key">"model"</span>: <span class="c-str">"mistral-7b-instruct-v0.2-q4"</span>,
@@ -878,6 +950,7 @@
     <span class="c-key">"baseUrl"</span>: <span class="c-str">"http://localhost:1337/v1"</span>
   }
 }</code></pre>
+            </div>
               <p style="margin-top:8px;font-size:.88rem;color:var(--gray-5);">Use the exact model name shown in Jan.ai — it appears in the model card. The <code>apiKey</code> value can be anything.</p>
             </div>
           </li>
@@ -902,13 +975,16 @@
             <div class="step-num" aria-hidden="true"></div>
             <div class="step-content">
               <strong>Configure OpenClaw</strong>
-              <pre><code>{
+              <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   <span class="c-key">"llm"</span>: {
     <span class="c-key">"provider"</span>: <span class="c-str">"groq"</span>,
     <span class="c-key">"model"</span>: <span class="c-str">"llama-3.1-8b-instant"</span>,
     <span class="c-key">"apiKey"</span>: <span class="c-str">"$GROQ_API_KEY"</span>
   }
 }</code></pre>
+            </div>
             </div>
           </li>
           <li class="step-item">
@@ -1108,5 +1184,45 @@
   </script>
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

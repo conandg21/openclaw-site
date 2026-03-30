@@ -165,7 +165,46 @@ footer { background: #1f2937; color: #d1d5db; text-align: center; padding: 36px 
 footer a { color: #60a5fa; }
 .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
 @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0f766e;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0f766e;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -287,7 +326,9 @@ footer a { color: #60a5fa; }
     <h2 id="fomc-calendar">FOMC Calendar Agent</h2>
     <p>The Federal Open Market Committee meets 8 times per year, roughly every 6 weeks. The Fed publishes the meeting schedule a year in advance.</p>
     <p><strong>Agent configuration example:</strong></p>
-    <pre>name: fed-monitor
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>name: fed-monitor
 description: FOMC meeting countdown and rate decision monitoring
 frequency: daily (multiple schedules, see HEARTBEAT section)
 fomc_dates_2026:
@@ -301,6 +342,7 @@ fomc_dates_2026:
   - 2026-12-16
 api_keys:
   fred_api_key: ${FRED_API_KEY}</pre>
+            </div>
     <p><strong>Alert pattern:</strong></p>
     <ul>
       <li><strong>3 days before FOMC:</strong> "FOMC meeting in 3 days — decision at 2:00 PM ET, press conference at 2:30 PM ET. Current rate: [rate]. Watch inflation and employment data before the decision."</li>
@@ -332,7 +374,9 @@ api_keys:
     <h2 id="rate-brief">Rate Decision Brief Format</h2>
     <p>The pre-decision and post-decision briefs should follow a consistent structure for easy scanning.</p>
     <p><strong>Pre-decision brief (7 days before):</strong></p>
-    <pre>🏛️ FOMC MEETING IN 7 DAYS — March 18, 2026
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>🏛️ FOMC MEETING IN 7 DAYS — March 18, 2026
 
 Current Rate: 5.25%-5.50% (unchanged since July 2024)
 Recent Trend: 1 hold, prior: 1 hold, prior: 1 hold
@@ -341,8 +385,11 @@ Next 3 Inflation Readings: CPI coming March 12 (consensus +3.2% YoY), PCE coming
 Labor Market: Unemployment 4.0%, NFP +228K last month
 
 Watch For: Any hot inflation print between now and decision day would increase hawkish pressure.</pre>
+            </div>
     <p><strong>Post-decision brief (2:05 PM ET on decision day):</strong></p>
-    <pre>✅ FOMC DECISION: HOLD
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>✅ FOMC DECISION: HOLD
 
 Rate Unchanged at 5.25%-5.50%
 Consecutive Holds: 10th hold in a row
@@ -351,10 +398,13 @@ YTD Change: +0bps (no change this year)
 
 Powell Press Conference: 2:30 PM ET (now starting)
 Next FOMC: May 6, 2026</pre>
+            </div>
 
     <h2 id="heartbeat">HEARTBEAT Schedule</h2>
     <p>The series uses multiple schedules to maintain Fed monitoring coverage:</p>
-    <pre># Yield curve snapshot (daily after market close)
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre># Yield curve snapshot (daily after market close)
 0 20 * * * — Daily 8:00 PM ET: Pull 2-year and 10-year yields, store spread
 
 # FOMC day 3-day countdown
@@ -368,6 +418,7 @@ Next FOMC: May 6, 2026</pre>
 
 # Yield curve rapid flattening check
 0 21 * * * — 9:00 PM ET daily: Compare 7-day spread change, alert if >50bps narrowing</pre>
+            </div>
 
     <div class="callout">
       <strong>Why 2:05 PM instead of 2:00 PM?</strong> The Fed typically announces at exactly 2:00 PM ET. Waiting 5 minutes ensures the FRED API has processed and published the update. If you need real-time trading alerts, use the Fed's press release feed directly rather than polling FRED.
@@ -537,6 +588,46 @@ Next FOMC: May 6, 2026</pre>
   }
 }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

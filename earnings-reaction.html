@@ -431,9 +431,103 @@
                 padding: 12px;
             }
         }
-    </style>
+    
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #4f46e5;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #4f46e5;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Part 4: Post-Earnings Price Reaction Logger | Claw Street Terminal">
+    <meta property="og:description" content="Learn to automate your financial workflow with OpenClaw.">
+    <meta property="og:url" content="https://learnopenclaw.org/earnings-reaction.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Part 4: Post-Earnings Price Reaction Logger | Claw Street Terminal">
+    <meta name="twitter:description" content="Learn to automate your financial workflow with OpenClaw.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
     <!-- ── Navigation ────────────────────────────────────────────── -->
     <nav class="site-nav" role="navigation" aria-label="Site navigation">
     <div class="nav-inner">
@@ -508,6 +602,8 @@
             <p>This is the key insight: every earnings day, the options market has already priced in a consensus "fair" move. Your job is to capture what actually happens and compare the two.</p>
 
             <h3>A Concrete Example</h3>
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre>Tuesday Close   Report (AMC)   Wednesday Open
   $180.00    →   EPS Beat!   →    $198.00
                                = +10% overnight move
@@ -515,6 +611,7 @@
 Options implied:  ±7%
 Actual move:     +10%
 → Options BUYERS profited (stock exceeded expected move)</pre>
+            </div>
 
             <h3>Why This Matters</h3>
             <p>Over time, some stocks <strong>consistently exceed the expected move</strong> (good for option buyers). Others <strong>consistently disappoint</strong> (good for option sellers). Building this dataset gives you an edge:</p>
@@ -559,6 +656,8 @@ Actual move:     +10%
 
             <p>Here's how you tell OpenClaw what to capture:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre>watchlist:
   tickers: [AAPL, MSFT, NVDA, AMZN, GOOGL]
 
@@ -570,6 +669,7 @@ reaction:
 
 alerts:
   email: "you@example.com"</pre>
+            </div>
 
             <h3>Field Explanations</h3>
 
@@ -589,6 +689,8 @@ alerts:
 
             <p>Here's the full script that captures post-earnings price reactions. Save it as <code>earnings_reaction.py</code>:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre>"""
 earnings_reaction.py — OpenClaw Post-Earnings Price Reaction Logger
 For each ticker that recently reported, this script:
@@ -745,6 +847,7 @@ if results:
               header=not os.path.exists(csv_path),
               index=False)
     print(f"\n💾 Logged to {csv_path}")</pre>
+            </div>
 
             <h3>What This Script Does (Line by Line)</h3>
 
@@ -770,6 +873,8 @@ if results:
 
             <p>When you run the script, here's what you'll see in the console:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre>📊 POST-EARNINGS PRICE REACTION LOG
 =================================================================
 
@@ -793,15 +898,19 @@ NVDA          7.3          2            2         4
 MSFT          4.1          3            1         4
 AMZN          7.8          3            1         4
 GOOGL         5.2          3            1         4</pre>
+            </div>
 
             <p>Your CSV file (<code>data/price_reactions.csv</code>) looks like this:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre>Ticker,Earnings Date,Close Before,Open After,Move %,Direction,Logged
 AAPL,2025-10-31,222.01,233.79,5.3,UP,2025-10-31
 AAPL,2025-07-31,218.27,222.43,1.9,UP,2025-07-31
 AAPL,2025-05-01,169.89,167.51,-1.4,DOWN,2025-05-01
 NVDA,2025-11-20,141.02,147.93,4.9,UP,2025-11-20
 ...</pre>
+            </div>
 
             <p>Over time, this CSV becomes your personal earnings reaction dataset. You can load it into Excel, pandas, or Tableau to spot trends.</p>
         </section>
@@ -835,14 +944,20 @@ NVDA,2025-11-20,141.02,147.93,4.9,UP,2025-11-20
 
             <p>You don't want to manually run this script every morning. Use cron to schedule it:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre># Run every weekday at 9:15 AM (after market open)
 # Adjust the time based on your timezone
 15 9 * * 1-5 cd /path/to/openclaw && python earnings_reaction.py</pre>
+            </div>
 
             <p>Better yet, run it right after earnings are typically reported (evening EST) to capture the overnight move immediately:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre># Run every day at 9 PM EST (checks for new earnings)
 0 21 * * * cd /path/to/openclaw && python earnings_reaction.py</pre>
+            </div>
 
             <h3>Using the Calendar from Part 1</h3>
             <p>Combine this with the earnings calendar from Part 1. On earnings days, the script runs and captures reactions. On non-earnings days, it finds nothing and exits cleanly. No errors. No noise.</p>
@@ -931,5 +1046,45 @@ NVDA,2025-11-20,141.02,147.93,4.9,UP,2025-11-20
         });
     }
 </script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

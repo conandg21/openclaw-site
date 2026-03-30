@@ -184,7 +184,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .use-grid { grid-template-columns: 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0891b2;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0891b2;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -304,7 +343,9 @@
 
     <p>The core agent queries orders from the past 24 hours, calculates key metrics, and flags orders that need attention. Run it every morning at 7 AM to get a snapshot before your team starts work.</p>
 
-    <pre><code># AGENTS.md — order-monitor agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — order-monitor agent
 
 agents:
   order-monitor:
@@ -335,21 +376,27 @@ agents:
         - high_value_orders
         - fulfillment_warnings
       include_summary: true</code></pre>
+            </div>
 
     <p>For WooCommerce, the equivalent endpoint is <code>/wp-json/wc/v3/orders</code> with date range filtering:</p>
 
-    <pre><code># WooCommerce variant — adjust credentials and endpoint
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># WooCommerce variant — adjust credentials and endpoint
 WOO_URL=https://yourstore.com
 WOO_CONSUMER_KEY=ck_xxxxxxxxxxxxxxxxxxxx
 WOO_CONSUMER_SECRET=cs_xxxxxxxxxxxxxxxxxxxx
 
 # Query string: ?after=2026-03-24T07:00:00&before=2026-03-25T07:00:00&per_page=100</code></pre>
+            </div>
 
     <h2 id="fulfillment-delays">Fulfillment delay detection</h2>
 
     <p>Paid orders that aren't fulfilled after a set threshold are a red flag. Set your threshold to match your typical fulfillment speed — for example, 2 days for next-day shipping promises, or 5 days for standard processing.</p>
 
-    <pre><code># AGENTS.md — fulfillment-delay-checker agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — fulfillment-delay-checker agent
 
 agents:
   fulfillment-delay-checker:
@@ -380,6 +427,7 @@ agents:
         - fulfillment_status
       sort_by: days_unfulfilled (descending)
       escalation_colors: true</code></pre>
+            </div>
 
     <div class="callout callout--amber">
       <strong>⚠️ Time is not on your side:</strong> Unfulfilled orders that age without action quickly turn into unhappy customers. Set your thresholds conservatively — if you can typically fulfill in 1 day, set the warning at 2 days so you catch edge cases early. Use escalation tiers to focus your team on the oldest, most at-risk orders first.
@@ -389,7 +437,9 @@ agents:
 
     <p>Once a shipment is handed to a carrier, you lose visibility unless you actively poll tracking data. OpenClaw integrates with EasyPost to fetch tracking status from 100+ carriers and alert on delays or exceptions.</p>
 
-    <pre><code># AGENTS.md — carrier-tracker agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — carrier-tracker agent
 
 agents:
   carrier-tracker:
@@ -419,6 +469,7 @@ agents:
         - days_in_status
         - estimated_delivery
       sort_by: days_in_status (descending)</code></pre>
+            </div>
 
     <p><strong>Setup:</strong> Get your EasyPost API key from <a href="https://www.easypost.com/" target="_blank" rel="noopener">easypost.com</a>, add it to <code>secrets.env</code> as <code>EASYPOST_API_KEY=xxxx</code>, and connect your Shopify store in EasyPost's dashboard so tracking numbers are synced automatically.</p>
 
@@ -426,7 +477,9 @@ agents:
 
     <p>Returns spikes can signal product quality issues, misaligned expectations, or shipping damage. Monitor your returns rate week-over-week and flag when it exceeds a threshold.</p>
 
-    <pre><code># AGENTS.md — returns-monitor agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — returns-monitor agent
 
 agents:
   returns-monitor:
@@ -447,6 +500,7 @@ agents:
         - returns_rate (%)
         - comparison_to_prior_week
         - items_by_return_reason (if available)</code></pre>
+            </div>
 
     <h2 id="high-value-alerts">High-value order flags</h2>
 
@@ -458,7 +512,9 @@ agents:
 
     <h3>Morning order brief</h3>
 
-    <pre><code># HEARTBEAT.md — morning order brief
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — morning order brief
 
 schedule:
   - name: "Morning Order Brief"
@@ -477,10 +533,13 @@ schedule:
       3. FULFILLMENT WARNINGS — unfulfilled orders by escalation tier
       4. ACTION ITEMS — summary of what needs attention today
       If all metrics are healthy, output one-line confirmation: "✓ All orders on track."</code></pre>
+            </div>
 
     <h3>Carrier exception check (twice daily)</h3>
 
-    <pre><code># HEARTBEAT.md — carrier tracking
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — carrier tracking
 
 schedule:
   - name: "Carrier Exception Check"
@@ -490,10 +549,13 @@ schedule:
     output:
       file: "carrier_exceptions.md"
       notify: true</code></pre>
+            </div>
 
     <h3>Weekly returns report</h3>
 
-    <pre><code># HEARTBEAT.md — weekly returns
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — weekly returns
 
 schedule:
   - name: "Weekly Returns Report"
@@ -506,6 +568,7 @@ schedule:
     prompt: |
       Summarize returns from the past week. Compare return rate to the prior week.
       If return rate > 8%, flag spike and suggest investigation into the top return reasons.</code></pre>
+            </div>
 
     <h2 id="sample-report">What the daily report looks like</h2>
 
@@ -611,5 +674,45 @@ schedule:
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

@@ -198,7 +198,46 @@
     .post-header { padding: 44px 20px 36px; }
     .post-body { padding: 36px 20px 60px; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #374151;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #374151;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -330,7 +369,9 @@
 
     <p>The npm scanner reads <code>package-lock.json</code> from your repository and checks every dependency for outdated versions and known CVEs. Here's the AGENTS.md configuration:</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   npm-dep-scanner:
     description: "Check Node.js dependencies for outdated versions and known vulnerabilities"
     tools:
@@ -357,6 +398,7 @@
         - major_version_outdated  # 1+ major versions behind
         - minor_version_outdated  # 3+ minor versions behind
       include_fields: [package, current_version, latest_version, versions_behind, cve_ids, severity, fix_version]</code></pre>
+            </div>
 
     <p><strong>Key thresholds:</strong> Adjust <code>major_versions_behind</code> and <code>minor_versions_behind</code> based on your risk tolerance. A strict team might flag anything 1+ minor versions behind; a pragmatic team might only care about major versions. The <code>severity_filter</code> controls which CVEs trigger an alert — filter to <code>[CRITICAL]</code> only if you want to reduce noise and check MODERATE CVEs manually once a week.</p>
 
@@ -366,7 +408,9 @@
 
     <p>The Python scanner works similarly but reads from <code>requirements.txt</code> or <code>pyproject.toml</code> and checks against PyPI. It also flags yanked releases — a PyPI-specific concept where a maintainer pulls a version due to a critical bug or security issue.</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   python-dep-scanner:
     description: "Check Python dependencies for outdated versions and vulnerabilities"
     tools:
@@ -392,6 +436,7 @@
         - yanked_packages            # packages yanked from PyPI (security/critical bug)
         - outdated_packages
       note: "Dev dependency CVEs are flagged but marked [DEV] — lower priority for production risk."</code></pre>
+            </div>
 
     <p><strong>Dev dependencies:</strong> The scanner can optionally scan separate dev requirement files. CVEs in dev dependencies (test frameworks, linters, etc.) are usually lower priority for production deployments but still worth tracking.</p>
 
@@ -399,7 +444,9 @@
 
     <p>The CVE monitor is a dedicated agent that queries the GitHub Advisory Database's GraphQL API for new vulnerabilities across your monitored packages. Unlike the npm and Python scanners (which check all packages), the CVE monitor focuses on newly published advisories so you're alerted the moment a new CVE hits your stack.</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   cve-monitor:
     description: "Check GitHub Advisory Database for new CVEs affecting our dependencies"
     tools:
@@ -421,6 +468,7 @@
         For each new CVE, write a one-sentence plain-English explanation of what the vulnerability
         allows an attacker to do (e.g. "Allows remote code execution via malformed input to the
         parse() function"). Use the advisory summary as source material but do not quote it verbatim.</code></pre>
+            </div>
 
     <p><strong>monitored_packages.txt format:</strong> Create a file listing the packages you care most about, one per line. For a Node.js app, that might be <code>express</code>, <code>lodash</code>, <code>jsonwebtoken</code>, etc. The CVE monitor will alert whenever a new advisory is published for any of these.</p>
 
@@ -430,7 +478,9 @@
 
     <p>For commercial projects, it's critical to audit dependencies for license compatibility. Licenses like GPL-3.0 and AGPL-3.0 require you to open-source your own code if you distribute the software — a deal-breaker for many commercial products. OpenClaw's license scanner flags any problematic licenses in your dependency tree.</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   license-scanner:
     description: "Flag dependencies with licences incompatible with commercial use"
     tools:
@@ -466,6 +516,7 @@
         - unknown_licences           # packages with no licence info
       note: "This is a screening tool, not legal advice. Consult your legal team for licence compatibility decisions."
     schedule: monthly</code></pre>
+            </div>
 
     <p><strong>Important:</strong> This is a screening tool, not legal advice. Always consult your legal team before shipping code with GPL or AGPL dependencies in a commercial product.</p>
 
@@ -475,16 +526,21 @@
 
     <h3>Weekly dependency health check</h3>
 
-    <pre><code>  weekly-dep-check:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>  weekly-dep-check:
     agents: [npm-dep-scanner, python-dep-scanner, cve-monitor]
     schedule: "0 9 * * 1"            # Monday at 9 AM
     output: slack://alerts-channel
     combine: true                    # single report, all three agents
     title: "📦 Weekly Dependency Health Report"</code></pre>
+            </div>
 
     <h3>Daily CVE watch (CRITICAL only)</h3>
 
-    <pre><code>  daily-cve-watch:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>  daily-cve-watch:
     agents: [cve-monitor]
     config_override:
       severity_filter: [CRITICAL]    # CRITICAL only, lower noise
@@ -492,14 +548,18 @@
     schedule: "0 7 * * *"            # Every day at 7 AM
     output: email://security-team@company.com
     notify_only_if_changes: true     # only send email if new CVEs found</code></pre>
+            </div>
 
     <h3>Monthly license audit</h3>
 
-    <pre><code>  monthly-license-audit:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>  monthly-license-audit:
     agents: [license-scanner]
     schedule: "0 10 1 * *"           # First of month at 10 AM
     output: slack://legal-team
     title: "⚖️ Monthly License Compliance Report"</code></pre>
+            </div>
 
     <p><strong>Combining agents:</strong> The <code>combine: true</code> setting merges output from multiple agents into a single report. Useful for the weekly report so you get all dependency data at once. For the daily CVE watch, running a single agent keeps the noise down.</p>
 
@@ -649,5 +709,45 @@ NEXT STEPS
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

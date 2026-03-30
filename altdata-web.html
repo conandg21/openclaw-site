@@ -102,7 +102,46 @@
     footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
     footer a { color: #d1d5db; font-weight: 700; }
     footer a:hover { text-decoration: underline; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #7c3aed;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 
   <script type="application/ld+json">
   {
@@ -256,7 +295,9 @@
 
 <h2>HEARTBEAT Configuration</h2>
 
-<pre>name: web_intel_monitor
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>name: web_intel_monitor
 schedule: "0 7 * * 1,4"
 steps:
   - scrape:
@@ -281,12 +322,15 @@ steps:
   - notify:
       subject: "🌐 Web Intel Update — {{ date }}"
       condition: changes_detected</pre>
+            </div>
 
 <h2>Responsible Scraping Implementation</h2>
 
 <h3>Check robots.txt Before Scraping</h3>
 
-<pre>import httpx
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>import httpx
 import time
 import urllib.robotparser
 
@@ -311,10 +355,13 @@ def scrape_with_respect(url: str, selector: str, delay: float = 3.0) -> str:
     soup = BeautifulSoup(r.text, "html.parser")
     el = soup.select_one(selector)
     return el.get_text(strip=True) if el else ""</pre>
+            </div>
 
 <h3>Price Change Detection with Caching</h3>
 
-<pre>import json, os
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>import json, os
 from datetime import datetime
 
 CACHE_FILE = "price_cache.json"
@@ -333,6 +380,7 @@ def detect_price_change(product_id: str, current_price: float) -> dict:
     change_pct = ((current_price - prior) / prior) * 100
     return {"status": "changed" if abs(change_pct) > 0.01 else "unchanged",
             "prior": prior, "current": current_price, "change_pct": round(change_pct, 2)}</pre>
+            </div>
 
 <h2>Multi-Signal Aggregation: Bringing It All Together</h2>
 
@@ -389,6 +437,46 @@ btn.addEventListener('click', () => {
 });
 </script>
 <script src="copy.js"></script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

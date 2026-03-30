@@ -596,7 +596,33 @@
             color: #d97706;
             border-bottom-color: #d97706;
         }
-    </style>
+    
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="On-Chain Analytics with Etherscan | Claw Street Terminal">
+    <meta property="og:description" content="Track wallets, monitor whale transactions, and watch gas prices in real time using Etherscan">
+    <meta property="og:url" content="https://learnopenclaw.org/crypto-onchain.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="On-Chain Analytics with Etherscan | Claw Street Terminal">
+    <meta name="twitter:description" content="Track wallets, monitor whale transactions, and watch gas prices in real time using Etherscan">
 </head>
 <body>
   <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -634,7 +660,7 @@
     <div class="series-nav-inner">
         <a href="openclaw-for-crypto.html">Overview</a>
         <a href="crypto-prices.html">Pt 1: Prices</a>
-        <a href="crypto-onchain.html" class="sn-current">Pt 2: On-Chain</a>
+        <a href="crypto-onchain.html" class="sn-current" aria-current="page">Pt 2: On-Chain</a>
         <a href="crypto-defi.html">Pt 3: DeFi</a>
         <a href="crypto-sentiment.html">Pt 4: Sentiment</a>
         <a href="crypto-portfolio.html">Pt 5: Portfolio</a>

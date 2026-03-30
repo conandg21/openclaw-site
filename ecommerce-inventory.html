@@ -184,7 +184,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .use-grid { grid-template-columns: 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0891b2;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0891b2;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -342,10 +381,13 @@
 
     <p>WooCommerce uses a consumer key/secret pair rather than a single token. Generate these from <strong>WooCommerce → Settings → Advanced → REST API → Add key</strong>. Set permissions to <strong>Read</strong> — you don't need write access for monitoring.</p>
 
-    <pre><code># secrets.env — WooCommerce credentials
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># secrets.env — WooCommerce credentials
 WOO_URL=https://yourstore.com
 WOO_CONSUMER_KEY=ck_xxxxxxxxxxxxxxxxxxxx
 WOO_CONSUMER_SECRET=cs_xxxxxxxxxxxxxxxxxxxx</code></pre>
+            </div>
 
     <p>WooCommerce REST API base URL is <code>/wp-json/wc/v3/</code>. Authentication uses Basic Auth with the key and secret. All configs in this guide include a <code>platform: woocommerce</code> option that switches the endpoint and auth method automatically.</p>
 
@@ -353,7 +395,9 @@ WOO_CONSUMER_SECRET=cs_xxxxxxxxxxxxxxxxxxxx</code></pre>
 
     <p>The core agent queries your inventory levels, filters by threshold, and outputs an alert report. You define different thresholds per product tag so fast-moving items get earlier warnings than slow movers.</p>
 
-    <pre><code># AGENTS.md — stock-monitor agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — stock-monitor agent
 
 agents:
   stock-monitor:
@@ -391,6 +435,7 @@ agents:
         - threshold
         - avg_daily_sales
         - days_remaining      # stock_qty / avg_daily_sales</code></pre>
+            </div>
 
     <div class="callout callout--amber">
       <strong>⚠️ Variants matter:</strong> Shopify products often have multiple variants (size, colour). The stock-monitor agent checks inventory at the variant level, not the product level. A product showing "in stock" at the product level may have individual variants at zero. Make sure your thresholds apply to variants, not just parent products.
@@ -400,7 +445,9 @@ agents:
 
     <p>A reorder point tells you when to place a new order so you don't run out before the next delivery arrives. The formula is straightforward:</p>
 
-    <pre><code># Reorder point formula
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># Reorder point formula
 # reorder_point = (avg_daily_sales × lead_time_days) + safety_stock
 #
 # Example:
@@ -410,10 +457,13 @@ agents:
 #   reorder_point = (4 × 7) + 10 = 38 units
 #
 # When stock hits 38 → place new order immediately</code></pre>
+            </div>
 
     <p>OpenClaw calculates <code>avg_daily_sales</code> from your order history automatically. You supply lead times per supplier in your config:</p>
 
-    <pre><code># AGENTS.md — reorder-calculator agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — reorder-calculator agent
 
 agents:
   reorder-calculator:
@@ -439,12 +489,15 @@ agents:
       columns: [sku, product_title, current_stock, avg_daily_sales, lead_time, reorder_point, days_until_stockout, action]
       filter: reorder_point_reached  # only show SKUs needing action
       sort_by: days_until_stockout   # most urgent first</code></pre>
+            </div>
 
     <h2 id="dead-stock">Dead stock identification</h2>
 
     <p>Dead stock ties up cash and storage space. OpenClaw identifies it by cross-referencing sales history with current inventory: if stock exists but nothing has sold in your defined window, it's flagged. The report ranks by estimated capital value so you address the most expensive dead stock first.</p>
 
-    <pre><code># AGENTS.md — dead-stock-finder agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — dead-stock-finder agent
 
 agents:
   dead-stock-finder:
@@ -470,6 +523,7 @@ agents:
         total_skus_flagged: true
         total_estimated_value: true
     schedule: weekly</code></pre>
+            </div>
 
     <div class="callout">
       <strong>💡 What to do with dead stock:</strong> Once identified, common actions are a targeted discount, a bundle with a fast-moving product, liquidation to a clearance marketplace, or a donation write-off. OpenClaw can't make that decision — but having the list reliably every week means you actually act on it rather than leaving it to pile up.
@@ -479,7 +533,9 @@ agents:
 
     <p>When the reorder calculator flags a SKU, OpenClaw can draft a purchase order message using your supplier contact details and the quantity calculation. You review and send it — OpenClaw never sends messages autonomously.</p>
 
-    <pre><code># AGENTS.md — po-drafter agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — po-drafter agent
 
 agents:
   po-drafter:
@@ -506,12 +562,15 @@ agents:
       Keep the tone professional and concise.
       Output each draft as a separate section with a clear "DRAFT FOR [supplier name]" header.
       Do NOT send the email — output drafts only.</code></pre>
+            </div>
 
     <h2 id="heartbeat">HEARTBEAT.md templates</h2>
 
     <h3>Daily morning stock check</h3>
 
-    <pre><code># HEARTBEAT.md — daily stock check
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — daily stock check
 
 schedule:
   - name: "Morning Stock Check"
@@ -530,10 +589,13 @@ schedule:
       3. ACTION NEEDED — At reorder point: list with suggested order quantity
       Keep it scannable. If everything is fine, output a single line:
       "✓ All stock levels healthy — no action needed."</code></pre>
+            </div>
 
     <h3>Weekly dead stock report</h3>
 
-    <pre><code># HEARTBEAT.md — weekly dead stock
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — weekly dead stock
 
 schedule:
   - name: "Weekly Dead Stock Report"
@@ -543,6 +605,7 @@ schedule:
     output:
       file: "weekly_dead_stock.md"
       notify: true</code></pre>
+            </div>
 
     <h2 id="sample-report">What the daily report looks like</h2>
 
@@ -639,5 +702,45 @@ schedule:
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

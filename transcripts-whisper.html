@@ -95,7 +95,46 @@
       .container { padding: 32px 20px; }
       h2 { font-size: 1.5rem; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #b45309;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #b45309;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -200,7 +239,9 @@
       <p>IR page / audio URL → OpenClaw detects new file → download audio → chunk if >25MB → Whisper API → clean text → LLM analysis → notify</p>
 
       <h2>HEARTBEAT configuration</h2>
-      <pre><code>name: audio_transcription_pipeline
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>name: audio_transcription_pipeline
 schedule: "0 9 * * 1-5"
 steps:
   - check_ir_pages:
@@ -236,9 +277,12 @@ steps:
       path: "transcripts/{{ company }}_{{ date }}.txt"
   - notify:
       subject: "🎙️ Transcribed: {{ company }} {{ event_type }} — {{ date }}"</code></pre>
+            </div>
 
       <h2>Whisper API — Python snippet</h2>
-      <pre><code>import openai
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import openai
 import os
 import math
 
@@ -277,9 +321,12 @@ def transcribe_chunked(file_path: str, client, language: str = "en") -> str:
                     model="whisper-1", file=f, language=language, response_format="text")
             transcripts.append(result)
     return " ".join(transcripts)</code></pre>
+            </div>
 
       <h2>IR page audio detection — Python snippet</h2>
-      <pre><code>import httpx
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import httpx
 from bs4 import BeautifulSoup
 import re
 
@@ -296,6 +343,7 @@ def find_audio_links(ir_url: str) -> list:
         if audio_extensions.search(href) or webcast_patterns.search(a.get_text()):
             links.append({"text": a.get_text(strip=True), "url": href})
     return links</code></pre>
+            </div>
 
       <div class="faq-section">
         <h2>Frequently asked questions</h2>
@@ -421,6 +469,46 @@ btn.addEventListener('click', () => {
   ]
 }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

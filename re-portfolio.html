@@ -135,7 +135,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #16a34a;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -249,7 +288,9 @@
       <h2 id="portfolio-config">Portfolio configuration file</h2>
       <p>Define your portfolio in a YAML file. Store it locally (not in git). This is your source of truth for properties and loan balances.</p>
 
-      <pre><code>portfolio:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>portfolio:
   properties:
     - id: "prop_001"
       address: "123 Oak Street, Austin, TX 78704"
@@ -277,13 +318,16 @@
       mortgage_balance: 540000
       monthly_rent: null
       notes: "Held for appreciation. No rental income yet."</code></pre>
+            </div>
 
       <p>Update mortgage balances quarterly (or whenever you get a loan statement). The agent reads this file, pulls Zestimates for each zpid, and computes equity = zestimate - mortgage_balance.</p>
 
       <h2 id="snapshot-agent">Portfolio snapshot agent</h2>
       <p>Here's the agent configuration for monthly portfolio snapshots:</p>
 
-      <pre><code>---
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>---
 name: portfolio-valuation-snapshot
 schedule: "0 9 1 * *"  # Monthly, 1st day at 9 AM
 tools:
@@ -345,6 +389,7 @@ job: |
   # Generate and send report
   report = generate_portfolio_report(current_snapshot)
   send_report(report, config.output.channels)</code></pre>
+            </div>
 
       <h2 id="equity-dashboard">Equity dashboard and metrics</h2>
       <p>Your monthly report should include an equity dashboard table:</p>
@@ -408,7 +453,9 @@ job: |
       <h2 id="value-change-alerts">Value change alerts</h2>
       <p>If any single property's Zestimate changes by >5% (configurable) in 30 days, alert you to investigate:</p>
 
-      <pre><code>if abs(monthly_change_pct) > 5:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>if abs(monthly_change_pct) > 5:
   direction = "up" if monthly_change_pct > 0 else "down"
   alert_message = f"""
   Alert: {prop.address} value {direction}
@@ -424,6 +471,7 @@ job: |
 
   Action: Verify on Zillow and investigate outliers.
   """</code></pre>
+            </div>
 
       <p>Large single-month changes are often data anomalies or Zestimate model updates, not real value shifts. Always verify on Zillow before reacting.</p>
 
@@ -450,7 +498,9 @@ job: |
       <h2 id="yoy-comparison">Year-over-year comparison</h2>
       <p>To spot trends, compare current values to 12-months-ago snapshots:</p>
 
-      <pre><code>current_snapshot = load_snapshot(date_today)
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>current_snapshot = load_snapshot(date_today)
 prior_year_snapshot = load_snapshot(date_today - 365_days)
 
 yoy_appreciation = {
@@ -469,11 +519,14 @@ Portfolio Value: ${prior_year_snapshot.total_value:,.0f} → ${current_snapshot.
 Annual Appreciation: {yoy_appreciation['total_portfolio_value']['change_pct']:+.1f}%
 Dollar Gain: ${yoy_appreciation['total_portfolio_value']['change']:+,.0f}
 """</code></pre>
+            </div>
 
       <h2 id="yield-analysis">Gross yield and cap rate tracking</h2>
       <p>For rental properties, compute gross yield (annual rent / current value) and track it over time:</p>
 
-      <pre><code>for prop in portfolio.properties:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>for prop in portfolio.properties:
   if prop.monthly_rent:
     annual_rent = prop.monthly_rent * 12
     gross_yield = (annual_rent / current_zestimate) * 100
@@ -483,6 +536,7 @@ Dollar Gain: ${yoy_appreciation['total_portfolio_value']['change']:+,.0f}
     cap_rate_simple = gross_yield - (estimated_property_tax_rate * 100)
 
     report_line = f"{prop.address}: Gross Yield {gross_yield:.2f}%, Est. Cap {cap_rate_simple:.2f}%"</code></pre>
+            </div>
 
       <p>Gross yield trending down over time means your property value has appreciated faster than rents. This is common and good (more valuable asset, still cash-flowing). If gross yield drops below 2%, you have a heavily appreciated asset with little cash flow—consider refinancing or selling.</p>
 
@@ -668,5 +722,45 @@ Dollar Gain: ${yoy_appreciation['total_portfolio_value']['change']:+,.0f}
   }
   </script>
 <script src="copy.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

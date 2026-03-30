@@ -569,7 +569,46 @@
       .cards-grid { grid-template-columns: 1fr; }
       .sibling-links { grid-template-columns: 1fr; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -727,7 +766,9 @@
 
     <div class="code-block" role="region" aria-label="Minimal SOUL.md template">
       <div class="code-label">SOUL.md — starter template</div>
-      <pre><span class="hd"># SOUL.md</span>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="hd"># SOUL.md</span>
 
 <span class="hd">## Identity</span>
 <span class="sv">You are [Name], a [role] assistant.</span>
@@ -751,6 +792,7 @@
 <span class="sv">- Never delete files without explicit confirmation</span>
 <span class="sv">- Never sign anything as if you are the user</span>
 <span class="sv">- If unsure of intent, ask rather than assume</span></pre>
+            </div>
     </div>
 
     <div class="alert alert--green" role="note">
@@ -827,7 +869,9 @@
 
     <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; margin-top: 0;">👩‍💻 For Developers</h3>
     <div class="code-block" role="region" aria-label="SOUL.md template for developers">
-      <pre><span class="hd"># SOUL.md — Dev Assistant</span>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="hd"># SOUL.md — Dev Assistant</span>
 
 <span class="hd">## Identity</span>
 <span class="sv">You are Hex, a senior engineering assistant.</span>
@@ -849,11 +893,14 @@
 <span class="sv">- Always show a diff before committing</span>
 <span class="sv">- Never merge without at least a summary of what changed</span>
 <span class="sv">- Flag security concerns immediately, don't silently work around them</span></pre>
+            </div>
     </div>
 
     <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 12px;">✍️ For Writers &amp; Content Creators</h3>
     <div class="code-block" role="region" aria-label="SOUL.md template for writers">
-      <pre><span class="hd"># SOUL.md — Writing Assistant</span>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="hd"># SOUL.md — Writing Assistant</span>
 
 <span class="hd">## Identity</span>
 <span class="sv">You are Wren, a writing and editorial assistant.</span>
@@ -874,11 +921,14 @@
 <span class="sv">- Never publish or submit anything without my explicit approval</span>
 <span class="sv">- Never write in a completely different style without asking first</span>
 <span class="sv">- Don't add affiliate links, promotions, or brand mentions unless I ask</span></pre>
+            </div>
     </div>
 
     <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 12px;">🏠 For Personal / Home Use</h3>
     <div class="code-block" role="region" aria-label="SOUL.md template for personal use">
-      <pre><span class="hd"># SOUL.md — Personal Assistant</span>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="hd"># SOUL.md — Personal Assistant</span>
 
 <span class="hd">## Identity</span>
 <span class="sv">You are Cleo, my personal assistant.</span>
@@ -899,6 +949,7 @@
 <span class="sv">- Never send a message to anyone without showing me the draft first</span>
 <span class="sv">- Never make purchases without confirming the exact amount and recipient</span>
 <span class="sv">- Never share my calendar, contacts, or location data with apps</span></pre>
+            </div>
     </div>
   </div>
 </section>
@@ -1171,5 +1222,45 @@
 
 <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

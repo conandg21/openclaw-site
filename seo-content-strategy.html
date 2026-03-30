@@ -203,7 +203,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .use-grid { grid-template-columns: 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #ea580c;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #ea580c;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -382,16 +421,21 @@
 
     <p>OpenClaw finds them by pulling your GSC data, filtering for queries where <code>avg_position</code> is between 8 and 20, and scoring each opportunity using a simple formula:</p>
 
-    <pre><code># Opportunity score = impressions × (21 - position)
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># Opportunity score = impressions × (21 - position)
 # A query with 1,000 impressions at position 12 scores: 1000 × (21-12) = 9,000
 # A query with 200 impressions at position 9 scores:    200  × (21-9)  = 2,400
 # Higher score = more traffic to gain by moving up
 
 opportunity_score = impressions * (21 - avg_position)</code></pre>
+            </div>
 
     <p>Add this to your AGENTS.md <code>rank-tracker</code> agent (from <a href="seo-rank-tracking.html">Part 2</a>) as an additional analysis step, or create a dedicated agent:</p>
 
-    <pre><code># AGENTS.md — low-fruit-finder agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — low-fruit-finder agent
 
 agents:
   low-fruit-finder:
@@ -416,6 +460,7 @@ agents:
       - If the query is a comparison → add a comparison table
       - If the query contains a modifier like "best", "how to", "near me" → note the likely intent mismatch and suggest a title/H1 adjustment
       Output the improvements as a third column alongside the data.</code></pre>
+            </div>
 
     <div class="callout callout--amber">
       <strong>⚠️ GSC data lag:</strong> Google Search Console data has a 2–4 day delay and aggregates impressions at the query level. A query can match multiple pages. If a single keyword appears twice in the output (because two of your pages compete for it), that's a cannibalisation signal — merge or clearly differentiate the two pages.
@@ -427,7 +472,9 @@ agents:
 
     <p>With DataForSEO's Domain Analytics endpoint, OpenClaw can pull the top-ranking keywords for up to five competitor domains, compare them against your own GSC export, and surface the gaps ranked by estimated traffic value:</p>
 
-    <pre><code># AGENTS.md — keyword-gap agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — keyword-gap agent
 
 agents:
   keyword-gap:
@@ -458,6 +505,7 @@ agents:
         LOW    → volume < 300 or difficulty > 60
       top_n: 30
     schedule: monthly</code></pre>
+            </div>
 
     <div class="callout">
       <strong>💡 Tip:</strong> Run this analysis quarterly against a fresh competitor list. Competitors that gain significant new keyword coverage are a signal of a content strategy shift — worth monitoring more closely.
@@ -469,7 +517,9 @@ agents:
 
     <p>OpenClaw can analyse your existing sitemap plus a keyword list to map the cluster structure, identify which cluster pages are missing, and output a structured plan:</p>
 
-    <pre><code># AGENTS.md — topic-cluster-mapper agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — topic-cluster-mapper agent
 
 agents:
   topic-cluster-mapper:
@@ -499,6 +549,7 @@ agents:
         - internal_link_suggestions  # existing pages that should link to each other
         - new_page_recommendations   # gaps with keyword, volume, suggested URL slug
     schedule: quarterly</code></pre>
+            </div>
 
     <p>The output is a Markdown table with three zones: <em>covered</em> (existing page ranks), <em>partial</em> (page exists but doesn't rank well for the cluster keyword), and <em>gap</em> (no page exists). The gap list becomes your content backlog.</p>
 
@@ -506,7 +557,9 @@ agents:
 
     <p>Once you have a target keyword from your low-hanging-fruit list or gap analysis, OpenClaw can generate a full content brief. A good brief includes: search intent classification, target word count, suggested title and H1 variants, SERP feature opportunities, required sections based on what top-ranking pages cover, internal linking suggestions, and any schema types to implement.</p>
 
-    <pre><code># AGENTS.md — brief-generator agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — brief-generator agent
 
 agents:
   brief-generator:
@@ -556,6 +609,7 @@ agents:
             note: "do not copy — use as structural reference only"
         - internal_link_suggestions  # from topic cluster map
         - recommended_schema_types</code></pre>
+            </div>
 
     <div class="callout callout--purple">
       <strong>📌 Brief vs draft:</strong> You can extend <code>brief-generator</code> with an additional step that uses the brief as a prompt to generate a full draft. Add <code>generate_draft: true</code> to the output config. However, always treat the draft as a starting point, not a finished article — review for accuracy, brand voice, and factual claims before publishing.
@@ -565,7 +619,9 @@ agents:
 
     <p>Knowing when a competitor publishes new content in your topic area lets you respond quickly — either by updating your own existing page, creating a competing piece, or adjusting your keyword prioritisation. OpenClaw can monitor competitor sitemaps or RSS feeds and alert you to new content that matches your topic clusters.</p>
 
-    <pre><code># AGENTS.md — competitor-content-watcher agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — competitor-content-watcher agent
 
 agents:
   competitor-content-watcher:
@@ -599,6 +655,7 @@ agents:
       frequency: weekly
       day: Monday
       time: "08:00"</code></pre>
+            </div>
 
     <h3>Using RSS feeds instead of sitemaps</h3>
     <p>Many blogs expose an RSS feed which is easier and faster to monitor than a full sitemap. If your competitors have RSS, use the <code>rss-reader</code> tool instead of <code>http-crawler</code> and set <code>feed_urls</code> rather than <code>competitor_sitemaps</code>. RSS gives you publish dates reliably without needing to compare against a state file.</p>
@@ -607,7 +664,9 @@ agents:
 
     <p>The low-hanging-fruit report, keyword gap analysis, and competitor alerts all produce a stream of content opportunities. The content calendar agent collects them, applies your prioritisation rules, and outputs a structured publishing schedule with assigned deadlines.</p>
 
-    <pre><code># AGENTS.md — content-calendar agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — content-calendar agent
 
 agents:
   content-calendar:
@@ -638,6 +697,7 @@ agents:
       - Priority tier (P1/P2/P3)
       Sort by priority tier then by opportunity score within each tier.
       Flag any opportunities where a competitor published in the last 7 days as URGENT.</code></pre>
+            </div>
 
     <h2 id="heartbeat">HEARTBEAT.md templates</h2>
 
@@ -645,7 +705,9 @@ agents:
 
     <h3>Weekly low-hanging-fruit report</h3>
 
-    <pre><code># HEARTBEAT.md — weekly content opportunities
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — weekly content opportunities
 
 schedule:
   - name: "Weekly Content Opportunities"
@@ -663,10 +725,13 @@ schedule:
       - CREATE NEW PAGE (no existing page targets this keyword)
       - URGENT (a competitor published a competing piece this week)
       Limit to the top 5 items to keep the report actionable.</code></pre>
+            </div>
 
     <h3>Monthly full keyword analysis</h3>
 
-    <pre><code># HEARTBEAT.md — monthly keyword analysis
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — monthly keyword analysis
 
 schedule:
   - name: "Monthly Keyword &amp; Gap Analysis"
@@ -683,10 +748,13 @@ schedule:
       2. Any topic clusters where 2+ gap pages now exist (potential pillar opportunity)
       3. Keywords where we improved from gap → partial since last month
       Keep under 400 words — this is a summary for a busy content lead.</code></pre>
+            </div>
 
     <h3>On-demand content brief trigger</h3>
 
-    <pre><code># HEARTBEAT.md — auto-brief for high-opportunity keywords
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — auto-brief for high-opportunity keywords
 
 schedule:
   - name: "Auto Brief on High-Score Keyword"
@@ -698,6 +766,7 @@ schedule:
     output:
       file: "briefs/${TARGET_KEYWORD_SLUG}_brief.md"
       notify: true</code></pre>
+            </div>
 
     <h2 id="sample-report">What the weekly report looks like</h2>
 
@@ -805,5 +874,45 @@ schedule:
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

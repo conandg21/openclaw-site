@@ -95,7 +95,46 @@
       .container { padding: 32px 20px; }
       h2 { font-size: 1.5rem; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #b45309;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #b45309;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -168,7 +207,9 @@
       <p>Specific phrases trigger immediate alerts regardless of overall tone: "going concern," "material weakness," "restatement," "withdraw guidance," "SEC investigation."</p>
 
       <h2>HEARTBEAT configuration</h2>
-      <pre><code>name: transcript_nlp_pipeline
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>name: transcript_nlp_pipeline
 schedule: "on_new_transcript"
 steps:
   - load_transcript:
@@ -212,9 +253,12 @@ steps:
       path: "nlp/{{ company }}_{{ quarter }}_metrics.json"
   - notify:
       subject: "🧠 NLP Brief: {{ company }} Q{{ quarter }} — Confidence {{ score }}/100"</code></pre>
+            </div>
 
       <h2>Confidence scorer — Python snippet</h2>
-      <pre><code>import re
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import re
 
 CONFIDENT_PHRASES = [
     "we will", "we expect", "we are confident", "we delivered",
@@ -236,9 +280,12 @@ def score_confidence(text: str) -> dict:
     score = max(0, min(100, score))
     return {"confidence_score": score, "confident_sentences": confident,
             "hedging_sentences": hedging, "total_sentences": total}</code></pre>
+            </div>
 
       <h2>Red flag detector — Python snippet</h2>
-      <pre><code>RED_FLAGS = [
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>RED_FLAGS = [
     "going concern", "material weakness", "restatement",
     "withdraw guidance", "sec investigation", "doj", "class action",
     "liquidity concerns", "covenant violation", "impairment charge"
@@ -254,9 +301,12 @@ def check_red_flags(text: str) -> list:
             context = text[max(0, idx-100):idx+200].strip()
             found.append({"flag": flag, "context": context})
     return found</code></pre>
+            </div>
 
       <h2>Quarter-over-quarter comparison — Python snippet</h2>
-      <pre><code>import json, os, glob
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import json, os, glob
 
 def load_historical_metrics(company: str, quarters: int = 4) -> list:
     pattern = f"nlp/{company}_*_metrics.json"
@@ -276,6 +326,7 @@ def trend_analysis(current: dict, history: list) -> dict:
     trend = "improving" if delta > 5 else "declining" if delta < -5 else "stable"
     return {"trend": trend, "current_score": current["confidence_score"],
             "prior_avg": round(avg_prior, 1), "delta": round(delta, 1)}</code></pre>
+            </div>
 
       <div class="faq-section">
         <h2>Frequently asked questions</h2>
@@ -401,6 +452,46 @@ btn.addEventListener('click', () => {
   ]
 }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

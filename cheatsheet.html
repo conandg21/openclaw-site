@@ -298,7 +298,23 @@
     .footer-nl-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
     .footer-nl-form input { padding: 8px 14px; border-radius: 6px; border: none; font-size: .9rem; min-width: 220px; }
     .footer-nl-form button { padding: 8px 18px; border-radius: 6px; border: none; background: var(--blue); color: var(--white); font-weight: 700; cursor: pointer; }
-  </style>
+  
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
   <a class="skip-nav" href="#main-content">Skip to main content</a>

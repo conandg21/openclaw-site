@@ -102,7 +102,46 @@
     footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
     footer a { color: #d1d5db; font-weight: 700; }
     footer a:hover { text-decoration: underline; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #7c3aed;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 
   <script type="application/ld+json">
   {
@@ -229,7 +268,9 @@
 
 <h2>HEARTBEAT Configuration</h2>
 
-<pre>name: digital_health_monitor
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>name: digital_health_monitor
 schedule: "0 10 * * 1"
 steps:
   - fetch_appstore:
@@ -256,12 +297,15 @@ steps:
         Data: {{ app_data }} {{ github_data }}
   - notify:
       subject: "📱 Digital Health Brief — {{ date }}"</pre>
+            </div>
 
 <h2>iTunes Search API Implementation</h2>
 
 <h3>Fetch App Metadata</h3>
 
-<pre>import httpx
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>import httpx
 
 def get_app_rating(apple_id: str, country: str = "us") -> dict:
     """Fetch app metadata from iTunes Search API — completely free, no key required."""
@@ -280,12 +324,15 @@ def get_app_rating(apple_id: str, country: str = "us") -> dict:
         "updated": app.get("currentVersionReleaseDate"),
         "price": app.get("price", 0)
     }</pre>
+            </div>
 
 <h2>GitHub API Implementation</h2>
 
 <h3>Fetch Commit Activity</h3>
 
-<pre>import httpx
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>import httpx
 
 def get_commit_activity(owner: str, repo: str, token: str = None) -> list:
     """
@@ -308,10 +355,13 @@ def commit_velocity_trend(activity: list, recent_weeks: int = 4) -> dict:
     baseline = sum(w["total"] for w in activity[-16:-recent_weeks]) / 12
     return {"recent_avg": round(recent, 1), "baseline_avg": round(baseline, 1),
             "change_pct": round(((recent - baseline) / baseline * 100) if baseline > 0 else 0, 1)}</pre>
+            </div>
 
 <h3>Analyze Recent Reviews</h3>
 
-<pre>def analyze_recent_reviews(apple_id: str, country: str = "us") -> dict:
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>def analyze_recent_reviews(apple_id: str, country: str = "us") -> dict:
     """Fetch recent App Store reviews via RSS feed (no auth required)."""
     url = f"https://itunes.apple.com/{country}/rss/customerreviews/page=1/id={apple_id}/sortby=mostrecent/json"
     r = httpx.get(url)
@@ -321,6 +371,7 @@ def commit_velocity_trend(activity: list, recent_weeks: int = 4) -> dict:
                 "content": e["content"]["label"]} for e in entries[:20]]
     avg = sum(r["rating"] for r in reviews) / len(reviews) if reviews else 0
     return {"count": len(reviews), "avg_rating": round(avg, 2), "reviews": reviews}</pre>
+            </div>
 
 <h2>Frequently Asked Questions</h2>
 
@@ -371,6 +422,46 @@ btn.addEventListener('click', () => {
 });
 </script>
 <script src="copy.js"></script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

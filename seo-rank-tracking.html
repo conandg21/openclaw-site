@@ -179,7 +179,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .metric-grid { grid-template-columns: 1fr 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #ea580c;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #ea580c;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -355,7 +394,9 @@
 
     <p>Add this to your AGENTS.md to teach OpenClaw how to use your GSC data:</p>
 
-<pre><code>## rank-tracker
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## rank-tracker
 
 You are the SEO rank tracking agent for [yourdomain.com].
 
@@ -387,12 +428,15 @@ When generating reports, always include:
 Comparison period: always compare current week vs
 the same 7-day window from 4 weeks ago (not last week,
 to avoid day-of-week bias).</code></pre>
+            </div>
 
     <h2 id="heartbeat">HEARTBEAT.md templates</h2>
 
     <h3>Weekly rank report (every Monday morning)</h3>
 
-<pre><code>## Weekly Rank Report — Every Monday 07:30
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Weekly Rank Report — Every Monday 07:30
 
 Use rank-tracker agent to pull GSC data.
 Compare this week vs. 4 weeks ago.
@@ -409,10 +453,13 @@ Generate a report with:
 Send the full report to #seo-reports on Slack.
 Format numbers clearly: use ↑ for improvements,
 ↓ for declines, → for unchanged.</code></pre>
+            </div>
 
     <h3>Daily drop alert (weekdays only)</h3>
 
-<pre><code>## Rank Drop Alert — Weekdays 09:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Rank Drop Alert — Weekdays 09:00
 
 Use rank-tracker agent.
 Pull position data for the last 3 days vs the
@@ -428,10 +475,13 @@ Change: [Z] positions
 Queries affected: [top query losing position]"
 
 If no significant drops, do not send a message.</code></pre>
+            </div>
 
     <h3>Monthly deep analysis</h3>
 
-<pre><code>## Monthly SEO Performance Report — 1st of month, 08:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Monthly SEO Performance Report — 1st of month, 08:00
 
 Use rank-tracker agent.
 Pull the full 28-day period vs the same period
@@ -449,6 +499,7 @@ Report:
    push to page 1 top 5)
 
 Send to [your email] as a formatted summary.</code></pre>
+            </div>
 
     <h2 id="drop-alerts">Rank drop alert logic</h2>
 
@@ -493,7 +544,9 @@ Send to [your email] as a formatted summary.</code></pre>
 
     <p><strong>DataForSEO SERP API:</strong> GSC only shows data for queries where you already rank. DataForSEO lets you track any keyword, whether you currently rank for it or not. This is useful for monitoring competitors and tracking keywords you're targeting before you've broken into the top positions. Cost is per-call — typically a few cents per keyword per check, making it affordable to track 50–100 keywords weekly.</p>
 
-<pre><code>## competitor-watch (using DataForSEO)
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## competitor-watch (using DataForSEO)
 
 API endpoint: https://api.dataforseo.com/v3/serp/google/organic/live/regular
 Credentials: [your DataForSEO login]
@@ -510,10 +563,13 @@ For each keyword, record:
 - Whether a featured snippet is present, and who holds it
 
 Send a brief summary to #seo-competitive.</code></pre>
+            </div>
 
     <p><strong>PageSpeed Insights API:</strong> Core Web Vitals are a confirmed ranking factor. The free PageSpeed API lets OpenClaw check your most important pages weekly and alert you if LCP, CLS, or INP scores fall into the "Needs Improvement" or "Poor" range before they affect your rankings.</p>
 
-<pre><code>## core-web-vitals-check — Every Tuesday 08:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## core-web-vitals-check — Every Tuesday 08:00
 
 Check Core Web Vitals for these pages using
 PageSpeed Insights API (key: [your PSI API key]):
@@ -531,6 +587,7 @@ If any metric is in "Needs Improvement" or "Poor",
 send a WhatsApp alert immediately.
 If all metrics are good, log quietly to
 ~/openclaw/reports/cwv-[date].md</code></pre>
+            </div>
 
     <h2 id="faq">Frequently asked questions</h2>
 
@@ -607,5 +664,45 @@ If all metrics are good, log quietly to
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

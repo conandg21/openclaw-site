@@ -512,7 +512,62 @@
       padding: 9px 18px; font-size: .88rem; font-weight: 700;
       cursor: pointer; font-family: inherit;
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
 <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -645,6 +700,8 @@
           <p>Each entry needs a name, a <code>command</code> to start the server, and any <code>args</code> it needs. Here's the filesystem server, which gives OpenClaw read/write access to a folder you choose:</p>
           <div class="code-block">
             <div class="code-label">~/.openclaw/openclaw.json</div>
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="br">{</span>
   <span class="kw">"mcpServers"</span>: <span class="br">{</span>
 
@@ -660,6 +717,7 @@
 
   <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -671,9 +729,12 @@
           <p>Stop and start OpenClaw. It will launch the MCP server process automatically and load its tools. You'll see them listed on startup:</p>
           <div class="code-block">
             <div class="code-label">Terminal output</div>
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="ck">🔌 MCP: filesystem — 5 tools loaded</span>
 <span class="ck">   read_file · write_file · list_directory · create_directory · delete_file</span>
 <span class="ck">🦞 OpenClaw is ready</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -685,9 +746,12 @@
           <p>No extra commands needed. Just ask your agent to do something and it will call the MCP tools automatically:</p>
           <div class="code-block">
             <div class="code-label">WhatsApp / Telegram / Web UI</div>
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="sv">"List all PDF files in my Documents folder and summarise the newest one"</span>
 <span class="sv">"Move all files older than 6 months into an Archive subfolder"</span>
 <span class="sv">"Create a file called meeting-notes.md with today's date as the title"</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -722,10 +786,13 @@
             <span>read_file</span><span>write_file</span><span>list_directory</span><span>move_file</span><span>search_files</span>
           </div>
           <div class="code-block" style="margin-top:12px;">
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="kw">"filesystem"</span>: <span class="br">{</span>
   <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
   <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-filesystem"</span>, <span class="sv">"/your/folder"</span>]
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -743,11 +810,14 @@
             <span>create_issue</span><span>create_pr</span><span>list_commits</span><span>push_file</span><span>search_code</span>
           </div>
           <div class="code-block" style="margin-top:12px;">
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="kw">"github"</span>: <span class="br">{</span>
   <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
   <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-github"</span>],
   <span class="kw">"env"</span>: <span class="br">{</span> <span class="kw">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span class="sv">"ghp_xxxx"</span> <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -765,11 +835,14 @@
             <span>search</span><span>get_page</span><span>create_page</span><span>update_page</span><span>query_database</span>
           </div>
           <div class="code-block" style="margin-top:12px;">
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="kw">"notion"</span>: <span class="br">{</span>
   <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
   <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@notionhq/notion-mcp-server"</span>],
   <span class="kw">"env"</span>: <span class="br">{</span> <span class="kw">"NOTION_API_KEY"</span>: <span class="sv">"secret_xxxx"</span> <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -787,11 +860,14 @@
             <span>brave_web_search</span><span>brave_local_search</span>
           </div>
           <div class="code-block" style="margin-top:12px;">
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="kw">"brave-search"</span>: <span class="br">{</span>
   <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
   <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-brave-search"</span>],
   <span class="kw">"env"</span>: <span class="br">{</span> <span class="kw">"BRAVE_API_KEY"</span>: <span class="sv">"BSA_xxxx"</span> <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -809,6 +885,8 @@
             <span>post_message</span><span>list_channels</span><span>get_history</span><span>search_messages</span>
           </div>
           <div class="code-block" style="margin-top:12px;">
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="kw">"slack"</span>: <span class="br">{</span>
   <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
   <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-slack"</span>],
@@ -817,6 +895,7 @@
     <span class="kw">"SLACK_TEAM_ID"</span>: <span class="sv">"T0XXXXXXX"</span>
   <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -834,11 +913,14 @@
             <span>list_customers</span><span>get_invoice</span><span>create_payment_link</span><span>list_charges</span>
           </div>
           <div class="code-block" style="margin-top:12px;">
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="kw">"stripe"</span>: <span class="br">{</span>
   <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
   <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@stripe/agent-toolkit"</span>, <span class="sv">"--mcp"</span>],
   <span class="kw">"env"</span>: <span class="br">{</span> <span class="kw">"STRIPE_SECRET_KEY"</span>: <span class="sv">"sk_xxxx"</span> <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -856,11 +938,14 @@
             <span>query</span><span>describe_table</span><span>list_tables</span>
           </div>
           <div class="code-block" style="margin-top:12px;">
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="kw">"postgres"</span>: <span class="br">{</span>
   <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
   <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-postgres"</span>,
     <span class="sv">"postgresql://user:pass@localhost/mydb"</span>]
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -878,10 +963,13 @@
             <span>create_entities</span><span>create_relations</span><span>search_nodes</span><span>add_observations</span>
           </div>
           <div class="code-block" style="margin-top:12px;">
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><span class="kw">"memory"</span>: <span class="br">{</span>
   <span class="kw">"command"</span>: <span class="sv">"npx"</span>,
   <span class="kw">"args"</span>: [<span class="sv">"-y"</span>, <span class="sv">"@modelcontextprotocol/server-memory"</span>]
 <span class="br">}</span></pre>
+            </div>
           </div>
         </div>
       </div>
@@ -912,7 +1000,10 @@
         <p>Every morning your agent checks open PRs, flags anything waiting more than 24 hours for a review, and posts a summary to your <code>#dev</code> Slack channel. When a PR gets merged, it automatically closes the linked issue and updates the project board.</p>
         <div class="code-block">
           <div class="code-label">What you tell your agent (once)</div>
-          <pre><span class="sv">"Every weekday at 9am, check all open PRs in my repos. For any PR waiting more than 24h without a review, post a reminder to #dev on Slack. When PRs are merged, close the linked issue automatically."</span></pre>
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="sv">"Every weekday at 9am, check all open PRs in my repos. For any PR waiting more than 24h without a review, post a reminder to #dev on Slack. When PRs are merged, close the linked issue automatically."</span></pre>
+            </div>
         </div>
       </div>
     </div>
@@ -927,7 +1018,10 @@
         <p>Drop a raw text file from your meeting recorder into a watched folder. OpenClaw picks it up via the filesystem server, formats it into a structured Notion page — with attendees, action items, and decisions — and files it in the right database.</p>
         <div class="code-block">
           <div class="code-label">What you tell your agent (once)</div>
-          <pre><span class="sv">"Watch ~/Downloads/meeting-notes/. Whenever a new .txt file appears, format it as a Notion page with sections for Summary, Attendees, Action Items, and Decisions. Add it to my Meetings database."</span></pre>
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="sv">"Watch ~/Downloads/meeting-notes/. Whenever a new .txt file appears, format it as a Notion page with sections for Summary, Attendees, Action Items, and Decisions. Add it to my Meetings database."</span></pre>
+            </div>
         </div>
       </div>
     </div>
@@ -942,7 +1036,10 @@
         <p>Every evening your agent queries Stripe for the day's charges, calculates MRR delta, and sends you a clean one-message summary on WhatsApp — without you having to open a dashboard.</p>
         <div class="code-block">
           <div class="code-label">What you tell your agent (once)</div>
-          <pre><span class="sv">"Every day at 6pm, pull today's revenue from Stripe — total charges, new subscribers, and any failed payments. Send me a 3-line summary on WhatsApp."</span></pre>
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="sv">"Every day at 6pm, pull today's revenue from Stripe — total charges, new subscribers, and any failed payments. Send me a 3-line summary on WhatsApp."</span></pre>
+            </div>
         </div>
       </div>
     </div>
@@ -957,7 +1054,10 @@
         <p>Every Monday your agent searches for news about your competitors using Brave Search, compiles the findings into a markdown report, and saves it to a folder for you to read.</p>
         <div class="code-block">
           <div class="code-label">What you tell your agent (once)</div>
-          <pre><span class="sv">"Every Monday morning, search for recent news about [Competitor A] and [Competitor B]. Summarise any product updates, funding news, or pricing changes. Save to ~/Reports/competitor-intel-[date].md."</span></pre>
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="sv">"Every Monday morning, search for recent news about [Competitor A] and [Competitor B]. Summarise any product updates, funding news, or pricing changes. Save to ~/Reports/competitor-intel-[date].md."</span></pre>
+            </div>
         </div>
       </div>
     </div>
@@ -1226,5 +1326,45 @@
 
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

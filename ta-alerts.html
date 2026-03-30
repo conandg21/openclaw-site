@@ -543,9 +543,103 @@
             color: #0d9488;
             border-bottom-color: #0d9488;
         }
-    </style>
+    
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0d9488;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0d9488;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #0d9488;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="OpenClaw TA Signal Alerts — Email Notifications | Technical Analysis Automation">
+    <meta property="og:description" content="Learn how OpenClaw monitors your watchlist 24/7 and emails you when signal conditions trigger. Understand why alerts beat manual chart-watching, how to configure them, and how the system avoids alert fatigue with cooldown logic.">
+    <meta property="og:url" content="https://learnopenclaw.org/ta-alerts.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OpenClaw TA Signal Alerts — Email Notifications | Technical Analysis Automation">
+    <meta name="twitter:description" content="Learn how OpenClaw monitors your watchlist 24/7 and emails you when signal conditions trigger. Understand why alerts beat manual chart-watching, how to configure them, and how the system avoids alert fatigue with cooldown logic.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
 
     <!-- ===== NAVIGATION ===== -->
     <nav class="site-nav">
@@ -562,7 +656,7 @@
                 <form class="nav-search" style="display: none;">
                     <input type="text" placeholder="Search..." style="display: none;">
                 </form>
-                <button class="hamburger" id="hamburger">
+                <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -688,6 +782,8 @@
                 All alert behavior is controlled by a single YAML file. Here's a complete example:
             </p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code># ta-config.yaml — alert settings
 
 watchlist:
@@ -715,6 +811,7 @@ alerts:
   # Email server settings (use your own SMTP or a service like SendGrid)
   smtp_host: "localhost"         # or "smtp.gmail.com" for Gmail
   smtp_port: 587</code></pre>
+            </div>
 
             <h3>Understanding Each Setting</h3>
 
@@ -759,6 +856,8 @@ alerts:
                 Now let's look at the Python code that powers alerts. This script runs on a schedule (usually daily after market close), checks your entire watchlist, fires alerts for triggered signals, and manages cooldown logic.
             </p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code># ta_alerts.py — OpenClaw Signal Alert System
 # Monitors your watchlist and emails you when signal conditions trigger
 
@@ -984,6 +1083,7 @@ if ALERTS.get("daily_digest") and all_signals:
     )
 elif not all_signals:
     print("✓ No signals today — no email sent")</code></pre>
+            </div>
 
             <h3>What This Script Does, Line by Line</h3>
 
@@ -1052,9 +1152,12 @@ Not financial advice. | learnopenclaw.org</div>
             </p>
 
             <h3>Linux / Mac (Crontab)</h3>
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code># Run every day at 4:15pm Mon–Fri (after US market close)
 # Add this line to your crontab: crontab -e
 15 16 * * 1-5 cd /path/to/openclaw && python3 ta_alerts.py >> alerts.log 2>&1</code></pre>
+            </div>
 
             <div class="example-block">
                 <div class="example-label">Cron Breakdown</div>

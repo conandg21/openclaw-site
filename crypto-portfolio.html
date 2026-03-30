@@ -458,9 +458,64 @@
             color: #d97706;
             border-bottom-color: #d97706;
         }
-    </style>
+    
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #d97706;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Crypto Portfolio Tracking & DCA Automation | Claw Street Terminal">
+    <meta property="og:description" content="Track your multi-coin portfolio, automate dollar-cost averaging, monitor unrealized P&L, and detect rebalancing drift with CoinGecko free APIs.">
+    <meta property="og:url" content="https://learnopenclaw.org/crypto-portfolio.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Crypto Portfolio Tracking & DCA Automation | Claw Street Terminal">
+    <meta name="twitter:description" content="Track your multi-coin portfolio, automate dollar-cost averaging, monitor unrealized P&L, and detect rebalancing drift with CoinGecko free APIs.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
     <!-- Navigation -->
     <nav class="site-nav">
         <div class="nav-inner">

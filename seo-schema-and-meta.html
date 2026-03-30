@@ -182,7 +182,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .schema-grid { grid-template-columns: 1fr 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #ea580c;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #ea580c;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -329,7 +368,9 @@
 
     <p>The key to good AI-generated meta descriptions is a clear prompt that establishes rules:</p>
 
-<pre><code>## meta-writer
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## meta-writer
 
 When asked to generate meta descriptions for a list of pages:
 1. Fetch each page URL.
@@ -347,6 +388,7 @@ When asked to generate meta descriptions for a list of pages:
 5. Output a table: URL | Current meta | Suggested meta | Char count
 6. Flag any page where the current meta is already good
    (skip generating a new one).</code></pre>
+            </div>
 
     <h3>Example output</h3>
 
@@ -370,7 +412,9 @@ When asked to generate meta descriptions for a list of pages:
 
     <p>Any page with a FAQ section, questions in headings, or Q&amp;A content is a candidate for FAQPage schema. Here is how to instruct OpenClaw to generate it:</p>
 
-<pre><code>## schema-generator
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## schema-generator
 
 When asked to generate FAQPage schema for a page:
 1. Fetch the URL.
@@ -404,10 +448,13 @@ When asked to generate FAQPage schema for a page:
    under 30 words.
 6. Output the complete JSON-LD block, ready to paste
    inside a &lt;script type="application/ld+json"&gt; tag.</code></pre>
+            </div>
 
     <h3>Article schema for blog posts</h3>
 
-<pre><code>## schema-generator (Article mode)
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## schema-generator (Article mode)
 
 When asked to generate Article schema for a blog post:
 1. Fetch the URL and extract:
@@ -429,12 +476,15 @@ When asked to generate Article schema for a blog post:
 3. Also generate a BreadcrumbList based on the URL path:
    - home → [section] → [page title]
 4. Output both schemas as separate JSON-LD blocks.</code></pre>
+            </div>
 
     <h2 id="schema-audit">Auditing your existing schema for errors</h2>
 
     <p>Schema errors are silent — a missing field fails validation without any visible warning. The only way to know is to check. OpenClaw can audit every page on your site for schema issues on a schedule:</p>
 
-<pre><code>## schema-auditor
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## schema-auditor
 
 When asked to audit schema markup across a site:
 1. Fetch sitemap.xml and get all page URLs.
@@ -458,6 +508,7 @@ When asked to audit schema markup across a site:
 5. Categorise: Critical (missing @type or all required
    fields), Warning (missing optional but recommended
    fields), Info (minor issues like relative URLs).</code></pre>
+            </div>
 
     <div class="callout--green callout">
       <strong>Validate with Google too.</strong> After OpenClaw generates schema, paste it into <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener">Google's Rich Results Test</a> to confirm it qualifies for rich result eligibility. OpenClaw can remind you to do this as the last step of any schema generation task.
@@ -467,7 +518,9 @@ When asked to audit schema markup across a site:
 
     <h3>Weekly schema check (new pages only)</h3>
 
-<pre><code>## Weekly New Page Schema Check — Every Wednesday 09:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Weekly New Page Schema Check — Every Wednesday 09:00
 
 1. Check sitemap.xml for any pages added in the
    last 7 days.
@@ -480,10 +533,13 @@ When asked to audit schema markup across a site:
    - New pages this week: [count]
    - Pages missing schema: [count + URLs]
    - Draft schema attached for review</code></pre>
+            </div>
 
     <h3>Monthly full schema audit</h3>
 
-<pre><code>## Monthly Schema Audit — 5th of each month, 08:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Monthly Schema Audit — 5th of each month, 08:00
 
 Run schema-auditor on the full sitemap.
 Generate a complete report of:
@@ -497,6 +553,7 @@ and include the corrected version in the report.
 
 Send the full report to [your email].
 Save to ~/openclaw/reports/schema-audit-[date].md</code></pre>
+            </div>
 
     <h2 id="open-graph">Open Graph and Twitter Card meta tags</h2>
 
@@ -504,7 +561,9 @@ Save to ~/openclaw/reports/schema-audit-[date].md</code></pre>
 
     <p>OpenClaw can audit and generate these the same way it handles standard meta tags:</p>
 
-<pre><code>## og-meta-checker
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## og-meta-checker
 
 When asked to audit Open Graph tags:
 For each page URL, check:
@@ -523,6 +582,7 @@ page will produce an ugly link preview.
 For pages missing og:description, suggest one
 based on the meta description (or generate a
 new one if the meta description is also missing).</code></pre>
+            </div>
 
     <div class="callout">
       <strong>og:image matters for AI tools.</strong> Several AI research tools and chatbots display og:image when showing source links. A missing or broken og:image makes your citations look less credible. Worth auditing.
@@ -603,5 +663,45 @@ new one if the meta description is also missing).</code></pre>
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

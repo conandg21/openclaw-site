@@ -200,7 +200,46 @@
     .post-header { padding: 44px 20px 36px; }
     .post-body { padding: 36px 20px 60px; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #374151;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #374151;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -335,9 +374,12 @@
 
     <p>Create or update your <code>secrets.env</code> with the token and slugs:</p>
 
-    <pre><code>SENTRY_TOKEN=sntrys_xxxxxxxxxxxx
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>SENTRY_TOKEN=sntrys_xxxxxxxxxxxx
 SENTRY_ORG=your-org-slug
 SENTRY_PROJECT=your-project-slug</code></pre>
+            </div>
 
     <div class="callout">
       <strong>💡 Keep tokens safe.</strong> Never commit <code>secrets.env</code> to version control. Store it locally or in a secrets management service, and reference it when running OpenClaw via <code>openclaw run --secrets-file secrets.env</code>.
@@ -351,7 +393,9 @@ SENTRY_PROJECT=your-project-slug</code></pre>
 
     <p>Add this agent to your <code>AGENTS.md</code>:</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   uptime-checker:
     description: "Ping endpoints and alert on failures or slow responses"
     tools:
@@ -382,6 +426,7 @@ SENTRY_PROJECT=your-project-slug</code></pre>
       format: markdown
       include: [endpoint_name, status, response_time_ms, checked_at, failure_reason]
       only_report_problems: true</code></pre>
+            </div>
 
     <h3>Key settings</h3>
 
@@ -399,7 +444,9 @@ SENTRY_PROJECT=your-project-slug</code></pre>
 
     <h3>Configuration</h3>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   sentry-summariser:
     description: "Summarise top Sentry error groups from the last 24 hours"
     tools:
@@ -422,6 +469,7 @@ SENTRY_PROJECT=your-project-slug</code></pre>
       For each new error (first_seen within window), write one sentence explaining what the error is
       and where in the code it occurs (culprit field). Mark it [NEW] in bold.
       For top errors, just list them with counts — no prose needed.</code></pre>
+            </div>
 
     <h3>Output sections</h3>
 
@@ -437,7 +485,9 @@ SENTRY_PROJECT=your-project-slug</code></pre>
 
     <h3>Configuration</h3>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   alert-deduplicator:
     description: "Group similar Sentry errors to reduce noise and surface root causes"
     tools:
@@ -459,6 +509,7 @@ SENTRY_PROJECT=your-project-slug</code></pre>
         - List the individual error types underneath, indented
         - Estimate the blast radius: how many users/events are affected by the group total
         This output replaces the raw Sentry list in the on-call briefing.</code></pre>
+            </div>
 
     <h3>How it works</h3>
 
@@ -470,7 +521,9 @@ SENTRY_PROJECT=your-project-slug</code></pre>
 
     <h3>Configuration</h3>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   oncall-brief:
     description: "Daily on-call briefing combining uptime and error status"
     tools:
@@ -499,10 +552,13 @@ SENTRY_PROJECT=your-project-slug</code></pre>
       Any errors that grew >50% vs the prior 12h window.
 
       Keep the entire briefing under 30 lines. Engineers read this in standup.</code></pre>
+            </div>
 
     <h3>Typical output structure</h3>
 
-    <pre><code>## 🟢/🔴 Uptime Status
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## 🟢/🔴 Uptime Status
 🟢 App health endpoint (98ms)
 🟢 API ping (156ms)
 🟢 Homepage (287ms)
@@ -517,6 +573,7 @@ SENTRY_PROJECT=your-project-slug</code></pre>
 
 ## 📈 Growing Issues
 ValidationError growing 120% (8 → 18 events vs yesterday)</code></pre>
+            </div>
 
     <h2 id="heartbeat">HEARTBEAT templates</h2>
 
@@ -524,25 +581,33 @@ ValidationError growing 120% (8 → 18 events vs yesterday)</code></pre>
 
     <h3>Every 5 minutes: uptime check</h3>
 
-    <pre><code>schedules:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>schedules:
   - id: uptime-check-5m
     agent: uptime-checker
     cron: "*/5 * * * *"
     output: slack://your-channel-webhook
     notify_on_failure: true</code></pre>
+            </div>
 
     <h3>Weekday mornings: on-call briefing</h3>
 
-    <pre><code>schedules:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>schedules:
   - id: oncall-brief-morning
     agent: oncall-brief
     cron: "0 8 * * 1-5"  # 8 AM, Monday to Friday
     output: slack://your-channel-webhook
     notify_on_failure: true</code></pre>
+            </div>
 
     <h3>Monday mornings: weekly error trend report</h3>
 
-    <pre><code>schedules:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>schedules:
   - id: weekly-error-trends
     agent: sentry-summariser
     cron: "0 9 * * 1"  # 9 AM, Mondays
@@ -550,6 +615,7 @@ ValidationError growing 120% (8 → 18 events vs yesterday)</code></pre>
       time_window_hours: 168  # 7 days
       top_n: 15
     output: slack://your-channel-webhook</code></pre>
+            </div>
 
     <h2 id="sample-report">Sample on-call briefing</h2>
 
@@ -557,7 +623,9 @@ ValidationError growing 120% (8 → 18 events vs yesterday)</code></pre>
 
     <div class="rp-wrap">
       <div class="rp-head">on-call-briefing.md — generated at 2026-03-25 08:00:00 UTC</div>
-      <div class="rp-body"><pre>## 🟢/🔴 Uptime Status
+      <div class="rp-body"><div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>## 🟢/🔴 Uptime Status
 🟢 App health endpoint (45ms)
 🟢 API v1 endpoint (123ms)
 🟢 Homepage (201ms)
@@ -573,7 +641,8 @@ ValidationError growing 120% (8 → 18 events vs yesterday)</code></pre>
 
 ## 📈 Growing Issues
 ValidationError growing 120% (8 → 18 events vs yesterday window)
-NetworkError stable (10 → 12 events, +20%)</pre></div>
+NetworkError stable (10 → 12 events, +20%)</pre>
+            </div></div>
     </div>
 
     <h2 id="faq">Frequently asked questions</h2>
@@ -654,5 +723,45 @@ NetworkError stable (10 → 12 events, +20%)</pre></div>
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

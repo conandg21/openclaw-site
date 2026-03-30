@@ -165,7 +165,46 @@ footer { background: #1f2937; color: #d1d5db; text-align: center; padding: 36px 
 footer a { color: #60a5fa; }
 .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
 @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0f766e;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0f766e;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -289,7 +328,9 @@ footer a { color: #60a5fa; }
     <h2 id="cpi-brief">Monthly CPI Brief</h2>
     <p><strong>Release cadence:</strong> CPI releases mid-month, typically on the second or third Tuesday or Wednesday. The exact date varies; the BLS publishes the upcoming 3 months of release dates at data.bls.gov/pub/news.release/archives.</p>
     <p><strong>Agent configuration example:</strong></p>
-    <pre>name: inflation-monitor
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>name: inflation-monitor
 description: CPI, Core CPI, PPI, and PCE tracking
 frequency: variable (see HEARTBEAT section)
 cpi_release_dates_q1_2026:
@@ -303,6 +344,7 @@ status_thresholds:
   warm: "2% - 3%"   # Elevated but moderating
   cool: "1% - 2%"   # Approaching target
   cold: "< 1%"      # Below target (deflation risk)</pre>
+            </div>
 
     <p><strong>Pre-release brief (day before):</strong> Show last month's reading, the current month's consensus estimate (pulled from financial data sources or noted as manual check), and what economists are watching.</p>
     <p><strong>Post-release brief (8:35 AM, 5 min after official release):</strong></p>
@@ -337,7 +379,9 @@ status_thresholds:
     <p>This trend view is particularly valuable for options traders because sustained deceleration + still-elevated inflation creates unique implied volatility conditions.</p>
 
     <h2 id="heartbeat">HEARTBEAT Schedule</h2>
-    <pre># CPI release morning (7 days before)
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre># CPI release morning (7 days before)
 0 9 [cpi_date-7] * * — 7 days before CPI: countdown alert with consensus
 
 # CPI release morning (1 day before)
@@ -351,6 +395,7 @@ status_thresholds:
 
 # Monthly trend summary
 0 9 1 * * — First of each month: summarize prior month inflation trend</pre>
+            </div>
 
     <h2 id="sample-output">Sample CPI Release Brief</h2>
     <div class="sample-output">
@@ -507,6 +552,46 @@ status_thresholds:
   }
 }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

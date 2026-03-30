@@ -463,9 +463,64 @@
         .mb-4 { margin-bottom: 24px; }
         .text-muted { color: #a89968; }
 
-    </style>
+    
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #4f46e5;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Earnings Surprise Tracker — Claw Street Terminal">
+    <meta property="og:description" content="Learn to automate your financial workflow with OpenClaw.">
+    <meta property="og:url" content="https://learnopenclaw.org/earnings-surprise.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Earnings Surprise Tracker — Claw Street Terminal">
+    <meta name="twitter:description" content="Learn to automate your financial workflow with OpenClaw.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
 
 <!-- ──────────────────────────────────────────────────────────────────── -->
 <!-- Navigation                                                            -->
@@ -552,7 +607,7 @@
 <!-- ──────────────────────────────────────────────────────────────────── -->
 <!-- Main Content                                                          -->
 <!-- ──────────────────────────────────────────────────────────────────── -->
-<main class="container">
+<main id="main-content" class="container">
 
     <div class="disclaimer">
         <strong>⚠️ Disclaimer:</strong> Historical earnings surprises are for research

@@ -85,7 +85,48 @@
     footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
     footer a { color: #d1d5db; font-weight: 700; }
     footer a:hover { text-decoration: underline; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #7c3aed;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
+
+    <meta property="og:site_name" content="learnopenclaw.org">
 </head>
 <body>
   <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -169,7 +210,9 @@
 
     <h2>Volatility & Drawdown Calculations</h2>
     <p>Load your positions, calculate daily returns, and compute rolling volatility and drawdown:</p>
-    <pre><code>import yfinance as yf
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import yfinance as yf
 import pandas as pd
 import numpy as np
 
@@ -210,10 +253,13 @@ def get_vix() -> dict:
     else: regime, note = "extreme", "Extreme stress — portfolio risk mode"
     return {"vix": current, "prior": prior, "change": round(current - prior, 2),
             "regime": regime, "note": note}</code></pre>
+            </div>
 
     <h2>Automated Monitoring</h2>
     <p>Set up HEARTBEAT to run at 6 PM ET (after market close) to monitor volatility and drawdown:</p>
-    <pre><code>name: volatility_drawdown_monitor
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>name: volatility_drawdown_monitor
 schedule: "0 18 * * 1-5"
 steps:
   - load_positions:
@@ -238,6 +284,7 @@ steps:
           message: "VIX above 30 — elevated market stress"
   - notify:
       subject: "📉 Risk Brief: Vol {{ vol_20d }}% | DD {{ drawdown }}% | VIX {{ vix }}"</code></pre>
+            </div>
 
     <h2>Frequently Asked Questions</h2>
     <div class="faq-section">
@@ -366,5 +413,45 @@ steps:
     ]
   }
   </script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

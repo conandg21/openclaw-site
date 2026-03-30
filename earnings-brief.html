@@ -222,7 +222,72 @@
 
         .text-muted { color: #a8a29e; }
         .text-accent { color: #4f46e5; }
-    </style>
+    
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #4f46e5;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Pre-Market Earnings Brief | Part 5 of 5 | OpenClaw Earnings Automation">
+    <meta property="og:description" content="Automate a daily pre-market earnings brief combining calendar alerts, consensus estimates, historical beat rate, and price reaction data into one email. The capstone of the OpenClaw Earnings series.">
+    <meta property="og:url" content="https://learnopenclaw.org/earnings-brief.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pre-Market Earnings Brief | Part 5 of 5 | OpenClaw Earnings Automation">
+    <meta name="twitter:description" content="Automate a daily pre-market earnings brief combining calendar alerts, consensus estimates, historical beat rate, and price reaction data into one email. The capstone of the OpenClaw Earnings series.">
 </head>
 <body>
 
@@ -274,7 +339,7 @@
         <a href="earnings-estimates.html">Pt 2: Estimates</a>
         <a href="earnings-surprise.html">Pt 3: Surprise Tracker</a>
         <a href="earnings-reaction.html">Pt 4: Price Reaction</a>
-        <a href="earnings-brief.html" class="sn-current">Pt 5: Daily Brief</a>
+        <a href="earnings-brief.html" class="sn-current" aria-current="page">Pt 5: Daily Brief</a>
     </div>
 </nav>
 
@@ -365,7 +430,9 @@
         <h2>Full Configuration</h2>
         <p>Save this as <code>earnings-config.yaml</code> in your OpenClaw working directory. This single file drives all 5 scripts in the series:</p>
 
-        <pre>watchlist:
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>watchlist:
   tickers: [AAPL, MSFT, NVDA, AMZN, GOOGL]
 
 calendar:
@@ -400,6 +467,7 @@ scheduler:
   earnings_brief:
     script: earnings_brief.py
     schedule: "30 6 * * 1-5"</pre>
+            </div>
 
         <p>Update <code>tickers</code> with your watchlist and <code>email</code> with your address. Everything else works out of the box.</p>
     </section>
@@ -408,7 +476,9 @@ scheduler:
         <h2>The Complete Script</h2>
         <p>Save this as <code>earnings_brief.py</code>. It reads the config, checks upcoming earnings, pulls live estimates, loads your historical CSVs, and formats the brief. The email-sending code is included but commented out — uncomment and configure once you've tested the output.</p>
 
-        <pre>"""
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>"""
 earnings_brief.py — OpenClaw Pre-Market Earnings Brief
 
 The capstone script. Runs every weekday at 6:30 AM.
@@ -599,13 +669,17 @@ if today_reports or soon_reports:
 
     print(f"📧 Brief ready to send to: {alert_email}")
     print("   Uncomment the SMTP block above to enable email delivery.")</pre>
+            </div>
     </section>
 
     <section>
         <h2>Setting Up the Daily Schedule</h2>
         <p>Add one line to your crontab and the brief arrives every weekday morning:</p>
 
-        <pre>30 6 * * 1-5 cd /path/to/openclaw && python earnings_brief.py</pre>
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>30 6 * * 1-5 cd /path/to/openclaw && python earnings_brief.py</pre>
+            </div>
 
         <h3>Step-by-step setup</h3>
         <ol>
@@ -707,6 +781,46 @@ if today_reports or soon_reports:
         });
     }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

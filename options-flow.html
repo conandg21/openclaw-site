@@ -137,7 +137,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #dc2626;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -270,7 +309,9 @@
         <li>Test the endpoint: <code>GET /v3/trades/options/{optionsTicker}</code> where optionsTicker is like <code>O:SPY230317C450</code> (SPY Mar 17 $450 call).</li>
       </ol>
       <p>Here's the flow monitor agent YAML config:</p>
-      <pre><code>agents:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   flow-monitor:
     description: "Real-time unusual options flow and volume alerts"
     tools:
@@ -301,6 +342,7 @@
       format: markdown
       channel: slack
       heartbeat: "*/15 9-16 * * 1-5"</code></pre>
+            </div>
 
       <h2 id="volume-spike">Volume spike detection agent</h2>
       <p>The agent computes a rolling 20-day average daily volume for each contract (or aggregate ticker volume). When current intraday volume exceeds that average by a configurable multiple, it flags an alert.</p>
@@ -311,12 +353,15 @@
 
       <h2 id="sweep-detection">Sweep order detection</h2>
       <p>A sweep occurs when multiple fills happen on the same strike/expiration within 60 seconds. The agent tracks every trade hitting the API, buffers trades for 60 seconds, then checks: if 3+ trades on the same contract sum to ≥ $50,000 premium, it's flagged as a sweep.</p>
-      <pre><code>Sweep detection pseudocode:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>Sweep detection pseudocode:
 - For each trade in the last 60 seconds:
   - Group by (ticker, strike, expiration, type)
   - If group size >= 3 AND sum(premium) >= $50,000:
     - Alert: SWEEP DETECTED
     - Include: total premium, avg price per contract, number of fills</code></pre>
+            </div>
       <div class="callout callout--amber">
         <strong>Day traders:</strong> Sweep alerts are some of the best intraday signals. A sweep on calls into a support level with rising volume is a setup. Pair it with technical confirmation: price action, volume profile, or moving averages.
       </div>
@@ -343,9 +388,15 @@
 
       <h2 id="heartbeat">HEARTBEAT schedule</h2>
       <p>The flow monitor runs every 15 minutes during market hours:</p>
-      <pre><code>*/15 9-16 * * 1-5</code></pre>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>*/15 9-16 * * 1-5</code></pre>
+            </div>
       <p>This checks for new sweeps and volume spikes every 15 minutes from 9:30 AM to 4:00 PM ET. For day traders who want higher cadence, reduce the interval to every 5 minutes:</p>
-      <pre><code>*/5 9-16 * * 1-5</code></pre>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>*/5 9-16 * * 1-5</code></pre>
+            </div>
 
       <h2 id="sample-output">Sample flow alert output</h2>
       <div class="sample-output">
@@ -428,5 +479,45 @@
       nav.classList.toggle('open');
     });
   </script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

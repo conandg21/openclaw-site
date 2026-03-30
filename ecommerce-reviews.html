@@ -195,7 +195,46 @@
     .use-grid { grid-template-columns: 1fr; }
     .table-wrapper { overflow-x: auto; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0891b2;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0891b2;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -395,7 +434,9 @@
 
     <p>The review monitor is the heart of the system. It queries one or more review APIs on a schedule, filters for new reviews, and outputs alerts and summaries. It maintains a state file to avoid re-reporting the same review twice.</p>
 
-    <pre><code># AGENTS.md — review-monitor agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — review-monitor agent
 
 agents:
   review-monitor:
@@ -428,6 +469,7 @@ agents:
         - review_text
         - review_date
         - response_status         # has merchant responded?</code></pre>
+            </div>
 
     <div class="callout">
       <strong>💡 State file deduplication:</strong> OpenClaw stores review IDs in <code>reviews_seen.json</code> as it processes them. This ensures that a review posted on Monday and still active on Tuesday doesn't trigger two alerts. The state file is your single source of truth for which reviews you've already acted on.
@@ -437,7 +479,9 @@ agents:
 
     <p>A single bad review is noise. But if your 30-day average rating drops from 4.7 to 4.2, that's a signal. OpenClaw tracks these rolling windows so you spot trends early.</p>
 
-    <pre><code># AGENTS.md — sentiment-tracker agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — sentiment-tracker agent
 
 agents:
   sentiment-tracker:
@@ -461,6 +505,7 @@ agents:
       A 3-star review with positive language ("Great product, slow shipping") counts as POSITIVE.
       A 5-star review with concerns ("Works fine but wish it had X") counts as NEUTRAL.
       This text-based classification is separate from the star rating.</code></pre>
+            </div>
 
     <div class="callout callout--amber">
       <strong>⚠️ Sentiment vs. stars:</strong> A customer may leave a 3-star review with genuinely positive language because the product is good but the packaging was poor. By classifying text separately from the star rating, you get a more accurate picture of actual sentiment. Use this for trend analysis, not as a substitute for responding to negative feedback.
@@ -470,7 +515,9 @@ agents:
 
     <p>When OpenClaw flags a negative review, it can draft a response. You always review and approve before posting — OpenClaw never posts automatically. The drafts are categorised by complaint type so responses are specific and helpful.</p>
 
-    <pre><code># AGENTS.md — response-drafter agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — response-drafter agent
 
 agents:
   response-drafter:
@@ -515,6 +562,7 @@ agents:
 
       IMPORTANT: Add a note at the top:
       "⚠️ DRAFT — review before posting. Do not post automatically."</code></pre>
+            </div>
 
     <div class="callout callout--blue">
       <strong>💡 Response template patterns:</strong> Different complaint types need different approaches. A shipping delay is not the customer's fault — apologise and fix it quickly. A product quality issue requires honesty about standards. A customer service failure is an opportunity to show you care about relationships. Use the complaint category to shape your response accordingly.
@@ -524,7 +572,9 @@ agents:
 
     <h3>Daily review digest</h3>
 
-    <pre><code># HEARTBEAT.md — daily review digest
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — daily review digest
 
 schedule:
   - name: "Daily Review Digest"
@@ -542,10 +592,13 @@ schedule:
       2. NEW POSITIVES — summary line: "X new 5-star, Y new 4-star reviews"
       3. SUMMARY — "Total: X reviews, average rating: 4.5 across all platforms"
       If no new reviews: "No new reviews in the last 24 hours."</code></pre>
+            </div>
 
     <h3>Immediate negative alert</h3>
 
-    <pre><code># HEARTBEAT.md — instant negative alert
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — instant negative alert
 
 schedule:
   - name: "Negative Review Alert"
@@ -562,10 +615,13 @@ schedule:
       - Full review text
       - Current store rating (for context)
       - A link to the review (so the user can respond directly)</code></pre>
+            </div>
 
     <h3>Weekly sentiment report</h3>
 
-    <pre><code># HEARTBEAT.md — weekly sentiment report
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — weekly sentiment report
 
 schedule:
   - name: "Weekly Sentiment Report"
@@ -582,6 +638,7 @@ schedule:
       3. Sentiment breakdown: X POSITIVE, Y NEUTRAL, Z NEGATIVE (% each)
       4. Top complaint category if sentiment is down
       5. Action suggestion if rating dropped >0.3 points vs last week</code></pre>
+            </div>
 
     <h2 id="sample-report">What the daily report looks like</h2>
 
@@ -673,5 +730,45 @@ schedule:
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

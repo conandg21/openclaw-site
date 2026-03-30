@@ -290,7 +290,23 @@
     @media (max-width: 480px) {
       .hero { padding: 40px 16px 32px; }
     }
-  </style>
+  
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
   <a href="#main" class="skip-nav">Skip to main content</a>

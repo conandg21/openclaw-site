@@ -154,7 +154,62 @@
     /* ── Mobile: table scroll wrapper ── */
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #1f2937;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #1f2937;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #1f2937;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #1f2937;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -189,6 +244,8 @@
   ]
 }
 </script>
+
+    <meta property="og:site_name" content="learnopenclaw.org">
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -272,13 +329,16 @@
     <div class="prose">
       <p>You don't need every setting from day one. Here's the smallest valid <code>openclaw.json</code> to get your agent running:</p>
     </div>
-<pre><code>{
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   <span class="key">"llm"</span>: {
     <span class="key">"provider"</span>: <span class="str">"anthropic"</span>,
     <span class="key">"model"</span>: <span class="str">"claude-haiku-4-5-20251001"</span>,
     <span class="key">"apiKey"</span>: <span class="str">"sk-ant-..."</span>
   }
 }</code></pre>
+            </div>
     <div class="callout callout-amber">
       <h3>⚠️ Keep your API key safe</h3>
       <p>Never commit your API key to GitHub. Add <code>openclaw.json</code> to your <code>.gitignore</code> file, or use an environment variable like <code>"apiKey": "$ANTHROPIC_API_KEY"</code> — OpenClaw will substitute it automatically.</p>
@@ -289,7 +349,9 @@
     <div class="prose">
       <p>Here's a more complete config showing the most common settings. Every line is explained:</p>
     </div>
-<pre><code>{
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   <span class="key">"llm"</span>: {
     <span class="key">"provider"</span>: <span class="str">"anthropic"</span>,       <span class="comment">// AI provider: "anthropic", "openai", "ollama"</span>
     <span class="key">"model"</span>: <span class="str">"claude-sonnet-4-6"</span>, <span class="comment">// Which model to use</span>
@@ -329,6 +391,7 @@
     <span class="key">"apiKey"</span>: <span class="str">"$ELEVENLABS_KEY"</span>
   }
 }</code></pre>
+            </div>
 
     <!-- Field reference accordion -->
     <h2 class="section-title" id="field-reference">Field Reference</h2>
@@ -453,7 +516,9 @@
       <summary>🔌 mcpServers — MCP Tool Connections</summary>
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Connect your agent to external tools via the Model Context Protocol (MCP). Each entry registers one MCP server. See the <a href="mcp.html">MCP guide</a> for full details.</p>
-<pre style="margin-top:.5rem;"><code>{
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre style="margin-top:.5rem;"><code>{
   <span class="key">"mcpServers"</span>: {
     <span class="key">"filesystem"</span>: {
       <span class="key">"command"</span>: <span class="str">"npx"</span>,
@@ -466,6 +531,7 @@
     }
   }
 }</code></pre>
+            </div>
         <div class="table-scroll">
       <table class="field-table" aria-label="MCP server fields">
           <th scope="col"ead><tr><th scope="col">Field</th><th scope="col">Description</th></tr></thead>
@@ -546,5 +612,45 @@
   </script>
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

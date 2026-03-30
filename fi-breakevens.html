@@ -444,9 +444,64 @@
             color: #e11d48;
             border-bottom-color: #e11d48;
         }
-    </style>
+    
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #e11d48;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #e11d48;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #e11d48;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Inflation Breakevens & TIPS Monitor | OpenClaw Fixed Income">
+    <meta property="og:description" content="Learn how inflation breakevens work. Monitor 5yr, 10yr, and forward breakeven rates from FRED. Understand TIPS and market inflation expectations.">
+    <meta property="og:url" content="https://learnopenclaw.org/fi-breakevens.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Inflation Breakevens & TIPS Monitor | OpenClaw Fixed Income">
+    <meta name="twitter:description" content="Learn how inflation breakevens work. Monitor 5yr, 10yr, and forward breakeven rates from FRED. Understand TIPS and market inflation expectations.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
   <!-- HEADER & NAV -->
   <header>
     <div class="header-inner">
@@ -503,12 +558,12 @@
         <a href="fi-yield-curve.html">Pt 1: Yield Curve</a>
         <a href="fi-credit-spreads.html">Pt 2: Credit Spreads</a>
         <a href="fi-rates-dashboard.html">Pt 3: Rates</a>
-        <a href="fi-breakevens.html" class="sn-current">Pt 4: Breakevens</a>
+        <a href="fi-breakevens.html" class="sn-current" aria-current="page">Pt 4: Breakevens</a>
         <a href="fi-signals.html">Pt 5: Signals</a>
     </div>
 </nav>
 
-<main>
+<main id="main-content">
     <!-- SECTION 1: WHAT ARE TIPS? -->
     <section id="what-are-tips">
       <h2>What Are TIPS?</h2>

@@ -393,7 +393,23 @@
       .error-card { padding: 16px; }
       .cmd { font-size: .8rem; padding: 8px 12px; }
     }
-  </style>
+  
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>

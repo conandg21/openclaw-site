@@ -194,7 +194,23 @@
     }
     .footer-links a { color: #9ca3af; text-decoration: none; }
     .footer-links a:hover { color: #fff; text-decoration: underline; }
-  </style>
+  
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
 

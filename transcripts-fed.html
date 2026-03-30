@@ -95,7 +95,46 @@
       .container { padding: 32px 20px; }
       h2 { font-size: 1.5rem; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #b45309;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #b45309;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -202,7 +241,9 @@
       <p><strong>Neutral:</strong> procedural language, economic data citations without directional framing</p>
 
       <h2>HEARTBEAT configuration</h2>
-      <pre><code>name: fed_monitor
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>name: fed_monitor
 schedule: "0 */2 * * 1-5"
 steps:
   - fetch_rss:
@@ -229,9 +270,12 @@ steps:
       channel: email
       subject: "🏛️ Fed Alert: {{ speaker }} — {{ one_line_summary }}"
       priority: "{{ 'high' if fomc_minutes else 'normal' }}"</code></pre>
+            </div>
 
       <h2>Fed RSS fetch + parse — Python snippet</h2>
-      <pre><code>import feedparser
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import feedparser
 import httpx
 from bs4 import BeautifulSoup
 
@@ -256,9 +300,12 @@ def fetch_speech_text(url: str) -> str:
     # Fed pages use div#article or div.col-xs-12.col-sm-8.col-md-8
     content = soup.find("div", {"id": "article"}) or soup.find("div", class_="col-xs-12")
     return content.get_text(separator=" ", strip=True) if content else ""</code></pre>
+            </div>
 
       <h2>Hawkish/dovish scorer</h2>
-      <pre><code>HAWKISH_TERMS = ["inflation", "price stability", "restrictive", "above target",
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>HAWKISH_TERMS = ["inflation", "price stability", "restrictive", "above target",
                   "further increases", "not yet confident", "premature", "persistent"]
 DOVISH_TERMS = ["cooling", "progress", "appropriate to begin", "labor market",
                  "balance of risks", "gradual", "easing", "below target", "sustainable"]
@@ -273,6 +320,7 @@ def score_fed_tone(text: str) -> dict:
     tone = "hawkish" if hawk_count > dove_count * 1.2 else "dovish" if dove_count > hawk_count * 1.2 else "neutral"
     return {"tone": tone, "hawk_score": hawk_count, "dove_score": dove_count,
             "hawk_pct": round(hawk_count / total * 100)}</code></pre>
+            </div>
 
       <div class="faq-section">
         <h2>Frequently asked questions</h2>
@@ -398,6 +446,46 @@ btn.addEventListener('click', () => {
   ]
 }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

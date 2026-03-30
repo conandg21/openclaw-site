@@ -184,7 +184,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .use-grid { grid-template-columns: 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0891b2;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0891b2;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -305,7 +344,9 @@
 
     <p>The simplest and most impactful report: yesterday's summary with key metrics and comparisons. Run this every morning and you'll spot anomalies before they cascade.</p>
 
-    <pre><code># AGENTS.md — daily-reporter agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — daily-reporter agent
 
 agents:
   daily-reporter:
@@ -336,6 +377,7 @@ agents:
       include_summary: true
       include_top_products: true
       sort_by: revenue</code></pre>
+            </div>
 
     <p>For <strong>WooCommerce</strong>, use the <code>/wp-json/wc/v3/reports/sales</code> endpoint, which aggregates sales data by date. You can filter by date range and break down by product or category.</p>
 
@@ -343,7 +385,9 @@ agents:
 
     <p>A week-over-week comparison contextualises today's performance. Is this week strong because of a campaign, or weak because of seasonality? The weekly report answers that.</p>
 
-    <pre><code># AGENTS.md — weekly-reporter agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — weekly-reporter agent
 
 agents:
   weekly-reporter:
@@ -370,6 +414,7 @@ agents:
       columns: [metric, this_week, last_week, delta_pct, last_year, yoy_delta_pct]
       include_trend_arrows: true  # ▲ / ▼ indicators
       sort_by: revenue</code></pre>
+            </div>
 
     <div class="callout callout--blue">
       <strong>💡 Conversion data:</strong> Shopify Analytics requires a different endpoint than Admin API. For conversion rates, session counts, and bounce rates, you'll need to integrate with Google Analytics Data API (GA4) or use Shopify's GraphQL API with the analytics scope enabled.
@@ -379,7 +424,9 @@ agents:
 
     <p>Which products are carrying the business? Which are dragging? The best/worst finder ranks products by revenue, units sold, and profit margin so you know where to double down and where to cut.</p>
 
-    <pre><code># AGENTS.md — best-worst-finder agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — best-worst-finder agent
 
 agents:
   best-worst-finder:
@@ -401,12 +448,15 @@ agents:
       include_best: true
       include_worst: true
       sort_by: revenue</code></pre>
+            </div>
 
     <h2 id="targets">Revenue vs target tracking</h2>
 
     <p>Tracking progress against a target keeps the team aligned. The pacing alert calculates whether you're on track for your monthly goal, and surfaces a warning if you fall behind early in the month.</p>
 
-    <pre><code># AGENTS.md — revenue-vs-target agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — revenue-vs-target agent
 
 agents:
   revenue-vs-target:
@@ -430,6 +480,7 @@ agents:
         - projected_month_end
         - pace_category        # "on_track" / "ahead" / "behind"
       alert_threshold: 85     # alert if pacing drops below 85% by day 15</code></pre>
+            </div>
 
     <p>The pacing calculation is simple but powerful: <code>pacing = (revenue_to_date / (days_elapsed / days_in_month)) / target</code>. If you're on day 12 of 31 and have done 30% of your target revenue, you're at 100% pacing. If you've only done 25%, you're at 81% pacing and should be alerted.</p>
 
@@ -437,7 +488,9 @@ agents:
 
     <p>Different from dead stock (which doesn't sell at all), slow movers are products that ARE selling but whose sales velocity is declining. Catch these early and you can adjust marketing or pricing before the product becomes dead stock.</p>
 
-    <pre><code># AGENTS.md — slow-mover-finder agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — slow-mover-finder agent
 
 agents:
   slow-mover-finder:
@@ -458,6 +511,7 @@ agents:
       columns: [sku, product_title, current_velocity, prior_velocity, velocity_change_pct, revenue_trend]
       sort_by: revenue_trend        # highest revenue first (high-value declines matter more)
       include_summary: true</code></pre>
+            </div>
 
     <div class="callout">
       <strong>📍 Ranking by impact:</strong> A 30% decline on a £2,000/week product is worth more attention than a 40% decline on a £100/week product. Sort slow movers by absolute revenue lost, not percentage decline.
@@ -467,7 +521,9 @@ agents:
 
     <p>E-commerce is seasonal. The tool that matters most is knowing whether your current performance matches historical patterns. A week that looks weak might actually be strong if it's typically your slowest week of the year.</p>
 
-    <pre><code># AGENTS.md — seasonal-trend-finder agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — seasonal-trend-finder agent
 
 agents:
   seasonal-trend-finder:
@@ -492,6 +548,7 @@ agents:
         - expected_seasonal_index
         - ahead_behind_baseline
       include_alert: true</code></pre>
+            </div>
 
     <p>The seasonal index is user-configurable. If you don't have historical data yet, use a flat baseline (every week = 100%) and build the index as data accumulates. Common patterns: holidays spike in November/December, summer slows in August, Easter affects March/April depending on the calendar.</p>
 
@@ -499,7 +556,9 @@ agents:
 
     <h3>Daily morning brief</h3>
 
-    <pre><code># HEARTBEAT.md — daily revenue brief
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — daily revenue brief
 
 schedule:
   - name: "Daily Morning Brief"
@@ -515,10 +574,13 @@ schedule:
       new vs returning customers, and the top 3 products by revenue.
       Compare to: same day last week (% delta), same day last year (% delta).
       Format for quick scanning. If performance is >10% down vs last week, flag it.</code></pre>
+            </div>
 
     <h3>Weekly performance report</h3>
 
-    <pre><code># HEARTBEAT.md — weekly performance
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — weekly performance
 
 schedule:
   - name: "Weekly Performance Report"
@@ -536,10 +598,13 @@ schedule:
       2. Best 10 products by revenue and units sold
       3. Slow movers: products with >25% velocity decline
       Include a one-line summary at the top: "Week pacing:" or "Week strength:"</code></pre>
+            </div>
 
     <h3>Monthly pacing alert</h3>
 
-    <pre><code># HEARTBEAT.md — monthly pacing alert
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — monthly pacing alert
 
 schedule:
   - name: "Monthly Pacing Check"
@@ -554,6 +619,7 @@ schedule:
       Format: "Day 15 of 31: £[revenue_to_date] of £[target] — [pacing]%"
       If pacing < 85%, issue an alert: "⚠️  Behind pace. Projected month-end: £[projected]"
       Otherwise, output: "✓ On pace for £[projected] at month-end"</code></pre>
+            </div>
 
     <h2 id="sample-report">What the daily report looks like</h2>
 
@@ -654,5 +720,45 @@ schedule:
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

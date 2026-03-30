@@ -185,7 +185,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .issue-grid { grid-template-columns: 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #ea580c;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #ea580c;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -387,7 +426,9 @@
 
     <p>Here's the AGENTS.md entry:</p>
 
-<pre><code>## seo-auditor
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## seo-auditor
 
 You are the SEO auditor agent for [site name].
 
@@ -411,12 +452,15 @@ When asked to run a content audit:
    the specific problem for each entry.
 5. End with a summary: total pages checked, total
    issues found, breakdown by severity.</code></pre>
+            </div>
 
     <h3>Method 2: Screaming Frog CSV processing</h3>
 
     <p>After exporting your crawl from Screaming Frog (File → Export → CSV), point OpenClaw at the file:</p>
 
-<pre><code>## seo-auditor (CSV mode)
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## seo-auditor (CSV mode)
 
 When given a Screaming Frog CSV export file:
 1. Parse the CSV. Key columns to use:
@@ -438,6 +482,7 @@ When given a Screaming Frog CSV export file:
 4. Flag any duplicate titles or meta descriptions.
 5. Sort output by severity. Include URL and issue.
 6. Summarise: total URLs, total issues by type.</code></pre>
+            </div>
 
     <h2 id="heartbeat">HEARTBEAT.md templates</h2>
 
@@ -445,7 +490,9 @@ When given a Screaming Frog CSV export file:
 
     <h3>Weekly lightweight check (new issues only)</h3>
 
-<pre><code>## Weekly SEO Spot-Check — Every Monday 08:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Weekly SEO Spot-Check — Every Monday 08:00
 
 Run a quick SEO check on [yourdomain.com]:
 - Fetch sitemap and check for any new pages published
@@ -456,10 +503,13 @@ Run a quick SEO check on [yourdomain.com]:
 - Send results to #seo-alerts on Slack.
 - If no issues found, send: "SEO check complete —
   no issues on new pages this week."</code></pre>
+            </div>
 
     <h3>Monthly full audit</h3>
 
-<pre><code>## Monthly Full SEO Audit — 1st of each month, 07:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Monthly Full SEO Audit — 1st of each month, 07:00
 
 Run a full content audit of [yourdomain.com]:
 - Use seo-auditor agent instructions.
@@ -469,6 +519,7 @@ Run a full content audit of [yourdomain.com]:
 - Generate a complete prioritised report.
 - Send the full report to [your email or Slack channel].
 - Save a copy to ~/openclaw/reports/seo-audit-[date].md</code></pre>
+            </div>
 
     <h2 id="sample-report">What the audit report looks like</h2>
 
@@ -589,5 +640,45 @@ Run a full content audit of [yourdomain.com]:
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

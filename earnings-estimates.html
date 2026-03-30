@@ -531,9 +531,103 @@
                 gap: 8px;
             }
         }
-    </style>
+    
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #4f46e5;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #4f46e5;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Consensus Estimates & Analyst Revisions — OpenClaw Earnings Automation">
+    <meta property="og:description" content="Learn how OpenClaw pulls live consensus estimates and tracks analyst revisions—the signal that beats the news.">
+    <meta property="og:url" content="https://learnopenclaw.org/earnings-estimates.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Consensus Estimates & Analyst Revisions — OpenClaw Earnings Automation">
+    <meta name="twitter:description" content="Learn how OpenClaw pulls live consensus estimates and tracks analyst revisions—the signal that beats the news.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
     <!-- ──────────────────────────────────────────────────────────── -->
     <!-- NAVIGATION -->
     <!-- ──────────────────────────────────────────────────────────── -->
@@ -677,6 +771,8 @@
             <h2>YAML Configuration</h2>
             <p>Here's the config file that tells OpenClaw what to track and how to alert you:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code>watchlist:
   tickers: [AAPL, MSFT, NVDA, AMZN, GOOGL]
 
@@ -689,6 +785,7 @@ estimates:
 alerts:
   email: "you@example.com"
   daily_digest: true</code></pre>
+            </div>
 
             <h3>Field Explanations</h3>
             <ul>
@@ -707,6 +804,8 @@ alerts:
             <h2>The Python Script: earnings_estimates.py</h2>
             <p>Here's the complete, heavily commented script that pulls estimates and tracks revisions:</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code>"""
 earnings_estimates.py — OpenClaw Earnings Estimates Tracker
 Pulls EPS and revenue consensus estimates for your watchlist.
@@ -810,6 +909,7 @@ if results:
     df = pd.DataFrame(results)
     df.to_csv("data/estimates_log.csv", mode="a", header=not pd.io.common.file_exists("data/estimates_log.csv"), index=False)
     print("\n💾 Saved to data/estimates_log.csv")</code></pre>
+            </div>
 
             <h3>How This Script Works</h3>
             <ol>
@@ -894,8 +994,11 @@ if results:
             <h2>Automated Scheduling with Cron</h2>
             <p>You don't want to run this manually every week. Set it on a schedule. Here's the cron command to run the script every Monday at 7 AM (before market open, so you see revisions before the week's earnings):</p>
 
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code># Run weekly on Monday mornings to track revision trends
 0 7 * * 1 cd /path/to/openclaw && python earnings_estimates.py</code></pre>
+            </div>
 
             <h3>Breaking Down the Cron Syntax</h3>
             <ul>
@@ -911,7 +1014,10 @@ if results:
 
             <h3>Alternative: Daily Digest</h3>
             <p>If you prefer a daily check (more responsive to last-minute revisions), change the cron to:</p>
+            <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
             <pre><code>0 7 * * * cd /path/to/openclaw && python earnings_estimates.py</code></pre>
+            </div>
 
             <p>The last <code>*</code> instead of <code>1</code> means "every day" instead of "Monday only". You'll get daily alerts, which is more sensitive but also more noise.</p>
         </section>
@@ -983,5 +1089,45 @@ if results:
         });
     }
 </script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

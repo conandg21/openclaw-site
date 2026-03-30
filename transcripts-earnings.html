@@ -95,7 +95,46 @@
       .container { padding: 32px 20px; }
       h2 { font-size: 1.5rem; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #b45309;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #b45309;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -167,7 +206,9 @@
       </ul>
 
       <h2>HEARTBEAT configuration</h2>
-      <pre><code>name: earnings_transcript_monitor
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>name: earnings_transcript_monitor
 schedule: "0 */4 * * *"
 steps:
   - fetch_rss:
@@ -206,9 +247,12 @@ steps:
   - notify:
       channel: email
       subject: "📞 Earnings Transcript: {{ company }} Q{{ quarter }} {{ year }}"</code></pre>
+            </div>
 
       <h2>RSS parsing — Python snippet</h2>
-      <pre><code>import httpx
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import httpx
 import feedparser
 import json
 import os
@@ -246,9 +290,12 @@ def fetch_new_transcripts(rss_url: str, watchlist: list) -> list:
                 break
     save_seen(seen)
     return new_transcripts</code></pre>
+            </div>
 
       <h2>Guidance extraction</h2>
-      <pre><code>def extract_guidance_language(text: str) -> dict:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>def extract_guidance_language(text: str) -> dict:
     """Find guidance-related sentences in transcript text."""
     import re
     guidance_patterns = [
@@ -261,6 +308,7 @@ def fetch_new_transcripts(rss_url: str, watchlist: list) -> list:
         matches = re.findall(pattern, text, re.IGNORECASE)
         results.extend(matches[:3])
     return {"guidance_sentences": results[:10]}</code></pre>
+            </div>
 
       <div class="faq-section">
         <h2>Frequently asked questions</h2>
@@ -386,6 +434,46 @@ btn.addEventListener('click', () => {
   ]
 }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

@@ -137,7 +137,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #dc2626;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -253,7 +292,9 @@
 
       <h2 id="earnings-watchlist">Building your earnings watchlist</h2>
       <p>Start with your top 10–20 tickers you trade actively. Keep an earnings watchlist in your config:</p>
-      <pre><code>earnings_watchlist:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>earnings_watchlist:
   - AAPL
   - MSFT
   - GOOGL
@@ -264,6 +305,7 @@
   - NFLX
   - SPY
   - QQQ</code></pre>
+            </div>
 
       <h2 id="earnings-calendar">Earnings calendar agent</h2>
       <p>The agent fetches upcoming earnings for watchlist tickers using multiple sources: Tradier's market events endpoint, Polygon.io's events data, or a public earnings calendar API. It alerts at three key times:</p>
@@ -273,7 +315,9 @@
         <li><strong>Morning after:</strong> "Earnings reported after-hours last night — check IV crush"</li>
       </ul>
       <p>Here's the earnings agent YAML config:</p>
-      <pre><code>agents:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   earnings-monitor:
     description: "Earnings calendar, expected move, and IV crush detection"
     tools:
@@ -299,10 +343,14 @@
     output:
       format: markdown
       channel: slack</code></pre>
+            </div>
 
       <h2 id="expected-move">Expected move calculator</h2>
       <p>The expected move is estimated using the ATM straddle for the nearest expiration after earnings:</p>
-      <pre><code>Expected Move ≈ ATM Call Price + ATM Put Price</code></pre>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>Expected Move ≈ ATM Call Price + ATM Put Price</code></pre>
+            </div>
       <p>Example: AAPL is at $180, and the ATM straddle (180 call + 180 put) costs $8. Expected move is approximately ±$8 (±4.4%). This gives the market's consensus on how much the stock could move in either direction by expiration. This is a rough estimate—the actual implied move varies based on skew and the specific expiration used.</p>
       <div class="callout callout--amber">
         <strong>Expiration selection:</strong> Use the nearest post-earnings expiration. If earnings are Tuesday after-hours, use the Friday expiration (3 days away). If earnings are Thursday after-hours, use the following Friday expiration (8 days away).
@@ -310,9 +358,12 @@
 
       <h2 id="iv-into-earnings">IV rank into earnings — entry timing signals</h2>
       <p>Combine the IV rank scanner (Part 3) with the earnings calendar. Generate a combined view showing IV rank AND days to earnings for each ticker on the watchlist. Format:</p>
-      <pre><code>AAPL — IV Rank: 72 (ELEVATED) — 5 days to earnings — ⚡ SETUP IN PROGRESS
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>AAPL — IV Rank: 72 (ELEVATED) — 5 days to earnings — ⚡ SETUP IN PROGRESS
 TSLA — IV Rank: 68 (ELEVATED) — 12 days to earnings — Good entry window
 NVDA — IV Rank: 45 (FAIR) — 2 days to earnings — IV still building, monitor</code></pre>
+            </div>
       <div class="callout callout--blue">
         <strong>Entry timing for straddle buyers:</strong> Ideal entry is 5–7 days before earnings when IV rank is elevated (>50) but before the final 1–2 day run-up (IV peaks right before earnings). If you enter the last 1–2 days before earnings, you're paying maximum IV. Better to enter earlier and ride the IV increase + anticipate the directional move.
       </div>
@@ -323,12 +374,15 @@ NVDA — IV Rank: 45 (FAIR) — 2 days to earnings — IV still building, monito
 
       <h2 id="historical-analysis">Historical earnings move analysis</h2>
       <p>Compare the expected move (from the straddle) to the actual move for the past 4 earnings reports. This tells you if the market is pricing in too much or too little move.</p>
-      <pre><code>AAPL Historical Earnings Moves:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>AAPL Historical Earnings Moves:
 - Q1 2026: Expected ±4.0%, Actual ±4.8% (overestimate)
 - Q4 2025: Expected ±3.8%, Actual ±3.1% (underestimate)
 - Q3 2025: Expected ±4.1%, Actual ±5.2% (overestimate)
 - Q2 2025: Expected ±3.9%, Actual ±3.7% (fair)
 Average: Expected ±3.95%, Actual ±4.20%</code></pre>
+            </div>
       <p>Use this to calibrate your entry. If historical moves exceed expected, the straddle is underpriced. If actual moves are consistently lower, the straddle is overpriced.</p>
 
       <h2 id="heartbeat">HEARTBEAT schedule</h2>
@@ -429,5 +483,45 @@ Average: Expected ±3.95%, Actual ±4.20%</code></pre>
       nav.classList.toggle('open');
     });
   </script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

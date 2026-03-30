@@ -599,9 +599,103 @@
             color: #0d9488;
             border-bottom-color: #0d9488;
         }
-    </style>
+    
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0d9488;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0d9488;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #0d9488;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="OpenClaw Multi-Stock TA Scanner | Technical Analysis Automation">
+    <meta property="og:description" content="Learn how OpenClaw">
+    <meta property="og:url" content="https://learnopenclaw.org/ta-scanner.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OpenClaw Multi-Stock TA Scanner | Technical Analysis Automation">
+    <meta name="twitter:description" content="Learn how OpenClaw">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
 
 <!-- ─────────────────────────────────────────────────────────────────────── -->
 <!-- NAVIGATION                                                               -->
@@ -768,7 +862,9 @@
             You never need to edit Python code. Instead, you edit a single YAML file that tells the scanner what to look for. Here's what it looks like:
         </p>
 
-        <pre><code># ta-config.yaml
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># ta-config.yaml
 # This is the only file you need to edit to customize your scanner
 
 watchlist:
@@ -794,6 +890,7 @@ scanner:
   lookback_period:  "1y"   # How much price history to use (1y = 1 year)
   export_csv:       true   # Save results to a CSV file? true or false
   output_file:      "scan_results.csv"</code></pre>
+            </div>
 
         <div class="callout">
             <p>
@@ -854,7 +951,10 @@ scanner:
         <p>
             Run this once. It installs Python libraries the scanner depends on:
         </p>
-        <pre><code>pip install yfinance pandas-ta pandas pyyaml tabulate</code></pre>
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>pip install yfinance pandas-ta pandas pyyaml tabulate</code></pre>
+            </div>
 
         <h3>Step 2: Create Your Configuration</h3>
         <p>
@@ -865,12 +965,17 @@ scanner:
         <p>
             Execute the scanner script:
         </p>
-        <pre><code>python3 ta_scanner.py</code></pre>
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>python3 ta_scanner.py</code></pre>
+            </div>
 
         <p style="margin-top: 30px;">
             You should see output like this:
         </p>
-        <pre><code>🦞 OpenClaw Scanner | 7 tickers | Period: 1y
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>🦞 OpenClaw Scanner | 7 tickers | Period: 1y
    2026-03-28 14:32
 ──────────────────────────────────────────
   [1/7] AAPL     ✓  RSI_OVERSOLD
@@ -890,6 +995,7 @@ scanner:
   QQQ       RSI:  48.7  |  MACD_BULL_CROSS
 
 ✓ Saved to scan_results.csv</code></pre>
+            </div>
 
         <div class="callout">
             <p>
@@ -907,7 +1013,9 @@ scanner:
 
         <h3>Complete Script with Line-by-Line Comments</h3>
 
-        <pre><code>#!/usr/bin/env python3
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>#!/usr/bin/env python3
 # ta_scanner.py — OpenClaw Technical Analysis Scanner
 # Reads ta-config.yaml and scans your watchlist for signal matches
 
@@ -1127,6 +1235,7 @@ if EXPORT_CSV and results:
 
 print()  # Final blank line
 </code></pre>
+            </div>
 
         <div class="callout">
             <p>
@@ -1217,13 +1326,19 @@ print()  # Final blank line
             Open your crontab:
         </p>
 
-        <pre><code>crontab -e</code></pre>
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>crontab -e</code></pre>
+            </div>
 
         <p>
             Add this line to run Monday–Friday at 4:15 PM Eastern (15 minutes after market close):
         </p>
 
-        <pre><code>15 16 * * 1-5 cd /path/to/your/openclaw && python3 ta_scanner.py >> scanner.log 2>&1</code></pre>
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>15 16 * * 1-5 cd /path/to/your/openclaw && python3 ta_scanner.py >> scanner.log 2>&1</code></pre>
+            </div>
 
         <p>
             Replace <code>/path/to/your/openclaw</code> with the actual folder path. The <code>&gt;&gt; scanner.log 2&gt;&amp;1</code> saves output to a log file.
@@ -1235,9 +1350,12 @@ print()  # Final blank line
             Create a <code>.bat</code> file:
         </p>
 
-        <pre><code>@echo off
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>@echo off
 cd C:\path\to\your\openclaw
 python3 ta_scanner.py >> scanner.log 2>&1</code></pre>
+            </div>
 
         <p>
             Then create a scheduled task in Windows Task Scheduler to run this batch file at 4:15 PM daily.
@@ -1249,11 +1367,14 @@ python3 ta_scanner.py >> scanner.log 2>&1</code></pre>
             You can extend the scanner to email you results automatically. Add this to your config:
         </p>
 
-        <pre><code>scheduler:
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>scheduler:
   email_on_signals: true
   email_address: "you@example.com"
   smtp_server: "smtp.gmail.com"
   smtp_password: "your_app_password"  # Use app-specific password, not Gmail password</code></pre>
+            </div>
 
         <p>
             Then modify the scanner script to send an email when signals are found. (We'll cover this in the next tutorial.)

@@ -545,7 +545,62 @@
       .section { padding: 40px 0; }
       .hero { padding: 40px 16px 32px; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
 <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -753,10 +808,13 @@
               <p>Open your OpenClaw <code>config.yaml</code> file (usually at <code>~/.openclaw/config.yaml</code>) and add the <code>gateway</code> block:</p>
               <div class="code-block">
                 <div class="code-label">~/.openclaw/config.yaml</div>
-                <pre><span class="kw">gateway</span>:
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="kw">gateway</span>:
   <span class="kw">telegram</span>: <span class="sv">true</span>
   <span class="kw">telegram_token</span>: <span class="sv">"7312456789:AAH_your_bot_token_here"</span>
   <span class="kw">telegram_allowed_users</span>: [<span class="num">123456789</span>]  <span class="ck"># your user ID</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -767,9 +825,12 @@
               <p>Stop and restart OpenClaw. You should see <code>✅ Telegram gateway connected</code> in the console output. Now open Telegram, find your bot, and send it a message.</p>
               <div class="code-block">
                 <div class="code-label">Terminal</div>
-                <pre><span class="cmd">openclaw start</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="cmd">openclaw start</span>
 <span class="ck"># ✅ Telegram gateway connected (@MyOpenClawBot)</span>
 <span class="ck"># 🦞 OpenClaw is ready — send a message on Telegram to begin</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -837,11 +898,14 @@
               <h4>Add your credentials to config.yaml</h4>
               <div class="code-block">
                 <div class="code-label">~/.openclaw/config.yaml</div>
-                <pre><span class="kw">gateway</span>:
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="kw">gateway</span>:
   <span class="kw">whatsapp</span>: <span class="sv">true</span>
   <span class="kw">whatsapp_token</span>: <span class="sv">"EAAxxxxxxxxxxxxxxxx"</span>
   <span class="kw">whatsapp_phone_id</span>: <span class="sv">"123456789012345"</span>
   <span class="kw">whatsapp_allowed_numbers</span>: [<span class="sv">"+447911123456"</span>] <span class="ck"># your number</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -852,7 +916,9 @@
               <p>OpenClaw starts a local webhook server on port <code>7800</code>. Use <strong>ngrok</strong> or a similar tunnel to expose it so Meta can deliver incoming messages to your machine.</p>
               <div class="code-block">
                 <div class="code-label">Terminal — two separate windows</div>
-                <pre><span class="ck"># Window 1: start OpenClaw</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="ck"># Window 1: start OpenClaw</span>
 <span class="cmd">openclaw start</span>
 
 <span class="ck"># Window 2: expose the webhook</span>
@@ -860,6 +926,7 @@
 <span class="ck"># Copy the https://xxxx.ngrok.io URL</span>
 <span class="ck"># Paste it into Meta Dashboard → WhatsApp → Configuration → Webhook URL</span>
 <span class="ck"># Verify token: use the value in your config.yaml webhook_verify_token field</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -909,11 +976,14 @@
         </ul>
         <div class="code-block" style="margin-top:16px;">
           <div class="code-label">config.yaml</div>
-          <pre><span class="kw">gateway</span>:
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="kw">gateway</span>:
   <span class="kw">slack</span>: <span class="sv">true</span>
   <span class="kw">slack_bot_token</span>: <span class="sv">"xoxb-your-token"</span>
   <span class="kw">slack_signing_secret</span>: <span class="sv">"your-secret"</span>
   <span class="kw">slack_allowed_users</span>: [<span class="sv">"U0XXXXXXX"</span>]</pre>
+            </div>
         </div>
       </div>
 
@@ -933,11 +1003,14 @@
         </ul>
         <div class="code-block" style="margin-top:16px;">
           <div class="code-label">config.yaml</div>
-          <pre><span class="kw">gateway</span>:
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="kw">gateway</span>:
   <span class="kw">discord</span>: <span class="sv">true</span>
   <span class="kw">discord_token</span>: <span class="sv">"your-discord-bot-token"</span>
   <span class="kw">discord_allowed_channels</span>: [<span class="num">1234567890</span>]
   <span class="kw">discord_allowed_users</span>: [<span class="num">987654321</span>]</pre>
+            </div>
         </div>
       </div>
 
@@ -957,10 +1030,13 @@
         </ul>
         <div class="code-block" style="margin-top:16px;">
           <div class="code-label">config.yaml</div>
-          <pre><span class="kw">gateway</span>:
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="kw">gateway</span>:
   <span class="kw">imessage</span>: <span class="sv">true</span>
   <span class="kw">imessage_allowed_numbers</span>: [<span class="sv">"+447911123456"</span>]
   <span class="ck"># Grant Full Disk Access in System Settings → Privacy</span></pre>
+            </div>
         </div>
       </div>
     </div>
@@ -1239,5 +1315,45 @@
 
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

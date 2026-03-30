@@ -636,7 +636,28 @@
             color: #d97706;
             border-bottom-color: #d97706;
         }
-    </style>
+    
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Crypto & DeFi Automation | Claw Street Terminal | learnopenclaw.org">
+    <meta name="twitter:description" content="Build automated crypto workflows with free APIs — CoinGecko, Etherscan, DeFiLlama, and more. No paid subscriptions required.">
 </head>
 <body>
   <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -685,7 +706,7 @@
 
   <nav class="series-nav" aria-label="Crypto & DeFi series">
     <div class="series-nav-inner">
-        <a href="openclaw-for-crypto.html" class="sn-current">Overview</a>
+        <a href="openclaw-for-crypto.html" class="sn-current" aria-current="page">Overview</a>
         <a href="crypto-prices.html">Pt 1: Prices</a>
         <a href="crypto-onchain.html">Pt 2: On-Chain</a>
         <a href="crypto-defi.html">Pt 3: DeFi</a>

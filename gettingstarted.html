@@ -332,7 +332,62 @@
       .os-tab { flex: 1; min-width: 80px; text-align: center; }
       .install-step { flex-direction: column; gap: 8px; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -416,7 +471,9 @@
               <div id="panel-mac" class="os-panel active" role="tabpanel" aria-labelledby="tab-mac">
                 <div class="code-block">
                   <div class="code-header"><span class="code-label">Terminal</span></div>
-                  <pre><span class="comment"># Option A — Homebrew (recommended)</span>
+                  <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Option A — Homebrew (recommended)</span>
 <span class="cmd">brew install openclaw</span>
 
 <span class="comment"># Option B — Direct download</span>
@@ -424,13 +481,16 @@
 
 <span class="comment"># Verify install</span>
 <span class="cmd">openclaw --version</span></pre>
+            </div>
                 </div>
               </div>
 
               <div id="panel-win" class="os-panel" role="tabpanel" aria-labelledby="tab-win">
                 <div class="code-block">
                   <div class="code-header"><span class="code-label">PowerShell (run as Administrator)</span></div>
-                  <pre><span class="comment"># Option A — winget</span>
+                  <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Option A — winget</span>
 <span class="cmd">winget install OpenClaw.OpenClaw</span>
 
 <span class="comment"># Option B — manual installer</span>
@@ -439,13 +499,16 @@
 
 <span class="comment"># Verify install (new terminal)</span>
 <span class="cmd">openclaw --version</span></pre>
+            </div>
                 </div>
               </div>
 
               <div id="panel-linux" class="os-panel" role="tabpanel" aria-labelledby="tab-linux">
                 <div class="code-block">
                   <div class="code-header"><span class="code-label">Terminal</span></div>
-                  <pre><span class="comment"># Debian / Ubuntu</span>
+                  <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Debian / Ubuntu</span>
 <span class="cmd">curl -fsSL https://get.openclaw.dev | sh</span>
 
 <span class="comment"># Arch Linux</span>
@@ -453,6 +516,7 @@
 
 <span class="comment"># Verify install</span>
 <span class="cmd">openclaw --version</span></pre>
+            </div>
                 </div>
               </div>
 
@@ -499,7 +563,9 @@
 
               <div class="code-block" style="margin-top:20px;">
                 <div class="code-header"><span class="code-label">~/.openclaw/config.yaml</span></div>
-                <pre><span class="key">model</span><span style="color:#e2e8f0;">:</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="key">model</span><span style="color:#e2e8f0;">:</span>
   <span class="key">provider</span><span style="color:#e2e8f0;">:</span> <span class="string">"anthropic"</span>        <span class="comment"># anthropic | openai | google | ollama</span>
   <span class="key">model_id</span><span style="color:#e2e8f0;">:</span> <span class="string">"claude-sonnet-4-6"</span>
   <span class="key">api_key</span><span style="color:#e2e8f0;">:</span>  <span class="string">"sk-ant-..."</span>          <span class="comment"># paste your key here</span>
@@ -510,6 +576,7 @@
 <span class="key">gateway</span><span style="color:#e2e8f0;">:</span>
   <span class="key">whatsapp</span><span style="color:#e2e8f0;">:</span> <span class="string">false</span>               <span class="comment"># enable later in Step 6</span>
   <span class="key">telegram</span><span style="color:#e2e8f0;">:</span> <span class="string">false</span></pre>
+            </div>
               </div>
 
               <div class="info-box info-box--warn">
@@ -596,7 +663,9 @@
 
               <div class="code-block" style="margin-top:20px;">
                 <div class="code-header"><span class="code-label">Starting OpenClaw</span></div>
-                <pre><span class="comment"># Start the agent (runs in background)</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Start the agent (runs in background)</span>
 <span class="cmd">openclaw start</span>
 
 <span class="comment"># Send a one-off task from terminal</span>
@@ -608,6 +677,7 @@
 
 <span class="comment"># Watch live logs</span>
 <span class="cmd">openclaw logs --follow</span></pre>
+            </div>
               </div>
 
               <div class="info-box info-box--good">
@@ -661,12 +731,15 @@
 
               <div class="code-block" style="margin-top:20px;">
                 <div class="code-header"><span class="code-label">Common skill commands</span></div>
-                <pre><span class="cmd">openclaw skills browse</span>         <span class="comment"># list all available skills</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="cmd">openclaw skills browse</span>         <span class="comment"># list all available skills</span>
 <span class="cmd">openclaw skills install &lt;name&gt;</span>  <span class="comment"># install a skill</span>
 <span class="cmd">openclaw skills list</span>            <span class="comment"># show installed skills</span>
 <span class="cmd">openclaw skills update &lt;name&gt;</span>   <span class="comment"># update a skill</span>
 <span class="cmd">openclaw skills remove &lt;name&gt;</span>   <span class="comment"># uninstall a skill</span>
 <span class="cmd">openclaw skills info &lt;name&gt;</span>     <span class="comment"># show skill details and permissions</span></pre>
+            </div>
               </div>
             </div>
           </article>
@@ -684,29 +757,38 @@
 
               <div class="code-block">
                 <div class="code-header"><span class="code-label">Scheduled task (cron-style)</span></div>
-                <pre><span class="comment"># Run a task every weekday at 8 AM</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Run a task every weekday at 8 AM</span>
 <span class="cmd">openclaw schedule add \</span>
   <span class="cmd">--cron "0 8 * * 1-5" \</span>
   <span class="cmd">--task "Summarise my overnight emails and Slack messages. Send me a briefing."</span></pre>
+            </div>
               </div>
 
               <div class="code-block">
                 <div class="code-header"><span class="code-label">Trigger-based automation</span></div>
-                <pre><span class="comment"># Fire when a new file appears in ~/Downloads</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Fire when a new file appears in ~/Downloads</span>
 <span class="cmd">openclaw trigger add \</span>
   <span class="cmd">--event "file:created" \</span>
   <span class="cmd">--path "~/Downloads/*.pdf" \</span>
   <span class="cmd">--task "Summarise this PDF and save the summary to memory."</span></pre>
+            </div>
               </div>
 
               <div class="code-block">
                 <div class="code-header"><span class="code-label">Gateway (WhatsApp / Telegram)</span></div>
-                <pre><span class="comment"># Enable messaging in config.yaml</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Enable messaging in config.yaml</span>
 <span class="key">gateway</span><span style="color:#e2e8f0;">:</span>
   <span class="key">telegram</span><span style="color:#e2e8f0;">:</span> <span class="string">true</span>
   <span class="key">telegram_token</span><span style="color:#e2e8f0;">:</span> <span class="string">"your-bot-token"</span>
 
 <span class="comment"># Now message your bot on Telegram and OpenClaw responds</span></pre>
+            </div>
               </div>
 
               <div class="info-box info-box--tip">
@@ -842,5 +924,45 @@
   </script>
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

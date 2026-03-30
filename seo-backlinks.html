@@ -186,7 +186,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .use-grid { grid-template-columns: 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #ea580c;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #ea580c;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -359,7 +398,9 @@
       </li>
     </ol>
 
-<pre><code>## backlink-monitor
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## backlink-monitor
 
 You are the backlink monitoring agent for [yourdomain.com].
 
@@ -388,12 +429,15 @@ When running a backlink report:
    to competitors but not to us (gap opportunity).
 5. Summarise: new links gained, lost, net change,
    DR movement, and top competitor wins this week.</code></pre>
+            </div>
 
     <h2 id="link-loss-alerts">Link loss alerts</h2>
 
     <p>A lost backlink from a high-DR site can directly impact rankings within days — and most site owners don't notice until they see the traffic drop weeks later. OpenClaw closes this gap.</p>
 
-<pre><code>## Link Loss Alert — Daily 08:00 weekdays
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Link Loss Alert — Daily 08:00 weekdays
 
 Use backlink-monitor agent.
 Pull lost backlinks from the last 24 hours.
@@ -412,6 +456,7 @@ For lost links where DR is 20–34:
 
 For lost links where DR is below 20:
   Log silently — no action required.</code></pre>
+            </div>
 
     <div class="callout--green callout">
       <strong>Link reclamation workflow:</strong> When OpenClaw alerts you to a lost high-DR link, ask it: "Draft a short email to reclaim the link from [domain] — the context is [brief description]." It will draft a polite, specific outreach email using the linking page context it already fetched.
@@ -421,7 +466,9 @@ For lost links where DR is below 20:
 
     <p>Every time someone mentions your brand, product, or key people without linking to you, that's a link reclamation opportunity. These are the easiest links to get because the author already knows you exist — they just didn't link.</p>
 
-<pre><code>## brand-mention-monitor
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## brand-mention-monitor
 
 You are the brand mention monitoring agent for [brand name].
 
@@ -451,12 +498,15 @@ When running a mention check:
    - The exact sentence mentioning the brand
    - The referring domain's DR
    - Suggested outreach subject line</code></pre>
+            </div>
 
     <h2 id="competitor-analysis">Competitor backlink gap analysis</h2>
 
     <p>Knowing where competitors are getting links that you aren't is one of the most actionable outputs in SEO. OpenClaw can run a gap analysis weekly and serve up the best opportunities:</p>
 
-<pre><code>## Competitor Gap Analysis — Monthly, 1st of month
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Competitor Gap Analysis — Monthly, 1st of month
 
 Use backlink-monitor agent.
 
@@ -478,10 +528,13 @@ For each competitor domain:
      guide, tool, press coverage)
 5. Output a prioritised gap report — sorted by
    DR descending. Send to [your email].</code></pre>
+            </div>
 
     <h2 id="heartbeat">HEARTBEAT.md templates</h2>
 
-<pre><code>## Weekly Backlink Report — Every Monday 08:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Weekly Backlink Report — Every Monday 08:00
 
 Use backlink-monitor agent.
 Pull the last 7 days of new and lost backlink data.
@@ -489,21 +542,28 @@ Pull current DR and compare to 4 weeks ago.
 Pull top new links for each competitor.
 Generate full weekly backlink summary.
 Send to #seo-reports on Slack.</code></pre>
+            </div>
 
-<pre><code>## Daily Link Loss Check — Weekdays 08:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Daily Link Loss Check — Weekdays 08:00
 
 Use backlink-monitor agent.
 Check for lost backlinks in the last 24 hours.
 Alert immediately on WhatsApp for any lost link
 from a domain with DR &gt;= 35.
 Log others silently for weekly report.</code></pre>
+            </div>
 
-<pre><code>## Weekly Brand Mention Check — Every Wednesday 09:00
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>## Weekly Brand Mention Check — Every Wednesday 09:00
 
 Use brand-mention-monitor agent.
 Search for all monitored brand terms.
 Flag new unlinked mentions — especially on DR 40+ domains.
 Send a brief summary to #seo-opportunities on Slack.</code></pre>
+            </div>
 
     <h2 id="sample-report">What the weekly report looks like</h2>
 
@@ -603,5 +663,45 @@ Send a brief summary to #seo-opportunities on Slack.</code></pre>
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

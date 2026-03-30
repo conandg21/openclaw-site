@@ -135,7 +135,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #16a34a;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -262,7 +301,9 @@
       <h2 id="market-snapshot">Market rent snapshot agent</h2>
       <p>The market snapshot agent pulls rental data from Rentcast for a target zip, extracts average rent by bedroom count, and stores it for historical comparison.</p>
 
-      <pre><code>---
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>---
 name: rental-market-snapshot
 schedule: "0 8 * * 1"  # Weekly Monday 8 AM
 tools:
@@ -303,6 +344,7 @@ job: |
 
   report = generate_weekly_report(snapshots)
   send_slack_message(report)</code></pre>
+            </div>
 
       <p>The agent runs weekly (Monday 8 AM) and pulls rental data for each zip/bedroom combination. It stores snapshots with a timestamp, enabling month-over-month and year-over-year comparisons. The report is automatically formatted and sent to Slack.</p>
 
@@ -352,7 +394,9 @@ job: |
       <h2 id="rent-growth">Rent growth tracking</h2>
       <p>Detect month-over-month and year-over-year rent changes by comparing historical snapshots:</p>
 
-      <pre><code>current_snapshot = get_latest_snapshot(zip, bedrooms)
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>current_snapshot = get_latest_snapshot(zip, bedrooms)
 month_ago_snapshot = get_snapshot_from_date(zip, bedrooms, 30_days_ago)
 year_ago_snapshot = get_snapshot_from_date(zip, bedrooms, 365_days_ago)
 
@@ -367,6 +411,7 @@ if mom_growth > 3:
 
 if yoy_growth > 10:
   alert("Strong annual rent growth: {zip}, {bedrooms}BR, {yoy_growth:.1f}%")</code></pre>
+            </div>
 
       <p>Set thresholds based on your expectations. 3% month-over-month is unusual and suggests tight market/investor demand. 10% year-over-year is normal in growing markets; 20%+ is exceptional and worth investigating.</p>
 
@@ -375,7 +420,9 @@ if yoy_growth > 10:
 
       <p>Agent snippet:</p>
 
-      <pre><code>data = await rentcast.avm_rent_long_term({zip_code: zip, bedrooms: br})
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>data = await rentcast.avm_rent_long_term({zip_code: zip, bedrooms: br})
 
 if data.avg_dom > 30:
   alert("Rental market loosening in {zip}, {br}BR units averaging {data.avg_dom} days on market")
@@ -388,6 +435,7 @@ elif data.avg_dom < 7:
 
   # Interpretation: Tenants find units quickly. Strong rental growth potential.
   # Consider price increases on lease renewal.</code></pre>
+            </div>
 
       <div class="callout callout--blue">
         <strong>Note:</strong> DOM is not a direct vacancy measurement. A single unit listed daily that rents same-day shows DOM=1, not a reflection of true market vacancy. Use DOM as one signal among others (rent growth, days-to-lease, tenant retention) to form a complete picture.
@@ -396,7 +444,9 @@ elif data.avg_dom < 7:
       <h2 id="your-units">Benchmarking your own units</h2>
       <p>Create a simple config file listing your rental units with their current rent:</p>
 
-      <pre><code>my_units:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>my_units:
   - address: "123 Oak Street, Austin, TX 78704"
     bedrooms: 3
     bathrooms: 2
@@ -406,10 +456,13 @@ elif data.avg_dom < 7:
     bedrooms: 2
     bathrooms: 1
     monthly_rent: 1950</code></pre>
+            </div>
 
       <p>Agent snippet for benchmarking:</p>
 
-      <pre><code>for unit in my_units:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>for unit in my_units:
   zip = extract_zip(unit.address)
   br = unit.bedrooms
 
@@ -422,6 +475,7 @@ elif data.avg_dom < 7:
     alert("Unit ABOVE market: {unit.address} renting at ${unit.monthly_rent}, market avg ${market_rent} ({variance:+.1f}%)")
   elif variance < -5:
     alert("Unit BELOW market: {unit.address} renting at ${unit.monthly_rent}, market avg ${market_rent} ({variance:+.1f}%)")</code></pre>
+            </div>
 
       <p>This alerts you if your units are significantly above or below market, helping identify opportunities to raise rents (if below) or mitigate tenant turnover risk (if above).</p>
 
@@ -586,5 +640,45 @@ elif data.avg_dom < 7:
   }
   </script>
 <script src="copy.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

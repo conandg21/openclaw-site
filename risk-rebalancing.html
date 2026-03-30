@@ -85,7 +85,48 @@
     footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
     footer a { color: #d1d5db; font-weight: 700; }
     footer a:hover { text-decoration: underline; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #7c3aed;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
+
+    <meta property="og:site_name" content="learnopenclaw.org">
 </head>
 <body>
   <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -141,7 +182,9 @@
 
     <h2>Target Allocation Configuration</h2>
     <p>Define your target allocation and rebalancing thresholds in a <code>targets.yaml</code> file:</p>
-    <pre><code># targets.yaml
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># targets.yaml
 target_allocation:
   by_position:
     AAPL: 12
@@ -159,10 +202,13 @@ target_allocation:
   rebalance_threshold_pct: 5.0
   stop_loss_pct: -15.0
   tax_loss_threshold_pct: -8.0</code></pre>
+            </div>
 
     <h2>Drift Detection</h2>
     <p>Monitor when positions diverge from target allocation:</p>
-    <pre><code>import yaml
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import yaml
 
 def load_targets(path: str = "targets.yaml") -> dict:
     with open(path) as f:
@@ -182,10 +228,13 @@ def detect_drift(current_weights: dict, target_weights: dict, threshold: float =
                 "action": "TRIM" if drift > 0 else "ADD",
             })
     return sorted(drifts, key=lambda x: abs(x["drift_pct"]), reverse=True)</code></pre>
+            </div>
 
     <h2>Stop-Loss Monitoring</h2>
     <p>Identify positions that have hit your stop-loss threshold:</p>
-    <pre><code>def check_stop_losses(pnl_results: list, stop_loss_pct: float = -15.0) -> list:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>def check_stop_losses(pnl_results: list, stop_loss_pct: float = -15.0) -> list:
     return [
         {
             "ticker": r["ticker"],
@@ -195,10 +244,13 @@ def detect_drift(current_weights: dict, target_weights: dict, threshold: float =
         }
         for r in pnl_results if r["unrealized_pct"] <= stop_loss_pct
     ]</code></pre>
+            </div>
 
     <h2>Tax-Loss Harvesting Detector</h2>
     <p>Flag positions that qualify for tax-loss harvesting with wash-sale warnings:</p>
-    <pre><code>def tax_loss_candidates(pnl_results: list, threshold_pct: float = -8.0) -> list:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>def tax_loss_candidates(pnl_results: list, threshold_pct: float = -8.0) -> list:
     return [
         {
             "ticker": r["ticker"],
@@ -208,10 +260,13 @@ def detect_drift(current_weights: dict, target_weights: dict, threshold: float =
         }
         for r in pnl_results if r["unrealized_pct"] <= threshold_pct
     ]</code></pre>
+            </div>
 
     <h2>Weekly Maintenance Brief</h2>
     <p>Automate Friday afternoon rebalancing alerts:</p>
-    <pre><code>name: rebalancing_alerts
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>name: rebalancing_alerts
 schedule: "0 17 * * 5"
 steps:
   - load_positions:
@@ -237,6 +292,7 @@ steps:
         Data: {{ drift_data }} {{ stop_loss_data }} {{ tax_loss_data }}
   - notify:
       subject: "⚖️ Weekly Rebalancing | {{ drift_count }} drifts | {{ alert_count }} alerts"</code></pre>
+            </div>
 
     <div class="callout-box">
       <h3>Wash-Sale Rule</h3>
@@ -370,5 +426,45 @@ steps:
     ]
   }
   </script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

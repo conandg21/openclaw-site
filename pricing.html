@@ -328,7 +328,46 @@
       .section { padding: 48px 16px; }
       .hero { padding: 48px 16px 40px; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -517,7 +556,9 @@
     <p style="color:var(--gray-7);font-size:.95rem;margin-bottom:16px;">A token is roughly ¾ of a word. "Hello, how are you?" is about 5 tokens. A typical conversation message is 100–500 tokens. A long document summary might be 5,000 tokens. For most OpenClaw users, a full day of active use generates around 50,000–200,000 tokens — which costs $0.04–$3.00 depending on your model choice.</p>
 
     <div class="code-block" aria-label="How to set your LLM in openclaw.json">
-      <pre><span class="comment"># Set your LLM in ~/.openclaw/openclaw.json</span>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Set your LLM in ~/.openclaw/openclaw.json</span>
 {
   <span class="key">"llm"</span>: {
     <span class="key">"provider"</span>: <span class="str">"anthropic"</span>,        <span class="comment">// or "openai", "google", "ollama"</span>
@@ -525,6 +566,7 @@
     <span class="key">"apiKey"</span>:   <span class="str">"sk-ant-..."</span>         <span class="comment">// your API key (keep this secret)</span>
   }
 }</pre>
+            </div>
     </div>
   </div>
 </section>
@@ -633,7 +675,9 @@
     <h3 style="font-size:1.1rem;font-weight:800;color:var(--gray-9);margin:32px 0 12px;">Setting up Ollama with OpenClaw</h3>
 
     <div class="code-block" aria-label="Ollama installation and OpenClaw configuration">
-      <pre><span class="comment"># Step 1: Install Ollama</span>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Step 1: Install Ollama</span>
 curl -fsSL https://ollama.ai/install.sh | sh
 
 <span class="comment"># Step 2: Pull a model (Llama 3.3 recommended for most tasks)</span>
@@ -647,6 +691,7 @@ ollama pull llama3.3
     <span class="key">"baseUrl"</span>:  <span class="str">"http://localhost:11434"</span>
   }
 }</pre>
+            </div>
     </div>
 
     <div class="alert alert--blue">
@@ -763,7 +808,9 @@ ollama pull llama3.3
     </ul>
 
     <div class="code-block" aria-label="Routing automations to a cheap local model">
-      <pre><span class="comment"># Route expensive tasks to Sonnet, background tasks to local Llama</span>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Route expensive tasks to Sonnet, background tasks to local Llama</span>
 {
   <span class="key">"llm"</span>: {
     <span class="key">"default"</span>:         <span class="str">"claude-haiku-4"</span>,
@@ -771,6 +818,7 @@ ollama pull llama3.3
     <span class="key">"powerModel"</span>:      <span class="str">"claude-sonnet-4"</span>    <span class="comment">// used when agent asks</span>
   }
 }</pre>
+            </div>
     </div>
   </div>
 </section>
@@ -1041,5 +1089,45 @@ ollama pull llama3.3
 
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

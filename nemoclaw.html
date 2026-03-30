@@ -299,7 +299,62 @@
       cursor: pointer; font-family: inherit; transition: background .18s;
     }
     .footer-nl-form button:hover { background: #1d4ed8; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -376,7 +431,9 @@
         <h2 class="section-title" id="stack-heading">The NemoClaw Stack</h2>
         <p class="section-sub">NemoClaw's <code>nemoclaw</code> CLI orchestrates four layers. Every component is open source and replaceable.</p>
         <div class="stack-wrap" role="img" aria-label="NemoClaw architecture stack diagram">
-<pre>
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>
  ┌───────────────────────────────────────────────────────────────┐
  │                     YOUR PROMPT / TASK                        │
  └──────────────────────────────┬────────────────────────────────┘
@@ -404,6 +461,7 @@
  │             │        │               │      │  Router       │
  └─────────────┘        └───────────────┘      └───────────────┘
 </pre>
+            </div>
         </div>
       </div>
     </section>
@@ -521,7 +579,9 @@
 
         <div class="code-block">
           <div class="code-header"><span class="code-label">nemoclaw-policy.yaml — example baseline policy</span></div>
-          <pre><span class="comment"># NemoClaw OpenShell Policy — v1.0</span>
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># NemoClaw OpenShell Policy — v1.0</span>
 <span class="comment"># Controls what this agent can access and where it can go</span>
 
 <span class="key">sandbox</span>:
@@ -559,6 +619,7 @@
   <span class="key">log_all_actions</span>: <span class="val">true</span>
   <span class="key">log_path</span>: <span class="str">"/sandbox/audit.log"</span>
   <span class="key">retention_days</span>: <span class="val">90</span></pre>
+            </div>
         </div>
 
         <div class="info-box info-box--tip">
@@ -718,7 +779,9 @@
 
         <div class="code-block" style="margin-top: 24px;">
           <div class="code-header"><span class="code-label">Quick install — copy and run</span></div>
-          <pre><span class="comment"># Prerequisites: Docker, Node.js 20+, NVIDIA API key</span>
+          <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="comment"># Prerequisites: Docker, Node.js 20+, NVIDIA API key</span>
 
 <span class="comment"># Install CLI</span>
 npm install -g nemoclaw
@@ -737,6 +800,7 @@ nemoclaw start --policy nemoclaw-policy.yaml
 
 <span class="comment"># Check status</span>
 nemoclaw status</pre>
+            </div>
         </div>
 
         <div class="info-box info-box--warn" style="margin-top: 8px;">
@@ -835,5 +899,45 @@ nemoclaw status</pre>
   </script>
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

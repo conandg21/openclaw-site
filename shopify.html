@@ -206,7 +206,23 @@
     .footer-nl-form input[type="email"]:focus { outline: none; border-color: #60a5fa; }
     .footer-nl-form button { background: var(--blue); color: var(--white); border: none; border-radius: 7px; padding: 9px 18px; font-size: .88rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .18s; }
     .footer-nl-form button:hover { background: #1d4ed8; }
-  </style>
+  
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

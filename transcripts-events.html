@@ -95,7 +95,46 @@
       .container { padding: 32px 20px; }
       h2 { font-size: 1.5rem; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #b45309;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #b45309;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -206,7 +245,9 @@
       </table>
 
       <h2>HEARTBEAT configuration</h2>
-      <pre><code>name: investor_day_monitor
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>name: investor_day_monitor
 schedule: "0 8 * * 1-5"
 steps:
   - fetch_8k_feed:
@@ -232,9 +273,12 @@ steps:
       trigger_transcription: true
   - notify:
       subject: "📅 Investor Day Detected: {{ company }} — {{ event_date }}"</code></pre>
+            </div>
 
       <h2>8-K event detection — Python snippet</h2>
-      <pre><code>import httpx
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import httpx
 import feedparser
 import re
 
@@ -269,9 +313,12 @@ def scan_8k_feed_for_events(watchlist_ciks: list) -> list:
                 })
                 break
     return events</code></pre>
+            </div>
 
       <h2>Post-event capture — Python snippet</h2>
-      <pre><code>import httpx, os, time
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>import httpx, os, time
 from bs4 import BeautifulSoup
 
 def capture_event_materials(event_page_url: str, output_dir: str) -> dict:
@@ -294,6 +341,7 @@ def capture_event_materials(event_page_url: str, output_dir: str) -> dict:
         elif re.search(r'\.(mp3|mp4|m4a)$', href, re.IGNORECASE):
             captured["audio"].append(href)
     return captured</code></pre>
+            </div>
 
       <div class="faq-section">
         <h2>Frequently asked questions</h2>
@@ -419,6 +467,46 @@ btn.addEventListener('click', () => {
   ]
 }
 </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

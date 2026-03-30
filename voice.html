@@ -369,7 +369,62 @@
       .section { padding: 40px 0; }
       .hero { padding: 40px 16px 32px; }
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
 <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -586,7 +641,9 @@
               <h4>Add the STT block to openclaw.json</h4>
               <div class="code-block">
                 <div class="code-label">~/.openclaw/openclaw.json</div>
-                <pre><span class="br">{</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="br">{</span>
   <span class="kw">"voice"</span>: <span class="br">{</span>
     <span class="kw">"stt"</span>: <span class="br">{</span>
       <span class="kw">"provider"</span>: <span class="sv">"whisper"</span>,
@@ -596,6 +653,7 @@
     <span class="br">}</span>
   <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -607,8 +665,11 @@
               <p>Restart OpenClaw and open the web UI at <code>localhost:7799</code>. You'll see a microphone icon in the input bar. Click it, speak, and release — your words should appear as text in the message field.</p>
               <div class="code-block">
                 <div class="code-label">Terminal confirmation</div>
-                <pre><span class="sv">✅ Voice STT: Whisper (whisper-1) — ready</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="sv">✅ Voice STT: Whisper (whisper-1) — ready</span>
 <span class="ck">   Click the mic icon in the web UI to start speaking</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -620,13 +681,16 @@
               <p>Talk Mode keeps the microphone open after each reply so you can have a back-and-forth without clicking the mic button each time. Enable it with:</p>
               <div class="code-block">
                 <div class="code-label">~/.openclaw/openclaw.json</div>
-                <pre><span class="kw">"voice"</span>: <span class="br">{</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="kw">"voice"</span>: <span class="br">{</span>
   <span class="kw">"talkMode"</span>: <span class="br">{</span>
     <span class="kw">"enabled"</span>:           <span class="sv">true</span>,
     <span class="kw">"silenceTimeoutMs"</span>:  <span class="nm">1500</span>,  <span class="ck">// ms of silence before submitting</span>
     <span class="kw">"interruptOnSpeech"</span>: <span class="sv">true</span>   <span class="ck">// speaking cancels current TTS reply</span>
   <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -675,7 +739,9 @@
               <h4>Add the TTS block to openclaw.json</h4>
               <div class="code-block">
                 <div class="code-label">~/.openclaw/openclaw.json</div>
-                <pre><span class="br">{</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="br">{</span>
   <span class="kw">"voice"</span>: <span class="br">{</span>
     <span class="kw">"tts"</span>: <span class="br">{</span>
       <span class="kw">"provider"</span>:    <span class="sv">"elevenlabs"</span>,
@@ -687,6 +753,7 @@
     <span class="br">}</span>
   <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -698,9 +765,12 @@
               <p>ElevenLabs has several models. Here's how to choose:</p>
               <div class="code-block">
                 <div class="code-label">Model comparison</div>
-                <pre><span class="sv">eleven_turbo_v2_5</span>    <span class="ck">// ← Recommended. Fast, cheap, great quality</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="sv">eleven_turbo_v2_5</span>    <span class="ck">// ← Recommended. Fast, cheap, great quality</span>
 <span class="sv">eleven_multilingual_v2</span> <span class="ck">// Best quality, supports 29 languages, slower</span>
 <span class="sv">eleven_monolingual_v1</span>  <span class="ck">// Older, English only — avoid unless on free tier</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -752,7 +822,9 @@
               <p>Set one or more trigger phrases. You can use anything — "Hey OpenClaw", your agent's name, or something less likely to fire accidentally. All phrases are normalized to lowercase.</p>
               <div class="code-block">
                 <div class="code-label">~/.openclaw/openclaw.json</div>
-                <pre><span class="br">{</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="br">{</span>
   <span class="kw">"voice"</span>: <span class="br">{</span>
     <span class="kw">"wakeWord"</span>: <span class="br">{</span>
       <span class="kw">"enabled"</span>: <span class="sv">true</span>,
@@ -765,6 +837,7 @@
     <span class="br">}</span>
   <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -784,10 +857,13 @@
               <p>Say your wake phrase clearly. You'll hear a confirmation chime (if enabled), then a short silence. Speak your command. The agent transcribes and responds.</p>
               <div class="code-block">
                 <div class="code-label">Example interaction</div>
-                <pre><span class="sv">You:</span>     <span class="ck">"Hey OpenClaw..."</span>
+                <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="sv">You:</span>     <span class="ck">"Hey OpenClaw..."</span>
 <span class="sv">Agent:</span>   <span class="ck">*chime* [listening...]</span>
 <span class="sv">You:</span>     <span class="ck">"What's on my calendar today?"</span>
 <span class="sv">Agent:</span>   <span class="ck">*speaks reply via ElevenLabs*</span></pre>
+            </div>
               </div>
             </div>
           </div>
@@ -807,7 +883,9 @@
 
     <div class="code-block">
       <div class="code-label">~/.openclaw/openclaw.json — complete voice block</div>
-      <pre><span class="br">{</span>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="br">{</span>
   <span class="kw">"voice"</span>: <span class="br">{</span>
 
     <span class="ck">// ── Speech-to-Text ──────────────────────────────────</span>
@@ -854,6 +932,7 @@
 
   <span class="br">}</span>
 <span class="br">}</span></pre>
+            </div>
     </div>
   </div>
 </section>
@@ -1145,5 +1224,45 @@
 
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

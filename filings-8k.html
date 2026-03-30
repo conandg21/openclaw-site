@@ -321,7 +321,62 @@
     footer a:hover {
       color: #fff;
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
   <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -392,7 +447,9 @@
 
         <h2>HEARTBEAT Configuration</h2>
         <p>Here's the OpenClaw HEARTBEAT config to monitor 8-Ks on a recurring schedule:</p>
-        <pre>name: edgar_8k_monitor
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>name: edgar_8k_monitor
 schedule: "*/15 * * * *"
 steps:
   - fetch:
@@ -410,20 +467,26 @@ steps:
   - notify:
       channel: email
       subject: "🚨 8-K Alert: {{ company_name }} — {{ item_description }}"</pre>
+            </div>
 
         <h2>Watchlist Configuration</h2>
         <p>Define your watchlist with ticker symbols and CIK numbers:</p>
-        <pre>watchlist:
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>watchlist:
   - ticker: AAPL
     cik: "0000320193"
   - ticker: MSFT
     cik: "0000789019"
   - ticker: NVDA
     cik: "0001045810"</pre>
+            </div>
 
         <h2>Python: Fetching Latest 8-Ks for a CIK</h2>
         <p>This Python function retrieves recent 8-K filings for a specific company CIK:</p>
-        <pre>import httpx
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>import httpx
 
 def get_recent_8ks(cik: str, count: int = 10):
     padded = cik.zfill(10)
@@ -443,6 +506,7 @@ def get_recent_8ks(cik: str, count: int = 10):
         if len(results) >= count:
             break
     return results</pre>
+            </div>
 
         <h2>Noise Filtering</h2>
         <p>Not all 8-Ks are equal. Filter by item number to prioritize signal over noise:</p>
@@ -616,5 +680,45 @@ def get_recent_8ks(cik: str, count: int = 10):
   });
   </script>
   <script src="copy.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

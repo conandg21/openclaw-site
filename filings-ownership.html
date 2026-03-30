@@ -304,7 +304,62 @@
     footer a:hover {
       color: #fff;
     }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 </head>
 <body>
   <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -398,7 +453,9 @@
         <p style="text-align: center; font-size: 0.95rem; color: var(--text-secondary);">EDGAR submissions API → scan for new Schedule 13D/13G/13F → check filer against activist watchlist → extract ownership percentage + target company → notify</p>
 
         <h2>HEARTBEAT Configuration</h2>
-        <pre>name: ownership_monitor
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>name: ownership_monitor
 schedule: "0 */4 * * 1-5"
 steps:
   - fetch_filings:
@@ -416,10 +473,13 @@ steps:
   - notify:
       channel: email
       subject: "🏛️ Ownership Change: {{ target_company }} — {{ filer }} filed {{ form_type }}"</pre>
+            </div>
 
         <h2>Known Activist Seed List</h2>
         <p>Start with this list and expand based on your focus. Many of these investors have consistent playbooks:</p>
-        <pre>known_activists:
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>known_activists:
   - "Elliott Investment Management"
   - "Starboard Value"
   - "Carl Icahn"
@@ -428,10 +488,13 @@ steps:
   - "Pershing Square"
   - "Jana Partners"
   - "Trian Fund Management"</pre>
+            </div>
 
         <h2>13F Quarterly Holdings Extraction</h2>
         <p>13F filings are 45 days after quarter end — the data is stale by definition. But they're useful for tracking long-term conviction positions and institutional ownership concentration:</p>
-        <pre>import httpx
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>import httpx
 
 def get_13f_holdings(cik: str):
     """Get latest 13F institutional holdings filing."""
@@ -449,6 +512,7 @@ def get_13f_holdings(cik: str):
                 "url": f"https://www.sec.gov/Archives/edgar/full-index/"
             }
     return None</pre>
+            </div>
 
         <h2>13F Data Quality Note</h2>
         <div class="callout">
@@ -583,5 +647,45 @@ def get_13f_holdings(cik: str):
   });
   </script>
   <script src="copy.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

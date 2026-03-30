@@ -538,7 +538,29 @@
         @media (max-width: 768px) {
             .nav-search-form { display: none; }
         }
-    </style>
+    
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #d97706;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Crypto Price & Market Data with CoinGecko | Claw Street Terminal">
+    <meta name="twitter:description" content="Learn how to fetch live crypto prices, OHLCV historical data, and market cap rankings using the CoinGecko free API. Build price alerts and multi-coin dashboards.">
 </head>
 <body>
     <a class="skip-nav" href="#main-content">Skip to main content</a>
@@ -590,7 +612,7 @@
     <nav class="series-nav" aria-label="Crypto & DeFi series">
     <div class="series-nav-inner">
         <a href="openclaw-for-crypto.html">Overview</a>
-        <a href="crypto-prices.html" class="sn-current">Pt 1: Prices</a>
+        <a href="crypto-prices.html" class="sn-current" aria-current="page">Pt 1: Prices</a>
         <a href="crypto-onchain.html">Pt 2: On-Chain</a>
         <a href="crypto-defi.html">Pt 3: DeFi</a>
         <a href="crypto-sentiment.html">Pt 4: Sentiment</a>
@@ -1097,6 +1119,46 @@ for coin, rates in prices.items():
             }
         ]
     }
+    </script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
     </script>
 
 </body>

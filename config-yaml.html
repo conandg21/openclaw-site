@@ -170,7 +170,62 @@
     /* ── Mobile: table scroll wrapper ── */
     .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 24px; }
     .table-scroll table { min-width: 500px; width: 100%; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #1f2937;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #1f2937;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #1f2937;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #1f2937;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -205,6 +260,8 @@
   ]
 }
 </script>
+
+    <meta property="og:site_name" content="learnopenclaw.org">
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -265,7 +322,9 @@
     <div class="side-by-side">
       <div>
         <div class="block-label">📄 openclaw.json</div>
-<pre><code>{
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   <span class="key">"llm"</span>: {
     <span class="key">"provider"</span>: <span class="str">"anthropic"</span>,
     <span class="key">"model"</span>: <span class="str">"claude-sonnet-4-6"</span>,
@@ -275,10 +334,13 @@
     <span class="key">"port"</span>: <span class="num">8080</span>
   }
 }</code></pre>
+            </div>
       </div>
       <div>
         <div class="block-label">📋 config.yaml</div>
-<pre><code><span class="yaml-comment"># config.yaml — you can write comments!</span>
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="yaml-comment"># config.yaml — you can write comments!</span>
 <span class="yaml-key">llm</span>:
   <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>
   <span class="yaml-key">model</span>: <span class="yaml-val">claude-sonnet-4-6</span>
@@ -286,6 +348,7 @@
 
 <span class="yaml-key">gateway</span>:
   <span class="yaml-key">port</span>: <span class="num">8080</span></code></pre>
+            </div>
       </div>
     </div>
 
@@ -336,11 +399,14 @@
     <div class="prose">
       <p>Here's the smallest valid <code>config.yaml</code> to get your agent running — only the essentials:</p>
     </div>
-<pre><code><span class="yaml-comment"># The only required section is llm</span>
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="yaml-comment"># The only required section is llm</span>
 <span class="yaml-key">llm</span>:
   <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>
   <span class="yaml-key">model</span>: <span class="yaml-val">claude-haiku-4-5-20251001</span>
   <span class="yaml-key">apiKey</span>: <span class="yaml-str">$ANTHROPIC_API_KEY</span></code></pre>
+            </div>
     <div class="callout callout-amber">
       <h3>⚠️ Never hardcode your API key</h3>
       <p>Use <code>$ANTHROPIC_API_KEY</code> instead of the actual key value — OpenClaw will read it from your environment. Add <code>config.yaml</code> to your <code>.gitignore</code> as a safety net too.</p>
@@ -351,7 +417,9 @@
     <div class="prose">
       <p>Here's a complete <code>config.yaml</code> with every common section and comments explaining each field:</p>
     </div>
-<pre><code><span class="yaml-comment"># ────────────────────────────────────────────────
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="yaml-comment"># ────────────────────────────────────────────────
 # OpenClaw config.yaml
 # All values with $ prefix are read from env vars
 # ────────────────────────────────────────────────</span>
@@ -412,6 +480,7 @@
       - <span class="yaml-str">@modelcontextprotocol/server-github</span>
     <span class="yaml-key">env</span>:
       <span class="yaml-key">GITHUB_TOKEN</span>: <span class="yaml-str">$GITHUB_TOKEN</span></code></pre>
+            </div>
 
     <!-- YAML tips -->
     <h2 class="section-title" id="yaml-tips">YAML Tips for Beginners</h2>
@@ -422,7 +491,9 @@
         <div class="prose">
           <p>In YAML, <strong>indentation defines structure</strong>. Child settings must be indented under their parent with consistent spaces. OpenClaw expects 2 spaces per level.</p>
         </div>
-<pre><code><span class="yaml-comment"># ✅ Correct — 2 spaces per level</span>
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="yaml-comment"># ✅ Correct — 2 spaces per level</span>
 <span class="yaml-key">llm</span>:
   <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>
   <span class="yaml-key">model</span>: <span class="yaml-val">claude-sonnet-4-6</span>
@@ -430,6 +501,7 @@
 <span class="yaml-comment"># ❌ Wrong — tab character used</span>
 <span class="yaml-key">llm</span>:
 	<span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>   <span class="yaml-comment"># tab = error!</span></code></pre>
+            </div>
       </div>
     </details>
 
@@ -439,10 +511,13 @@
         <div class="prose">
           <p>Use <code>#</code> to write comments. Everything after <code>#</code> on a line is ignored by OpenClaw. Use comments to explain settings or temporarily disable a line.</p>
         </div>
-<pre><code><span class="yaml-key">llm</span>:
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="yaml-key">llm</span>:
   <span class="yaml-key">provider</span>: <span class="yaml-val">anthropic</span>      <span class="yaml-comment"># inline comment — works great</span>
   <span class="yaml-comment"># model: claude-opus-4-6     # commented out = disabled</span>
   <span class="yaml-key">model</span>: <span class="yaml-val">claude-haiku-4-5-20251001</span></code></pre>
+            </div>
       </div>
     </details>
 
@@ -452,10 +527,13 @@
         <div class="prose">
           <p>Most string values don't need quotes in YAML. But use quotes when your value contains special characters like <code>:</code>, <code>#</code>, or <code>{</code>, or when you want to be safe with values that look like numbers or booleans.</p>
         </div>
-<pre><code><span class="yaml-key">llm</span>:
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="yaml-key">llm</span>:
   <span class="yaml-key">model</span>: <span class="yaml-val">claude-sonnet-4-6</span>     <span class="yaml-comment"># no quotes needed</span>
   <span class="yaml-key">systemPrompt</span>: <span class="yaml-str">"You are helpful: always."</span>  <span class="yaml-comment"># colon = use quotes</span>
   <span class="yaml-key">version</span>: <span class="yaml-str">"1.0"</span>                  <span class="yaml-comment"># prevent YAML treating as number</span></code></pre>
+            </div>
       </div>
     </details>
 
@@ -465,7 +543,9 @@
         <div class="prose">
           <p>Lists use a dash <code>-</code> for each item. You can also write short lists on one line with square brackets.</p>
         </div>
-<pre><code><span class="yaml-comment"># Multi-line list (preferred — easier to read)</span>
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code><span class="yaml-comment"># Multi-line list (preferred — easier to read)</span>
 <span class="yaml-key">tools</span>:
   <span class="yaml-key">enabled</span>:
     - <span class="yaml-val">web_search</span>
@@ -475,6 +555,7 @@
 <span class="yaml-comment"># Inline list (works too)</span>
 <span class="yaml-key">tools</span>:
   <span class="yaml-key">enabled</span>: [<span class="yaml-val">web_search</span>, <span class="yaml-val">file_read</span>]</code></pre>
+            </div>
       </div>
     </details>
 
@@ -600,7 +681,9 @@
       <summary>🔌 mcpServers — MCP Tool Connections</summary>
       <div class="details-body">
         <p style="margin-bottom:.75rem;color:#475569;font-size:.9rem;">Connect your agent to external tools via Model Context Protocol. See the <a href="mcp.html">MCP guide</a>.</p>
-<pre style="margin-top:.5rem;"><code><span class="yaml-key">mcpServers</span>:
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre style="margin-top:.5rem;"><code><span class="yaml-key">mcpServers</span>:
   <span class="yaml-key">myServer</span>:              <span class="yaml-comment"># give it any name</span>
     <span class="yaml-key">command</span>: <span class="yaml-val">npx</span>
     <span class="yaml-key">args</span>:
@@ -609,6 +692,7 @@
       - <span class="yaml-str">/Users/you/docs</span>
     <span class="yaml-key">env</span>:
       <span class="yaml-key">MY_TOKEN</span>: <span class="yaml-str">$MY_TOKEN</span></code></pre>
+            </div>
         <div class="table-scroll">
       <table class="field-table" aria-label="MCP server fields">
           <th scope="col"ead><tr><th scope="col">Field</th><th scope="col">Description</th></tr></thead>
@@ -678,5 +762,45 @@
   </script>
   <script src="copy.js"></script>
   <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

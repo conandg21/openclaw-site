@@ -102,7 +102,46 @@
     footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 32px 24px; font-size: .85rem; }
     footer a { color: #d1d5db; font-weight: 700; }
     footer a:hover { text-decoration: underline; }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #7c3aed;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 
   <script type="application/ld+json">
   {
@@ -238,7 +277,9 @@
 
 <h2>HEARTBEAT Configuration</h2>
 
-<pre>name: job_intel_monitor
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>name: job_intel_monitor
 schedule: "0 9 * * 1"
 steps:
   - fetch_jobs:
@@ -266,12 +307,15 @@ steps:
         Data: {{ job_data }} {{ warn_data }}
   - notify:
       subject: "💼 Weekly Hiring Intel — {{ date }}"</pre>
+            </div>
 
 <h2>Greenhouse API Implementation</h2>
 
 <h3>Fetch Public Job Board</h3>
 
-<pre>import httpx
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>import httpx
 
 def get_greenhouse_jobs(board_token: str) -> list:
     """Fetch all open jobs from a Greenhouse job board (public, no auth required)."""
@@ -290,10 +334,13 @@ def get_greenhouse_jobs(board_token: str) -> list:
 def count_by_department(jobs: list) -> dict:
     from collections import Counter
     return dict(Counter(j["department"] for j in jobs))</pre>
+            </div>
 
 <h3>WARN Act Data Fetching</h3>
 
-<pre>def fetch_california_warn(since_days: int = 30) -> list:
+<div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre>def fetch_california_warn(since_days: int = 30) -> list:
     """
     California WARN notices are published at edd.ca.gov.
     This fetches the public CSV dataset.
@@ -307,6 +354,7 @@ def count_by_department(jobs: list) -> dict:
     df["Notice Date"] = pd.to_datetime(df["Notice Date"], errors="coerce")
     cutoff = pd.Timestamp.now() - pd.Timedelta(days=since_days)
     return df[df["Notice Date"] > cutoff].to_dict("records")</pre>
+            </div>
 
 <h2>Frequently Asked Questions</h2>
 
@@ -357,6 +405,46 @@ btn.addEventListener('click', () => {
 });
 </script>
 <script src="copy.js"></script>
+
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
 
 </body>
 </html>

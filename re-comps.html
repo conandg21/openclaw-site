@@ -135,7 +135,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #16a34a;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -304,7 +343,9 @@
       <h2 id="comps-agent">Comps agent configuration</h2>
       <p>Here's a complete comps agent configuration in AGENTS.md format:</p>
 
-      <pre><code>---
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>---
 name: comps-report
 tools:
   - zillow-rapidapi
@@ -352,11 +393,14 @@ job: |
   # Generate report
   report = format_cma_report(subject, comps, estimated_value)
   print(report)</code></pre>
+            </div>
 
       <h2 id="price-sqft">Price-per-sqft analysis and adjustment</h2>
       <p>Price per square foot is a normalized metric for quick valuation. Extract price/sqft from each comp, compute the median, and apply to your subject property:</p>
 
-      <pre><code>Subject Property: 2,150 sqft, list price TBD
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>Subject Property: 2,150 sqft, list price TBD
 
 Comps (past 6 months, within 0.25 mi):
 - 100 Main St: sold $550k, 2,050 sqft → $268/sqft
@@ -372,13 +416,16 @@ Valuation range (80%-120% of median price/sqft):
 - Conservative (80%): 2,150 × ($261 × 0.8) = $449k
 - Market (100%): 2,150 × $261 = $561k
 - Aggressive (120%): 2,150 × ($261 × 1.2) = $673k</code></pre>
+            </div>
 
       <p>This gives you a quick range. For more precision, apply manual adjustments for condition, updates, or amenities not captured in the comps.</p>
 
       <h2 id="market-absorption">Market absorption rate</h2>
       <p>Absorption rate tells you if it's a buyer's or seller's market:</p>
 
-      <pre><code>Absorption Rate = Active Listings ÷ Monthly Closed Sales
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>Absorption Rate = Active Listings ÷ Monthly Closed Sales
 
 For Austin, TX 78704:
 - Active listings: 42
@@ -389,6 +436,7 @@ Interpretation:
 - <2 months = Seller's market (inventory moves quickly, prices rise)
 - 2-4 months = Balanced market (normal conditions)
 - >4 months = Buyer's market (inventory sits, price pressure down)</code></pre>
+            </div>
 
       <p>Use this context in your reports: "At current sales pace, it would take 1.5 months to sell all active inventory. This is a seller's market where price reductions are rare and negotiating room is limited."</p>
 
@@ -594,5 +642,45 @@ Interpretation:
   }
   </script>
 <script src="copy.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

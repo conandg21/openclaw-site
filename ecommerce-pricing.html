@@ -184,7 +184,46 @@
     pre { padding: 16px; font-size: .82rem; }
     .use-grid { grid-template-columns: 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0891b2;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0891b2;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -319,7 +358,9 @@
 
     <p>Create a <code>price-watcher</code> agent in your <code>AGENTS.md</code> file. The agent needs a list of competitor products to track, where to extract the price from on each page, and optional thresholds for alerting.</p>
 
-    <pre><code># AGENTS.md — price-watcher agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — price-watcher agent
 
 agents:
   price-watcher:
@@ -364,6 +405,7 @@ agents:
         - change_from_last_check
         - alert_level
       sort_by: difference_pct  # worst (most undercut) first</code></pre>
+            </div>
 
     <p><strong>Key fields:</strong></p>
     <ul>
@@ -378,7 +420,9 @@ agents:
 
     <p>Every time the price-watcher agent runs, it compares the current price against the stored price in <code>price_history.json</code>. If there's a difference, it's flagged. You can set thresholds to ignore tiny fluctuations (e.g. only alert if difference > $0.50).</p>
 
-    <pre><code># Example price_history.json (state file)
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># Example price_history.json (state file)
 {
   "SKU-0001": {
     "product_name": "Classic Tee — Black",
@@ -405,12 +449,15 @@ agents:
     ]
   }
 }</code></pre>
+            </div>
 
     <h2 id="gap-analysis">Price gap analysis</h2>
 
     <p>Beyond individual price changes, it's useful to see your overall pricing position: are you generally overpriced, underpriced, or competitive? The gap analysis agent aggregates all tracked products and calculates the price gap as a percentage:</p>
 
-    <pre><code># Gap calculation formula
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># Gap calculation formula
 # gap_pct = (your_price - avg_competitor_price) / avg_competitor_price × 100
 #
 # Example:
@@ -422,10 +469,13 @@ agents:
 #   gap_pct > +15% → OVERPRICED — risk of losing price-sensitive buyers
 #   -10% to +15%  → COMPETITIVE — pricing is in line with market
 #   gap_pct < -10% → UNDERPRICED — potential margin opportunity</code></pre>
+            </div>
 
     <p>Results are grouped by product category, so you can see pricing position by segment:</p>
 
-    <pre><code># AGENTS.md — price-gap-analyzer agent
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># AGENTS.md — price-gap-analyzer agent
 
 agents:
   price-gap-analyzer:
@@ -449,12 +499,15 @@ agents:
         - gap_pct
         - gap_flag
       sort_by: gap_pct  # most overpriced first</code></pre>
+            </div>
 
     <h2 id="heartbeat">HEARTBEAT.md templates</h2>
 
     <h3>Weekly price check</h3>
 
-    <pre><code># HEARTBEAT.md — weekly price monitoring
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — weekly price monitoring
 
 schedule:
   - name: "Weekly Price Check"
@@ -473,10 +526,13 @@ schedule:
       4. UNDERPRICED PRODUCTS: products where gap < -10%
       5. COMPETITIVE: products within -10% to +15% of average competitor
       Keep it scannable. Use emoji for status: 🟢 competitive, 🟡 caution, 🔴 action needed.</code></pre>
+            </div>
 
     <h3>Immediate undercut alert (event-based)</h3>
 
-    <pre><code># HEARTBEAT.md — real-time undercut alert
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code># HEARTBEAT.md — real-time undercut alert
 
 schedule:
   - name: "Undercut Alert"
@@ -493,6 +549,7 @@ schedule:
       - Their new price and our current price
       - Percentage gap
       - Action recommended (adjust price down, margin accept it, monitor only)</code></pre>
+            </div>
 
     <h2 id="sample-report">What the weekly report looks like</h2>
 
@@ -591,5 +648,45 @@ schedule:
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

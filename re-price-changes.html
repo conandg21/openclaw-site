@@ -135,7 +135,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #16a34a;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -248,7 +287,9 @@
 
       <p>Here's the agent configuration:</p>
 
-      <pre><code>---
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>---
 name: price-change-alert
 schedule: "0 */4 * * *"  # Every 4 hours
 tools:
@@ -293,6 +334,7 @@ job: |
           send_price_alert(listing, drop_dollars, drop_pct)
 
   save_snapshot(current, config.storage.path)</code></pre>
+            </div>
 
       <p>Key mechanics: The agent maintains a <code>price_snapshots.json</code> file mapping zpid to historical price data. On each run, it fetches current listings, compares prices to the snapshot, and alerts only if both thresholds are met (absolute dollar drop AND percentage drop). After processing, it updates the snapshot with current data.</p>
 
@@ -352,20 +394,25 @@ job: |
 
       <p>Here's an agent snippet for Zestimate gap tracking:</p>
 
-      <pre><code>for listing in current:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>for listing in current:
   gap_pct = ((listing.zestimate - listing.price) / listing.zestimate) * 100
 
   if gap_pct >= config.zestimate_thresholds.gap_pct:
     send_zestimate_gap_alert(listing, gap_pct)
     # Interpretation: list price is now within 5% of Zestimate
     # or BELOW Zestimate. Seller is actively discounting.</code></pre>
+            </div>
 
       <p>When a property listed at $550k (Zestimate $550k) has listed at $550k, the gap is 0%. If price drops to $525k, gap becomes 4.5%. Hit 5% and you alert. If it drops to $500k, gap is 9%—strong seller motivation signal.</p>
 
       <h2 id="stale-listings">Weekly stale listing digest</h2>
       <p>Instead of alerting on every >60-day listing, compile a weekly report showing all stale inventory in your target zips, sorted by age descending.</p>
 
-      <pre><code>schedule: "0 9 * * 1"  # Monday 9 AM
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>schedule: "0 9 * * 1"  # Monday 9 AM
 
 job: |
   current = await zillow_rapidapi.search(config.search_params)
@@ -374,6 +421,7 @@ job: |
 
   report = format_stale_digest(stale)
   send_slack_message(report)</code></pre>
+            </div>
 
       <p>Sample report output:</p>
 
@@ -551,5 +599,45 @@ job: |
   }
   </script>
 <script src="copy.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

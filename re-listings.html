@@ -135,7 +135,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #16a34a;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -320,7 +359,9 @@
       </div>
 
       <p>A practical example: you're investing in Austin, TX zips 78704 and 78723 with a $600k budget, targeting SFRs of 2000+ sqft listed in the past 24 hours. You'd configure:</p>
-      <pre><code>zip_codes: "78704,78723"
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>zip_codes: "78704,78723"
 min_price: 400000
 max_price: 600000
 min_beds: 3
@@ -329,6 +370,7 @@ min_sqft: 2000
 max_dom: 1
 property_type: "Single Family"
 max_price_per_sqft: 300</code></pre>
+            </div>
 
       <p>This filters to reasonably-priced, spacious homes, eliminating penny stocks and paper deals.</p>
 
@@ -337,7 +379,9 @@ max_price_per_sqft: 300</code></pre>
 
       <p>Here's the agent configuration in <code>AGENTS.md</code> format:</p>
 
-      <pre><code>---
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>---
 name: new-listing-alert
 schedule: "0 */3 * * *"  # Every 3 hours
 tools:
@@ -377,6 +421,7 @@ job: |
   for listing in new_listings:
     send_alert(listing, config.output)
     store_seen_listing(listing, config.deduplication)</code></pre>
+            </div>
 
       <p>The agent maintains a persistent record of every zpid (Zillow property ID) it has seen. On each run, it fetches current listings and compares zpids against the seen store. Only missing zpids are treated as new and trigger alerts. After 30 days, zpids are cleared from the seen store (allowing re-alerts if a property is re-listed after expiring).</p>
 
@@ -385,12 +430,15 @@ job: |
 
       <h3>Zpid-based deduplication</h3>
       <p>Each Zillow listing has a unique <code>zpid</code> (Zillow property ID). Your agent stores every zpid it has processed:</p>
-      <pre><code>{
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   "zpids_seen": {
     "12345678": "2026-03-25T14:30:00Z",
     "87654321": "2026-03-25T12:00:00Z"
   }
 }</code></pre>
+            </div>
 
       <p>On each run, the agent compares the API response zpids against this set. New zpids = new listings. Once stored, a zpid is never alerted on again (until it expires from the retention window).</p>
 
@@ -405,7 +453,9 @@ job: |
       <p>Once you've identified a new listing, the alert payload needs to be formatted and routed. Your agent supports Slack and email natively.</p>
 
       <h3>Slack alert template</h3>
-      <pre><code>{
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>{
   "blocks": [
     {
       "type": "header",
@@ -452,12 +502,15 @@ job: |
     }
   ]
 }</code></pre>
+            </div>
 
       <p>This formats the alert as a rich Slack card with headers, structured fields, and a direct link to the Zillow listing. Recipients see the critical data at a glance.</p>
 
       <h3>Email alert</h3>
       <p>For email subscribers, keep the format scannable:</p>
-      <pre><code>Subject: 🏠 New listing: 123 Oak Street, Austin, TX 78704 — $549,500
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>Subject: 🏠 New listing: 123 Oak Street, Austin, TX 78704 — $549,500
 
 Body:
 ─────────────────────────────────
@@ -485,6 +538,7 @@ https://www.zillow.com/homes/12345678
 Filter Settings: 78704, 78723 | 3+ BD | $400k–$600k
 Next Check: 03-25-2026 17:00 UTC
 ─────────────────────────────────</code></pre>
+            </div>
 
       <h2 id="heartbeat">HEARTBEAT schedule</h2>
       <p>Set your polling agent to run on a HEARTBEAT schedule. The interval depends on your market's velocity and your risk tolerance.</p>
@@ -644,5 +698,45 @@ Next Check: 03-25-2026 17:00 UTC
   }
   </script>
 <script src="copy.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

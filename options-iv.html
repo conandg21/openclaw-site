@@ -137,7 +137,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #dc2626;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -254,10 +293,16 @@
 
       <h2 id="iv-rank-vs">IV rank vs IV percentile — which to use</h2>
       <p><strong>IV Rank (IVR):</strong> Compares current IV to the high and low over the past 52 weeks.</p>
-      <pre><code>IVR = (current IV - 52-week low) / (52-week high - 52-week low) × 100</code></pre>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>IVR = (current IV - 52-week low) / (52-week high - 52-week low) × 100</code></pre>
+            </div>
       <p>An IVR of 70 means current IV is in the top 30% of its annual range—expensive. IVR of 20 means cheap. IVR = 50 is the midpoint (fair value).</p>
       <p><strong>IV Percentile (IVP):</strong> Counts what percentage of days in the past year had lower IV than today.</p>
-      <pre><code>IVP = (number of days with IV < current) / 252 × 100</code></pre>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>IVP = (number of days with IV < current) / 252 × 100</code></pre>
+            </div>
       <p>IVP of 70 means IV was lower 70% of the time. Both metrics tell similar stories but are calculated differently. Most premium sellers prefer IVR as their primary signal.</p>
       <div class="callout callout--blue">
         <strong>For this series:</strong> We'll focus on IV Rank because it's more intuitive (you can visualize the 52-week range) and it's the standard in options trading communities. IVP works fine as a backup confirmation.
@@ -266,7 +311,9 @@
       <h2 id="historical-iv">Setting up historical IV data (Polygon.io)</h2>
       <p>Tradier's free tier doesn't provide historical IV data. You need Polygon.io ($29/month) for this. Their options aggregate endpoint gives you IV for each contract along with historical snapshots.</p>
       <p>Here's the IV rank scanner agent config:</p>
-      <pre><code>agents:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   iv-rank-scanner:
     description: "IV rank scanner and monitoring for watchlist"
     tools:
@@ -292,6 +339,7 @@
       channel: slack
       time: "09:00"
       timezone: "America/New_York"</code></pre>
+            </div>
 
       <h2 id="iv-rank-scanner">IV rank scanner for your watchlist</h2>
       <p>The agent pulls the ATM IV for each ticker in your watchlist, compares it to the 52-week range, and outputs IV rank ranked highest to lowest. This tells you which tickers have the most expensive volatility (best for selling premium) and which are cheap (best for buying volatility strategies).</p>
@@ -322,7 +370,9 @@
         <li><strong>Gamma:</strong> How fast delta changes. High gamma = delta changes quickly (dangerous near expiration).</li>
       </ul>
       <p>Create a <code>positions.yaml</code> file listing your open positions:</p>
-      <pre><code>positions:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>positions:
   - id: 1
     ticker: SPY
     expiration: "2026-04-17"
@@ -337,6 +387,7 @@
     type: put
     quantity: 2
     entry_price: 3.75</code></pre>
+            </div>
       <p>The IV agent reads this and pulls current Greeks from Tradier for each position, computing portfolio-level Greeks:</p>
       <div class="sample-output">
         <div class="so-head">POSITION GREEKS SNAPSHOT</div>
@@ -450,5 +501,45 @@
       nav.classList.toggle('open');
     });
   </script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

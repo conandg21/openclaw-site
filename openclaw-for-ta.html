@@ -800,9 +800,99 @@
             color: #0d9488;
             border-bottom-color: #0d9488;
         }
-    </style>
+    
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #0d9488;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #0d9488;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #0d9488;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Technical Analysis Automation with OpenClaw | Claw Street Terminal">
+    <meta name="twitter:description" content="Automate RSI scans, moving average alerts, and chart generation with free tools. OpenClaw handles the mechanical parts — you make the decisions.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
   <!-- Navigation -->
   <nav class="site-nav">
     <div class="nav-inner">
@@ -947,7 +1037,9 @@
       <h2>The ta-config.yaml File — The Heart of It All</h2>
 
       <div class="config-file">
-        <pre><span class="config-comment"># ta-config.yaml</span>
+        <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><span class="config-comment"># ta-config.yaml</span>
 <span class="config-comment"># This is the only file you need to customize.</span>
 <span class="config-comment"># OpenClaw reads it every time any TA tool runs.</span>
 
@@ -1008,6 +1100,7 @@
   <span class="config-key">rsi_buy:</span>   <span class="config-value">30</span>
   <span class="config-key">rsi_sell:</span>  <span class="config-value">60</span>
   <span class="config-key">max_hold:</span>  <span class="config-value">30</span></pre>
+            </div>
       </div>
 
       <p>

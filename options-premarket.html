@@ -140,7 +140,46 @@
     footer a { color: #60a5fa; }
     .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 14px; }
     @media (max-width: 480px) { .post-header { padding: 44px 20px 36px; } .post-body { padding: 36px 20px 60px; } }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #dc2626;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #dc2626;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
   <a href="#main-content" class="skip-nav">Skip to main content</a>
@@ -279,14 +318,19 @@
         <li><strong>VIX > 30:</strong> Panic. This is rare and usually means a major catalyst. Use extreme caution.</li>
       </ul>
       <p>The pre-market agent checks the VIX against its 20-day moving average. This tells you if overnight volatility shifted the regime. The CBOE public API is free:</p>
-      <pre><code>GET https://cdn.cboe.com/api/global/delayed_quotes/charts/historical/_VIX.json</code></pre>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>GET https://cdn.cboe.com/api/global/delayed_quotes/charts/historical/_VIX.json</code></pre>
+            </div>
       <p>A sample response includes the current VIX level, yesterday's close, and historical data for computing the 20-day MA. The agent flags if VIX is currently elevated (>20) or if it spiked overnight (>2 points from previous close).</p>
 
       <h2 id="oi-scan">OI concentration scan — where is the market pinned?</h2>
       <p>Open interest (OI) concentration reveals institutional positioning and max pain theory. The agent pulls the full options chain for SPY, QQQ, and any tickers on your watchlist, then maps OI by strike for the nearest two expirations.</p>
       <p><strong>Max pain theory:</strong> The strike with the highest OI tends to be where the underlying price gravitates at expiration because market makers hedge delta exposure at that level. It's a rough guide but useful for context.</p>
       <p>Here's a snippet of the config YAML for the pre-market agent:</p>
-      <pre><code>agents:
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   premarket-scanner:
     description: "Morning pre-market options brief"
     tools:
@@ -312,6 +356,7 @@
       channel: slack
       time: "08:45"
       timezone: "America/New_York"</code></pre>
+            </div>
       <p>The <code>oi_concentration_strikes: 5</code> means the agent maps OI for the 5 strikes above and 5 strikes below current price. For SPY at $445, you'd see OI at $435, $440, $445, $450, $455, etc.</p>
 
       <h2 id="overnight-activity">Overnight unusual activity check</h2>
@@ -339,9 +384,15 @@
 
       <h2 id="heartbeat">HEARTBEAT schedule</h2>
       <p>The pre-market scanner runs every trading day at 8:45 AM ET (13:45 UTC). Cron expression:</p>
-      <pre><code>45 8 * * 1-5</code></pre>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>45 8 * * 1-5</code></pre>
+            </div>
       <p>This gives you 45 minutes before the 9:30 AM open to review the brief and plan your day. If you trade the first 30 minutes aggressively, consider a second lighter scan at 9:15 AM to catch last-minute changes:</p>
-      <pre><code>15 9 * * 1-5</code></pre>
+      <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>15 9 * * 1-5</code></pre>
+            </div>
 
       <h2 id="sample-output">Sample morning brief output</h2>
       <p>Here's what your 8:45 AM brief looks like on a typical Monday:</p>
@@ -436,5 +487,45 @@
       nav.classList.toggle('open');
     });
   </script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

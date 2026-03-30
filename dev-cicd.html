@@ -185,7 +185,46 @@
     .post-body { padding: 36px 20px 60px; }
     .use-case-grid { grid-template-columns: 1fr; }
   }
-  </style>
+  
+        /* ── Copy buttons ── */
+        .code-block {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        .code-block-lang {
+            display: inline-block;
+            background: #374151;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border-radius: 4px 4px 0 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.75rem;
+            background: #374151;
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            transition: background 0.15s;
+        }
+        .copy-btn:hover { filter: brightness(1.15); }
+        .copy-btn.copied { background: #10b981 !important; }
+        .copy-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+
+        </style>
 </head>
 <body>
 
@@ -336,7 +375,9 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
 
     <p>Add this agent to your <code>AGENTS.md</code>:</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   build-failure-detector:
     description: "Detect failed GitHub Actions workflow runs and extract failure details"
     tools:
@@ -370,6 +411,7 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
       format: markdown
       include_fields: [workflow_name, branch, run_id, triggered_by, failed_step, failure_type, log_excerpt, run_url]
       sort_by: created_at_desc</code></pre>
+            </div>
 
     <h3>What this agent does</h3>
 
@@ -389,7 +431,9 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
 
     <p>Add this to <code>AGENTS.md</code>:</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   flaky-test-finder:
     description: "Identify test names that alternate pass/fail across recent CI runs"
     tools:
@@ -418,6 +462,7 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
         - Moving slow integration tests to a separate workflow
         - Quarantining confirmed flaky tests with a skip label until fixed
     schedule: weekly</code></pre>
+            </div>
 
     <h3>Key settings</h3>
 
@@ -434,7 +479,9 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
 
     <p>Add to <code>AGENTS.md</code>:</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   deployment-tracker:
     description: "Track latest deployment per environment and flag deployment gaps"
     tools:
@@ -454,6 +501,7 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
       format: markdown
       include_fields: [environment, last_deployed_at, commit_sha, commit_message, triggered_by, workflow_run_url]
       note: "Deployment data sourced from successful workflow runs only."</code></pre>
+            </div>
 
     <h3>Configuration details</h3>
 
@@ -471,7 +519,9 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
 
     <p>Add to <code>AGENTS.md</code>:</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   rollback-alerter:
     description: "Flag when error rates spike after a deploy, suggesting possible rollback"
     tools:
@@ -497,6 +547,7 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
       - Top 3 new or spiking error types
       - Recommendation: investigate or rollback
       If no spike: output "✓ No error spike detected after latest deploy."</code></pre>
+            </div>
 
     <div class="callout callout--red">
       <strong>⚠️ Important:</strong> This agent flags potential rollback candidates but does <strong>not</strong> trigger rollbacks automatically. Rollback is always a human decision. Use this to alert the on-call engineer quickly so they can investigate and decide.
@@ -516,7 +567,9 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
 
     <p>Example agent config for CircleCI:</p>
 
-    <pre><code>agents:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>agents:
   circleci-build-detector:
     description: "Detect failed CircleCI pipeline runs"
     tools:
@@ -532,6 +585,7 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
     output:
       format: markdown
       include_fields: [project, pipeline_id, failed_job, branch, created_at, workflow_url]</code></pre>
+            </div>
 
     <p><strong>Note:</strong> CircleCI has a built-in flaky test detection feature in its test insights endpoint. If you use CircleCI, check <strong>Insights → Test Insights</strong> in the web UI first; you may not need a separate flaky-test-finder agent.</p>
 
@@ -543,39 +597,51 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
 
     <p>Runs 60 minutes after a production deploy to check for error spikes:</p>
 
-    <pre><code>schedules:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>schedules:
   post-deploy-rollback-check:
     trigger: webhook
     agents: [rollback-alerter]
     delay_minutes: 60</code></pre>
+            </div>
 
     <p>Add this webhook call to the end of your <code>deploy-prod.yml</code> workflow:</p>
 
-    <pre><code>- name: Check for rollback need
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>- name: Check for rollback need
   run: |
     curl -X POST https://your-openclaw-instance.com/webhook \
       -H "Authorization: Bearer ${OPENCLAW_TOKEN}" \
       -d '{"schedule": "post-deploy-rollback-check"}'</code></pre>
+            </div>
 
     <h3>Daily build health (weekday mornings)</h3>
 
     <p>Runs Monday–Friday at 8 AM to summarise the last 24 hours of builds:</p>
 
-    <pre><code>schedules:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>schedules:
   daily-build-health:
     cron: "0 8 * * 1-5"
     agents: [build-failure-detector, deployment-tracker]</code></pre>
+            </div>
 
     <h3>Weekly flaky test report (Monday morning)</h3>
 
     <p>Runs every Monday at 9 AM to surface the week's flakiest tests:</p>
 
-    <pre><code>schedules:
+    <div class="code-block">
+            <button class="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+            <pre><code>schedules:
   weekly-flaky-tests:
     cron: "0 9 * * 1"
     agents: [flaky-test-finder]
     output_destination: slack
     channel: "#engineering"</code></pre>
+            </div>
 
     <h2 id="sample-report">Sample report walkthrough</h2>
 
@@ -685,5 +751,45 @@ GITHUB_ACTIONS_WORKFLOW_IDS=build.yml,deploy.yml,test.yml<br/>
 </script>
 <script src="copy.js"></script>
 <script src="search.js"></script>
+
+    <script>
+    (function() {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = btn.getAttribute('data-target');
+                var pre = target
+                    ? document.getElementById(target)
+                    : btn.closest('.code-block').querySelector('pre');
+                if (!pre) return;
+                var text = pre.innerText || pre.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(function() {
+                    // fallback
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    btn.textContent = '✓ Copied!';
+                    btn.classList.add('copied');
+                    setTimeout(function() {
+                        btn.innerHTML = '📋 Copy';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+        });
+    })();
+    </script>
+
 </body>
 </html>

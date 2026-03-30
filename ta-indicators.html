@@ -537,9 +537,64 @@
             color: #0d9488;
             border-bottom-color: #0d9488;
         }
-    </style>
+    
+        /* ── Skip navigation (ADA) ── */
+        .skip-nav {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .skip-nav:focus {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: auto;
+            height: auto;
+            padding: 12px 20px;
+            background: #0d9488;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            z-index: 10000;
+            text-decoration: none;
+            border-radius: 0 0 6px 0;
+            outline: 3px solid #fff;
+        }
+
+        
+        /* ── Keyboard focus styles (ADA) ── */
+        :focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+        }
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid #0d9488;
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        </style>
+
+    <meta property="og:title" content="Core Technical Indicators Explained | OpenClaw TA Automation">
+    <meta property="og:description" content="Learn what technical indicators measure, why traders watch them, and how OpenClaw calculates them automatically. Plain English explanations for beginners.">
+    <meta property="og:url" content="https://learnopenclaw.org/ta-indicators.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="learnopenclaw.org">
+    <meta property="og:image" content="https://learnopenclaw.org/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Core Technical Indicators Explained | OpenClaw TA Automation">
+    <meta name="twitter:description" content="Learn what technical indicators measure, why traders watch them, and how OpenClaw calculates them automatically. Plain English explanations for beginners.">
 </head>
 <body>
+    <a href="#main-content" class="skip-nav">Skip to main content</a>
 
 <!-- NAVIGATION -->
 <nav class="site-nav">
